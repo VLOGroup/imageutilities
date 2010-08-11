@@ -1,0 +1,463 @@
+# Copyright (c) ICG. All rights reserved.
+#
+# Institute for Computer Graphics and Vision
+# Graz University of Technology / Austria
+#
+#
+# This software is distributed WITHOUT ANY WARRANTY; without even
+# the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+# PURPOSE.  See the above copyright notices for more information.
+#
+#
+# Project     : ImageUtilities
+# Module      : CMakeFile
+# Language    : CMake
+# Description : CMakeFile
+#
+# Author     : Manuel Werlberger
+# EMail      : werlberger@icg.tugraz.at
+
+project(ImageUtilities CXX C)
+#set(CMAKE_BUILD_TYPE Debug)
+cmake_minimum_required(VERSION 2.8.0)
+
+set( CMAKE_DEBUG_POSTFIX "d" )
+set( NPP64 "" )
+if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+  set( NPP64 "-x64" )
+endif( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+
+FILE(TO_CMAKE_PATH "$ENV{CMAKE_MODULE_PATH}" OT_CMAKE_MODULE_PATH)
+FILE(TO_CMAKE_PATH "$ENV{ICG_CMAKE_MODULE_PATH}" OT_ICG_CMAKE_MODULE_PATH)
+SET(CMAKE_MODULE_PATH ${OT_CMAKE_MODULE_PATH} ${OT_ICG_CMAKE_MODULE_PATH})
+
+##-----------------------------------------------------------------------------
+## Current version number:
+##-----------------------------------------------------------------------------
+set(IMAGEUTILITIES_VERSION "1.0.0")
+
+string(REGEX MATCHALL "[0-9]" IMAGEUTILITIES_VERSION_PARTS "${IMAGEUTILITIES_VERSION}")
+
+list(GET IMAGEUTILITIES_VERSION_PARTS 0 IMAGEUTILITIES_VERSION_MAJOR)
+list(GET IMAGEUTILITIES_VERSION_PARTS 1 IMAGEUTILITIES_VERSION_MINOR)
+list(GET IMAGEUTILITIES_VERSION_PARTS 2 IMAGEUTILITIES_VERSION_PATCH)
+set(IMAGEUTILITIES_SOVERSION "${IMAGEUTILITIES_VERSION_MAJOR}.${IMAGEUTILITIES_VERSION_MINOR}")
+
+if(WIN32)
+    # Postfix of DLLs:
+    set(IMAGEUTILITIES_DLLVERSION "${IMAGEUTILITIES_VERSION_MAJOR}${IMAGEUTILITIES_VERSION_MINOR}${IMAGEUTILITIES_VERSION_PATCH}")
+    set(IMAGEUTILITIES_DEBUG_POSTFIX d)
+else()
+    # Postfix of so's:
+    #set(IMAGEUTILITIES_DLLVERSION "${IMAGEUTILITIES_VERSION_MAJOR}${IMAGEUTILITIES_VERSION_MINOR}${IMAGEUTILITIES_VERSION_PATCH}")
+    set(IMAGEUTILITIES_DLLVERSION "")
+    set(IMAGEUTILITIES_DEBUG_POSTFIX)
+endif()
+
+##-----------------------------------------------------------------------------
+## Flags if modules are used.
+## The modules are included per default unless dependencies not found or omitted by the user.
+## (the core module is always included!)
+OPTION(VMLIBRARIES_IU_USE_GUI "Including GUI module." ON)
+OPTION(VMLIBRARIES_IU_USE_IO "Including IO module." ON)
+OPTION(VMLIBRARIES_IU_USE_PGRIO "Including PointGray IO module." ON)
+
+
+##-----------------------------------------------------------------------------
+## Compiler Flags
+if(UNIX)
+  # enable all warnings
+  add_definitions(-Wall)
+  # and debug flags
+  add_definitions(-g)
+endif()
+
+IF(WIN32)
+  ADD_DEFINITIONS(-DWIN32)
+  # for msvc 8 deprecated warning removal
+  ADD_DEFINITIONS(-D_CRT_SECURE_NO_DEPRECATE)
+  ADD_DEFINITIONS(-D_CRT_NONSTDC_NO_DEPRECATE)
+  ADD_DEFINITIONS(-D_CRT_SECURE_NO_DEPRECATE_GLOBALS)
+
+  SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /NODEFAULTLIB:LIBCMT.lib")
+endif(WIN32)
+
+##-----------------------------------------------------------------------------
+## CUDA
+if(NOT CUDA_BUILD_EMULATION)
+  set(CUDA_BUILD_EMULATION OFF CACHE BOOL "disable emulation mode")
+  #set(CUDA_BUILD_EMULATION ON CACHE BOOL "enable emulation mode")
+endif()
+find_package(CUDA REQUIRED COMPONENTS sdk)
+if(NOT CUDA_CUT_INCLUDE_DIR)
+  find_package(CUDASDK REQUIRED)
+endif()
+set(CUDA_BUILD_CUBIN OFF)
+# set(CUDA_PROPAGATE_HOST_FLAGS OFF)
+# set(CUDA_NVCC_FLAGS_DEBUG)
+# set(CUDA_NVCC_FLAGS -arch sm_13)#-g;-G)
+cuda_include_directories(${CUDA_INCLUDE_DIRS} ${CUDA_CUT_INCLUDE_DIR})
+include_directories(${CUDA_INCLUDE_DIRS} ${CUDA_CUT_INCLUDE_DIR})
+
+##-----------------------------------------------------------------------------
+## NPP
+SET(NPPDIR $ENV{NPPROOT} CACHE PATH "Choose right basepath for NPP")
+message( STATUS "Using NPP ${NPPDIR}" )
+#SET(NPPDIR "/usr/local/cuda/NVIDIA_NPP" CACHE PATH "Choose right basepath for NPP")
+cuda_include_directories("${NPPDIR}/common/npp/include")
+include_directories("${NPPDIR}/common/npp/include")
+
+link_directories("${NPPDIR}/common/lib")
+if(UNIX)
+  if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+    set(NPP_LIBRARIES npp64 UtilNPP64)
+  else()
+    set(NPP_LIBRARIES npp32 UtilNPP32)
+  endif()
+else(UNIX)
+    set( NPP_LIBRARIES
+#    optimized libnpp-mt${NPP64}
+#    debug libnpp-mt-gd${NPP64}
+    libnpp-mt${NPP64}
+#    optimized UtilNPP-mt${NPP64}
+#    debug UtilNPP-mt-gd${NPP64}
+#    UtilNPP-mt-gd${NPP64}
+  )
+endif(UNIX)
+
+##-----------------------------------------------------------------------------
+## IO MODULE: OpenCV for Image I/O
+find_package( OpenCV QUIET )
+# only include if GUI module is used and qt4 found.
+if(VMLIBRARIES_IU_USE_IO AND OpenCV_INCLUDE_DIRS)
+
+  message("[+] ImageUtilities include IO module")
+  include_directories(${OpenCV_INCLUDE_DIRS})
+
+  set( IU_IO_HEADERS
+  ${CMAKE_CURRENT_SOURCE_DIR}/iuio.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/io/imageio.h
+    )
+
+  set( IU_IO_SOURCES
+  ${CMAKE_CURRENT_SOURCE_DIR}/iuio.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/io/imageio.cpp
+    )
+
+else()
+  message("[-] ImageUtilities omitting IO module")
+  set(VMLIBRARIES_IU_USE_IO OFF CACHE PATH "IU: Omit IO module." FORCE)
+
+  # empty libraries
+  set(OpenCV_LIBS "")
+
+endif()
+
+##-----------------------------------------------------------------------------
+## Qt
+find_package(Qt4 COMPONENTS QtCore QtGui QtOpenGL)
+# only include if GUI module is used and qt4 found.
+if(VMLIBRARIES_IU_USE_GUI AND QT4_FOUND)
+
+  message("[+] ImageUtilities include GUI module")
+  include(${QT_USE_FILE})
+
+
+  ## GLEW
+  find_package( GLEW REQUIRED )
+  include_directories(${GLEW_INCLUDE_DIR})
+
+  ## OpenGL
+  find_package( OpenGL REQUIRED )
+  include_directories(${OPENGL_INCLUDE_DIR})
+
+
+  set( IU_GUI_HEADERS
+    ${CMAKE_CURRENT_SOURCE_DIR}/iugui.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/gui/nppglwidget.cuh
+    )
+
+  set( IU_GUI_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/gui/nppglwidget.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/gui/nppglwidget.cu
+    )
+
+  set( IU_GUI_MOC_HEADERS
+    ${CMAKE_CURRENT_SOURCE_DIR}/gui/nppglwidget_p.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/gui/nppglwidget.h
+    )
+
+  # compile moc headers
+  QT4_WRAP_CPP (IU_GUI_MOC_SOURCES ${IU_GUI_MOC_HEADERS})
+
+else()
+  message("[-] ImageUtilities omitting GUI module")
+  set(VMLIBRARIES_IU_USE_GUI OFF CACHE PATH "IU: Omit GUI module." FORCE)
+
+  # empty libraries
+  set(QT_LIBRARIES "")
+  set(OPENGL_LIBRARIES "")
+  set(GLEW_LIBRARIES "")
+  set(OPENGL_LIBRARIES "")
+
+endif()
+
+
+##-----------------------------------------------------------------------------
+## IO MODULE: PointGray cameras (flycapture2);
+# NOTE: we need qt4 for that (threading, ...)
+find_package( FlyCapture2 QUIET )
+# only include if PGR specific stuff was found
+if(VMLIBRARIES_IU_USE_PGRIO AND QT4_FOUND AND FLYCAPTURE2_FOUND)
+
+  message("[+] ImageUtilities include PGRIO module")
+  include(${QT_USE_FILE})
+  include_directories(${FLYCAPTURE2_INCLUDE_DIR})
+  message("FLYCAPTURE_INCLUDE_DIR=${FLYCAPTURE2_INCLUDE_DIR}")
+
+  set( IU_PGRIO_HEADERS
+    ${CMAKE_CURRENT_SOURCE_DIR}/iupgrio.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/io/pgrcameradata.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/io/pgrcameraimagegrabber.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/io/pgrcamerathreaddata.h
+    )
+
+  set( IU_PGRIO_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/io/pgrcamera.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/io/pgrcameraimageconsumer.cpp
+    )
+
+  set( IU_PGRIO_MOC_HEADERS
+    ${CMAKE_CURRENT_SOURCE_DIR}/io/pgrcamera.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/io/pgrcameraimageconsumer.h
+    )
+
+  # compile moc headers
+  QT4_WRAP_CPP (IU_PGRIO_MOC_SOURCES ${IU_PGRIO_MOC_HEADERS})
+
+else()
+  message("[-] ImageUtilities omitting PGRIO module")
+  set(VMLIBRARIES_IU_USE_PGRIO OFF CACHE PATH "IU: Omit PGRIO module." FORCE)
+
+  # empty libraries
+  set(FLYCAPTURE2_LIBRARIES "")
+
+endif()
+
+##-----------------------------------------------------------------------------
+## local settings, headers and sources
+include_directories(
+  ${CMAKE_SOURCE_DIR}
+  ${CMAKE_CURRENT_SOURCE_DIR}
+  ${CMAKE_CURRENT_SOURCE_DIR}/..
+  )
+cuda_include_directories(
+  ${CMAKE_SOURCE_DIR}
+  ${CMAKE_CURRENT_SOURCE_DIR}
+  ${CMAKE_CURRENT_SOURCE_DIR}/..
+  )
+
+# SPLITTING ALL THE HEADERS FOR THE INSTALL DIRECTORY!
+SET( IU_BASE_HEADERS
+  ${CMAKE_CURRENT_SOURCE_DIR}/iudefs.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iumath.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iufilter.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucoreippconnector.h
+  )
+
+SET( IU_GLOBAL_HEADERS
+  ${CMAKE_CURRENT_SOURCE_DIR}/global/globaldefs.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/global/cudadefs.h
+  )
+
+SET( IU_CORE_HEADERS
+  ${CMAKE_CURRENT_SOURCE_DIR}/core/coredefs.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/core/memorydefs.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/core/linearhostmemory.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/core/lineardevicememory.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/core/image.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/core/image_allocator_cpu.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/core/image_allocator_npp.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/core/image_cpu.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/core/image_npp.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/core/copy.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/core/memory_modification.h
+  )
+
+SET( IU_MATH_HEADERS
+  ${CMAKE_CURRENT_SOURCE_DIR}/math/arithmetic.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/math/statistics.h
+  )
+
+SET( IU_FILTER_HEADERS
+  ${CMAKE_CURRENT_SOURCE_DIR}/filter/filter.h
+  )
+
+SET( IU_TRANSFORM_HEADERS
+  ${CMAKE_CURRENT_SOURCE_DIR}/transform/resample.h
+)
+
+
+SET( IU_CUDA_HEADERS
+  ${CMAKE_CURRENT_SOURCE_DIR}/global/iutextures.cuh
+  ${CMAKE_CURRENT_SOURCE_DIR}/core/memory_modification.cuh
+  ${CMAKE_CURRENT_SOURCE_DIR}/math/arithmetic.cuh
+  ${CMAKE_CURRENT_SOURCE_DIR}/math/statistics.cuh
+  ${CMAKE_CURRENT_SOURCE_DIR}/filter/filter.cuh
+  #${CMAKE_CURRENT_SOURCE_DIR}/transform/resample.cuh
+  )
+
+SET( IU_CONNECTOR_HEADERS
+  ${CMAKE_CURRENT_SOURCE_DIR}/connector/copy_ipp.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/connector/image_allocator_ipp.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/connector/image_ipp.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/connector/memorydefs_ipp.h
+  )
+
+SET( IU_HEADERS
+  ${IU_BASE_HEADERS}
+  ${IU_GLOBAL_HEADERS}
+  ${IU_CORE_HEADERS}
+  ${IU_MATH_HEADERS}
+  ${IU_FILTER_HEADERS}
+  #${IU_TRANSFORM_HEADERS}
+  ${IU_CUDA_HEADERS}
+  ${IU_GUI_HEADERS}
+  ${IU_IO_HEADERS}
+  ${IU_PGRIO_HEADERS}
+  ${IU_CONNECTOR_HEADERS}
+  )
+
+SET( IU_SOURCES
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/core/memory_modification.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/core/memory_modification.cu
+  ${CMAKE_CURRENT_SOURCE_DIR}/core/memory_modification_kernels.cu
+  ${CMAKE_CURRENT_SOURCE_DIR}/iumath.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/math/arithmetic.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/math/arithmetic.cu
+  ${CMAKE_CURRENT_SOURCE_DIR}/math/statistics.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/math/statistics.cu
+  ${CMAKE_CURRENT_SOURCE_DIR}/iufilter.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/filter/filter.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/filter/filter.cu
+  #${CMAKE_CURRENT_SOURCE_DIR}/transform/transform.cpp
+  #${CMAKE_CURRENT_SOURCE_DIR}/transform/transform.cu
+  #${CMAKE_CURRENT_SOURCE_DIR}/transform/transform_kernels.cu
+  ${IU_GUI_SOURCES}
+  ${IU_IO_SOURCES}
+  ${IU_PGRIO_SOURCES}
+  )
+
+# denote kernel files as header only to not confuse the compiler
+set_source_files_properties(
+  ${CMAKE_CURRENT_SOURCE_DIR}/core/memory_modification_kernels.cu
+  PROPERTIES HEADER_FILE_ONLY yes
+  )
+
+##-----------------------------------------------------------------------------
+set( IU_ALL_HEADERS
+  ${IU_HEADERS}
+  ${IU_SOURCES}
+  ${IU_GUI_SOURCES}
+  ${IU_GUI_MOC_SOURCES}
+  ${IU_PGRIO_SOURCES}
+  ${IU_PGRIO_MOC_SOURCES}
+  )
+
+IF(NOT WIN32)
+  SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fPIC"  )
+  SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_DEBUG} -fPIC"  )
+  SET(CMAKE_C_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fPIC"  )
+  SET(CMAKE_C_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_DEBUG} -fPIC"  )
+endif()
+
+cuda_add_library( iu SHARED ${IU_ALL_HEADERS} )
+set_target_properties(iu PROPERTIES
+  DEFINE_SYMBOL IU_DLL_EXPORTS
+  VERSION ${IMAGEUTILITIES_VERSION}
+  SOVERSION ${IMAGEUTILITIES_SOVERSION}
+  )
+
+if( NOT WIN32 )
+  cuda_add_library( iu_static STATIC ${IU_ALL_HEADERS} )
+  set_target_properties(iu_static PROPERTIES
+    DEFINE_SYMBOL IU_DLL_EXPORTS
+    VERSION ${IMAGEUTILITIES_VERSION}
+    SOVERSION ${IMAGEUTILITIES_SOVERSION}
+  )
+endif()
+
+if( WIN32 )
+  set_target_properties( iu PROPERTIES LINK_FLAGS_RELEASE "/LTCG" )
+endif( WIN32 )
+
+set( IU_ALL_SHARED_LIBS
+  ${NPP_LIBRARIES} ${CUDA_LIBRARIES}
+  ${QT_LIBRARIES}  ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES} ${OpenCV_LIBS} ${FLYCAPTURE2_LIBRARIES}
+  )
+TARGET_LINK_LIBRARIES(iu ${IU_ALL_SHARED_LIBS} )
+
+if( NOT WIN32 )
+set( IU_ALL_STATIC_LIBS
+  ${NPP_LIBRARIES} ${CUDA_LIBRARIES}
+  ${QT_LIBRARIES}  ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES} ${OpenCV_LIBS} ${FLYCAPTURE2_LIBRARIES}
+  )
+TARGET_LINK_LIBRARIES(iu_static ${IU_ALL_STATIC_LIBS} )
+endif()
+
+# set CMAKE_INSTALL_PREFIX to set the install target
+install( TARGETS iu
+  RUNTIME DESTINATION bin
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+)
+install( FILES ${IU_BASE_HEADERS} DESTINATION include/iu )
+install( FILES ${IU_GLOBAL_HEADERS} DESTINATION include/iu/global )
+install( FILES ${IU_CORE_HEADERS} DESTINATION include/iu/core )
+install( FILES ${IU_MATH_HEADERS} DESTINATION include/iu/math )
+install( FILES ${IU_FILTER_HEADERS} DESTINATION include/iu/filter )
+#install( FILES ${IU_TRANSFORM_HEADERS} DESTINATION include/iu/transform )
+if(VMLIBRARIES_IU_USE_IO)
+  install( FILES ${IU_IO_HEADERS} DESTINATION include/iu/io )
+endif(VMLIBRARIES_IU_USE_IO)
+if(VMLIBRARIES_IU_USE_GUI)
+  install( FILES ${IU_GUI_HEADERS} DESTINATION include/iu/gui )
+endif(VMLIBRARIES_IU_USE_GUI)
+install( FILES ${IU_CONNECTOR_HEADERS} DESTINATION include/iu/connector )
+#install( FILES ${NPP_LIBRARIES} DESTINATION lib )
+#install( FILES ${CUDA_LIBRARIES} DESTINATION lib )
+
+
+##-----------------------------------------------------------------------------
+## CPACK configuration
+INCLUDE(InstallRequiredSystemLibraries)
+
+SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "ImageUtilities - Connecting the world of CPU and GPU.")
+SET(CPACK_PACKAGE_VENDOR "Manuel Werlberger <werlberger@icg.tugraz.at>")
+SET(CPACK_PACKAGE_CONTACT "Manuel Werlberger <werlberger@icg.tugraz.at>")
+SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "Manuel Werlberger <werlberger@icg.tugraz.at>")
+# SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/ReadMe.txt")
+# SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/Copyright.txt")
+SET(CPACK_PACKAGE_VERSION_MAJOR "1")
+SET(CPACK_PACKAGE_VERSION_MINOR "1")
+SET(CPACK_PACKAGE_VERSION_PATCH "0")
+SET(CPACK_PACKAGE_INSTALL_DIRECTORY "ImageUtilities ${IMAGEUTILITIES_VERSION_MAJOR}.${IMAGEUTILITIES_VERSION_MINOR}")
+
+# IF(WIN32 AND NOT UNIX)
+#   # There is a bug in NSI that does not handle full unix paths properly. Make
+#   # sure there is at least one set of four (4) backlasshes.
+#   SET(CPACK_PACKAGE_ICON "${CMake_SOURCE_DIR}/Utilities/Release\\\\InstallIcon.bmp")
+#   SET(CPACK_NSIS_INSTALLED_ICON_NAME "bin\\\\MyExecutable.exe")
+#   SET(CPACK_NSIS_DISPLAY_NAME "${CPACK_PACKAGE_INSTALL_DIRECTORY} My Famous Project")
+#   SET(CPACK_NSIS_HELP_LINK "http:\\\\\\\\www.my-project-home-page.org")
+#   SET(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\www.my-personal-home-page.com")
+#   SET(CPACK_NSIS_CONTACT "me@my-personal-home-page.com")
+#   SET(CPACK_NSIS_MODIFY_PATH ON)
+# ELSE(WIN32 AND NOT UNIX)
+#   SET(CPACK_STRIP_FILES "bin/MyExecutable")
+#   SET(CPACK_SOURCE_STRIP_FILES "")
+# ENDIF(WIN32 AND NOT UNIX)
+# SET(CPACK_PACKAGE_EXECUTABLES "MyExecutable" "My Executable")
+INCLUDE(CPack)
