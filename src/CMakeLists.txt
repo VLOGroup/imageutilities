@@ -135,13 +135,13 @@ if(VMLIBRARIES_IU_USE_IO AND OpenCV_INCLUDE_DIRS)
   include_directories(${OpenCV_INCLUDE_DIRS})
 
   set( IU_IO_HEADERS
-  ${CMAKE_CURRENT_SOURCE_DIR}/iuio.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/iuio/imageio.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuio.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/imageio.h
     )
 
   set( IU_IO_SOURCES
-  ${CMAKE_CURRENT_SOURCE_DIR}/iuio.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/iuio/imageio.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuio.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/imageio.cpp
     )
 
 else()
@@ -280,30 +280,27 @@ SET( IU_CORE_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/image_npp.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/copy.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/memory_modification.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/memory_modification.cuh
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/iutextures.cuh
   )
 
 SET( IU_MATH_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/iumath/arithmetic.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iumath/arithmetic.cuh
   ${CMAKE_CURRENT_SOURCE_DIR}/iumath/statistics.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iumath/statistics.cuh
   )
 
 SET( IU_FILTER_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/iufilter/filter.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iufilter/filter.cuh
   )
 
 SET( IU_TRANSFORM_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/resample.h
-)
-
-
-SET( IU_CUDA_HEADERS
-  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/iutextures.cuh
-  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/memory_modification.cuh
-  ${CMAKE_CURRENT_SOURCE_DIR}/iumath/arithmetic.cuh
-  ${CMAKE_CURRENT_SOURCE_DIR}/iumath/statistics.cuh
-  ${CMAKE_CURRENT_SOURCE_DIR}/iufilter/filter.cuh
   #${CMAKE_CURRENT_SOURCE_DIR}/iutransform/resample.cuh
   )
+
 
 SET( IU_CONNECTOR_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/iuconnector/copy_ipp.h
@@ -318,11 +315,6 @@ SET( IU_HEADERS
   ${IU_MATH_HEADERS}
   ${IU_FILTER_HEADERS}
   #${IU_TRANSFORM_HEADERS}
-  ${IU_CUDA_HEADERS}
-  ${IU_GUI_HEADERS}
-  ${IU_IO_HEADERS}
-  ${IU_PGRIO_HEADERS}
-  ${IU_CONNECTOR_HEADERS}
   )
 
 SET( IU_SOURCES
@@ -341,9 +333,6 @@ SET( IU_SOURCES
   #${CMAKE_CURRENT_SOURCE_DIR}/iutransform/transform.cpp
   #${CMAKE_CURRENT_SOURCE_DIR}/iutransform/transform.cu
   #${CMAKE_CURRENT_SOURCE_DIR}/iutransform/transform_kernels.cu
-  ${IU_GUI_SOURCES}
-  ${IU_IO_SOURCES}
-  ${IU_PGRIO_SOURCES}
   )
 
 # denote kernel files as header only to not confuse the compiler
@@ -355,9 +344,14 @@ set_source_files_properties(
 ##-----------------------------------------------------------------------------
 set( IU_ALL_HEADERS
   ${IU_HEADERS}
+  ${IU_GUI_HEADERS}
+  ${IU_IO_HEADERS}
+  ${IU_PGRIO_HEADERS}
+  ${IU_CONNECTOR_HEADERS}
   ${IU_SOURCES}
   ${IU_GUI_SOURCES}
   ${IU_GUI_MOC_SOURCES}
+  ${IU_IO_SOURCES}
   ${IU_PGRIO_SOURCES}
   ${IU_PGRIO_MOC_SOURCES}
   )
@@ -369,6 +363,58 @@ IF(NOT WIN32)
   SET(CMAKE_C_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_DEBUG} -fPIC"  )
 endif()
 
+##-----------------------------------------------------------------------------
+## build core library
+cuda_add_library( iucore SHARED ${IU_HEADERS} ${IU_SOURCES})
+set_target_properties(iucore PROPERTIES
+  DEFINE_SYMBOL IU_DLL_EXPORTS
+  VERSION ${IMAGEUTILITIES_VERSION}
+  SOVERSION ${IMAGEUTILITIES_SOVERSION}
+  )
+target_link_libraries( iucore ${NPP_LIBRARIES} ${CUDA_LIBRARIES} )
+
+##-----------------------------------------------------------------------------
+## build gui library
+cuda_add_library( iugui SHARED ${IU_GUI_HEADERS} ${IU_GUI_SOURCES} ${IU_GUI_MOC_SOURCES} )
+set_target_properties(iugui PROPERTIES
+  DEFINE_SYMBOL IU_DLL_EXPORTS
+  VERSION ${IMAGEUTILITIES_VERSION}
+  SOVERSION ${IMAGEUTILITIES_SOVERSION}
+  )
+target_link_libraries( iugui 
+  ${NPP_LIBRARIES} ${CUDA_LIBRARIES} 
+  ${QT_LIBRARIES}  ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES} 
+  )
+
+##-----------------------------------------------------------------------------
+## build io library
+cuda_add_library( iuio SHARED ${IU_IO_HEADERS} ${IU_IO_SOURCES} )
+set_target_properties(iuio PROPERTIES
+  DEFINE_SYMBOL IU_DLL_EXPORTS
+  VERSION ${IMAGEUTILITIES_VERSION}
+  SOVERSION ${IMAGEUTILITIES_SOVERSION}
+  )
+target_link_libraries( iuio
+  ${NPP_LIBRARIES} ${CUDA_LIBRARIES} 
+  ${OpenCV_LIBS}
+  )
+
+##-----------------------------------------------------------------------------
+## build pgrcamera library
+cuda_add_library( iupgrcamera SHARED ${IU_IO_HEADERS} ${IU_IO_SOURCES} )
+set_target_properties(iupgrcamera PROPERTIES
+  DEFINE_SYMBOL IU_DLL_EXPORTS
+  VERSION ${IMAGEUTILITIES_VERSION}
+  SOVERSION ${IMAGEUTILITIES_SOVERSION}
+  )
+target_link_libraries( iupgrcamera
+  ${NPP_LIBRARIES} ${CUDA_LIBRARIES} 
+  ${QT_LIBRARIES}  ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES} 
+  ${FLYCAPTURE2_LIBRARIES}
+  )
+
+##-----------------------------------------------------------------------------
+## build combined package (everything included - for compatibility)
 cuda_add_library( iu SHARED ${IU_ALL_HEADERS} )
 set_target_properties(iu PROPERTIES
   DEFINE_SYMBOL IU_DLL_EXPORTS
@@ -382,7 +428,7 @@ if( NOT WIN32 )
     DEFINE_SYMBOL IU_DLL_EXPORTS
     VERSION ${IMAGEUTILITIES_VERSION}
     SOVERSION ${IMAGEUTILITIES_SOVERSION}
-  )
+    )
 endif()
 
 if( WIN32 )
@@ -408,7 +454,7 @@ install( TARGETS iu
   RUNTIME DESTINATION bin
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
-)
+  )
 install( FILES ${IU_BASE_HEADERS} DESTINATION include/iu )
 install( FILES ${IU_CORE_HEADERS} DESTINATION include/iu/core )
 install( FILES ${IU_MATH_HEADERS} DESTINATION include/iu/math )

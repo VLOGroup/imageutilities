@@ -114,7 +114,6 @@ cuda_include_directories(
 
 ##-----------------------------------------------------------------------------
 ## build options
-set( IU_LIBRARIES optimized iu debug iud)
 set( IU_STATIC_LIBRARIES optimized iu_static debug iu_staticd)
 set(ALL_LIBRARIES
   ${NPP_LIBRARIES} ${CUDA_LIBRARIES}
@@ -132,6 +131,7 @@ link_directories(
 # cuda_add_executable( iu_unittests iu_unittests.cpp )
 # TARGET_LINK_LIBRARIES(iu_unittests ${ALL_LIBRARIES} ${IU_LIBRARIES})
 
+set( IU_LIBRARIES optimized iucore debug iucored)
 cuda_add_executable( iu_linearbuffer_unittest iu_linearbuffer_unittest.cpp )
 TARGET_LINK_LIBRARIES(iu_linearbuffer_unittest ${ALL_LIBRARIES} ${IU_LIBRARIES})
 
@@ -147,12 +147,11 @@ TARGET_LINK_LIBRARIES(iu_arithmetic_npp_unittest ${ALL_LIBRARIES} ${IU_LIBRARIES
 cuda_add_executable( iu_statistics_npp_unittest iu_statistics_npp_unittest.cpp )
 TARGET_LINK_LIBRARIES(iu_statistics_npp_unittest ${ALL_LIBRARIES} ${IU_LIBRARIES})
 
-# cuda_add_executable( iu_math_arithmetic_unittest iu_math_arithmetic_unittest.cpp)
-# TARGET_LINK_LIBRARIES(iu_math_arithmetic_unittest ${ALL_LIBRARIES} ${IU_LIBRARIES})
-
-# cuda_add_executable( iu_nppwidget_unittest iu_nppwidget_unittest.cpp )
-# TARGET_LINK_LIBRARIES(iu_nppwidget_unittest ${ALL_LIBRARIES} ${IU_LIBRARIES})
-
+set( IU_LIBRARIES 
+  optimized iucore debug iucored
+  optimized iuio debug iuiod 
+  optimized iugui debug iuguid
+  )
 cuda_add_executable( iu_imageio_unittest iu_imageio_unittest.cpp )
 TARGET_LINK_LIBRARIES(iu_imageio_unittest ${ALL_LIBRARIES} ${IU_LIBRARIES})
 
@@ -161,6 +160,13 @@ TARGET_LINK_LIBRARIES(iu_camera_unittest ${ALL_LIBRARIES} ${IU_LIBRARIES})
 
 cuda_add_executable( iu_filter_unittest iu_filter_unittest.cpp )
 TARGET_LINK_LIBRARIES(iu_filter_unittest ${ALL_LIBRARIES} ${IU_LIBRARIES})
+
+
+# cuda_add_executable( iu_math_arithmetic_unittest iu_math_arithmetic_unittest.cpp)
+# TARGET_LINK_LIBRARIES(iu_math_arithmetic_unittest ${ALL_LIBRARIES} ${IU_LIBRARIES})
+
+# cuda_add_executable( iu_nppwidget_unittest iu_nppwidget_unittest.cpp )
+# TARGET_LINK_LIBRARIES(iu_nppwidget_unittest ${ALL_LIBRARIES} ${IU_LIBRARIES})
 
 # # build everyting again using the static lib from iu
 # cuda_add_executable( iu_static_unittests iu_unittests.cpp )
