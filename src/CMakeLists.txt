@@ -60,7 +60,8 @@ endif()
 ## (the core module is always included!)
 OPTION(VMLIBRARIES_IU_USE_GUI "Including GUI module." ON)
 OPTION(VMLIBRARIES_IU_USE_IO "Including IO module." ON)
-OPTION(VMLIBRARIES_IU_USE_PGRIO "Including PointGray IO module." ON)
+OPTION(VMLIBRARIES_IU_USE_PGRCAMERA "Including PointGray IO module." ON)
+OPTION(VMLIBRARIES_IU_BUILD_COMBINED_LIBRARY "Building a complete library package. This is just for compatibility reasons." OFF)
 
 
 ##-----------------------------------------------------------------------------
@@ -208,36 +209,36 @@ endif()
 # NOTE: we need qt4 for that (threading, ...)
 find_package( FlyCapture2 QUIET )
 # only include if PGR specific stuff was found
-if(VMLIBRARIES_IU_USE_PGRIO AND QT4_FOUND AND FLYCAPTURE2_FOUND)
+if(VMLIBRARIES_IU_USE_PGRCAMERA AND QT4_FOUND AND FLYCAPTURE2_FOUND)
 
-  message("[+] ImageUtilities include PGRIO module")
+  message("[+] ImageUtilities include PGRCAMERA module")
   include(${QT_USE_FILE})
   include_directories(${FLYCAPTURE2_INCLUDE_DIR})
   message("FLYCAPTURE_INCLUDE_DIR=${FLYCAPTURE2_INCLUDE_DIR}")
 
-  set( IU_PGRIO_HEADERS
-    ${CMAKE_CURRENT_SOURCE_DIR}/iupgrio.h
+  set( IU_PGRCAMERA_HEADERS
+    ${CMAKE_CURRENT_SOURCE_DIR}/iupgrcamera.h
     ${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrcameradata.h
     ${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrcameraimagegrabber.h
     ${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrcamerathreaddata.h
     )
 
-  set( IU_PGRIO_SOURCES
+  set( IU_PGRCAMERA_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrcamera.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrcameraimageconsumer.cpp
     )
 
-  set( IU_PGRIO_MOC_HEADERS
+  set( IU_PGRCAMERA_MOC_HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrcamera.h
     ${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrcameraimageconsumer.h
     )
 
   # compile moc headers
-  QT4_WRAP_CPP (IU_PGRIO_MOC_SOURCES ${IU_PGRIO_MOC_HEADERS})
+  QT4_WRAP_CPP (IU_PGRCAMERA_MOC_SOURCES ${IU_PGRCAMERA_MOC_HEADERS})
 
 else()
-  message("[-] ImageUtilities omitting PGRIO module")
-  set(VMLIBRARIES_IU_USE_PGRIO OFF CACHE PATH "IU: Omit PGRIO module." FORCE)
+  message("[-] ImageUtilities omitting PGRCAMERA module")
+  set(VMLIBRARIES_IU_USE_PGRCAMERA OFF CACHE PATH "IU: Omit PGRCAMERA module." FORCE)
 
   # empty libraries
   set(FLYCAPTURE2_LIBRARIES "")
@@ -346,14 +347,14 @@ set( IU_ALL_HEADERS
   ${IU_HEADERS}
   ${IU_GUI_HEADERS}
   ${IU_IO_HEADERS}
-  ${IU_PGRIO_HEADERS}
+  ${IU_PGRCAMERA_HEADERS}
   ${IU_CONNECTOR_HEADERS}
   ${IU_SOURCES}
   ${IU_GUI_SOURCES}
   ${IU_GUI_MOC_SOURCES}
   ${IU_IO_SOURCES}
-  ${IU_PGRIO_SOURCES}
-  ${IU_PGRIO_MOC_SOURCES}
+  ${IU_PGRCAMERA_SOURCES}
+  ${IU_PGRCAMERA_MOC_SOURCES}
   )
 
 IF(NOT WIN32)
@@ -375,32 +376,37 @@ target_link_libraries( iucore ${NPP_LIBRARIES} ${CUDA_LIBRARIES} )
 
 ##-----------------------------------------------------------------------------
 ## build gui library
-cuda_add_library( iugui SHARED ${IU_GUI_HEADERS} ${IU_GUI_SOURCES} ${IU_GUI_MOC_SOURCES} )
-set_target_properties(iugui PROPERTIES
-  DEFINE_SYMBOL IU_DLL_EXPORTS
-  VERSION ${IMAGEUTILITIES_VERSION}
-  SOVERSION ${IMAGEUTILITIES_SOVERSION}
-  )
-target_link_libraries( iugui 
-  ${NPP_LIBRARIES} ${CUDA_LIBRARIES} 
-  ${QT_LIBRARIES}  ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES} 
-  )
+if(VMLIBRARIES_IU_USE_GUI)
+  cuda_add_library( iugui SHARED ${IU_GUI_HEADERS} ${IU_GUI_SOURCES} ${IU_GUI_MOC_SOURCES} )
+  set_target_properties(iugui PROPERTIES
+    DEFINE_SYMBOL IU_DLL_EXPORTS
+    VERSION ${IMAGEUTILITIES_VERSION}
+    SOVERSION ${IMAGEUTILITIES_SOVERSION}
+    )
+  target_link_libraries( iugui 
+    ${NPP_LIBRARIES} ${CUDA_LIBRARIES} 
+    ${QT_LIBRARIES}  ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES} 
+    )
+endif(VMLIBRARIES_IU_USE_GUI)
 
 ##-----------------------------------------------------------------------------
 ## build io library
-cuda_add_library( iuio SHARED ${IU_IO_HEADERS} ${IU_IO_SOURCES} )
-set_target_properties(iuio PROPERTIES
-  DEFINE_SYMBOL IU_DLL_EXPORTS
-  VERSION ${IMAGEUTILITIES_VERSION}
-  SOVERSION ${IMAGEUTILITIES_SOVERSION}
-  )
-target_link_libraries( iuio
-  ${NPP_LIBRARIES} ${CUDA_LIBRARIES} 
-  ${OpenCV_LIBS}
-  )
+if(VMLIBRARIES_IU_USE_IO)
+  cuda_add_library( iuio SHARED ${IU_IO_HEADERS} ${IU_IO_SOURCES} )
+  set_target_properties(iuio PROPERTIES
+    DEFINE_SYMBOL IU_DLL_EXPORTS
+    VERSION ${IMAGEUTILITIES_VERSION}
+    SOVERSION ${IMAGEUTILITIES_SOVERSION}
+    )
+  target_link_libraries( iuio
+    ${NPP_LIBRARIES} ${CUDA_LIBRARIES} 
+    ${OpenCV_LIBS}
+    )
+endif(VMLIBRARIES_IU_USE_IO)
 
 ##-----------------------------------------------------------------------------
 ## build pgrcamera library
+if(VMLIBRARIES_IU_USE_PGRCAMERA)
 cuda_add_library( iupgrcamera SHARED ${IU_IO_HEADERS} ${IU_IO_SOURCES} )
 set_target_properties(iupgrcamera PROPERTIES
   DEFINE_SYMBOL IU_DLL_EXPORTS
@@ -412,63 +418,70 @@ target_link_libraries( iupgrcamera
   ${QT_LIBRARIES}  ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES} 
   ${FLYCAPTURE2_LIBRARIES}
   )
+endif(VMLIBRARIES_IU_USE_PGRCAMERA)
 
 ##-----------------------------------------------------------------------------
 ## build combined package (everything included - for compatibility)
-cuda_add_library( iu SHARED ${IU_ALL_HEADERS} )
-set_target_properties(iu PROPERTIES
-  DEFINE_SYMBOL IU_DLL_EXPORTS
-  VERSION ${IMAGEUTILITIES_VERSION}
-  SOVERSION ${IMAGEUTILITIES_SOVERSION}
-  )
-
-if( NOT WIN32 )
-  cuda_add_library( iu_static STATIC ${IU_ALL_HEADERS} )
-  set_target_properties(iu_static PROPERTIES
+if(VMLIBRARIES_IU_BUILD_COMBINED_LIBRARY)
+  cuda_add_library( iu SHARED ${IU_ALL_HEADERS} )
+  set_target_properties(iu PROPERTIES
     DEFINE_SYMBOL IU_DLL_EXPORTS
     VERSION ${IMAGEUTILITIES_VERSION}
     SOVERSION ${IMAGEUTILITIES_SOVERSION}
     )
-endif()
 
-if( WIN32 )
-  set_target_properties( iu PROPERTIES LINK_FLAGS_RELEASE "/LTCG" )
-endif( WIN32 )
+  if( NOT WIN32 )
+    cuda_add_library( iu_static STATIC ${IU_ALL_HEADERS} )
+    set_target_properties(iu_static PROPERTIES
+      DEFINE_SYMBOL IU_DLL_EXPORTS
+      VERSION ${IMAGEUTILITIES_VERSION}
+      SOVERSION ${IMAGEUTILITIES_SOVERSION}
+      )
+  endif()
 
-set( IU_ALL_SHARED_LIBS
-  ${NPP_LIBRARIES} ${CUDA_LIBRARIES}
-  ${QT_LIBRARIES}  ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES} ${OpenCV_LIBS} ${FLYCAPTURE2_LIBRARIES}
-  )
-TARGET_LINK_LIBRARIES(iu ${IU_ALL_SHARED_LIBS} )
+  if( WIN32 )
+    set_target_properties( iu PROPERTIES LINK_FLAGS_RELEASE "/LTCG" )
+  endif( WIN32 )
 
-if( NOT WIN32 )
-set( IU_ALL_STATIC_LIBS
-  ${NPP_LIBRARIES} ${CUDA_LIBRARIES}
-  ${QT_LIBRARIES}  ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES} ${OpenCV_LIBS} ${FLYCAPTURE2_LIBRARIES}
-  )
-TARGET_LINK_LIBRARIES(iu_static ${IU_ALL_STATIC_LIBS} )
-endif()
+  set( IU_ALL_SHARED_LIBS
+    ${NPP_LIBRARIES} ${CUDA_LIBRARIES}
+    ${QT_LIBRARIES}  ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES} ${OpenCV_LIBS} ${FLYCAPTURE2_LIBRARIES}
+    )
+  TARGET_LINK_LIBRARIES(iu ${IU_ALL_SHARED_LIBS} )
 
-# set CMAKE_INSTALL_PREFIX to set the install target
-install( TARGETS iu
-  RUNTIME DESTINATION bin
-  ARCHIVE DESTINATION lib
-  LIBRARY DESTINATION lib
-  )
-install( FILES ${IU_BASE_HEADERS} DESTINATION include/iu )
-install( FILES ${IU_CORE_HEADERS} DESTINATION include/iu/core )
-install( FILES ${IU_MATH_HEADERS} DESTINATION include/iu/math )
-install( FILES ${IU_FILTER_HEADERS} DESTINATION include/iu/filter )
-#install( FILES ${IU_TRANSFORM_HEADERS} DESTINATION include/iu/transform )
-if(VMLIBRARIES_IU_USE_IO)
-  install( FILES ${IU_IO_HEADERS} DESTINATION include/iu/io )
-endif(VMLIBRARIES_IU_USE_IO)
-if(VMLIBRARIES_IU_USE_GUI)
-  install( FILES ${IU_GUI_HEADERS} DESTINATION include/iu/gui )
-endif(VMLIBRARIES_IU_USE_GUI)
-install( FILES ${IU_CONNECTOR_HEADERS} DESTINATION include/iu/connector )
-#install( FILES ${NPP_LIBRARIES} DESTINATION lib )
-#install( FILES ${CUDA_LIBRARIES} DESTINATION lib )
+  if( NOT WIN32 )
+    set( IU_ALL_STATIC_LIBS
+      ${NPP_LIBRARIES} ${CUDA_LIBRARIES}
+      ${QT_LIBRARIES}  ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES} ${OpenCV_LIBS} ${FLYCAPTURE2_LIBRARIES}
+      )
+    TARGET_LINK_LIBRARIES(iu_static ${IU_ALL_STATIC_LIBS} )
+  endif()
+
+endif(VMLIBRARIES_IU_BUILD_COMBINED_LIBRARY)
+
+# ##-----------------------------------------------------------------------------
+# ## Install target -- TODO/FIXME
+
+# # set CMAKE_INSTALL_PREFIX to set the install target
+# install( TARGETS iu
+#   RUNTIME DESTINATION bin
+#   ARCHIVE DESTINATION lib
+#   LIBRARY DESTINATION lib
+#   )
+# install( FILES ${IU_BASE_HEADERS} DESTINATION include/iu )
+# install( FILES ${IU_CORE_HEADERS} DESTINATION include/iu/core )
+# install( FILES ${IU_MATH_HEADERS} DESTINATION include/iu/math )
+# install( FILES ${IU_FILTER_HEADERS} DESTINATION include/iu/filter )
+# #install( FILES ${IU_TRANSFORM_HEADERS} DESTINATION include/iu/transform )
+# if(VMLIBRARIES_IU_USE_IO)
+#   install( FILES ${IU_IO_HEADERS} DESTINATION include/iu/io )
+# endif(VMLIBRARIES_IU_USE_IO)
+# if(VMLIBRARIES_IU_USE_GUI)
+#   install( FILES ${IU_GUI_HEADERS} DESTINATION include/iu/gui )
+# endif(VMLIBRARIES_IU_USE_GUI)
+# install( FILES ${IU_CONNECTOR_HEADERS} DESTINATION include/iu/connector )
+# #install( FILES ${NPP_LIBRARIES} DESTINATION lib )
+# #install( FILES ${CUDA_LIBRARIES} DESTINATION lib )
 
 
 ##-----------------------------------------------------------------------------

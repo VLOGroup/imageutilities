@@ -11,33 +11,33 @@
  *
  *
  * Project     : ImageUtilities
- * Module      : PGRIO Module
+ * Module      : PGRCAMERA Module
  * Class       : Wrapper
  * Language    : C
- * Description : Public interfaces to PGRIO module
+ * Description : Public interfaces to PGRCAMERA module
  *
  * Author     : Manuel Werlberger
  * EMail      : werlberger@icg.tugraz.at
  *
  */
 
-#ifndef IUPGRIO_MODULE_H
-#define IUPGRIO_MODULE_H
+#ifndef IUPGRCAMERA_MODULE_H
+#define IUPGRCAMERA_MODULE_H
 
 #include "iudefs.h"
 
 // :TODO: include namespace again if we have a cool idea how to create a public interface here
 //namespace iu {
 
-/** \defgroup PGRIO
+/** \defgroup PGRCAMERA
  *  \brief The pgrio module.
  *  TODO more detailed docu
  *  @{
  */
 #include "iuio/pgrcamera.h"
 
-/** @} */ // end of PGRIO
+/** @} */ // end of PGRCAMERA
 
 //} // namespace iu
 
-#endif // IUPGRIO_MODULE_H
+#endif // IUPGRCAMERA_MODULE_H
