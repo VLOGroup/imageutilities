@@ -19,7 +19,13 @@
 
 project(ImageUtilitiesTests CXX C)
 #set(CMAKE_BUILD_TYPE Debug)
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 2.8)
+
+FILE(TO_CMAKE_PATH "$ENV{CMAKE_MODULE_PATH}" OT_CMAKE_MODULE_PATH)
+FILE(TO_CMAKE_PATH "$ENV{ICG_CMAKE_MODULE_PATH}" OT_ICG_CMAKE_MODULE_PATH)
+SET(CMAKE_MODULE_PATH ${OT_CMAKE_MODULE_PATH} ${OT_ICG_CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/../cmake)
+
+message("CMAKE_MODULE_PATH = ${CMAKE_MODULE_PATH}")
 
 ##-----------------------------------------------------------------------------
 ## Compiler Flags
@@ -123,15 +129,24 @@ set(ALL_LIBRARIES
 
 message(STATUS "CMAKE_CURRENT_BINARY_DIR=${CMAKE_CURRENT_BINARY_DIR}")
 link_directories(
-    ${CMAKE_CURRENT_BINARY_DIR}
-    ${CMAKE_CURRENT_BINARY_DIR}/../release
-    ${CMAKE_CURRENT_BINARY_DIR}/../debug
-    )
+  ${CMAKE_CURRENT_BINARY_DIR}
+  ${CMAKE_CURRENT_BINARY_DIR}/../release
+  ${CMAKE_CURRENT_BINARY_DIR}/../debug
+  )
+
+## find iu and set the according libs
+find_package(ImageUtilities)
+if(IU_FOUND)
+  message("FLOWLIB2: Global installation of ImageUtilities found.")
+else(IU_FOUND)
+  message("FLOWLIB2: using local installation (svn version)")
+  include(${IU_USE_FILE})
+endif(IU_FOUND)
 
 # cuda_add_executable( iu_unittests iu_unittests.cpp )
 # TARGET_LINK_LIBRARIES(iu_unittests ${ALL_LIBRARIES} ${IU_LIBRARIES})
 
-set( IU_LIBRARIES optimized iucore debug iucored)
+# set( IU_LIBRARIES optimized iucore debug iucored)
 cuda_add_executable( iu_linearbuffer_unittest iu_linearbuffer_unittest.cpp )
 TARGET_LINK_LIBRARIES(iu_linearbuffer_unittest ${ALL_LIBRARIES} ${IU_LIBRARIES})
 
@@ -147,20 +162,21 @@ TARGET_LINK_LIBRARIES(iu_arithmetic_npp_unittest ${ALL_LIBRARIES} ${IU_LIBRARIES
 cuda_add_executable( iu_statistics_npp_unittest iu_statistics_npp_unittest.cpp )
 TARGET_LINK_LIBRARIES(iu_statistics_npp_unittest ${ALL_LIBRARIES} ${IU_LIBRARIES})
 
-set( IU_LIBRARIES 
-  optimized iucore debug iucored
-  optimized iuio debug iuiod 
-  optimized iugui debug iuguid
-  )
-cuda_add_executable( iu_imageio_unittest iu_imageio_unittest.cpp )
-TARGET_LINK_LIBRARIES(iu_imageio_unittest ${ALL_LIBRARIES} ${IU_LIBRARIES})
+## START FIXMEE
+# set( IU_LIBRARIES 
+#   optimized iucore debug iucored
+#   optimized iuio debug iuiod 
+#   optimized iugui debug iuguid
+#   )
+# cuda_add_executable( iu_imageio_unittest iu_imageio_unittest.cpp )
+# TARGET_LINK_LIBRARIES(iu_imageio_unittest ${ALL_LIBRARIES} ${IU_LIBRARIES})
 
-cuda_add_executable( iu_camera_unittest iu_camera_unittest.cpp )
-TARGET_LINK_LIBRARIES(iu_camera_unittest ${ALL_LIBRARIES} ${IU_LIBRARIES})
+# cuda_add_executable( iu_camera_unittest iu_camera_unittest.cpp )
+# TARGET_LINK_LIBRARIES(iu_camera_unittest ${ALL_LIBRARIES} ${IU_LIBRARIES})
 
-cuda_add_executable( iu_filter_unittest iu_filter_unittest.cpp )
-TARGET_LINK_LIBRARIES(iu_filter_unittest ${ALL_LIBRARIES} ${IU_LIBRARIES})
-
+# cuda_add_executable( iu_filter_unittest iu_filter_unittest.cpp )
+# TARGET_LINK_LIBRARIES(iu_filter_unittest ${ALL_LIBRARIES} ${IU_LIBRARIES})
+## END FIXME
 
 # cuda_add_executable( iu_math_arithmetic_unittest iu_math_arithmetic_unittest.cpp)
 # TARGET_LINK_LIBRARIES(iu_math_arithmetic_unittest ${ALL_LIBRARIES} ${IU_LIBRARIES})
