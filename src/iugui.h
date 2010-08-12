@@ -49,7 +49,7 @@
 
 // TODO how to define public interface for a whole class?
 // :TODO: #include "gui/ippwidget.h"
-#include "gui/nppglwidget.h"
+#include "iugui/nppglwidget.h"
 
 /** @} */ // end of Device (Npp) widgets
 

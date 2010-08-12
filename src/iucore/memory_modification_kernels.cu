@@ -25,7 +25,7 @@
 #define IUCORE_MEMORY_MODIFICATION_KERNELS_CU
 
 #include <cutil_math.h>
-#include <global/iutextures.cuh>
+#include "iutextures.cuh"
 
 namespace iuprivate {
 

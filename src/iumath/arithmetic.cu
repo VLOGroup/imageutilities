@@ -24,9 +24,9 @@
 #ifndef IUMATH_ARITHMETIC_CU
 #define IUMATH_ARITHMETIC_CU
 
-#include <global/iutextures.cuh>
-#include <global/cudadefs.h>
-#include <math/arithmetic.cuh>
+#include <iucore/iutextures.cuh>
+#include <iucore/cudadefs.h>
+#include "arithmetic.cuh"
 
 namespace iuprivate {
 

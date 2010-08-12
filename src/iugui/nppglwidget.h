@@ -25,9 +25,9 @@
 #define IU_NPPGLWIDGET_H
 
 #include <QObject>
-#include <global/globaldefs.h>
-#include <core/coredefs.h>
-#include <core/memorydefs.h>
+#include <iucore/globaldefs.h>
+#include <iucore/coredefs.h>
+#include <iucore/memorydefs.h>
 #include "nppglwidget_p.h" // TODO FIXMEEE I really want to remove this include but have the dependency due to inheritence.
 
 //// forward declarations

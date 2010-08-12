@@ -23,7 +23,7 @@
 
 #include <cv.h>
 #include <highgui.h>
-#include <core/copy.h>
+#include <iucore/copy.h>
 #include "imageio.h"
 
 

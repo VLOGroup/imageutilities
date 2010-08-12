@@ -25,7 +25,7 @@
 #ifndef IUCORE_IMAGE_H
 #define IUCORE_IMAGE_H
 
-#include <global/globaldefs.h>
+#include "globaldefs.h"
 #include "coredefs.h"
 
 namespace iu{

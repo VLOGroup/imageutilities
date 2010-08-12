@@ -23,7 +23,7 @@
 
 
 #include "iufilter.h"
-#include "filter/filter.h"
+#include "iufilter/filter.h"
 
 namespace iu {
 

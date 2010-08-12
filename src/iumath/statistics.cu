@@ -24,11 +24,11 @@
 #ifndef IUMATH_STATISTICS_CU
 #define IUMATH_STATISTICS_CU
 
-#include <core/copy.h>
-#include <core/memory_modification.h>
-#include <global/cudadefs.h>
-#include <global/iutextures.cuh>
-#include <math/statistics.cuh>
+#include <iucore/copy.h>
+#include <iucore/memory_modification.h>
+#include <iucore/cudadefs.h>
+#include <iucore/iutextures.cuh>
+#include "statistics.cuh"
 
 
 namespace iuprivate {

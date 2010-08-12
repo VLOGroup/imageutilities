@@ -36,8 +36,8 @@ class QLabel;
 class QLabel;
 class QSlider;
 
-#include <core/coredefs.h>
-#include <core/memorydefs.h>
+#include <iucore/coredefs.h>
+#include <iucore/memorydefs.h>
 
 //
 //  W A R N I N G

@@ -22,7 +22,7 @@
  */
 
 #include "iuio.h"
-#include "io/imageio.h"
+#include "iuio/imageio.h"
 
 namespace iu {
 

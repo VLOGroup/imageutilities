@@ -21,8 +21,8 @@
  *
  */
 
-#include <core/copy.h>
-#include <math/arithmetic.h>
+#include <iucore/copy.h>
+#include <iumath/arithmetic.h>
 #include "filter.h"
 #include "filter.cuh"
 

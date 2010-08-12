@@ -24,8 +24,8 @@
 #ifndef IUMATH_STATISTICS_CUH
 #define IUMATH_STATISTICS_CUH
 
-#include <core/coredefs.h>
-#include <core/memorydefs.h>
+#include <iucore/coredefs.h>
+#include <iucore/memorydefs.h>
 
 namespace iuprivate {
 

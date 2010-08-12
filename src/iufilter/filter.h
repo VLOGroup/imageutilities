@@ -24,8 +24,8 @@
 #ifndef IUPRIVATE_FILTER_H
 #define IUPRIVATE_FILTER_H
 
-#include "core/coredefs.h"
-#include "core/memorydefs.h"
+#include <iucore/coredefs.h>
+#include <iucore/memorydefs.h>
 
 namespace iuprivate {
 

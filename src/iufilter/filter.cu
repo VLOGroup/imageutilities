@@ -25,10 +25,10 @@
 #define IUPRIVATE_FILTER_CU
 
 #include <float.h>
-#include <global/cudadefs.h>
-#include <global/iutextures.cuh>
-#include <core/copy.h>
-#include <core/memory_modification.h>
+#include <iucore/cudadefs.h>
+#include <iucore/iutextures.cuh>
+#include <iucore/copy.h>
+#include <iucore/memory_modification.h>
 #include "filter.cuh"
 
 namespace iuprivate {

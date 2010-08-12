@@ -22,8 +22,8 @@
  */
 
 #include "iucore.h"
-#include "core/copy.h"
-#include "core/memory_modification.h"
+#include "iucore/copy.h"
+#include "iucore/memory_modification.h"
 
 namespace iu {
 

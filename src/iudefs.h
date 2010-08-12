@@ -25,8 +25,8 @@
 #define IU_DEFS_H
 
 // bringing all relevante define fiels together
-#include "global/globaldefs.h"
-#include "core/coredefs.h"
-#include "core/memorydefs.h"
+#include "iucore/globaldefs.h"
+#include "iucore/coredefs.h"
+#include "iucore/memorydefs.h"
 
 #endif // IU_DEFS_H

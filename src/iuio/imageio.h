@@ -25,8 +25,8 @@
 #ifndef IUIO_IMAGEIO_H
 #define IUIO_IMAGEIO_H
 
-#include <core/coredefs.h>
-#include <core/memorydefs.h>
+#include <iucore/coredefs.h>
+#include <iucore/memorydefs.h>
 #include <string>
 
 namespace iuprivate {

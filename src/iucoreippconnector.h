@@ -24,8 +24,8 @@
 #define IUCOREIPPCONNECTOR_H
 
 #include "iudefs.h"
-#include "connector/memorydefs_ipp.h"
-#include "connector/copy_ipp.h"
+#include "iuconnector/memorydefs_ipp.h"
+#include "iuconnector/copy_ipp.h"
 
 
 #endif // IUCOREIPPCONNECTOR_H

@@ -136,12 +136,12 @@ if(VMLIBRARIES_IU_USE_IO AND OpenCV_INCLUDE_DIRS)
 
   set( IU_IO_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/iuio.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/io/imageio.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iuio/imageio.h
     )
 
   set( IU_IO_SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/iuio.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/io/imageio.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/iuio/imageio.cpp
     )
 
 else()
@@ -174,17 +174,17 @@ if(VMLIBRARIES_IU_USE_GUI AND QT4_FOUND)
 
   set( IU_GUI_HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/iugui.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/gui/nppglwidget.cuh
+    ${CMAKE_CURRENT_SOURCE_DIR}/iugui/nppglwidget.cuh
     )
 
   set( IU_GUI_SOURCES
-    ${CMAKE_CURRENT_SOURCE_DIR}/gui/nppglwidget.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/gui/nppglwidget.cu
+    ${CMAKE_CURRENT_SOURCE_DIR}/iugui/nppglwidget.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/iugui/nppglwidget.cu
     )
 
   set( IU_GUI_MOC_HEADERS
-    ${CMAKE_CURRENT_SOURCE_DIR}/gui/nppglwidget_p.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/gui/nppglwidget.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/iugui/nppglwidget_p.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/iugui/nppglwidget.h
     )
 
   # compile moc headers
@@ -217,19 +217,19 @@ if(VMLIBRARIES_IU_USE_PGRIO AND QT4_FOUND AND FLYCAPTURE2_FOUND)
 
   set( IU_PGRIO_HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/iupgrio.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/io/pgrcameradata.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/io/pgrcameraimagegrabber.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/io/pgrcamerathreaddata.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrcameradata.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrcameraimagegrabber.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrcamerathreaddata.h
     )
 
   set( IU_PGRIO_SOURCES
-    ${CMAKE_CURRENT_SOURCE_DIR}/io/pgrcamera.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/io/pgrcameraimageconsumer.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrcamera.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrcameraimageconsumer.cpp
     )
 
   set( IU_PGRIO_MOC_HEADERS
-    ${CMAKE_CURRENT_SOURCE_DIR}/io/pgrcamera.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/io/pgrcameraimageconsumer.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrcamera.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrcameraimageconsumer.h
     )
 
   # compile moc headers
@@ -266,58 +266,54 @@ SET( IU_BASE_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/iucoreippconnector.h
   )
 
-SET( IU_GLOBAL_HEADERS
-  ${CMAKE_CURRENT_SOURCE_DIR}/global/globaldefs.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/global/cudadefs.h
-  )
-
 SET( IU_CORE_HEADERS
-  ${CMAKE_CURRENT_SOURCE_DIR}/core/coredefs.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/core/memorydefs.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/core/linearhostmemory.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/core/lineardevicememory.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/core/image.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/core/image_allocator_cpu.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/core/image_allocator_npp.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/core/image_cpu.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/core/image_npp.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/core/copy.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/core/memory_modification.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/globaldefs.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/cudadefs.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/coredefs.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/memorydefs.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/linearhostmemory.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/lineardevicememory.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/image.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/image_allocator_cpu.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/image_allocator_npp.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/image_cpu.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/image_npp.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/copy.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/memory_modification.h
   )
 
 SET( IU_MATH_HEADERS
-  ${CMAKE_CURRENT_SOURCE_DIR}/math/arithmetic.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/math/statistics.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iumath/arithmetic.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iumath/statistics.h
   )
 
 SET( IU_FILTER_HEADERS
-  ${CMAKE_CURRENT_SOURCE_DIR}/filter/filter.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iufilter/filter.h
   )
 
 SET( IU_TRANSFORM_HEADERS
-  ${CMAKE_CURRENT_SOURCE_DIR}/transform/resample.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/resample.h
 )
 
 
 SET( IU_CUDA_HEADERS
-  ${CMAKE_CURRENT_SOURCE_DIR}/global/iutextures.cuh
-  ${CMAKE_CURRENT_SOURCE_DIR}/core/memory_modification.cuh
-  ${CMAKE_CURRENT_SOURCE_DIR}/math/arithmetic.cuh
-  ${CMAKE_CURRENT_SOURCE_DIR}/math/statistics.cuh
-  ${CMAKE_CURRENT_SOURCE_DIR}/filter/filter.cuh
-  #${CMAKE_CURRENT_SOURCE_DIR}/transform/resample.cuh
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/iutextures.cuh
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/memory_modification.cuh
+  ${CMAKE_CURRENT_SOURCE_DIR}/iumath/arithmetic.cuh
+  ${CMAKE_CURRENT_SOURCE_DIR}/iumath/statistics.cuh
+  ${CMAKE_CURRENT_SOURCE_DIR}/iufilter/filter.cuh
+  #${CMAKE_CURRENT_SOURCE_DIR}/iutransform/resample.cuh
   )
 
 SET( IU_CONNECTOR_HEADERS
-  ${CMAKE_CURRENT_SOURCE_DIR}/connector/copy_ipp.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/connector/image_allocator_ipp.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/connector/image_ipp.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/connector/memorydefs_ipp.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iuconnector/copy_ipp.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iuconnector/image_allocator_ipp.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iuconnector/image_ipp.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iuconnector/memorydefs_ipp.h
   )
 
 SET( IU_HEADERS
   ${IU_BASE_HEADERS}
-  ${IU_GLOBAL_HEADERS}
   ${IU_CORE_HEADERS}
   ${IU_MATH_HEADERS}
   ${IU_FILTER_HEADERS}
@@ -331,20 +327,20 @@ SET( IU_HEADERS
 
 SET( IU_SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/core/memory_modification.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/core/memory_modification.cu
-  ${CMAKE_CURRENT_SOURCE_DIR}/core/memory_modification_kernels.cu
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/memory_modification.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/memory_modification.cu
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/memory_modification_kernels.cu
   ${CMAKE_CURRENT_SOURCE_DIR}/iumath.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/math/arithmetic.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/math/arithmetic.cu
-  ${CMAKE_CURRENT_SOURCE_DIR}/math/statistics.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/math/statistics.cu
+  ${CMAKE_CURRENT_SOURCE_DIR}/iumath/arithmetic.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/iumath/arithmetic.cu
+  ${CMAKE_CURRENT_SOURCE_DIR}/iumath/statistics.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/iumath/statistics.cu
   ${CMAKE_CURRENT_SOURCE_DIR}/iufilter.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/filter/filter.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/filter/filter.cu
-  #${CMAKE_CURRENT_SOURCE_DIR}/transform/transform.cpp
-  #${CMAKE_CURRENT_SOURCE_DIR}/transform/transform.cu
-  #${CMAKE_CURRENT_SOURCE_DIR}/transform/transform_kernels.cu
+  ${CMAKE_CURRENT_SOURCE_DIR}/iufilter/filter.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/iufilter/filter.cu
+  #${CMAKE_CURRENT_SOURCE_DIR}/iutransform/transform.cpp
+  #${CMAKE_CURRENT_SOURCE_DIR}/iutransform/transform.cu
+  #${CMAKE_CURRENT_SOURCE_DIR}/iutransform/transform_kernels.cu
   ${IU_GUI_SOURCES}
   ${IU_IO_SOURCES}
   ${IU_PGRIO_SOURCES}
@@ -352,7 +348,7 @@ SET( IU_SOURCES
 
 # denote kernel files as header only to not confuse the compiler
 set_source_files_properties(
-  ${CMAKE_CURRENT_SOURCE_DIR}/core/memory_modification_kernels.cu
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/memory_modification_kernels.cu
   PROPERTIES HEADER_FILE_ONLY yes
   )
 
@@ -414,7 +410,6 @@ install( TARGETS iu
   LIBRARY DESTINATION lib
 )
 install( FILES ${IU_BASE_HEADERS} DESTINATION include/iu )
-install( FILES ${IU_GLOBAL_HEADERS} DESTINATION include/iu/global )
 install( FILES ${IU_CORE_HEADERS} DESTINATION include/iu/core )
 install( FILES ${IU_MATH_HEADERS} DESTINATION include/iu/math )
 install( FILES ${IU_FILTER_HEADERS} DESTINATION include/iu/filter )

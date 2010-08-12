@@ -23,8 +23,8 @@
 
 
 #include "iumath.h"
-#include "math/arithmetic.h"
-#include "math/statistics.h"
+#include "iumath/arithmetic.h"
+#include "iumath/statistics.h"
 
 namespace iu {
 

@@ -25,8 +25,8 @@
 #define NPPGLWIDGET_CUH
 
 // includes, cuda
-#include "core/coredefs.h"
-#include "core/memorydefs.h"
+#include "iucore/coredefs.h"
+#include "iucore/memorydefs.h"
 
 
 namespace iuprivate

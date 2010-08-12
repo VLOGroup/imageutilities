@@ -24,8 +24,8 @@
 #ifndef IUMATH_ARITHMETIC_CUH
 #define IUMATH_ARITHMETIC_CUH
 
-#include <core/coredefs.h>
-#include <core/memorydefs.h>
+#include <iucore/coredefs.h>
+#include <iucore/memorydefs.h>
 
 namespace iuprivate {
 

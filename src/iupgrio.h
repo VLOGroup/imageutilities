@@ -34,7 +34,7 @@
  *  TODO more detailed docu
  *  @{
  */
-#include "io/pgrcamera.h"
+#include "iuio/pgrcamera.h"
 
 /** @} */ // end of PGRIO
 

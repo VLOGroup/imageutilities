@@ -26,7 +26,7 @@
 #define PGRCAMERA_H
 
 #include <QtCore>
-#include <global/globaldefs.h>
+#include <iucore/globaldefs.h>
 
 class PGRCameraData;
 class PGRCameraImageGrabber;
