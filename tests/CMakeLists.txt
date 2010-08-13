@@ -135,11 +135,12 @@ link_directories(
   )
 
 ## find iu and set the according libs
-find_package(ImageUtilities)
+find_package(ImageUtilities COMPONENTS iucore iugui iuio)
 if(IU_FOUND)
   message("FLOWLIB2: Global installation of ImageUtilities found.")
 else(IU_FOUND)
   message("FLOWLIB2: using local installation (svn version)")
+  message("IU_USE_FILE=${IU_USE_FILE}")
   include(${IU_USE_FILE})
 endif(IU_FOUND)
 
