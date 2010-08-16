@@ -32,11 +32,11 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 
-# testing:
-include(CTest)
-enable_testing()
+## testing:
+#include(CTest)
+#enable_testing()
 
 add_subdirectory(src)
-add_subdirectory(tests)
+#add_subdirectory(tests)
 
 add_custom_target(doc COMMAND cd ${CMAKE_SOURCE_DIR} && doxygen ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile)

@@ -34,7 +34,7 @@ SET(CMAKE_MODULE_PATH ${OT_CMAKE_MODULE_PATH} ${OT_ICG_CMAKE_MODULE_PATH} ${CMAK
 ##-----------------------------------------------------------------------------
 ## Current version number:
 ##-----------------------------------------------------------------------------
-set(IMAGEUTILITIES_VERSION "1.0.0")
+set(IMAGEUTILITIES_VERSION "1.1.0")
 
 string(REGEX MATCHALL "[0-9]" IMAGEUTILITIES_VERSION_PARTS "${IMAGEUTILITIES_VERSION}")
 
@@ -116,14 +116,9 @@ if(UNIX)
     set(NPP_LIBRARIES npp32 UtilNPP32)
   endif()
 else(UNIX)
-    set( NPP_LIBRARIES
-#    optimized libnpp-mt${NPP64}
-#    debug libnpp-mt-gd${NPP64}
+  set( NPP_LIBRARIES
     libnpp-mt${NPP64}
-#    optimized UtilNPP-mt${NPP64}
-#    debug UtilNPP-mt-gd${NPP64}
-#    UtilNPP-mt-gd${NPP64}
-  )
+    )
 endif(UNIX)
 
 ##-----------------------------------------------------------------------------
@@ -259,7 +254,7 @@ cuda_include_directories(
   )
 
 # SPLITTING ALL THE HEADERS FOR THE INSTALL DIRECTORY!
-SET( IU_BASE_HEADERS
+SET( IU_PUBLIC_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/iudefs.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iumath.h
@@ -267,9 +262,8 @@ SET( IU_BASE_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/iucoreippconnector.h
   )
 
-SET( IU_CORE_HEADERS
+SET( IU_PUBLIC_CORE_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/globaldefs.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/cudadefs.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/coredefs.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/memorydefs.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/linearhostmemory.h
@@ -279,12 +273,16 @@ SET( IU_CORE_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/image_allocator_npp.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/image_cpu.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/image_npp.h
+  )
+
+# all the additional headers follow here below (we split that two for better overview and the seperated libs)
+SET( IU_CORE_HEADERS
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/cudadefs.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/copy.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/memory_modification.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/memory_modification.cuh
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/iutextures.cuh
   )
-
 SET( IU_MATH_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/iumath/arithmetic.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iumath/arithmetic.cuh
@@ -311,7 +309,7 @@ SET( IU_CONNECTOR_HEADERS
   )
 
 SET( IU_HEADERS
-  ${IU_BASE_HEADERS}
+  ${IU_PUBLIC_HEADERS}
   ${IU_CORE_HEADERS}
   ${IU_MATH_HEADERS}
   ${IU_FILTER_HEADERS}
@@ -364,6 +362,8 @@ IF(NOT WIN32)
   SET(CMAKE_C_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_DEBUG} -fPIC"  )
 endif()
 
+set( IU_LIBS "") # variable where all libs that are built are saved
+
 ##-----------------------------------------------------------------------------
 ## build core library
 cuda_add_library( iucore SHARED ${IU_HEADERS} ${IU_SOURCES})
@@ -371,8 +371,10 @@ set_target_properties(iucore PROPERTIES
   DEFINE_SYMBOL IU_DLL_EXPORTS
   VERSION ${IMAGEUTILITIES_VERSION}
   SOVERSION ${IMAGEUTILITIES_SOVERSION}
+  PUBLIC_HEADER "${IU_PUBLIC_HEADERS}"
   )
 target_link_libraries( iucore ${NPP_LIBRARIES} ${CUDA_LIBRARIES} )
+set(IU_LIBS ${IU_LIBS} iucore)
 
 ##-----------------------------------------------------------------------------
 ## build gui library
@@ -387,6 +389,8 @@ if(VMLIBRARIES_IU_USE_GUI)
     ${NPP_LIBRARIES} ${CUDA_LIBRARIES} 
     ${QT_LIBRARIES}  ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES} 
     )
+  set(IU_LIBS ${IU_LIBS} iugui)
+
 endif(VMLIBRARIES_IU_USE_GUI)
 
 ##-----------------------------------------------------------------------------
@@ -402,22 +406,25 @@ if(VMLIBRARIES_IU_USE_IO)
     ${NPP_LIBRARIES} ${CUDA_LIBRARIES} 
     ${OpenCV_LIBS}
     )
+  set(IU_LIBS ${IU_LIBS} iuio)
 endif(VMLIBRARIES_IU_USE_IO)
 
 ##-----------------------------------------------------------------------------
 ## build pgrcamera library
 if(VMLIBRARIES_IU_USE_PGRCAMERA)
-cuda_add_library( iupgrcamera SHARED ${IU_IO_HEADERS} ${IU_IO_SOURCES} )
-set_target_properties(iupgrcamera PROPERTIES
-  DEFINE_SYMBOL IU_DLL_EXPORTS
-  VERSION ${IMAGEUTILITIES_VERSION}
-  SOVERSION ${IMAGEUTILITIES_SOVERSION}
-  )
-target_link_libraries( iupgrcamera
-  ${NPP_LIBRARIES} ${CUDA_LIBRARIES} 
-  ${QT_LIBRARIES}  ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES} 
-  ${FLYCAPTURE2_LIBRARIES}
-  )
+  cuda_add_library( iupgrcamera SHARED ${IU_IO_HEADERS} ${IU_IO_SOURCES} )
+  set_target_properties(iupgrcamera PROPERTIES
+    DEFINE_SYMBOL IU_DLL_EXPORTS
+    VERSION ${IMAGEUTILITIES_VERSION}
+    SOVERSION ${IMAGEUTILITIES_SOVERSION}
+    )
+  target_link_libraries( iupgrcamera
+    ${NPP_LIBRARIES} ${CUDA_LIBRARIES} 
+    ${QT_LIBRARIES}  ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES} 
+    ${FLYCAPTURE2_LIBRARIES}
+    )
+  set(IU_LIBS ${IU_LIBS} iupgrcamera)
+
 endif(VMLIBRARIES_IU_USE_PGRCAMERA)
 
 ##-----------------------------------------------------------------------------
@@ -456,32 +463,40 @@ if(VMLIBRARIES_IU_BUILD_COMBINED_LIBRARY)
       )
     TARGET_LINK_LIBRARIES(iu_static ${IU_ALL_STATIC_LIBS} )
   endif()
+  set(IU_LIBS ${IU_LIBS} iu)
 
 endif(VMLIBRARIES_IU_BUILD_COMBINED_LIBRARY)
 
-# ##-----------------------------------------------------------------------------
-# ## Install target -- TODO/FIXME
+##-----------------------------------------------------------------------------
+## Install target -- TODO/FIXME
 
-# # set CMAKE_INSTALL_PREFIX to set the install target
-# install( TARGETS iu
-#   RUNTIME DESTINATION bin
-#   ARCHIVE DESTINATION lib
-#   LIBRARY DESTINATION lib
-#   )
-# install( FILES ${IU_BASE_HEADERS} DESTINATION include/iu )
-# install( FILES ${IU_CORE_HEADERS} DESTINATION include/iu/core )
-# install( FILES ${IU_MATH_HEADERS} DESTINATION include/iu/math )
-# install( FILES ${IU_FILTER_HEADERS} DESTINATION include/iu/filter )
-# #install( FILES ${IU_TRANSFORM_HEADERS} DESTINATION include/iu/transform )
-# if(VMLIBRARIES_IU_USE_IO)
-#   install( FILES ${IU_IO_HEADERS} DESTINATION include/iu/io )
-# endif(VMLIBRARIES_IU_USE_IO)
-# if(VMLIBRARIES_IU_USE_GUI)
-#   install( FILES ${IU_GUI_HEADERS} DESTINATION include/iu/gui )
-# endif(VMLIBRARIES_IU_USE_GUI)
-# install( FILES ${IU_CONNECTOR_HEADERS} DESTINATION include/iu/connector )
-# #install( FILES ${NPP_LIBRARIES} DESTINATION lib )
-# #install( FILES ${CUDA_LIBRARIES} DESTINATION lib )
+## Two different types of installation supported:
+## *) local: for developement (e.g. svn checkout -- currently the default)
+## *) global: for usage only (care about mixing up the two -> the global one will be preffered!)
+
+OPTION(VMLIBRARIES_IU_INSTALL_LOCAL "Installation of the ImageUtilities binaries in the local vmlibraries tree." ON)
+
+if(VMLIBRARIES_IU_INSTALL_LOCAL )
+  if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+    set(CMAKE_INSTALL_PREFIX $ENV{VMLIBRARIES_ROOT} CACHE PATH "ImageUtilities install prefix" FORCE)
+  endif(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+else(VMLIBRARIES_IU_INSTALL_LOCAL)
+  set(CMAKE_INSTALL_PREFIX /usr/local CACHE PATH "ImageUtilities install prefix" FORCE)
+endif(VMLIBRARIES_IU_INSTALL_LOCAL )
+
+message(STATUS "CMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}")
+
+# install the libraries
+install( TARGETS ${IU_LIBS}
+  RUNTIME         DESTINATION   bin
+  ARCHIVE         DESTINATION   lib
+  LIBRARY         DESTINATION   lib
+  PUBLIC_HEADER   DESTINATION   include
+  )
+#install( TARGETS ${IU_LIBS} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
+install(FILES ${IU_PUBLIC_CORE_HEADERS} 
+  DESTINATION include/iucore
+  COMPONENT Headers)
 
 
 ##-----------------------------------------------------------------------------
@@ -494,9 +509,9 @@ SET(CPACK_PACKAGE_CONTACT "Manuel Werlberger <werlberger@icg.tugraz.at>")
 SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "Manuel Werlberger <werlberger@icg.tugraz.at>")
 # SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/ReadMe.txt")
 # SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/Copyright.txt")
-SET(CPACK_PACKAGE_VERSION_MAJOR "1")
-SET(CPACK_PACKAGE_VERSION_MINOR "1")
-SET(CPACK_PACKAGE_VERSION_PATCH "0")
+SET(CPACK_PACKAGE_VERSION_MAJOR "${IMAGEUTILITIES_VERSION_MAJOR}")
+SET(CPACK_PACKAGE_VERSION_MINOR "${IMAGEUTILITIES_VERSION_MINOR}")
+SET(CPACK_PACKAGE_VERSION_PATCH "${IMAGEUTILITIES_VERSION_PATH}")
 SET(CPACK_PACKAGE_INSTALL_DIRECTORY "ImageUtilities ${IMAGEUTILITIES_VERSION_MAJOR}.${IMAGEUTILITIES_VERSION_MINOR}")
 
 # IF(WIN32 AND NOT UNIX)

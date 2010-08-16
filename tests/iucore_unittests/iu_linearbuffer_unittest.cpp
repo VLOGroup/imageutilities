@@ -22,10 +22,7 @@
  */
 
 // system includes
-#include <QApplication>
 #include <iostream>
-#include <cv.h>
-#include <highgui.h>
 #include <cuda_runtime.h>
 #include <iucore.h>
 
@@ -33,21 +30,6 @@ using namespace iu;
 
 int main(int argc, char** argv)
 {
-#ifdef Q_WS_X11
-  bool useGUI = getenv("DISPLAY") != 0;
-#else
-  bool useGUI = true;
-#endif
-  QApplication app(argc, argv, useGUI);
-
-//  if (useGUI) {
-//    // start GUI version
-//        ...
-//     } else {
-//        // start non-GUI version
-//        ...
-//     }
-
   unsigned int length = 1e7;
 
   // create linar hostbuffer
