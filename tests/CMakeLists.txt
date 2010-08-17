@@ -36,5 +36,7 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 include(CTest)
 enable_testing()
 add_subdirectory(iucore_unittests)
-#add_subdirectory(iumath_unittests)
+add_subdirectory(iumath_unittests)
+#add_subdirectory(iugui_unittests)
+add_subdirectory(iuio_unittests)
 
