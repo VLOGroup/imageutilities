@@ -25,7 +25,7 @@
 #define IUCORE_IMAGE_IPP_H
 
 #include <ippdefs.h>
-#include <iu/core/image.h>
+#include <iucore/image.h>
 #include "image_allocator_ipp.h"
 
 namespace iu {

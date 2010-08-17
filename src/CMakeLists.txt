@@ -21,6 +21,10 @@ project(ImageUtilities CXX C)
 #set(CMAKE_BUILD_TYPE Debug)
 cmake_minimum_required(VERSION 2.8.0)
 
+# cleanup
+set(${IU_PUBLIC_HEADERS} "")
+
+# general settings
 set( CMAKE_DEBUG_POSTFIX "d" )
 set( NPP64 "" )
 if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
@@ -130,8 +134,12 @@ if(VMLIBRARIES_IU_USE_IO AND OpenCV_INCLUDE_DIRS)
   message("[+] ImageUtilities include IO module")
   include_directories(${OpenCV_INCLUDE_DIRS})
 
-  set( IU_IO_HEADERS
+  set( IU_PUBLIC_HEADERS
+    ${IU_PUBLIC_HEADERS}
     ${CMAKE_CURRENT_SOURCE_DIR}/iuio.h
+    )
+
+  set( IU_IO_HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/iuio/imageio.h
     )
 
@@ -168,8 +176,16 @@ if(VMLIBRARIES_IU_USE_GUI AND QT4_FOUND)
   include_directories(${OPENGL_INCLUDE_DIR})
 
 
-  set( IU_GUI_HEADERS
+  set( IU_PUBLIC_HEADERS
+    ${IU_PUBLIC_HEADERS}
     ${CMAKE_CURRENT_SOURCE_DIR}/iugui.h
+    )
+
+  install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/iugui/nppglwidget.h ${CMAKE_CURRENT_SOURCE_DIR}/iugui/nppglwidget_p.h
+    DESTINATION include/iugui
+    COMPONENT Headers)
+
+  set( IU_GUI_HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/iugui/nppglwidget.cuh
     )
 
@@ -194,7 +210,6 @@ else()
   set(QT_LIBRARIES "")
   set(OPENGL_LIBRARIES "")
   set(GLEW_LIBRARIES "")
-  set(OPENGL_LIBRARIES "")
 
 endif()
 
@@ -211,8 +226,16 @@ if(VMLIBRARIES_IU_USE_PGRCAMERA AND QT4_FOUND AND FLYCAPTURE2_FOUND)
   include_directories(${FLYCAPTURE2_INCLUDE_DIR})
   message("FLYCAPTURE_INCLUDE_DIR=${FLYCAPTURE2_INCLUDE_DIR}")
 
-  set( IU_PGRCAMERA_HEADERS
+  set( IU_PUBLIC_HEADERS
+    ${IU_PUBLIC_HEADERS}
     ${CMAKE_CURRENT_SOURCE_DIR}/iupgrcamera.h
+    )
+
+  install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrcamera.h
+    DESTINATION include/iugui
+    COMPONENT Headers)
+
+  set( IU_PGRCAMERA_HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrcameradata.h
     ${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrcameraimagegrabber.h
     ${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrcamerathreaddata.h
@@ -255,6 +278,7 @@ cuda_include_directories(
 
 # SPLITTING ALL THE HEADERS FOR THE INSTALL DIRECTORY!
 SET( IU_PUBLIC_HEADERS
+  ${IU_PUBLIC_HEADERS}
   ${CMAKE_CURRENT_SOURCE_DIR}/iudefs.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iumath.h
@@ -497,6 +521,10 @@ install( TARGETS ${IU_LIBS}
 install(FILES ${IU_PUBLIC_CORE_HEADERS} 
   DESTINATION include/iucore
   COMPONENT Headers)
+install(FILES ${IU_CONNECTOR_HEADERS} 
+  DESTINATION include/iuconnector
+  COMPONENT Headers)
+
 
 
 ##-----------------------------------------------------------------------------

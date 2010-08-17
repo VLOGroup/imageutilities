@@ -33,8 +33,8 @@
 // version without notice, or even be removed.
 //
 
-#include <iu/core/coredefs.h>
-#include <iu/core/memorydefs.h>
+#include <iucore/coredefs.h>
+#include <iucore/memorydefs.h>
 #include "memorydefs_ipp.h"
 
 namespace iu {

@@ -26,7 +26,7 @@
 
 #include <assert.h>
 #include <ippi.h>
-#include <iu/core/coredefs.h>
+#include <iucore/coredefs.h>
 
 
 namespace iuprivate {
