@@ -51,42 +51,6 @@ IF(WIN32)
   SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /NODEFAULTLIB:LIBCMT.lib")
 endif(WIN32)
 
-# ##-----------------------------------------------------------------------------
-# ## CUDA
-# find_package(CUDA)
-# find_package(CUDA_SDK)
-# cuda_include_directories(${CUDA_INCLUDE_DIRS} ${CUDA_CUT_INCLUDE_DIR})
-# include_directories(${CUDA_INCLUDE_DIRS} ${CUDA_CUT_INCLUDE_DIR})
-
-# ##-----------------------------------------------------------------------------
-# ## NPP
-# SET(NPPDIR $ENV{NPPROOT} CACHE PATH "Choose right basepath for NPP")
-# #SET(NPPDIR "/usr/local/cuda/NVIDIA_NPP" CACHE PATH "Choose right basepath for NPP")
-# message(STATUS "NPPDIR=${NPPDIR}")
-# cuda_include_directories("${NPPDIR}/common/npp/include")
-# include_directories("${NPPDIR}/common/npp/include")
-
-# link_directories("${NPPDIR}/common/lib")
-# if(UNIX)
-#   set(NPP_LIBRARIES npp64 UtilNPP64)
-# else(UNIX)
-#     set( NPP_LIBRARIES libnpp-mt${NPP64} )
-# endif(UNIX)
-
-
-# ##-----------------------------------------------------------------------------
-# include_directories(
-#   ${CMAKE_CURRENT_SOURCE_DIR}
-#   ${CMAKE_CURRENT_SOURCE_DIR}/../
-#   ${CMAKE_CURRENT_SOURCE_DIR}/../src/
-#   )
-
-# cuda_include_directories(
-#   ${CMAKE_CURRENT_SOURCE_DIR}
-#   ${CMAKE_CURRENT_SOURCE_DIR}/../
-#   ${CMAKE_CURRENT_SOURCE_DIR}/../src/
-#   )
-
 ## find iu and set the according libs
 find_package(ImageUtilities)
 include(${IU_USE_FILE})
@@ -102,56 +66,12 @@ TARGET_LINK_LIBRARIES(iu_image_cpu_unittest ${IU_LIBRARIES})
 cuda_add_executable( iu_image_npp_unittest iu_image_npp_unittest.cpp )
 TARGET_LINK_LIBRARIES(iu_image_npp_unittest ${IU_LIBRARIES})
 
-# cuda_add_executable( iu_arithmetic_npp_unittest iu_arithmetic_npp_unittest.cpp )
-# TARGET_LINK_LIBRARIES(iu_arithmetic_npp_unittest ${ALL_LIBRARIES} ${IU_LIBRARIES})
-
-# cuda_add_executable( iu_statistics_npp_unittest iu_statistics_npp_unittest.cpp )
-# TARGET_LINK_LIBRARIES(iu_statistics_npp_unittest ${ALL_LIBRARIES} ${IU_LIBRARIES})
-
-## START FIXMEE
-# set( IU_LIBRARIES 
-#   optimized iucore debug iucored
-#   optimized iuio debug iuiod 
-#   optimized iugui debug iuguid
-#   )
-# cuda_add_executable( iu_imageio_unittest iu_imageio_unittest.cpp )
-# TARGET_LINK_LIBRARIES(iu_imageio_unittest ${ALL_LIBRARIES} ${IU_LIBRARIES})
-
-# cuda_add_executable( iu_camera_unittest iu_camera_unittest.cpp )
-# TARGET_LINK_LIBRARIES(iu_camera_unittest ${ALL_LIBRARIES} ${IU_LIBRARIES})
-
-# cuda_add_executable( iu_filter_unittest iu_filter_unittest.cpp )
-# TARGET_LINK_LIBRARIES(iu_filter_unittest ${ALL_LIBRARIES} ${IU_LIBRARIES})
-## END FIXME
-
-# cuda_add_executable( iu_math_arithmetic_unittest iu_math_arithmetic_unittest.cpp)
-# TARGET_LINK_LIBRARIES(iu_math_arithmetic_unittest ${ALL_LIBRARIES} ${IU_LIBRARIES})
-
-# cuda_add_executable( iu_nppwidget_unittest iu_nppwidget_unittest.cpp )
-# TARGET_LINK_LIBRARIES(iu_nppwidget_unittest ${ALL_LIBRARIES} ${IU_LIBRARIES})
-
-# # build everyting again using the static lib from iu
-# cuda_add_executable( iu_static_unittests iu_unittests.cpp )
-# TARGET_LINK_LIBRARIES(iu_static_unittests ${ALL_LIBRARIES} ${IU_STATIC_LIBRARIES})
-
-# cuda_add_executable( iu_static_linearbuffer_unittest iu_linearbuffer_unittest.cpp )
-# TARGET_LINK_LIBRARIES(iu_static_linearbuffer_unittest ${ALL_LIBRARIES} ${IU_STATIC_LIBRARIES})
-
-# cuda_add_executable( iu_static_math_arithmetic_unittest iu_math_arithmetic_unittest.cpp)
-# TARGET_LINK_LIBRARIES(iu_static_math_arithmetic_unittest ${ALL_LIBRARIES} ${IU_STATIC_LIBRARIES})
-
-# cuda_add_executable( iu_static_nppwidget_unittest iu_nppwidget_unittest.cpp )
-# TARGET_LINK_LIBRARIES(iu_static_nppwidget_unittest ${ALL_LIBRARIES} ${IU_STATIC_LIBRARIES})
-
-# cuda_add_executable( iu_static_imageio_unittest iu_imageio_unittest.cpp )
-# TARGET_LINK_LIBRARIES(iu_static_imageio_unittest ${ALL_LIBRARIES} ${IU_STATIC_LIBRARIES})
-
-# cuda_add_executable( iu_static_filter_unittest iu_filter_unittest.cpp )
-# TARGET_LINK_LIBRARIES(iu_static_filter_unittest ${ALL_LIBRARIES} ${IU_STATIC_LIBRARIES})
+# install targets
+set(IU_UNITTEST_TARGETS iu_linearbuffer_unittest iu_image_cpu_unittest iu_image_npp_unittest)
+message(STATUS "install targets=${IU_UNITTEST_TARGETS}")
+install(TARGETS ${IU_UNITTEST_TARGETS} RUNTIME DESTINATION bin)
 
 # run tests:
 add_test(iu_linearbuffer_unittest iu_linearbuffer_unittest)
 add_test(iu_image_cpu_unittest iu_image_cpu_unittest)
 add_test(iu_image_npp_unittest iu_image_npp_unittest)
-# add_test(iu_arithmetic_npp_unittest iu_arithmetic_npp_unittest)
-# add_test(iu_statistics_npp_unittest iu_statistics_npp_unittest)

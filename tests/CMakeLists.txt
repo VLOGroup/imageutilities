@@ -28,9 +28,14 @@ FILE(TO_CMAKE_PATH "$ENV{CMAKE_MODULE_PATH}" OT_CMAKE_MODULE_PATH)
 FILE(TO_CMAKE_PATH "$ENV{ICG_CMAKE_MODULE_PATH}" OT_ICG_CMAKE_MODULE_PATH)
 SET(CMAKE_MODULE_PATH ${OT_CMAKE_MODULE_PATH} ${OT_ICG_CMAKE_MODULE_PATH} ${CMAKE_SOURCE_CURRENT_DIR}/../../cmake)
 
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+OPTION(VMLIBRARIES_IU_UNITTESTS_INSTALL_LOCAL "Installation of the ImageUtilities unittest binaries in the local vmlibraries tree." ON)
+if(VMLIBRARIES_IU_UNITTESTS_INSTALL_LOCAL )
+  if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+    set(CMAKE_INSTALL_PREFIX $ENV{VMLIBRARIES_ROOT} CACHE PATH "ImageUtilities unittest install prefix" FORCE)
+  endif(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+else(VMLIBRARIES_IU_UNITTESTS_INSTALL_LOCAL)
+  set(CMAKE_INSTALL_PREFIX /usr/local CACHE PATH "ImageUtilities unittest install prefix" FORCE)
+endif(VMLIBRARIES_IU_UNITTESTS_INSTALL_LOCAL )
 
 ## combine different tests:
 include(CTest)
@@ -40,3 +45,8 @@ add_subdirectory(iumath_unittests)
 #add_subdirectory(iugui_unittests)
 add_subdirectory(iuio_unittests)
 
+## install the tests into the bin directory if you want to
+
+## Two different types of installation supported:
+## *) local: for developement (e.g. svn checkout -- currently the default)
+## *) global: for usage only (care about mixing up the two -> the global one will be preffered!)

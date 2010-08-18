@@ -182,7 +182,7 @@ if(VMLIBRARIES_IU_USE_GUI AND QT4_FOUND)
     )
 
   install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/iugui/nppglwidget.h ${CMAKE_CURRENT_SOURCE_DIR}/iugui/nppglwidget_p.h
-    DESTINATION include/iugui
+    DESTINATION include/iu/iugui
     COMPONENT Headers)
 
   set( IU_GUI_HEADERS
@@ -232,7 +232,7 @@ if(VMLIBRARIES_IU_USE_PGRCAMERA AND QT4_FOUND AND FLYCAPTURE2_FOUND)
     )
 
   install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrcamera.h
-    DESTINATION include/iugui
+    DESTINATION include/iu/iugui
     COMPONENT Headers)
 
   set( IU_PGRCAMERA_HEADERS
@@ -492,7 +492,7 @@ if(VMLIBRARIES_IU_BUILD_COMBINED_LIBRARY)
 endif(VMLIBRARIES_IU_BUILD_COMBINED_LIBRARY)
 
 ##-----------------------------------------------------------------------------
-## Install target -- TODO/FIXME
+## Install target
 
 ## Two different types of installation supported:
 ## *) local: for developement (e.g. svn checkout -- currently the default)
@@ -508,21 +508,19 @@ else(VMLIBRARIES_IU_INSTALL_LOCAL)
   set(CMAKE_INSTALL_PREFIX /usr/local CACHE PATH "ImageUtilities install prefix" FORCE)
 endif(VMLIBRARIES_IU_INSTALL_LOCAL )
 
-message(STATUS "CMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}")
-
 # install the libraries
 install( TARGETS ${IU_LIBS}
   RUNTIME         DESTINATION   bin
   ARCHIVE         DESTINATION   lib
   LIBRARY         DESTINATION   lib
-  PUBLIC_HEADER   DESTINATION   include
+  PUBLIC_HEADER   DESTINATION   include/iu
   )
 #install( TARGETS ${IU_LIBS} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
 install(FILES ${IU_PUBLIC_CORE_HEADERS} 
-  DESTINATION include/iucore
+  DESTINATION include/iu/iucore
   COMPONENT Headers)
 install(FILES ${IU_CONNECTOR_HEADERS} 
-  DESTINATION include/iuconnector
+  DESTINATION include/iu/iuconnector
   COMPONENT Headers)
 
 

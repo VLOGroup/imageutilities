@@ -99,6 +99,11 @@ TARGET_LINK_LIBRARIES(iu_arithmetic_npp_unittest ${IU_LIBRARIES})
 cuda_add_executable( iu_statistics_npp_unittest iu_statistics_npp_unittest.cpp )
 TARGET_LINK_LIBRARIES(iu_statistics_npp_unittest ${IU_LIBRARIES})
 
+# install targets
+set(IU_UNITTEST_TARGETS iu_arithmetic_npp_unittest iu_statistics_npp_unittest)
+message(STATUS "install targets=${IU_UNITTEST_TARGETS}")
+install(TARGETS ${IU_UNITTEST_TARGETS} RUNTIME DESTINATION bin)
+
 # run tests:
 add_test(iu_statistics_npp_unittest iu_statistics_npp_unittest)
 add_test(iu_statistics_npp_unittest iu_statistics_npp_unittest)
