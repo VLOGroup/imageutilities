@@ -52,7 +52,7 @@ IF(WIN32)
 endif(WIN32)
 
 ## find iu and set the according libs
-find_package(ImageUtilities)
+find_package(ImageUtilities REQUIRED)
 include(${IU_USE_FILE})
 
 message("IU_LIBRARIES=${IU_LIBRARIES}")
