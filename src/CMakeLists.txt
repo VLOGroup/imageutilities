@@ -232,7 +232,7 @@ if(VMLIBRARIES_IU_USE_PGRCAMERA AND QT4_FOUND AND FLYCAPTURE2_FOUND)
     )
 
   install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrcamera.h
-    DESTINATION include/iu/iugui
+    DESTINATION include/iu/iuio
     COMPONENT Headers)
 
   set( IU_PGRCAMERA_HEADERS
@@ -436,7 +436,7 @@ endif(VMLIBRARIES_IU_USE_IO)
 ##-----------------------------------------------------------------------------
 ## build pgrcamera library
 if(VMLIBRARIES_IU_USE_PGRCAMERA)
-  cuda_add_library( iupgrcamera SHARED ${IU_IO_HEADERS} ${IU_IO_SOURCES} )
+  cuda_add_library( iupgrcamera SHARED ${IU_PGRCAMERA_HEADERS} ${IU_PGRCAMERA_SOURCES} ${IU_PGRCAMERA_MOC_SOURCES})
   set_target_properties(iupgrcamera PROPERTIES
     DEFINE_SYMBOL IU_DLL_EXPORTS
     VERSION ${IMAGEUTILITIES_VERSION}
