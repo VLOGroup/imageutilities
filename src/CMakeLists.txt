@@ -88,42 +88,18 @@ IF(WIN32)
 endif(WIN32)
 
 ##-----------------------------------------------------------------------------
-## CUDA
-if(NOT CUDA_BUILD_EMULATION)
-  set(CUDA_BUILD_EMULATION OFF CACHE BOOL "disable emulation mode")
-  #set(CUDA_BUILD_EMULATION ON CACHE BOOL "enable emulation mode")
-endif()
-find_package(CUDA REQUIRED COMPONENTS sdk)
-if(NOT CUDA_CUT_INCLUDE_DIR)
-  find_package(CUDASDK REQUIRED)
-endif()
-set(CUDA_BUILD_CUBIN OFF)
-# set(CUDA_PROPAGATE_HOST_FLAGS OFF)
-# set(CUDA_NVCC_FLAGS_DEBUG)
-# set(CUDA_NVCC_FLAGS -arch sm_13)#-g;-G)
+# CUDA
+find_package(CUDA 3.1 REQUIRED)
+find_package(CUDASDK REQUIRED)
 cuda_include_directories(${CUDA_INCLUDE_DIRS} ${CUDA_CUT_INCLUDE_DIR})
 include_directories(${CUDA_INCLUDE_DIRS} ${CUDA_CUT_INCLUDE_DIR})
+set(IU_IUCORE_LIB_DEPENDENCIES ${IU_IUCORE_LIB_DEPENDENCIES} ${CUDA_LIBRARIES})
 
 ##-----------------------------------------------------------------------------
-## NPP
-SET(NPPDIR $ENV{NPPROOT} CACHE PATH "Choose right basepath for NPP")
-message( STATUS "Using NPP ${NPPDIR}" )
-#SET(NPPDIR "/usr/local/cuda/NVIDIA_NPP" CACHE PATH "Choose right basepath for NPP")
-cuda_include_directories("${NPPDIR}/common/npp/include")
-include_directories("${NPPDIR}/common/npp/include")
-
-link_directories("${NPPDIR}/common/lib")
-if(UNIX)
-  if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
-    set(NPP_LIBRARIES npp64 UtilNPP64)
-  else()
-    set(NPP_LIBRARIES npp32 UtilNPP32)
-  endif()
-else(UNIX)
-  set( NPP_LIBRARIES
-    libnpp-mt${NPP64}
-    )
-endif(UNIX)
+# NPP
+find_package(NPP REQUIRED)
+cuda_include_directories(${NPP_INCLUDE_DIRS})
+include_directories(${NPP_INCLUDE_DIRS})
 
 ##-----------------------------------------------------------------------------
 ## IO MODULE: OpenCV for Image I/O
