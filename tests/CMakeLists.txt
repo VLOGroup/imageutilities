@@ -17,7 +17,7 @@
 # Author     : Manuel Werlberger
 # EMail      : werlberger@icg.tugraz.at
 
-PROJECT(ImageUtilities CXX C)
+PROJECT(ImageUtilities_Tests CXX C)
 
 cmake_minimum_required(VERSION 2.8.0)
 if(COMMAND cmake_policy)
