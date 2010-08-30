@@ -57,6 +57,18 @@ int main(int argc, char** argv)
 
   // test image size
   IuSize sz(79,63);
+  IuSize sz2(120,1);
+  bool check_size = sz == sz2;
+  if(check_size)
+    std::cout << "sz and sz2 are equal" << std::endl;
+  else
+    std::cout << "sz and sz2 are different" << std::endl;
+  sz2 = sz;
+  check_size = sz == sz2;
+  if(check_size)
+    std::cout << "sz and sz2 are equal" << std::endl;
+  else
+    std::cout << "sz and sz2 are different" << std::endl;
 
   iu::ImageNpp_8u_C1 im_npp_8u_C1(sz);
   iu::ImageNpp_8u_C2 im_npp_8u_C2(sz);
