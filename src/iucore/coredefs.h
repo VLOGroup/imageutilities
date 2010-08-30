@@ -98,18 +98,18 @@ struct IuSize
     NppiSize sz = {this->width, this->height};
     return sz;
   }
-
 };
 
-//bool operator==(const IuSize& lhs, const IuSize& rhs)
-//{
-//  return ((lhs.width == rhs.width) && (lhs.height == rhs.height));
-//}
-//
-//bool operator!=(const IuSize& lhs, const IuSize& rhs)
-//{
-//  return ((lhs.width != rhs.width) || (lhs.height != rhs.height));
-//}
+inline bool operator==(const IuSize& lhs, const IuSize& rhs)
+{
+  return ((lhs.width == rhs.width) && (lhs.height == rhs.height));
+}
+
+inline bool operator!=(const IuSize& lhs, const IuSize& rhs)
+{
+  return ((lhs.width != rhs.width) || (lhs.height != rhs.height));
+}
+
 
 /** 2D Rectangle
  * This struct contains cordinates of upper left corner and its size in pixels.
@@ -167,16 +167,16 @@ struct IuRect
 
 };
 
-//bool operator==(const IuRect& a, const IuRect& b)
-//{
-//  return ((a.x == b.x) && (a.y == b.y) &&
-//          (a.width == b.width) && (a.height == b.height));
-//}
-//
-//bool operator!=(const IuRect& a, const IuRect& b)
-//{
-//  return ((a.x != b.x) || (a.y != b.y) ||
-//          (a.width != b.width) || (a.height != b.height));
-//}
+inline bool operator==(const IuRect& a, const IuRect& b)
+{
+  return ((a.x == b.x) && (a.y == b.y) &&
+          (a.width == b.width) && (a.height == b.height));
+}
+
+inline bool operator!=(const IuRect& a, const IuRect& b)
+{
+  return ((a.x != b.x) || (a.y != b.y) ||
+          (a.width != b.width) || (a.height != b.height));
+}
 
 #endif // IU_COREDEFS_H
