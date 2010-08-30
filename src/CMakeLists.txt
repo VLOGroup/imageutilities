@@ -273,6 +273,7 @@ SET( IU_PUBLIC_CORE_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/image_allocator_npp.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/image_cpu.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/image_npp.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../common/include/derivatives.h
   )
 
 # all the additional headers follow here below (we split that two for better overview and the seperated libs)
