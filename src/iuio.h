@@ -53,7 +53,6 @@ IU_DLLAPI iu::ImageNpp_32f_C1* imread_cu32f_C1(const std::string& filename);
  * @returns Saved status.
  */
 IU_DLLAPI bool imsave(iu::ImageCpu_32f_C1* image, const std::string& filename);
-//IU_DLLAPI bool imsave(iu::ImageCpu_32f_C4* image, const std::string& filename);
 
 /** Saves a device image to a file.
  * @param image Pointer to device image (gpu) that should be written to disk.
@@ -61,7 +60,18 @@ IU_DLLAPI bool imsave(iu::ImageCpu_32f_C1* image, const std::string& filename);
  * @returns Saved status.
  */
 IU_DLLAPI bool imsave(iu::ImageNpp_32f_C1* image, const std::string& filename);
-//IU_DLLAPI bool imsave(iu::ImageNpp_32f_C4* image, const std::string& filename);
+
+/** Shows the host image in a window using OpenCVs imshow
+ * @param image Pointer to host image (cpu) that should be shown.
+ * @param winname Name of the window.
+ */
+IU_DLLAPI void imshow(iu::ImageCpu_32f_C1* image, const std::string& winname);
+
+/** Shows the device image in a host window using OpenCVs imshow
+ * @param image Pointer to device image (gpu) that should be shown.
+ * @param winname Name of the window.
+ */
+IU_DLLAPI void imshow(iu::ImageNpp_32f_C1* image, const std::string& winname);
 
 
 /** @} */ // end of IO

@@ -25,16 +25,9 @@
 #include <iostream>
 #include <cuda_runtime.h>
 
-#include <QApplication>
-#include <QTime>
-#include <QImage>
 
-//#define PERFORMANCE_TEST
-
-#ifdef PERFORMANCE_TEST
-#include <cv.h>
+//#include <cv.h>
 #include <highgui.h>
-#endif
 
 #include <iucore.h>
 #include <iuio.h>
@@ -44,15 +37,6 @@ using namespace iu;
 
 int main(int argc, char** argv)
 {
-#ifdef Q_WS_X11
-  bool use_gui = getenv("DISPLAY") != 0;
-#else
-  bool use_gui= true;
-#endif
-  assert(use_gui == true);
-
-  QApplication app(argc, argv, use_gui);
-
   if(argc < 2)
   {
     std::cout << "You have to provide at least a filename for reading an image." << std::endl;
@@ -61,67 +45,28 @@ int main(int argc, char** argv)
 
   const std::string filename = argv[1];
 
-#ifdef PERFORMANCE_TEST
-  QTime t;
-  t.start();
-  qDebug("Time measurements ... \n");
-  for(int i = 0; i < 10; ++i)
-  {
-    ImageReader filereader(filename);
-    QImage image = filereader.read();
-  }
-  qDebug("Time to read image (ImageReader): %d ms\n", t.elapsed()/10);
-
-  // OpenCV comparison
-  t.restart();
-  for(int i = 0; i < 10; ++i)
-  {
-    QImage image;
-    image.load(filename);
-  }
-  qDebug("Time to read image (QImage): %d ms\n", t.elapsed()/10);
-
-
-  // OpenCV comparison
-  t.restart();
-  for(int i = 0; i < 10; ++i)
-  {
-    cv::Mat im1 = cv::imread(qPrintable(filename), 0);
-  }
-  qDebug("Time to read image (OpenCV): %d ms\n", t.elapsed()/10);
-
-  // OpenCV comparison
-  t.restart();
-  for(int i = 0; i < 10; ++i)
-  {
-    IplImage* image = cvLoadImage(qPrintable(filename));
-//    delete(image);
-  }
-  qDebug("Time to read image (OpenCV/Ipl): %d ms\n", t.elapsed()/10);
-#endif
-
   iu::ImageCpu_32f_C1* im = iu::imread_32f_C1(filename);
   iu::ImageNpp_32f_C1* cuim = iu::imread_cu32f_C1(filename);
   iu::ImageNpp_32f_C1 d_cp_im(im->size());
   iu::copy(im, &d_cp_im);
-  iu::NppGLWidget cpu_widget(0, &d_cp_im, false, false);
-  cpu_widget.setWindowTitle("cpu (copied to gpu for display)");
-  cpu_widget.show();
-  iu::NppGLWidget widget(0, cuim, false, false);
-  widget.setWindowTitle("gpu");
-  widget.show();
+
+  iu::imshow(im, "host image");
+  iu::imshow(cuim, "device image");
+  iu::imshow(&d_cp_im, "copied to device");
 
   std::cout << std::endl;
   std::cout << "**************************************************************************" << std::endl;
-  std::cout << "*  Everything seem to be ok. -- All assertions passed.                   *" << std::endl;
-  std::cout << "*  Look at the images and close the windows to derminate the unittests.  *" << std::endl;
+//  std::cout << "*  Everything seem to be ok. -- All assertions passed.                   *" << std::endl;
+  std::cout << "*  Look at the images and press a key to close the windows and derminate the unittests.  *" << std::endl;
   std::cout << "**************************************************************************" << std::endl;
   std::cout << std::endl;
 
-  int retval = app.exec();
+  cv::waitKey();
+
   // CLEANUP
+  delete(im);
+  delete(cuim);
 
-
-  return retval;
+  return EXIT_SUCCESS;
 
 }

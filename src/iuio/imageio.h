@@ -37,6 +37,9 @@ iu::ImageNpp_32f_C1* imread_cu32f_C1(const std::string& filename);
 bool imsave(iu::ImageCpu_32f_C1* image, const std::string& filename);
 bool imsave(iu::ImageNpp_32f_C1* image, const std::string& filename);
 
+void imshow(iu::ImageCpu_32f_C1* image, const std::string& winname);
+void imshow(iu::ImageNpp_32f_C1* image, const std::string& winname);
+
 } // namespace iuprivate
 
 

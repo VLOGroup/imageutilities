@@ -29,6 +29,12 @@
 
 namespace iuprivate {
 
+/* ****************************************************************************
+
+   imread
+
+ */
+
 //-----------------------------------------------------------------------------
 iu::ImageCpu_32f_C1* imread_32f_C1(const std::string& filename)
 {
@@ -52,6 +58,12 @@ iu::ImageNpp_32f_C1* imread_cu32f_C1(const std::string& filename)
   return cu_im;
 }
 
+/* ****************************************************************************
+
+   imsave
+
+ */
+
 //-----------------------------------------------------------------------------
 bool imsave(iu::ImageCpu_32f_C1* image, const std::string& filename)
 {
@@ -68,6 +80,28 @@ bool imsave(iu::ImageNpp_32f_C1* image, const std::string& filename)
   iu::ImageCpu_32f_C1 cpu_image(image->size());
   iuprivate::copy(image, &cpu_image);
   return iuprivate::imsave(&cpu_image, filename);
+}
+
+/* ****************************************************************************
+
+   imshow
+
+ */
+
+//-----------------------------------------------------------------------------
+void imshow(iu::ImageCpu_32f_C1* image, const std::string& winname)
+{
+  IuSize sz = image->size();
+  cv::Mat mat_32f(sz.height, sz.width, CV_32FC1, image->data(), image->pitch());
+  cv::imshow(winname, mat_32f);
+}
+
+//-----------------------------------------------------------------------------
+void imshow(iu::ImageNpp_32f_C1* image, const std::string& winname)
+{
+  iu::ImageCpu_32f_C1 cpu_image(image->size());
+  iuprivate::copy(image, &cpu_image);
+  iuprivate::imshow(&cpu_image, winname);
 }
 
 
