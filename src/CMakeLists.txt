@@ -64,6 +64,7 @@ endif()
 ## (the core module is always included!)
 OPTION(VMLIBRARIES_IU_USE_GUI "Including GUI module." ON)
 OPTION(VMLIBRARIES_IU_USE_IO "Including IO module." ON)
+OPTION(VMLIBRARIES_IU_USE_VIDEOCAPTURE "Including VideCapture IO module." ON)
 OPTION(VMLIBRARIES_IU_USE_PGRCAMERA "Including PointGray IO module." ON)
 OPTION(VMLIBRARIES_IU_BUILD_COMBINED_LIBRARY "Building a complete library package. This is just for compatibility reasons." OFF)
 
@@ -189,6 +190,50 @@ else()
 
 endif()
 
+
+
+##-----------------------------------------------------------------------------
+## CAMERA/Video IO MODULE: OpenCV IO with Qt threading
+# NOTE: we need qt4 for that (threading, ...)
+# only include if all dependencies were found
+if(VMLIBRARIES_IU_USE_VIDEOCAPTURE AND QT4_FOUND AND OpenCV_INCLUDE_DIRS)
+
+  message("[+] ImageUtilities include video/camera module (OpenCV/Qt needed)")
+  include(${QT_USE_FILE})
+
+  set( IU_PUBLIC_HEADERS
+    ${IU_PUBLIC_HEADERS}
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuvideocapture.h
+
+    )
+
+  set( IU_VIDEOCAPTURE_HEADERS
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videocapturethread.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videocapture.h
+    )
+
+  set( IU_VIDEOCAPTURE_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuvideocapture.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videocapturethread.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videocapture.cpp
+    )
+
+  set( IU_VIDEOCAPTURE_MOC_HEADERS
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videocapturethread.h
+#    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videocapture.h
+    )
+
+  # compile moc headers
+  QT4_WRAP_CPP (IU_VIDEOCAPTURE_MOC_SOURCES ${IU_VIDEOCAPTURE_MOC_HEADERS})
+
+else()
+  message("[-] ImageUtilities omitting VIDEOCAPTURE module")
+  set(VMLIBRARIES_IU_USE_VIDEOCAPTURE OFF CACHE PATH "IU: Omit videocapture module." FORCE)
+
+  # empty libraries
+  set(FLYCAPTURE2_LIBRARIES "")
+
+endif()
 
 ##-----------------------------------------------------------------------------
 ## IO MODULE: PointGray cameras (flycapture2);
@@ -343,16 +388,19 @@ set_source_files_properties(
   )
 
 ##-----------------------------------------------------------------------------
-set( IU_ALL_HEADERS
+set( IU_ALL_FILES
   ${IU_HEADERS}
   ${IU_GUI_HEADERS}
   ${IU_IO_HEADERS}
+  ${IU_VIDEOCAPTURE_HEADERS}
   ${IU_PGRCAMERA_HEADERS}
   ${IU_CONNECTOR_HEADERS}
   ${IU_SOURCES}
   ${IU_GUI_SOURCES}
   ${IU_GUI_MOC_SOURCES}
   ${IU_IO_SOURCES}
+  ${IU_VIDEOCAPTURE_SOURCES}
+  ${IU_VIDEOCAPTURE_MOC_SOURCES}
   ${IU_PGRCAMERA_SOURCES}
   ${IU_PGRCAMERA_MOC_SOURCES}
   )
@@ -412,6 +460,24 @@ if(VMLIBRARIES_IU_USE_IO)
 endif(VMLIBRARIES_IU_USE_IO)
 
 ##-----------------------------------------------------------------------------
+## build VIDEOCAPTURE library
+if(VMLIBRARIES_IU_USE_VIDEOCAPTURE)
+  cuda_add_library( iuvideocapture SHARED ${IU_VIDEOCAPTURE_HEADERS} ${IU_VIDEOCAPTURE_SOURCES} ${IU_VIDEOCAPTURE_MOC_SOURCES})
+  set_target_properties(iuvideocapture PROPERTIES
+    DEFINE_SYMBOL IU_DLL_EXPORTS
+    VERSION ${IMAGEUTILITIES_VERSION}
+    SOVERSION ${IMAGEUTILITIES_SOVERSION}
+    )
+  target_link_libraries( iuvideocapture
+    ${NPP_LIBRARIES} ${CUDA_LIBRARIES}
+    ${QT_LIBRARIES}  ${OpenCV_LIBS}
+    )
+  set(IU_LIBS ${IU_LIBS} iuvideocapture)
+
+endif(VMLIBRARIES_IU_USE_VIDEOCAPTURE)
+
+
+##-----------------------------------------------------------------------------
 ## build pgrcamera library
 if(VMLIBRARIES_IU_USE_PGRCAMERA)
   cuda_add_library( iupgrcamera SHARED ${IU_PGRCAMERA_HEADERS} ${IU_PGRCAMERA_SOURCES} ${IU_PGRCAMERA_MOC_SOURCES})
@@ -432,7 +498,7 @@ endif(VMLIBRARIES_IU_USE_PGRCAMERA)
 ##-----------------------------------------------------------------------------
 ## build combined package (everything included - for compatibility)
 if(VMLIBRARIES_IU_BUILD_COMBINED_LIBRARY)
-  cuda_add_library( iu SHARED ${IU_ALL_HEADERS} )
+  cuda_add_library( iu SHARED ${IU_ALL_FILES} )
   set_target_properties(iu PROPERTIES
     DEFINE_SYMBOL IU_DLL_EXPORTS
     VERSION ${IMAGEUTILITIES_VERSION}
@@ -440,7 +506,7 @@ if(VMLIBRARIES_IU_BUILD_COMBINED_LIBRARY)
     )
 
   if( NOT WIN32 )
-    cuda_add_library( iu_static STATIC ${IU_ALL_HEADERS} )
+    cuda_add_library( iu_static STATIC ${IU_ALL_FILES} )
     set_target_properties(iu_static PROPERTIES
       DEFINE_SYMBOL IU_DLL_EXPORTS
       VERSION ${IMAGEUTILITIES_VERSION}

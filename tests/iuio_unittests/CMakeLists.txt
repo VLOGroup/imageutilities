@@ -88,16 +88,19 @@ endif(WIN32)
 #   )
 
 ## find iu and set the according libs
-find_package(ImageUtilities COMPONENTS iucore iuio iugui)
+find_package(ImageUtilities COMPONENTS iucore iuio iuvideocapture)
 include(${IU_USE_FILE})
 
 message("IU_LIBRARIES=${IU_LIBRARIES}")
 
 cuda_add_executable( iu_imageio_unittest iu_imageio_unittest.cpp )
-TARGET_LINK_LIBRARIES(iu_imageio_unittest ${ALL_LIBRARIES} ${IU_LIBRARIES})
+TARGET_LINK_LIBRARIES(iu_imageio_unittest ${IU_LIBRARIES})
+
+cuda_add_executable( iu_videocapture_unittest iu_videocapture_unittest.cpp )
+TARGET_LINK_LIBRARIES(iu_videocapture_unittest ${IU_LIBRARIES})
 
 # install targets
-set(IU_UNITTEST_TARGETS iu_imageio_unittest)
+set(IU_UNITTEST_TARGETS iu_imageio_unittest iu_videocapture_unittest)
 message(STATUS "install targets=${IU_UNITTEST_TARGETS}")
 install(TARGETS ${IU_UNITTEST_TARGETS} RUNTIME DESTINATION bin)
 

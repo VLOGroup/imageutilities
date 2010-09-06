@@ -35,20 +35,36 @@ namespace iuprivate {
 class VideoCaptureThread : public QThread
 {
 public:
-  /** Constructor. */
+  /** Default constructor. */
   VideoCaptureThread();
+
+  /** Constructor that opens a video file. */
+  VideoCaptureThread(std::string& filename);
+
+  /** Constructor that opens a camera. */
+  VideoCaptureThread(int device);
+
+  /** Default destructor. */
+  ~VideoCaptureThread();
 
   /** The starting point of the thread. Here all the magic happens. */
   void run();
 
+  inline QReadWriteLock& getLock() {return lock_;}
+
+  /** Registers an external image where the data is copied to when available. */
+  void registerExternalImage(cv::Mat*, bool* new_image_available);
+
 private:
   QReadWriteLock lock_; /**< Lock to simplify read and write access of images. */
   bool thread_runs_; /**< Flag of the threads run state. */
+  unsigned long sleep_time_usecs_; /**< The thread sleeps for \a sleep_time_usecs_ microseconds after grabbing an image. */
 
   cv::VideoCapture cv_cap_; /**< OpenCVs video capture. This is used to read all the data. */
   cv::Mat frame_; /**< Current frame. Used to read internally. */
 
-  iu::ImageCpu_32f_C1* cur_frame_; /**< Current frame used to distribute outside the thrad. */
+  cv::Mat* ext_frame_; /**< External frame that is used for external sync. */
+  bool* ext_new_image_available_; /**< External flag if there is a new image available. Gets set when the external image is updated. */
 };
 
 } // namespace iuprivate
