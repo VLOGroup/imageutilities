@@ -23,14 +23,15 @@
 
 #include <QMutex>
 #include <QMutexLocker>
-#include <iucore.h>
+#include <iudefs.h>
+#include <iucore/copy.h>
 #include "videocapture.h"
 
 namespace iuprivate {
 
 //-----------------------------------------------------------------------------
-  VideoCapture::VideoCapture::VideoCapture() :
-      new_image_available_(false)
+VideoCapture::VideoCapture() :
+	new_image_available_(false)
 {
   cap_ = new VideoCaptureThread();
   cap_->registerExternalImage(&frame_, &new_image_available_, size_);
@@ -98,7 +99,7 @@ bool VideoCapture::getImage(iu::ImageNpp_32f_C1* image)
   printf("VideCapture::getImage: 2\n");
   iu::ImageCpu_32f_C1 cpu_image(frame_.cols, frame_.rows);
   printf("VideCapture::getImage: 3\n");
-  iu::copy(&cpu_image, image);
+  iuprivate::copy(&cpu_image, image);
   printf("VideCapture::getImage: 4\n");
 
   new_image_available_ = false;

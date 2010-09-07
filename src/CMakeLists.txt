@@ -548,9 +548,21 @@ if(VMLIBRARIES_IU_INSTALL_LOCAL )
   if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     set(CMAKE_INSTALL_PREFIX $ENV{VMLIBRARIES_ROOT} CACHE PATH "ImageUtilities install prefix" FORCE)
   endif(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-else(VMLIBRARIES_IU_INSTALL_LOCAL)
-  set(CMAKE_INSTALL_PREFIX /usr/local CACHE PATH "ImageUtilities install prefix" FORCE)
-endif(VMLIBRARIES_IU_INSTALL_LOCAL )
+endif(VMLIBRARIES_IU_INSTALL_LOCAL)
+
+if(NOT VMLIBRARIES_IU_INSTALL_LOCAL OR NOT CMAKE_INSTALL_PREFIX)
+  if(NOT UNIX)
+    set(CMAKE_INSTALL_PREFIX $ENV{ProgramFiles}/VMLibraries CACHE PATH "ImageUtilities install prefix" FORCE)
+  else(NOT UNIX)
+    set(CMAKE_INSTALL_PREFIX /usr/local CACHE PATH "ImageUtilities install prefix" FORCE)
+  endif(NOT UNIX)
+endif(NOT VMLIBRARIES_IU_INSTALL_LOCAL OR NOT CMAKE_INSTALL_PREFIX)
+
+# set the cmake-files that should be installed with the package
+set( IU_CMAKE_FILES
+  ${CMAKE_CURRENT_SOURCE_DIR}/../cmake/FindImageUtilities.cmake
+  ${CMAKE_CURRENT_SOURCE_DIR}/../cmake/UseImageUtilities.cmake
+  )
 
 # install the libraries
 install( TARGETS ${IU_LIBS}
@@ -559,14 +571,22 @@ install( TARGETS ${IU_LIBS}
   LIBRARY         DESTINATION   lib
   PUBLIC_HEADER   DESTINATION   include/iu
   )
-#install( TARGETS ${IU_LIBS} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
 install(FILES ${IU_PUBLIC_CORE_HEADERS}
   DESTINATION include/iu/iucore
-  COMPONENT Headers)
+  COMPONENT Headers
+  )
 install(FILES ${IU_CONNECTOR_HEADERS}
   DESTINATION include/iu/iuconnector
-  COMPONENT Headers)
-
+  COMPONENT Headers
+  )
+install(FILES ${IU_CMAKE_FILES}
+  DESTINATION cmake
+  )
+#install common directory
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../../common 
+  DESTINATION .
+  PATTERN ".svn" EXCLUDE
+  )
 
 
 ##-----------------------------------------------------------------------------
