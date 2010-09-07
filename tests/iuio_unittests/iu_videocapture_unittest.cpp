@@ -62,7 +62,7 @@ int main(int argc, char** argv)
     printf("wait\n");
 //    cv::waitKey();
     printf("main next round...\n");
-    //if(cv::waitKey(30) >= 0) break;
+    if(cv::waitKey(30) >= 0) break;
   }
 
   std::cout << std::endl;
