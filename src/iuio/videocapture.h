@@ -26,7 +26,7 @@
 #define IUPRIVATE_VIDEOCAPTURE_H
 
 #include <cv.h>
-#include <iucore/memorydefs.h>
+#include <iudefs.h>
 #include "videocapturethread.h"
 
 namespace iuprivate {
@@ -60,6 +60,7 @@ public:
 
 private:
   VideoCaptureThread* cap_;
+  IuSize size_;
   cv::Mat frame_;
   bool new_image_available_;
 };

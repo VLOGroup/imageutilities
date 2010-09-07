@@ -21,32 +21,37 @@
  *
  */
 
+#include <QMutex>
+#include <QMutexLocker>
+#include <iucore.h>
 #include "videocapture.h"
-#include "iucore.h"
 
 namespace iuprivate {
 
 //-----------------------------------------------------------------------------
-VideoCapture::VideoCapture::VideoCapture()
+  VideoCapture::VideoCapture::VideoCapture() :
+      new_image_available_(false)
 {
   cap_ = new VideoCaptureThread();
-  cap_->registerExternalImage(&frame_, &new_image_available_);
+  cap_->registerExternalImage(&frame_, &new_image_available_, size_);
   cap_->start();
 }
 
 //-----------------------------------------------------------------------------
-VideoCapture::VideoCapture(std::string& filename)
+VideoCapture::VideoCapture(std::string& filename) :
+    new_image_available_(false)
 {
   cap_ = new VideoCaptureThread(filename);
-  cap_->registerExternalImage(&frame_, &new_image_available_);
+  cap_->registerExternalImage(&frame_, &new_image_available_, size_);
   cap_->start();
 }
 
 //-----------------------------------------------------------------------------
-VideoCapture::VideoCapture(int device)
+VideoCapture::VideoCapture(int device) :
+    new_image_available_(false)
 {
   cap_ = new VideoCaptureThread(device);
-  cap_->registerExternalImage(&frame_, &new_image_available_);
+  cap_->registerExternalImage(&frame_, &new_image_available_, size_);
   cap_->start();
 }
 
@@ -60,19 +65,22 @@ VideoCapture::~VideoCapture()
 //-----------------------------------------------------------------------------
 bool VideoCapture::getImage(iu::ImageCpu_32f_C1* image)
 {
+  QMutexLocker locker(cap_->getMutex());
+
+  printf("VideCapture::getImage: 0\n");
   if(!new_image_available_)
     return false;
+  printf("VideCapture::getImage: 1\n");
 
-  cap_->getLock().lockForRead();
+  printf("! VideCapture::getImage: 2\n");
   cv::Mat frame_8u_C1;
-  printf("1\n");
+  printf("! VideCapture::getImage: 3\n");
   cv::cvtColor(frame_, frame_8u_C1, CV_BGR2GRAY);
-  printf("2\n");
+  printf("! VideCapture::getImage: 4\n");
   cv::Mat image_mat(image->height(), image->width(), CV_32FC1, image->data(), image->pitch());
-  printf("3\n");
+  printf("! VideCapture::getImage: 5\n");
   frame_8u_C1.convertTo(image_mat, image_mat.type(), 1.0f/255.0f, 0);
-  printf("4\n");
-  cap_->getLock().unlock();
+  printf("! VideCapture::getImage: 6\n");
 
   new_image_available_ = false;
   return true;
@@ -81,25 +89,27 @@ bool VideoCapture::getImage(iu::ImageCpu_32f_C1* image)
 //-----------------------------------------------------------------------------
 bool VideoCapture::getImage(iu::ImageNpp_32f_C1* image)
 {
+  QMutexLocker locker(cap_->getMutex());
+
+  printf("VideCapture::getImage: 1\n");
   if(!new_image_available_)
     return false;
 
-  cap_->getLock().lockForRead();
+  printf("VideCapture::getImage: 2\n");
   iu::ImageCpu_32f_C1 cpu_image(frame_.cols, frame_.rows);
+  printf("VideCapture::getImage: 3\n");
   iu::copy(&cpu_image, image);
-  cap_->getLock().unlock();
+  printf("VideCapture::getImage: 4\n");
 
   new_image_available_ = false;
+  printf("VideCapture::getImage: 5\n");
   return true;
 }
 
 //-----------------------------------------------------------------------------
 IuSize VideoCapture::size()
 {
-  cap_->getLock().lockForRead();
-  IuSize sz(frame_.cols, frame_.rows);
-  cap_->getLock().unlock();
-  return sz;
+  return size_;
 }
 
 } // namespace iuprivate

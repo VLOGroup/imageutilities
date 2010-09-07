@@ -93,7 +93,7 @@ __global__ void cuClampKernel_32f_C1(T min, T max, T* dst, size_t stride,
 
   if(x>=0 && y>=0 && x<width && y<height)
   {
-    dst[c] = clamp(min, max, tex2D(tex1_32f_C1__, xx, yy).x);
+    dst[c] = clamp(tex2D(tex1_32f_C1__, xx, yy).x, min, max);
   }
 }
 

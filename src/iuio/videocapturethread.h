@@ -25,7 +25,7 @@
 #define IUPRIVATE_VIDEOCAPTURETHREAD_H
 
 #include <QThread>
-#include <QReadWriteLock>
+#include <QMutex>
 #include <cv.h>
 #include <highgui.h>
 #include <iudefs.h>
@@ -50,17 +50,18 @@ public:
   /** The starting point of the thread. Here all the magic happens. */
   void run();
 
-  inline QReadWriteLock& getLock() {return lock_;}
+  inline QMutex* getMutex() {return &mutex_;}
 
   /** Registers an external image where the data is copied to when available. */
-  void registerExternalImage(cv::Mat*, bool* new_image_available);
+  void registerExternalImage(cv::Mat*, bool* new_image_available,
+                             IuSize& cap_size);
 
 private:
-  QReadWriteLock lock_; /**< Lock to simplify read and write access of images. */
-  bool thread_runs_; /**< Flag of the threads run state. */
+  QMutex mutex_; /**< Lock to simplify read and write access of images. */
+  bool stop_thread_; /**< Flag of the threads run state. */
   unsigned long sleep_time_usecs_; /**< The thread sleeps for \a sleep_time_usecs_ microseconds after grabbing an image. */
 
-  cv::VideoCapture cv_cap_; /**< OpenCVs video capture. This is used to read all the data. */
+  cv::VideoCapture* cv_cap_; /**< OpenCVs video capture. This is used to read all the data. */
   cv::Mat frame_; /**< Current frame. Used to read internally. */
 
   cv::Mat* ext_frame_; /**< External frame that is used for external sync. */

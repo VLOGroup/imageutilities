@@ -25,7 +25,7 @@
 #include <iostream>
 #include <cuda_runtime.h>
 
-
+#include <iudefs.h>
 #include <iucore.h>
 #include <iuio.h>
 #include <iuvideocapture.h>
@@ -50,11 +50,19 @@ int main(int argc, char** argv)
 
   for(;;)
   {
-    //iu::ImageCpu_32f_C1 image(cap->size());
-    iu::ImageCpu_32f_C1 image(720, 576);
-    if(!cap->getImage(&image)) break;
-    iu::imshow(&image, "cpu image");
-    if(cv::waitKey(30) >= 0) break;
+    printf("cap image size = %d/%d\n", cap->size().width, cap->size().height);
+    iu::ImageCpu_32f_C1 image(cap->size());
+    printf("trying to get image\n");
+    if(cap->getImage(&image))
+    {
+      printf("display image\n");
+      iu::imshow(&image, "cpu image");
+      printf("next round\n");
+    }
+    printf("wait\n");
+//    cv::waitKey();
+    printf("main next round...\n");
+    //if(cv::waitKey(30) >= 0) break;
   }
 
   std::cout << std::endl;
