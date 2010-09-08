@@ -66,12 +66,15 @@ IU_DLLAPI bool imsave(iu::ImageNpp_32f_C1* image, const std::string& filename);
  * @param winname Name of the window.
  */
 IU_DLLAPI void imshow(iu::ImageCpu_32f_C1* image, const std::string& winname);
+IU_DLLAPI void imshow(iu::ImageCpu_32f_C3* image, const std::string& winname);
+IU_DLLAPI void imshow(iu::ImageCpu_32f_C4* image, const std::string& winname);
 
 /** Shows the device image in a host window using OpenCVs imshow
  * @param image Pointer to device image (gpu) that should be shown.
  * @param winname Name of the window.
  */
 IU_DLLAPI void imshow(iu::ImageNpp_32f_C1* image, const std::string& winname);
+IU_DLLAPI void imshow(iu::ImageNpp_32f_C4* image, const std::string& winname);
 
 
 /** @} */ // end of IO

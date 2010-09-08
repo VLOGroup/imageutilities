@@ -53,7 +53,16 @@ bool imsave(iu::ImageNpp_32f_C1* image, const std::string& filename)
 void imshow(iu::ImageCpu_32f_C1* image, const std::string& winname)
 { iuprivate::imshow(image, winname); }
 
+void imshow(iu::ImageCpu_32f_C3* image, const std::string& winname)
+{ iuprivate::imshow(image, winname); }
+
+void imshow(iu::ImageCpu_32f_C4* image, const std::string& winname)
+{ iuprivate::imshow(image, winname); }
+
 void imshow(iu::ImageNpp_32f_C1* image, const std::string& winname)
+{ iuprivate::imshow(image, winname); }
+
+void imshow(iu::ImageNpp_32f_C4* image, const std::string& winname)
 { iuprivate::imshow(image, winname); }
 
 

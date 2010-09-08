@@ -97,9 +97,37 @@ void imshow(iu::ImageCpu_32f_C1* image, const std::string& winname)
 }
 
 //-----------------------------------------------------------------------------
+void imshow(iu::ImageCpu_32f_C3* image, const std::string& winname)
+{
+  IuSize sz = image->size();
+  cv::Mat mat_32f(sz.height, sz.width, CV_32FC3, image->data(), image->pitch());
+  cv::Mat bgr;
+  cv::cvtColor(mat_32f, bgr, CV_RGB2BGR);
+  cv::imshow(winname, bgr);
+}
+
+//-----------------------------------------------------------------------------
+void imshow(iu::ImageCpu_32f_C4* image, const std::string& winname)
+{
+  IuSize sz = image->size();
+  cv::Mat mat_32f(sz.height, sz.width, CV_32FC4, image->data(), image->pitch());
+  cv::Mat bgr;
+  cv::cvtColor(mat_32f, bgr, CV_RGBA2BGR);
+  cv::imshow(winname, bgr);
+}
+
+//-----------------------------------------------------------------------------
 void imshow(iu::ImageNpp_32f_C1* image, const std::string& winname)
 {
   iu::ImageCpu_32f_C1 cpu_image(image->size());
+  iuprivate::copy(image, &cpu_image);
+  iuprivate::imshow(&cpu_image, winname);
+}
+
+//-----------------------------------------------------------------------------
+void imshow(iu::ImageNpp_32f_C4* image, const std::string& winname)
+{
+  iu::ImageCpu_32f_C4 cpu_image(image->size());
   iuprivate::copy(image, &cpu_image);
   iuprivate::imshow(&cpu_image, winname);
 }

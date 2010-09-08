@@ -45,6 +45,9 @@ int main(int argc, char** argv)
 
   const std::string filename = argv[1];
 
+  cv::Mat cvim = cv::imread(filename, 0);
+  cv::imshow("OpenCV Mat image", cvim);
+
   iu::ImageCpu_32f_C1* im = iu::imread_32f_C1(filename);
   iu::ImageNpp_32f_C1* cuim = iu::imread_cu32f_C1(filename);
   iu::ImageNpp_32f_C1 d_cp_im(im->size());
