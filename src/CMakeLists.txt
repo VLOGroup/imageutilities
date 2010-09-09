@@ -324,7 +324,6 @@ SET( IU_PUBLIC_CORE_HEADERS
 
 # all the additional headers follow here below (we split that two for better overview and the seperated libs)
 SET( IU_CORE_HEADERS
-  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/cudadefs.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/copy.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/memory_modification.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/memory_modification.cuh
