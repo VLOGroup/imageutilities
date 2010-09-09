@@ -29,7 +29,7 @@
 #include <GL/glew.h>
 #include <cuda_gl_interop.h>
 
-#include <iucore/cudadefs.h>
+#include <iucutil.h>
 #include "nppglwidget.cuh"
 
 /* Textures have to be global - do not mess around with those!! */

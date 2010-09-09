@@ -21,9 +21,11 @@
  *
  */
 
-#ifndef IU_CUDADEFS_H
-#define IU_CUDADEFS_H
+#ifndef IU_CUTIL_H
+#define IU_CUTIL_H
 
+
+//// ERROR CHECKS ////////////////////////////////////////////
 #ifdef __CUDACC__ // only include this error check in cuda files (seen by nvcc)
 
 // MACROS
@@ -52,6 +54,10 @@ do { \
 #endif // __IU_CHECK_FOR_CUDA_ERRORS_ENABLED__
 
 
+#endif // __CUDACC__
+
+
+
 //// SMALL CUDA HELPERS (DEFINED INLINE) ////////////////////////////////////////////
 namespace iu {
 //
@@ -72,6 +78,5 @@ __host__ __device__ inline float sqr(float a)
 
 } // namespace iu
 
-#endif // __CUDACC__
 
-#endif // IU_CUDADEFS_H
+#endif // IUCUTIL_H

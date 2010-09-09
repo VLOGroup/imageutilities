@@ -26,7 +26,7 @@
 
 #include <iucore/copy.h>
 #include <iucore/memory_modification.h>
-#include <iucore/cudadefs.h>
+#include <iucutil.h>
 #include <iucore/iutextures.cuh>
 #include "statistics.cuh"
 

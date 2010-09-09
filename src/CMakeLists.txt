@@ -301,6 +301,7 @@ cuda_include_directories(
 SET( IU_PUBLIC_HEADERS
   ${IU_PUBLIC_HEADERS}
   ${CMAKE_CURRENT_SOURCE_DIR}/iudefs.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucutil.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iumath.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iufilter.h
@@ -583,7 +584,7 @@ install(FILES ${IU_CMAKE_FILES}
   DESTINATION cmake
   )
 #install common directory
-install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../../common 
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../../common
   DESTINATION .
   PATTERN ".svn" EXCLUDE
   )

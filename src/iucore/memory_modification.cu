@@ -25,7 +25,7 @@
 #ifndef IUCORE_MEMORY_MODIFICATION_CU
 #define IUCORE_MEMORY_MODIFICATION_CU
 
-#include "cudadefs.h"
+#include <iucutil.h>
 #include "memory_modification.cuh"
 #include "memory_modification_kernels.cu"
 
