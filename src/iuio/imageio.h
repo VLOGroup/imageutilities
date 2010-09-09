@@ -31,15 +31,37 @@
 
 namespace iuprivate {
 
+iu::ImageCpu_8u_C1* imread_8u_C1(const std::string& filename);
+iu::ImageCpu_8u_C3* imread_8u_C3(const std::string& filename);
+iu::ImageCpu_8u_C4* imread_8u_C4(const std::string& filename);
 iu::ImageCpu_32f_C1* imread_32f_C1(const std::string& filename);
+iu::ImageCpu_32f_C3* imread_32f_C3(const std::string& filename);
+iu::ImageCpu_32f_C4* imread_32f_C4(const std::string& filename);
+iu::ImageNpp_8u_C1* imread_cu8u_C1(const std::string& filename);
+iu::ImageNpp_8u_C4* imread_cu8u_C4(const std::string& filename);
 iu::ImageNpp_32f_C1* imread_cu32f_C1(const std::string& filename);
+iu::ImageNpp_32f_C4* imread_cu32f_C4(const std::string& filename);
 
+bool imsave(iu::ImageCpu_8u_C1* image, const std::string& filename);
+bool imsave(iu::ImageCpu_8u_C3* image, const std::string& filename);
+bool imsave(iu::ImageCpu_8u_C4* image, const std::string& filename);
 bool imsave(iu::ImageCpu_32f_C1* image, const std::string& filename);
+bool imsave(iu::ImageCpu_32f_C3* image, const std::string& filename);
+bool imsave(iu::ImageCpu_32f_C4* image, const std::string& filename);
+bool imsave(iu::ImageNpp_8u_C1* image, const std::string& filename);
+bool imsave(iu::ImageNpp_8u_C4* image, const std::string& filename);
 bool imsave(iu::ImageNpp_32f_C1* image, const std::string& filename);
+bool imsave(iu::ImageNpp_32f_C4* image, const std::string& filename);
 
+
+void imshow(iu::ImageCpu_8u_C1* image, const std::string& winname);
+void imshow(iu::ImageCpu_8u_C3* image, const std::string& winname);
+void imshow(iu::ImageCpu_8u_C4* image, const std::string& winname);
 void imshow(iu::ImageCpu_32f_C1* image, const std::string& winname);
 void imshow(iu::ImageCpu_32f_C3* image, const std::string& winname);
 void imshow(iu::ImageCpu_32f_C4* image, const std::string& winname);
+void imshow(iu::ImageNpp_8u_C1* image, const std::string& winname);
+void imshow(iu::ImageNpp_8u_C4* image, const std::string& winname);
 void imshow(iu::ImageNpp_32f_C1* image, const std::string& winname);
 void imshow(iu::ImageNpp_32f_C4* image, const std::string& winname);
 

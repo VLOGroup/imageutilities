@@ -48,14 +48,50 @@ int main(int argc, char** argv)
   cv::Mat cvim = cv::imread(filename, 0);
   cv::imshow("OpenCV Mat image", cvim);
 
-  iu::ImageCpu_32f_C1* im = iu::imread_32f_C1(filename);
-  iu::ImageNpp_32f_C1* cuim = iu::imread_cu32f_C1(filename);
-  iu::ImageNpp_32f_C1 d_cp_im(im->size());
-  iu::copy(im, &d_cp_im);
+  /* host images */
+  iu::ImageCpu_8u_C1* im_8u_C1 = iu::imread_8u_C1(filename);
+  iu::imshow(im_8u_C1, "8u_C1 host image");
+  iu::imsave(im_8u_C1, "out_8u_C1_host.png");
 
-  iu::imshow(im, "host image");
-  iu::imshow(cuim, "device image");
-  iu::imshow(&d_cp_im, "copied to device");
+  iu::ImageCpu_8u_C3* im_8u_C3 = iu::imread_8u_C3(filename);
+  iu::imshow(im_8u_C3, "8u_C3 host image");
+  iu::imsave(im_8u_C3, "out_8u_C3_host.png");
+
+  iu::ImageCpu_8u_C4* im_8u_C4 = iu::imread_8u_C4(filename);
+  iu::imshow(im_8u_C4, "8u_C4 host image");
+  iu::imsave(im_8u_C4, "out_8u_C4_host.png");
+
+  iu::ImageCpu_32f_C1* im_32f_C1 = iu::imread_32f_C1(filename);
+  iu::imshow(im_32f_C1, "32f_C1 host image");
+  iu::imsave(im_32f_C1, "out_32f_C1_host.png");
+
+  iu::ImageCpu_32f_C3* im_32f_C3 = iu::imread_32f_C3(filename);
+  iu::imshow(im_32f_C3, "32f_C3 host image");
+  iu::imsave(im_32f_C3, "out_32f_C3_host.png");
+
+  iu::ImageCpu_32f_C4* im_32f_C4 = iu::imread_32f_C4(filename);
+  iu::imshow(im_32f_C4, "32f_C4 host image");
+  iu::imsave(im_32f_C4, "out_32f_C4_host.png");
+
+
+  /* device images */
+  iu::ImageNpp_8u_C1* cuim_8u_C1 = iu::imread_cu8u_C1(filename);
+  iu::imshow(cuim_8u_C1, "8u_C1 device image");
+  iu::imsave(cuim_8u_C1, "out_8u_C1_device.png");
+
+  iu::ImageNpp_8u_C4* cuim_8u_C4 = iu::imread_cu8u_C4(filename);
+  iu::imshow(cuim_8u_C4, "8u_C4 device image");
+  iu::imsave(cuim_8u_C4, "out_8u_C4_device.png");
+
+  iu::ImageNpp_32f_C1* cuim_32f_C1 = iu::imread_cu32f_C1(filename);
+  iu::imshow(cuim_32f_C1, "32f_C1 device image");
+  iu::imsave(cuim_32f_C1, "out_32f_C1_device.png");
+
+  iu::ImageNpp_32f_C4* cuim_32f_C4 = iu::imread_cu32f_C4(filename);
+  iu::imshow(cuim_32f_C4, "32f_C4 device image");
+  iu::imsave(cuim_32f_C4, "out_32f_C4_device.png");
+
+
 
   std::cout << std::endl;
   std::cout << "**************************************************************************" << std::endl;
@@ -67,8 +103,10 @@ int main(int argc, char** argv)
   cv::waitKey();
 
   // CLEANUP
-  delete(im);
-  delete(cuim);
+  delete(im_8u_C1);
+  delete(cuim_8u_C1);
+  delete(im_32f_C1);
+  delete(cuim_32f_C1);
 
   return EXIT_SUCCESS;
 
