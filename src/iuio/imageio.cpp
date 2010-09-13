@@ -38,7 +38,7 @@ namespace iuprivate {
 //-----------------------------------------------------------------------------
 iu::ImageCpu_8u_C1* imread_8u_C1(const std::string& filename)
 {
-  cv::Mat mat = cv::imread(filename, 0);
+  cv::Mat mat = cv::imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
   IuSize sz(mat.cols, mat.rows);
 
   iu::ImageCpu_8u_C1* im = new iu::ImageCpu_8u_C1(sz);
@@ -52,7 +52,7 @@ iu::ImageCpu_8u_C1* imread_8u_C1(const std::string& filename)
 //-----------------------------------------------------------------------------
 iu::ImageCpu_8u_C3* imread_8u_C3(const std::string& filename)
 {
-  cv::Mat mat = cv::imread(filename, 1);
+  cv::Mat mat = cv::imread(filename, CV_LOAD_IMAGE_COLOR);
   IuSize sz(mat.cols, mat.rows);
 
   iu::ImageCpu_8u_C3* im = new iu::ImageCpu_8u_C3(sz);
@@ -66,7 +66,7 @@ iu::ImageCpu_8u_C3* imread_8u_C3(const std::string& filename)
 //-----------------------------------------------------------------------------
 iu::ImageCpu_8u_C4* imread_8u_C4(const std::string& filename)
 {
-  cv::Mat mat = cv::imread(filename, 1);
+  cv::Mat mat = cv::imread(filename, CV_LOAD_IMAGE_COLOR);
   IuSize sz(mat.cols, mat.rows);
 
   iu::ImageCpu_8u_C4* im = new iu::ImageCpu_8u_C4(sz);
@@ -80,7 +80,7 @@ iu::ImageCpu_8u_C4* imread_8u_C4(const std::string& filename)
 //-----------------------------------------------------------------------------
 iu::ImageCpu_32f_C1* imread_32f_C1(const std::string& filename)
 {
-  cv::Mat mat = cv::imread(filename, 0);
+  cv::Mat mat = cv::imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
   IuSize sz(mat.cols, mat.rows);
 
   iu::ImageCpu_32f_C1* im = new iu::ImageCpu_32f_C1(sz);
@@ -94,7 +94,7 @@ iu::ImageCpu_32f_C1* imread_32f_C1(const std::string& filename)
 //-----------------------------------------------------------------------------
 iu::ImageCpu_32f_C3* imread_32f_C3(const std::string& filename)
 {
-  cv::Mat mat = cv::imread(filename, 1);
+  cv::Mat mat = cv::imread(filename, CV_LOAD_IMAGE_COLOR);
   IuSize sz(mat.cols, mat.rows);
 
   cv::Mat mat_32f_C3(mat.rows, mat.cols, CV_32FC3);
@@ -111,7 +111,7 @@ iu::ImageCpu_32f_C3* imread_32f_C3(const std::string& filename)
 //-----------------------------------------------------------------------------
 iu::ImageCpu_32f_C4* imread_32f_C4(const std::string& filename)
 {
-  cv::Mat mat = cv::imread(filename, 1);
+  cv::Mat mat = cv::imread(filename, CV_LOAD_IMAGE_COLOR);
   IuSize sz(mat.cols, mat.rows);
 
   cv::Mat mat_32f_C3(mat.rows, mat.cols, CV_32FC3);

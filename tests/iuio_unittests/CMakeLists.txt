@@ -30,11 +30,14 @@ message("IU_LIBRARIES=${IU_LIBRARIES}")
 cuda_add_executable( iu_imageio_unittest iu_imageio_unittest.cpp )
 TARGET_LINK_LIBRARIES(iu_imageio_unittest ${IU_LIBRARIES})
 
+cuda_add_executable( iu_imageio16_unittest iu_imageio16_unittest.cpp )
+TARGET_LINK_LIBRARIES(iu_imageio16_unittest ${IU_LIBRARIES})
+
 cuda_add_executable( iu_videocapture_unittest iu_videocapture_unittest.cpp )
 TARGET_LINK_LIBRARIES(iu_videocapture_unittest ${IU_LIBRARIES})
 
 # install targets
-set(IU_UNITTEST_TARGETS iu_imageio_unittest iu_videocapture_unittest)
+set(IU_UNITTEST_TARGETS iu_imageio_unittest iu_imageio16_unittest iu_videocapture_unittest)
 message(STATUS "install targets=${IU_UNITTEST_TARGETS}")
 install(TARGETS ${IU_UNITTEST_TARGETS} RUNTIME DESTINATION bin)
 

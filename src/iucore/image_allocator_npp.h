@@ -40,6 +40,13 @@ class ImageAllocatorNpp
 
 // PARTIAL SPECIALIZATIONS:
 
+
+/* *************************************************************************
+
+   8-bit
+
+ * ************************************************************************/
+
 //--------------------------------------------------------------------------
 template<>
 class ImageAllocatorNpp<Npp8u, 1>
@@ -151,6 +158,136 @@ public:
     IU_ASSERT(status == NPP_NO_ERROR);
   }
 };
+
+/* *************************************************************************
+
+   16-bit
+
+ * ************************************************************************/
+
+//--------------------------------------------------------------------------
+template<>
+class ImageAllocatorNpp<Npp16u, 1>
+{
+public:
+  static Npp16u* alloc(unsigned int width, unsigned int height, size_t *pitch)
+  {
+    IU_ASSERT(width * height > 0);
+
+    Npp16u *buffer = nppiMalloc_16u_C1(width, height, reinterpret_cast<int *>(pitch));
+    IU_ASSERT(buffer != 0);
+
+    return buffer;
+  }
+
+  static void free(Npp16u *buffer)
+  {
+    nppiFree(buffer);
+  }
+
+  static void copy(const Npp16u *src, size_t src_pitch, Npp16u *dst, size_t dst_pitch, IuSize size)
+  {
+    cudaError_t status;
+    status = cudaMemcpy2D((void *)dst, dst_pitch, (void *)src, src_pitch,
+                          size.width * 1 * sizeof(Npp16u), size.height, cudaMemcpyDeviceToDevice);
+    IU_ASSERT(status == cudaSuccess);
+  }
+};
+
+//--------------------------------------------------------------------------
+template<>
+class ImageAllocatorNpp<Npp16u, 2>
+{
+public:
+  static Npp16u* alloc(unsigned int width, unsigned int height, size_t *pitch)
+  {
+    IU_ASSERT(width * height > 0);
+    Npp16u *buffer = 0;
+    cudaMallocPitch((void **)&buffer, pitch, width * 2 * sizeof(Npp16u), height);
+    IU_ASSERT(buffer != 0);
+
+    return buffer;
+  }
+
+  static void free(Npp16u *buffer)
+  {
+    cudaFree((void*)buffer);
+  }
+
+  static void copy(const Npp16u *src, size_t src_pitch, Npp16u *dst, size_t dst_pitch, IuSize size)
+  {
+    cudaError_t status;
+    status = cudaMemcpy2D((void *)dst, dst_pitch, (void *)src, src_pitch, size.width * 2 * sizeof(Npp16u), size.height, cudaMemcpyDeviceToDevice);
+    IU_ASSERT(status == cudaSuccess);
+  }
+};
+
+//--------------------------------------------------------------------------
+template<>
+class ImageAllocatorNpp<Npp16u, 3>
+{
+public:
+  static Npp16u* alloc(unsigned int width, unsigned int height, size_t *pitch)
+  {
+    IU_ASSERT(width * height > 0);
+
+    Npp16u *buffer = nppiMalloc_16u_C3(width, height, reinterpret_cast<int *>(pitch));
+    IU_ASSERT(buffer != 0);
+
+    return buffer;
+  }
+
+  static void free(Npp16u *buffer)
+  {
+    nppiFree(buffer);
+  }
+
+  static void copy(const Npp16u *src, size_t src_pitch, Npp16u *dst, size_t dst_pitch, IuSize size)
+  {
+    cudaError_t status;
+    status = cudaMemcpy2D((void *)dst, dst_pitch, (void *)src, src_pitch,
+                          size.width * 3 * sizeof(Npp16u), size.height, cudaMemcpyDeviceToDevice);
+    IU_ASSERT(status == cudaSuccess);
+  }
+};
+
+//--------------------------------------------------------------------------
+template<>
+class ImageAllocatorNpp<Npp16u, 4>
+{
+public:
+  static Npp16u* alloc(unsigned int width, unsigned int height, size_t *pitch)
+  {
+    IU_ASSERT(width * height > 0);
+
+    Npp16u *buffer = nppiMalloc_16u_C4(width, height, reinterpret_cast<int *>(pitch));
+    IU_ASSERT(buffer != 0);
+
+    return buffer;
+  }
+
+  static void free(Npp16u *buffer)
+  {
+    nppiFree(buffer);
+  }
+
+  static void copy(const Npp16u *src, size_t src_pitch, Npp16u *dst, size_t dst_pitch, IuSize size)
+  {
+    cudaError_t status;
+    status = cudaMemcpy2D((void *)dst, dst_pitch, (void *)src, src_pitch,
+                          size.width * 4 * sizeof(Npp16u), size.height, cudaMemcpyDeviceToDevice);
+    IU_ASSERT(status == cudaSuccess);
+  }
+};
+
+
+
+/* *************************************************************************
+
+   32-bit
+
+ * ************************************************************************/
+
 
 //--------------------------------------------------------------------------
 template<>

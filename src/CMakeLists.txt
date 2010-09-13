@@ -118,11 +118,13 @@ if(VMLIBRARIES_IU_USE_IO AND OpenCV_INCLUDE_DIRS)
 
   set( IU_IO_HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/iuio/imageio.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/imageiopgm.h
     )
 
   set( IU_IO_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/iuio.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/iuio/imageio.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/imageiopgm.cpp
     )
 
 else()

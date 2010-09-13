@@ -250,6 +250,24 @@ IU_DLLAPI void convert(const ImageNpp_32f_C3* src, const IuRect& src_roi, ImageN
  */
 IU_DLLAPI void convert(const ImageNpp_32f_C4* src, const IuRect& src_roi, ImageNpp_32f_C3* dst, const IuRect& dst_roi);
 
+/** Converts an 32-bit single-channel image to a 8-bit single-channel image.
+ * \params src 1-channel source image [host].
+ * \params dst 1-channel destination image [host].
+ * \params mul_constant The optional scale factor.
+ * \params add_constant The optional delta, added to the scaled values.
+ */
+IU_DLLAPI void convert_32f8u_C1(const iu::ImageCpu_32f_C1* src, iu::ImageCpu_8u_C1* dst,
+                                float mul_constant=255.0f, float add_constant=0.0f);
+
+/** Converts an 16-bit single-channel image to a 32-bit single-channel image.
+ * \params src 1-channel source image [host].
+ * \params dst 1-channel destination image [host].
+ * \params mul_constant The optional scale factor.
+ * \params add_constant The optional delta, added to the scaled values.
+ */
+IU_DLLAPI void convert_16u32f_C1(const iu::ImageCpu_16u_C1* src, iu::ImageCpu_32f_C1* dst,
+                                 float mul_constant=1.0f/65535.0f, float add_constant=0.0f);
+
 /** \} */ // end of Conversions
 
 

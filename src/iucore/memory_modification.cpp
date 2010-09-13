@@ -92,4 +92,36 @@ void convert(const iu::ImageNpp_32f_C4* src, const IuRect& src_roi, iu::ImageNpp
   IU_ASSERT(status == NPP_NO_ERROR);
 }
 
+///////////////////////////////////////////////////////////////////////////////
+
+// [host] 2D bit depth conversion; 32f_C1 -> 8u_C1;
+void convert_32f8u_C1(const iu::ImageCpu_32f_C1* src, iu::ImageCpu_8u_C1 *dst,
+                      float mul_constant, float add_constant)
+{
+  for (unsigned int x=0; x<dst->width(); x++)
+  {
+    for (unsigned int y=0; y<dst->height(); y++)
+    {
+      Npp32f val = *src->data(x,y);
+      *dst->data(x,y) = mul_constant*val + add_constant;
+    }
+  }
+}
+
+// [host] 2D bit depth conversion; 16u_C1 -> 32f_C1;
+void convert_16u32f_C1(const iu::ImageCpu_16u_C1* src, iu::ImageCpu_32f_C1 *dst,
+                       float mul_constant, float add_constant)
+{
+  for (unsigned int x=0; x<dst->width(); x++)
+  {
+    for (unsigned int y=0; y<dst->height(); y++)
+    {
+      Npp16u val = ((*src->data(x,y) & 0x00ffU) << 8) | ((*src->data(x,y) & 0xff00U) >> 8);
+      //Npp16u val = ((*src->data(x,y) & 0x00f0U) << 4) | ((*src->data(x,y) & 0xff00U) >> 8);
+      *dst->data(x,y) = mul_constant*(Npp32f)val + add_constant;
+    }
+  }
+}
+
+
 } // namespace iu
