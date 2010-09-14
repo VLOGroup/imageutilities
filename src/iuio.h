@@ -98,15 +98,6 @@ IU_DLLAPI void imshow(iu::ImageNpp_32f_C1* image, const std::string& winname);
 IU_DLLAPI void imshow(iu::ImageNpp_32f_C4* image, const std::string& winname);
 
 
-
-
-
-/** Loads 16-bit images to host memory from a file.
- */
-IU_DLLAPI iu::ImageCpu_32f_C1* imread_16u_C1(const std::string& filename);
-IU_DLLAPI iu::ImageNpp_32f_C1* imread_cu16u_C1(const std::string& filename);
-
-
 /** @} */ // end of IO
 
 } // namespace iu

@@ -22,7 +22,7 @@ project(ImageUtilitiesTests CXX C)
 cmake_minimum_required(VERSION 2.8)
 
 ## find iu and set the according libs
-find_package(ImageUtilities COMPONENTS iucore iuio iuvideocapture)
+find_package(ImageUtilities COMPONENTS iucore iuio iuiopgm iuvideocapture)
 include(${IU_USE_FILE})
 
 message("IU_LIBRARIES=${IU_LIBRARIES}")

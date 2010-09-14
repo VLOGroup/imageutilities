@@ -129,15 +129,5 @@ void imshow(iu::ImageNpp_32f_C1* image, const std::string& winname)
 void imshow(iu::ImageNpp_32f_C4* image, const std::string& winname)
 { iuprivate::imshow(image, winname); }
 
-/* ***************************************************************************
-     read 16-bit 2d image
- * ***************************************************************************/
-
-iu::ImageCpu_32f_C1* imread_16u_C1(const std::string& filename)
-{ return iuprivate::imread_16u_C1(filename); }
-
-iu::ImageNpp_32f_C1* imread_cu16u_C1(const std::string& filename)
-{ return iuprivate::imread_cu16u_C1(filename); }
-
 
 } // namespace iu

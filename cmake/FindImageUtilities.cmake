@@ -38,7 +38,7 @@ endif(NOT VMLIBRARIES_DIR)
 set(IU_USE_FILE ${VMLIBRARIES_CMAKE_ROOT}/UseImageUtilities.cmake CACHE FILEPATH "USE file for including the correct headers and libs.")
 
 # set a variable for all possible modules
-set(IU_MODULES iucore iugui iuio iuvideocapture iupgrcamera)
+set(IU_MODULES iucore iugui iuio iuiopgm iuvideocapture iupgrcamera)
 
 ################################################################################
 #
@@ -188,6 +188,7 @@ else(IU_INCLUDE_DIRS AND IU_LIBRARY_DIR)
   set(IU_IUCORE_LIB_DEPENDENCIES "")
   set(IU_IUGUI_LIB_DEPENDENCIES "")
   set(IU_IUIO_LIB_DEPENDENCIES "")
+  set(IU_IUIOPGM_LIB_DEPENDENCIES "")
   set(IU_IUVIDEOCAPTURE_LIB_DEPENDENCIES "")
   set(IU_IUPGRCAMERA_LIB_DEPENDENCIES "")
 
@@ -247,6 +248,9 @@ else(IU_INCLUDE_DIRS AND IU_LIBRARY_DIR)
 
   endif(IU_IUIO_FOUND)
 
+  ## IOPGM module
+  # no external dependencies
+
   ## VIDEOCAPTURE module
   if(IU_IUVIDEOCAPTURE_FOUND)
     # Qt4 (if no gui module is used)
@@ -290,7 +294,7 @@ else(IU_INCLUDE_DIRS AND IU_LIBRARY_DIR)
   endif(IU_IUPGRCAMERA_FOUND)
 
   mark_as_advanced(IU_IUCORE_LIB_DEPENDENCIES 
-    IU_IUGUI_LIB_DEPENDENCIES IU_IUIO_LIB_DEPENDENCIES IU_IUVIDEOCAPTURE_LIB_DEPENDENCIES IU_IUPGRCAMERA_LIB_DEPENDENCIES)
+    IU_IUGUI_LIB_DEPENDENCIES IU_IUIO_LIB_DEPENDENCIES IU_IUIOPGM_LIB_DEPENDENCIES IU_IUVIDEOCAPTURE_LIB_DEPENDENCIES IU_IUPGRCAMERA_LIB_DEPENDENCIES)
   mark_as_advanced(IU_INCLUDE_DIRS IU_LIBRARY_DIR)
 
 endif(IU_INCLUDE_DIRS AND IU_LIBRARY_DIR)

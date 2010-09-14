@@ -24,7 +24,7 @@ include_directories(${VMLIBRARIES_COMMON_INCLUDE_DIR})
 cuda_include_directories(${VMLIBRARIES_COMMON_INCLUDE_DIR})
 
 # IU modules
-foreach(module IUCORE IUGUI IUIO IUVIDEOCAPTURE IUPGRCAMERA)
+foreach(module IUCORE IUGUI IUIO IUIOPGM IUVIDEOCAPTURE IUPGRCAMERA)
   if (IU_USE_${module} OR IU_USE_${module}_DEPENDS)
     if (IU_${module}_FOUND)
       set(IU_LIBRARIES ${IU_LIBRARIES} ${IU_${module}_LIBRARY})

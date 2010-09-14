@@ -31,6 +31,7 @@
 
 #include <iucore.h>
 #include <iuio.h>
+#include <iuiopgm.h>
 #include <iugui.h>
 
 using namespace iu;
@@ -82,10 +83,10 @@ int main(int argc, char** argv)
 //  cv::imwrite("out_16bit_to_32bit_to_8bit.png", mat_8u_C1);
 
 
-  iu::ImageCpu_32f_C1 *image = iu::imread_16u_C1(filename);
+  iu::ImageCpu_32f_C1 *image = iu::imread_12u32f_C1(filename);
   iu::imshow(image, "[host] 16bit -> 32bit image");
 
-  iu::ImageNpp_32f_C1 *image_32f_C1 = iu::imread_cu16u_C1(filename);
+  iu::ImageNpp_32f_C1 *image_32f_C1 = iu::imread_cu12u32f_C1(filename);
   iu::imshow(image_32f_C1, "[device] 16bit -> 32bit image");
 
 

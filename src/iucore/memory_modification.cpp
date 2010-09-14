@@ -117,7 +117,6 @@ void convert_16u32f_C1(const iu::ImageCpu_16u_C1* src, iu::ImageCpu_32f_C1 *dst,
     for (unsigned int y=0; y<dst->height(); y++)
     {
       Npp16u val = ((*src->data(x,y) & 0x00ffU) << 8) | ((*src->data(x,y) & 0xff00U) >> 8);
-      //Npp16u val = ((*src->data(x,y) & 0x00f0U) << 4) | ((*src->data(x,y) & 0xff00U) >> 8);
       *dst->data(x,y) = mul_constant*(Npp32f)val + add_constant;
     }
   }

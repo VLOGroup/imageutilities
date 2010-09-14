@@ -54,7 +54,8 @@ void skipComment(std::istream &src)
 
  */
 
-iu::ImageCpu_32f_C1* imread_16u_C1(const std::string& filename)
+//-----------------------------------------------------------------------------
+iu::ImageCpu_16u_C1* imread_16u_C1(const std::string& filename)
 {
   std::ifstream src(filename.c_str(), std::ios::binary);
 
@@ -101,7 +102,7 @@ iu::ImageCpu_32f_C1* imread_16u_C1(const std::string& filename)
   }
   else if ( (maxval > 255) && (maxval <= 65535) )
   {
-    std::cout << "found 16-bit header..." << std::endl;
+//    std::cout << "found 16-bit header..." << std::endl;
     bit_depth = 16;
   }
   else
@@ -111,20 +112,27 @@ iu::ImageCpu_32f_C1* imread_16u_C1(const std::string& filename)
   }
 
   // Allocate memory
-  iu::ImageCpu_16u_C1 image(width, height);
-  src.read((char *)image.data(), image.width() * image.height() * image.nChannels() * 2);
-
-  std::cout << "converting 16bit to 32bit with maxval=" << maxval << std::endl;
-
-  iu::ImageCpu_32f_C1* image_32f_C1 = new iu::ImageCpu_32f_C1(image.size());
-  const float normalization_factor = 1.0f/pow(2.0f, 12.0f);
-  iu::convert_16u32f_C1(&image, image_32f_C1, normalization_factor, 0.0f);
-  return image_32f_C1;
+  iu::ImageCpu_16u_C1* image = new iu::ImageCpu_16u_C1(width, height);
+  src.read((char *)image->data(), image->width() * image->height() * image->nChannels() * 2);
+  return image;
 }
 
-iu::ImageNpp_32f_C1* imread_cu16u_C1(const std::string& filename)
+//-----------------------------------------------------------------------------
+iu::ImageCpu_32f_C1* imread_12u32f_C1(const std::string& filename)
 {
-  iu::ImageCpu_32f_C1* image_32f_C1 = iuprivate::imread_16u_C1(filename);
+  iu::ImageCpu_16u_C1* im_16u_C1 = iuprivate::imread_16u_C1(filename);
+  iu::ImageCpu_32f_C1* im_32f_C1 = new iu::ImageCpu_32f_C1(im_16u_C1->size());
+  float normalization_factor = 1.0f/static_cast<float>(pow(2.0,12.0));
+  iu::convert_16u32f_C1(im_16u_C1, im_32f_C1, normalization_factor, 0.0f);
+  delete(im_16u_C1);
+  return im_32f_C1;
+}
+
+
+//-----------------------------------------------------------------------------
+iu::ImageNpp_32f_C1* imread_cu12u32f_C1(const std::string& filename)
+{
+  iu::ImageCpu_32f_C1* image_32f_C1 = iuprivate::imread_12u32f_C1(filename);
   iu::ImageNpp_32f_C1* image = new iu::ImageNpp_32f_C1(image_32f_C1->size());
   iu::copy(image_32f_C1, image);
   delete(image_32f_C1);

@@ -64,6 +64,7 @@ endif()
 ## (the core module is always included!)
 OPTION(VMLIBRARIES_IU_USE_GUI "Including GUI module." ON)
 OPTION(VMLIBRARIES_IU_USE_IO "Including IO module." ON)
+OPTION(VMLIBRARIES_IU_USE_IOPGM "Including IOPGM module." ON)
 OPTION(VMLIBRARIES_IU_USE_VIDEOCAPTURE "Including VideCapture IO module." ON)
 OPTION(VMLIBRARIES_IU_USE_PGRCAMERA "Including PointGray IO module." ON)
 OPTION(VMLIBRARIES_IU_BUILD_COMBINED_LIBRARY "Building a complete library package. This is just for compatibility reasons." OFF)
@@ -101,40 +102,6 @@ set(IU_IUCORE_LIB_DEPENDENCIES ${IU_IUCORE_LIB_DEPENDENCIES} ${CUDA_LIBRARIES})
 find_package(NPP REQUIRED)
 cuda_include_directories(${NPP_INCLUDE_DIRS})
 include_directories(${NPP_INCLUDE_DIRS})
-
-##-----------------------------------------------------------------------------
-## IO MODULE: OpenCV for Image I/O
-find_package( OpenCV QUIET )
-# only include if GUI module is used and qt4 found.
-if(VMLIBRARIES_IU_USE_IO AND OpenCV_INCLUDE_DIRS)
-
-  message("[+] ImageUtilities include IO module")
-  include_directories(${OpenCV_INCLUDE_DIRS})
-
-  set( IU_PUBLIC_HEADERS
-    ${IU_PUBLIC_HEADERS}
-    ${CMAKE_CURRENT_SOURCE_DIR}/iuio.h
-    )
-
-  set( IU_IO_HEADERS
-    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/imageio.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/imageiopgm.h
-    )
-
-  set( IU_IO_SOURCES
-    ${CMAKE_CURRENT_SOURCE_DIR}/iuio.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/imageio.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/imageiopgm.cpp
-    )
-
-else()
-  message("[-] ImageUtilities omitting IO module")
-  set(VMLIBRARIES_IU_USE_IO OFF CACHE PATH "IU: Omit IO module." FORCE)
-
-  # empty libraries
-  set(OpenCV_LIBS "")
-
-endif()
 
 ##-----------------------------------------------------------------------------
 ## Qt
@@ -192,7 +159,63 @@ else()
 
 endif()
 
+##-----------------------------------------------------------------------------
+## IO MODULE: OpenCV for Image I/O
+find_package( OpenCV QUIET )
+# only include if IO module is used and OpenCV found.
+if(VMLIBRARIES_IU_USE_IO AND OpenCV_INCLUDE_DIRS)
 
+  message("[+] ImageUtilities include IO module")
+  include_directories(${OpenCV_INCLUDE_DIRS})
+
+  set( IU_PUBLIC_HEADERS
+    ${IU_PUBLIC_HEADERS}
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuio.h
+    )
+
+  set( IU_IO_HEADERS
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/imageio.h
+    )
+
+  set( IU_IO_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuio.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/imageio.cpp
+    )
+
+else()
+  message("[-] ImageUtilities omitting IO module")
+  set(VMLIBRARIES_IU_USE_IO OFF CACHE PATH "IU: Omit IO module." FORCE)
+
+  # empty libraries
+  set(OpenCV_LIBS "")
+
+endif()
+
+##-----------------------------------------------------------------------------
+## IOPGM MODULE: Reads various kinds of pgm images. (no external dependencies)
+if(VMLIBRARIES_IU_USE_IOPGM)
+  
+  message("[+] ImageUtilities include IOPGM module")
+
+  set( IU_PUBLIC_HEADERS
+    ${IU_PUBLIC_HEADERS}
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuiopgm.h
+    )
+
+  set( IU_IOPGM_HEADERS
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/imageiopgm.h
+    )
+
+  set( IU_IOPGM_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuiopgm.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/imageiopgm.cpp
+    )
+
+else()
+  message("[-] ImageUtilities omitting IOPGM module")
+  set(VMLIBRARIES_IU_USE_IO OFF CACHE PATH "IU: Omit IOPGM module." FORCE)
+
+endif()
 
 ##-----------------------------------------------------------------------------
 ## CAMERA/Video IO MODULE: OpenCV IO with Qt threading
@@ -459,10 +482,28 @@ if(VMLIBRARIES_IU_USE_IO)
     )
   target_link_libraries( ${IU_IO_LIB}
     ${NPP_LIBRARIES} ${CUDA_LIBRARIES}
-    ${OpenCV_LIBS} ${IU_CORE_LIB}
+    ${OpenCV_LIBS}
     )
   set(IU_LIBS ${IU_LIBS} ${IU_IO_LIB})
 endif(VMLIBRARIES_IU_USE_IO)
+
+
+##-----------------------------------------------------------------------------
+## build iopgm library
+set(IU_IOPGM_LIB iuiopgm)
+if(VMLIBRARIES_IU_USE_IOPGM)
+  cuda_add_library( ${IU_IOPGM_LIB} SHARED ${IU_IOPGM_HEADERS} ${IU_IOPGM_SOURCES} )
+  set_target_properties(${IU_IOPGM_LIB} PROPERTIES
+    DEFINE_SYMBOL IU_DLL_EXPORTS
+    VERSION ${IMAGEUTILITIES_VERSION}
+    SOVERSION ${IMAGEUTILITIES_SOVERSION}
+    )
+  target_link_libraries( ${IU_IOPGM_LIB}
+    ${NPP_LIBRARIES} ${CUDA_LIBRARIES}
+    ${OpenCV_LIBS} ${IU_CORE_LIB}
+    )
+  set(IU_LIBS ${IU_LIBS} ${IU_IOPGM_LIB})
+endif(VMLIBRARIES_IU_USE_IOPGM)
 
 ##-----------------------------------------------------------------------------
 ## build VIDEOCAPTURE library
