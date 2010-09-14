@@ -27,9 +27,7 @@
 #include <sstream>
 #include <fstream>
 
-#include <iucore/memorydefs.h>
-#include <iucore/memory_modification.h>
-#include <iucore/copy.h>
+#include <iucore.h>
 
 #include "imageiopgm.h"
 
@@ -119,7 +117,8 @@ iu::ImageCpu_32f_C1* imread_16u_C1(const std::string& filename)
   std::cout << "converting 16bit to 32bit with maxval=" << maxval << std::endl;
 
   iu::ImageCpu_32f_C1* image_32f_C1 = new iu::ImageCpu_32f_C1(image.size());
-  iuprivate::convert_16u32f_C1(&image, image_32f_C1, 1.0f/(pow(2.0,12.0)), 0.0f);
+  const float normalization_factor = 1.0f/pow(2.0f, 12.0f);
+  iu::convert_16u32f_C1(&image, image_32f_C1, normalization_factor, 0.0f);
   return image_32f_C1;
 }
 
@@ -127,7 +126,7 @@ iu::ImageNpp_32f_C1* imread_cu16u_C1(const std::string& filename)
 {
   iu::ImageCpu_32f_C1* image_32f_C1 = iuprivate::imread_16u_C1(filename);
   iu::ImageNpp_32f_C1* image = new iu::ImageNpp_32f_C1(image_32f_C1->size());
-  iuprivate::copy(image_32f_C1, image);
+  iu::copy(image_32f_C1, image);
   delete(image_32f_C1);
   return image;
 }

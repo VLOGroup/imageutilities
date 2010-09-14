@@ -158,7 +158,7 @@ void convert_32f8u_C1(const iu::ImageCpu_32f_C1* src, iu::ImageCpu_8u_C1* dst,
 {iuprivate::convert_32f8u_C1(src, dst, mul_constant, add_constant);}
 
 // [host] 2D bit depth conversion; 16u_C1 -> 32f_C1;
-void convert_16u32f_C1(const iu::ImageCpu_16u_C1* src, iu::ImageCpu_32f_C1* dst,
+void convert_16u32f_C1(const iu::ImageCpu_16u_C1* src, iu::ImageCpu_32f_C1 *dst,
                        float mul_constant, float add_constant)
 {iuprivate::convert_16u32f_C1(src, dst, mul_constant, add_constant);}
 

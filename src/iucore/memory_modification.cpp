@@ -124,4 +124,4 @@ void convert_16u32f_C1(const iu::ImageCpu_16u_C1* src, iu::ImageCpu_32f_C1 *dst,
 }
 
 
-} // namespace iu
+} // namespace iuprivate

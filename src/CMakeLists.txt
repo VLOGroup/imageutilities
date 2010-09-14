@@ -418,82 +418,86 @@ set( IU_LIBS "") # variable where all libs that are built are saved
 
 ##-----------------------------------------------------------------------------
 ## build core library
-cuda_add_library( iucore SHARED ${IU_HEADERS} ${IU_SOURCES})
-set_target_properties(iucore PROPERTIES
+set(IU_CORE_LIB iucore)
+cuda_add_library( ${IU_CORE_LIB} SHARED ${IU_HEADERS} ${IU_SOURCES})
+set_target_properties(${IU_CORE_LIB} PROPERTIES
   DEFINE_SYMBOL IU_DLL_EXPORTS
   VERSION ${IMAGEUTILITIES_VERSION}
   SOVERSION ${IMAGEUTILITIES_SOVERSION}
   PUBLIC_HEADER "${IU_PUBLIC_HEADERS}"
   )
-target_link_libraries( iucore ${NPP_LIBRARIES} ${CUDA_LIBRARIES} )
-set(IU_LIBS ${IU_LIBS} iucore)
+target_link_libraries( ${IU_CORE_LIB} ${NPP_LIBRARIES} ${CUDA_LIBRARIES} )
+set(IU_LIBS ${IU_LIBS} ${IU_CORE_LIB})
 
 ##-----------------------------------------------------------------------------
 ## build gui library
 if(VMLIBRARIES_IU_USE_GUI)
-  cuda_add_library( iugui SHARED ${IU_GUI_HEADERS} ${IU_GUI_SOURCES} ${IU_GUI_MOC_SOURCES} )
-  set_target_properties(iugui PROPERTIES
+set(IU_GUI_LIB iugui)
+  cuda_add_library( ${IU_GUI_LIB} SHARED ${IU_GUI_HEADERS} ${IU_GUI_SOURCES} ${IU_GUI_MOC_SOURCES} )
+  set_target_properties(${IU_GUI_LIB} PROPERTIES
     DEFINE_SYMBOL IU_DLL_EXPORTS
     VERSION ${IMAGEUTILITIES_VERSION}
     SOVERSION ${IMAGEUTILITIES_SOVERSION}
     )
-  target_link_libraries( iugui
+  target_link_libraries( ${IU_GUI_LIB}
     ${NPP_LIBRARIES} ${CUDA_LIBRARIES}
     ${QT_LIBRARIES}  ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES}
     )
-  set(IU_LIBS ${IU_LIBS} iugui)
+  set(IU_LIBS ${IU_LIBS} ${IU_GUI_LIB})
 
 endif(VMLIBRARIES_IU_USE_GUI)
 
 ##-----------------------------------------------------------------------------
 ## build io library
+set(IU_IO_LIB iuio)
 if(VMLIBRARIES_IU_USE_IO)
-  cuda_add_library( iuio SHARED ${IU_IO_HEADERS} ${IU_IO_SOURCES} )
-  set_target_properties(iuio PROPERTIES
+  cuda_add_library( ${IU_IO_LIB} SHARED ${IU_IO_HEADERS} ${IU_IO_SOURCES} )
+  set_target_properties(${IU_IO_LIB} PROPERTIES
     DEFINE_SYMBOL IU_DLL_EXPORTS
     VERSION ${IMAGEUTILITIES_VERSION}
     SOVERSION ${IMAGEUTILITIES_SOVERSION}
     )
-  target_link_libraries( iuio
+  target_link_libraries( ${IU_IO_LIB}
     ${NPP_LIBRARIES} ${CUDA_LIBRARIES}
-    ${OpenCV_LIBS}
+    ${OpenCV_LIBS} ${IU_CORE_LIB}
     )
-  set(IU_LIBS ${IU_LIBS} iuio)
+  set(IU_LIBS ${IU_LIBS} ${IU_IO_LIB})
 endif(VMLIBRARIES_IU_USE_IO)
 
 ##-----------------------------------------------------------------------------
 ## build VIDEOCAPTURE library
+set(IU_VIDEOCAPTURE_LIB iuvideocapture)
 if(VMLIBRARIES_IU_USE_VIDEOCAPTURE)
-  cuda_add_library( iuvideocapture SHARED ${IU_VIDEOCAPTURE_HEADERS} ${IU_VIDEOCAPTURE_SOURCES} ${IU_VIDEOCAPTURE_MOC_SOURCES})
-  set_target_properties(iuvideocapture PROPERTIES
+  cuda_add_library( ${IU_VIDEOCAPTURE_LIB} SHARED ${IU_VIDEOCAPTURE_HEADERS} ${IU_VIDEOCAPTURE_SOURCES} ${IU_VIDEOCAPTURE_MOC_SOURCES})
+  set_target_properties(${IU_VIDEOCAPTURE_LIB} PROPERTIES
     DEFINE_SYMBOL IU_DLL_EXPORTS
     VERSION ${IMAGEUTILITIES_VERSION}
     SOVERSION ${IMAGEUTILITIES_SOVERSION}
     )
-  target_link_libraries( iuvideocapture
+  target_link_libraries( ${IU_VIDEOCAPTURE_LIB}
     ${NPP_LIBRARIES} ${CUDA_LIBRARIES}
     ${QT_LIBRARIES}  ${OpenCV_LIBS}
     )
-  set(IU_LIBS ${IU_LIBS} iuvideocapture)
-
+  set(IU_LIBS ${IU_LIBS} ${IU_VIDEOCAPTURE_LIB})
 endif(VMLIBRARIES_IU_USE_VIDEOCAPTURE)
 
 
 ##-----------------------------------------------------------------------------
 ## build pgrcamera library
+set(IU_PGRCAMERA_LIB iupgrcamera)
 if(VMLIBRARIES_IU_USE_PGRCAMERA)
-  cuda_add_library( iupgrcamera SHARED ${IU_PGRCAMERA_HEADERS} ${IU_PGRCAMERA_SOURCES} ${IU_PGRCAMERA_MOC_SOURCES})
-  set_target_properties(iupgrcamera PROPERTIES
+  cuda_add_library( ${IU_PGRCAMERA_LIB} SHARED ${IU_PGRCAMERA_HEADERS} ${IU_PGRCAMERA_SOURCES} ${IU_PGRCAMERA_MOC_SOURCES})
+  set_target_properties(${IU_PGRCAMERA_LIB} PROPERTIES
     DEFINE_SYMBOL IU_DLL_EXPORTS
     VERSION ${IMAGEUTILITIES_VERSION}
     SOVERSION ${IMAGEUTILITIES_SOVERSION}
     )
-  target_link_libraries( iupgrcamera
+  target_link_libraries( ${IU_PGRCAMERA_LIB}
     ${NPP_LIBRARIES} ${CUDA_LIBRARIES}
     ${QT_LIBRARIES}  ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES}
     ${FLYCAPTURE2_LIBRARIES}
     )
-  set(IU_LIBS ${IU_LIBS} iupgrcamera)
+  set(IU_LIBS ${IU_LIBS} ${IU_PGRCAMERA_LIB})
 
 endif(VMLIBRARIES_IU_USE_PGRCAMERA)
 

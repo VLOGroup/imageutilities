@@ -265,8 +265,8 @@ IU_DLLAPI void convert_32f8u_C1(const iu::ImageCpu_32f_C1* src, iu::ImageCpu_8u_
  * \params mul_constant The optional scale factor.
  * \params add_constant The optional delta, added to the scaled values.
  */
-IU_DLLAPI void convert_16u32f_C1(const iu::ImageCpu_16u_C1* src, iu::ImageCpu_32f_C1* dst,
-                                 float mul_constant=1.0f/65535.0f, float add_constant=0.0f);
+IU_DLLAPI void convert_16u32f_C1(const iu::ImageCpu_16u_C1* src, iu::ImageCpu_32f_C1 *dst,
+                                 float mul_constant, float add_constant);
 
 /** \} */ // end of Conversions
 
