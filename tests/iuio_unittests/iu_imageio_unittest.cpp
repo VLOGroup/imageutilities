@@ -46,7 +46,13 @@ int main(int argc, char** argv)
   const std::string filename = argv[1];
 
   cv::Mat cvim = cv::imread(filename, 0);
-  cv::imshow("OpenCV Mat image", cvim);
+  cv::imshow("OpenCV grayscale image", cvim);
+
+  cv::Mat cvim_rgb = cv::imread(filename, 1);
+  cv::imshow("OpenCV color image", cvim_rgb);
+
+  cv::imwrite("out_cv_gray.png", cvim);
+  cv::imwrite("out_cv_color.png", cvim_rgb);
 
   /* host images */
   iu::ImageCpu_8u_C1* im_8u_C1 = iu::imread_8u_C1(filename);
