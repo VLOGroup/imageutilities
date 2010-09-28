@@ -50,6 +50,19 @@ NppStatus cuSetValue(const Npp32f& value, iu::ImageNpp_32f_C2* dst, const IuRect
 NppStatus cuSetValue(const Npp32f& value, iu::ImageNpp_32f_C3* dst, const IuRect& roi);
 NppStatus cuSetValue(const Npp32f& value, iu::ImageNpp_32f_C4* dst, const IuRect& roi);
 
+
+/** Sets values of 3D gpu memory.
+ * \param value The pixel value to be set.
+ * \param dst Destination image
+ * \param roi Region of interest of processed pixels
+ */
+NppStatus cuSetValue(const unsigned char& value, iu::VolumeGpu_8u_C1 *dst, const IuCube &roi);
+NppStatus cuSetValue(const uchar2& value, iu::VolumeGpu_8u_C2 *dst, const IuCube &roi);
+NppStatus cuSetValue(const uchar4& value, iu::VolumeGpu_8u_C4 *dst, const IuCube &roi);
+NppStatus cuSetValue(const float& value, iu::VolumeGpu_32f_C1 *dst, const IuCube &roi);
+NppStatus cuSetValue(const float2& value, iu::VolumeGpu_32f_C2 *dst, const IuCube &roi);
+NppStatus cuSetValue(const float4& value, iu::VolumeGpu_32f_C4 *dst, const IuCube &roi);
+
 /** Clamps all values of srcdst to the interval min/max.
  * \param min Minimum value for the clamping.
  * \param max Maximum value for the clamping.

@@ -52,9 +52,9 @@ void setValue(const Npp32f& value, iu::LinearDeviceMemory_32f* srcdst);
 template<typename PixelType, unsigned int NumChannels, class Allocator>
 void setValue(const PixelType &value, iu::ImageCpu<PixelType, NumChannels, Allocator> *srcdst, const IuRect& roi)
 {
-  for(unsigned int y=0; y<srcdst->height(); ++y)
+  for(unsigned int y=roi.y; y<roi.height; ++y)
   {
-    for(unsigned int x=0; x<srcdst->width(); ++x)
+    for(unsigned int x=roi.x; x<roi.width; ++x)
     {
       for(unsigned int channel=0; channel<NumChannels; channel++)
       {
@@ -64,10 +64,36 @@ void setValue(const PixelType &value, iu::ImageCpu<PixelType, NumChannels, Alloc
   }
 }
 
+// 3D set pixel value; host;
+template<typename PixelType, class Allocator>
+void setValue(const PixelType &value, iu::VolumeCpu<PixelType, Allocator> *srcdst, const IuCube& roi)
+{
+  for(unsigned int z=roi.z; z<roi.depth; ++z)
+  {
+    for(unsigned int y=roi.y; y<roi.height; ++y)
+    {
+      for(unsigned int x=roi.x; x<roi.width; ++x)
+      {
+        srcdst->data(x,y,z) = value;
+      }
+    }
+  }
+}
+
 // 2D set pixel value; device;
 template<typename PixelType, unsigned int NumChannels, class Allocator>
 void setValue(const PixelType &value,
               iu::ImageNpp<PixelType, NumChannels, Allocator> *srcdst, const IuRect& roi)
+{
+  NppStatus status;
+  status = cuSetValue(value, srcdst, roi);
+  IU_ASSERT(status == NPP_SUCCESS);
+}
+
+// 3D set pixel value; device;
+template<typename PixelType, class Allocator>
+void setValue(const PixelType &value,
+              iu::VolumeGpu<PixelType, Allocator> *srcdst, const IuCube& roi)
 {
   NppStatus status;
   status = cuSetValue(value, srcdst, roi);

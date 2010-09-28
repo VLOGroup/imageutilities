@@ -119,6 +119,59 @@ void copy(const iu::ImageNpp<PixelType, NumChannels, AllocatorNpp> *src,
   IU_ASSERT(status == cudaSuccess);
 }
 
+/* ****************************************************************************
+ * 3D copy
+ **************************************************************************** */
+
+// 3D; copy host -> host
+template<typename PixelType, class Allocator>
+void copy(const iu::VolumeCpu<PixelType, Allocator> *src,
+          iu::VolumeCpu<PixelType, Allocator> *dst)
+{
+  Allocator::copy(src->data(), src->pitch(), dst->data(), dst->pitch(), dst->size());
+}
+
+// 2D; copy device -> device
+template<typename PixelType, class Allocator>
+void copy(const iu::VolumeGpu<PixelType, Allocator> *src,
+          iu::VolumeGpu<PixelType, Allocator> *dst)
+{
+  Allocator::copy(src->data(), src->pitch(), dst->data(), dst->pitch(), dst->size());
+}
+
+// 2D; copy host -> device
+template<typename PixelType, class AllocatorCpu, class AllocatorGpu>
+void copy(const iu::VolumeCpu<PixelType, AllocatorCpu> *src,
+          iu::VolumeGpu<PixelType, AllocatorGpu> *dst)
+{
+  cudaError_t status;
+  unsigned int roi_width = dst->roi().width;
+  unsigned int roi_height = dst->roi().height;
+  unsigned int roi_depth =  dst->roi().depth;
+  status = cudaMemcpy2D(dst->data(dst->roi().x, dst->roi().y, dst->roi().z), dst->pitch(),
+                        src->data(src->roi().x, src->roi().y, dst->roi().z), src->pitch(),
+                        roi_width * sizeof(PixelType), roi_height*roi_depth,
+                        cudaMemcpyHostToDevice);
+  IU_ASSERT(status == cudaSuccess);
+}
+
+// 2D; copy device -> host
+template<typename PixelType, class AllocatorGpu, class AllocatorCpu>
+void copy(const iu::VolumeGpu<PixelType, AllocatorGpu> *src,
+          iu::VolumeCpu<PixelType, AllocatorCpu> *dst)
+{
+  cudaError_t status;
+  unsigned int roi_width = dst->roi().width;
+  unsigned int roi_height = dst->roi().height;
+  unsigned int roi_depth =  dst->roi().depth;
+  status = cudaMemcpy2D(dst->data(dst->roi().x, dst->roi().y, dst->roi().z), dst->pitch(),
+                        src->data(src->roi().x, src->roi().y, dst->roi().z), src->pitch(),
+                        roi_width * sizeof(PixelType), roi_height*roi_depth,
+                        cudaMemcpyDeviceToDevice);
+  IU_ASSERT(status == cudaSuccess);
+}
+
+
 } // namespace iuprivate
 
 #endif // IUCORE_COPY_H

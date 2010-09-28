@@ -12,34 +12,36 @@
  *
  * Project     : ImageUtilities
  * Module      : Core
- * Class       : ImageAllocatorCpu
+ * Class       : VolumeAllocatorCpu
  * Language    : C++
- * Description : Image allocation functions for Cpu images.
+ * Description : Volume allocation functions on the CPU.
  *
  * Author     : Manuel Werlberger
  * EMail      : werlberger@icg.tugraz.at
  *
  */
 
-#ifndef IMAGE_ALLOCATOR_CPU_H
-#define IMAGE_ALLOCATOR_CPU_H
+#ifndef IUCORE_VOLUME_ALLOCATOR_CPU_H
+#define IUCORE_VOLUME_ALLOCATOR_CPU_H
 
-#include <cstring>
+#include <assert.h>
+#include <cuda_runtime.h>
 #include "coredefs.h"
 
 namespace iuprivate {
 
 //--------------------------------------------------------------------------
-template <typename PixelType, unsigned int NumChannels>
-class ImageAllocatorCpu
+template <typename PixelType>
+class VolumeAllocatorCpu
 {
 public:
-  static PixelType* alloc(unsigned int width, unsigned int height, size_t *pitch)
+  static float* alloc(unsigned int width, unsigned int height, unsigned int depth, size_t *pitch)
   {
-    IU_ASSERT(width * height > 0);
-    PixelType *buffer = new PixelType[width * NumChannels * height];
+    IU_ASSERT(width * height * depth > 0);
+    PixelType *buffer = new PixelType[width*height*depth];
     IU_ASSERT(buffer != 0);
-    *pitch = width * sizeof(PixelType) * NumChannels;
+    *pitch = width * sizeof(PixelType);
+
     return buffer;
   }
 
@@ -54,13 +56,14 @@ public:
     size_t src_stride = src_pitch/sizeof(PixelType);
     size_t dst_stride = src_pitch/sizeof(PixelType);
 
-    for(unsigned int y=0; y< size.height; ++y)
+    for(unsigned int z=0; z<size.depth; ++z)
     {
-      for(unsigned int x=0; x<size.width; ++x)
+      for(unsigned int y=0; y<size.height; ++y)
       {
-        for(unsigned int channel=0; channel<NumChannels; ++channel)
+        for(unsigned int x=0; x<size.width; ++x)
         {
-          dst[y*dst_stride+x*NumChannels+channel] = src[y*src_stride+x*NumChannels+channel];
+          dst[z*dst_stride*size.height + y*dst_stride + x] =
+              src[z*src_stride*size.height + y*src_stride + x];
         }
       }
     }
@@ -69,4 +72,4 @@ public:
 
 } // namespace iuprivate
 
-#endif // IMAGE_ALLOCATOR_CPU_H
+#endif // IUCORE_VOLUME_ALLOCATOR_CPU_H

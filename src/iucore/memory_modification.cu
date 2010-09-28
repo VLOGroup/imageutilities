@@ -92,7 +92,7 @@ NppStatus cuSetValue(const Npp8u& value, iu::ImageNpp_8u_C3 *dst, const IuRect &
 { return cuSetValueTemplate(value, dst, roi); }
 NppStatus cuSetValue(const Npp8u& value, iu::ImageNpp_8u_C4 *dst, const IuRect &roi)
 { return cuSetValueTemplate(value, dst, roi); }
-// wrapper: set values (single value); 2D; 8-bit;
+// wrapper: set values (single value); 2D; 32-bit;
 NppStatus cuSetValue(const Npp32f& value, iu::ImageNpp_32f_C1 *dst, const IuRect &roi)
 { return cuSetValueTemplate(value, dst, roi); }
 NppStatus cuSetValue(const Npp32f& value, iu::ImageNpp_32f_C2 *dst, const IuRect &roi)
@@ -101,6 +101,44 @@ NppStatus cuSetValue(const Npp32f& value, iu::ImageNpp_32f_C3 *dst, const IuRect
 { return cuSetValueTemplate(value, dst, roi); }
 NppStatus cuSetValue(const Npp32f& value, iu::ImageNpp_32f_C4 *dst, const IuRect &roi)
 { return cuSetValueTemplate(value, dst, roi); }
+
+
+///////////////////////////////////////////////////////////////////////////////
+
+// wrapper: set values (single value); 3D; ...
+template<typename PixelType, class Allocator>
+NppStatus cuSetValueTemplate(const PixelType &value,
+                             iu::VolumeGpu<PixelType, Allocator> *dst, const IuCube& roi)
+{
+  // fragmentation
+  const unsigned int block_size = 16;
+  dim3 dimBlock(block_size, block_size);
+  dim3 dimGrid(iu::divUp(roi.width - roi.x, dimBlock.x),
+               iu::divUp(roi.height - roi.y, dimBlock.y));
+
+  cuSetValueKernel <<< dimGrid, dimBlock >>> (
+      value, dst->data(roi.x, roi.y, roi.z), dst->stride(), dst->slice_stride(),
+      roi.x, roi.y, roi.z, roi.width, roi.height, roi.depth);
+
+  IU_CHECK_CUDA_ERRORS();
+  return NPP_SUCCESS;
+}
+
+// wrapper: set values (single value); 3D; 8-bit;
+NppStatus cuSetValue(const unsigned char& value, iu::VolumeGpu_8u_C1 *dst, const IuCube &roi)
+{ return cuSetValueTemplate(value, dst, roi); }
+NppStatus cuSetValue(const uchar2& value, iu::VolumeGpu_8u_C2 *dst, const IuCube &roi)
+{ return cuSetValueTemplate(value, dst, roi); }
+NppStatus cuSetValue(const uchar4& value, iu::VolumeGpu_8u_C4 *dst, const IuCube &roi)
+{ return cuSetValueTemplate(value, dst, roi); }
+// wrapper: set values (single value); 3D; 32-bit;
+NppStatus cuSetValue(const float& value, iu::VolumeGpu_32f_C1 *dst, const IuCube &roi)
+{ return cuSetValueTemplate(value, dst, roi); }
+NppStatus cuSetValue(const float2& value, iu::VolumeGpu_32f_C2 *dst, const IuCube &roi)
+{ return cuSetValueTemplate(value, dst, roi); }
+NppStatus cuSetValue(const float4& value, iu::VolumeGpu_32f_C4 *dst, const IuCube &roi)
+{ return cuSetValueTemplate(value, dst, roi); }
+
 
 ///////////////////////////////////////////////////////////////////////////////
 

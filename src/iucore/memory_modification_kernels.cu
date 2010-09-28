@@ -52,17 +52,28 @@ __global__ void cuSetValueKernel(T value, T* dst, size_t stride, unsigned int nu
   int y = blockIdx.y*blockDim.y + threadIdx.y;
   const int c =  y*stride+x*num_channels;
 
-  x += xoff;
-  y += yoff;
-
-  if(x>=0 && y>=0 && x<width && y<height)
+  if(x+xoff>=0 && y+yoff>=0 && x<width && y<height)
   {
     for(unsigned int channel = 0; channel<num_channels; ++channel)
       dst[c+channel] = value;
   }
 }
 
+// kernel: 3D set values; multi-channel
+template<class T>
+__global__ void cuSetValueKernel(T value, T* dst, size_t stride, size_t slice_stride,
+                                 int xoff, int yoff, int zoff, int width, int height, int depth)
+{
+  int x = blockIdx.x*blockDim.x + threadIdx.x;
+  int y = blockIdx.y*blockDim.y + threadIdx.y;
+  const int c =  y*stride+x;
 
+  if(x+xoff>=0 && y+yoff>=0 && x<width && y<height)
+  {
+    for(int z = -min(0,zoff); z<depth; ++z)
+      dst[c+z*slice_stride] = value;
+  }
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 // thresholding/clamping kernels

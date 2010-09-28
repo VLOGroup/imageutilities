@@ -194,7 +194,7 @@ endif()
 ##-----------------------------------------------------------------------------
 ## IOPGM MODULE: Reads various kinds of pgm images. (no external dependencies)
 if(VMLIBRARIES_IU_USE_IOPGM)
-  
+
   message("[+] ImageUtilities include IOPGM module")
 
   set( IU_PUBLIC_HEADERS
@@ -344,6 +344,11 @@ SET( IU_PUBLIC_CORE_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/image_allocator_npp.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/image_cpu.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/image_npp.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/volume.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/volume_allocator_cpu.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/volume_cpu.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/volume_allocator_gpu.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/volume_gpu.h
   ${CMAKE_CURRENT_SOURCE_DIR}/../../common/include/derivatives.h
   )
 

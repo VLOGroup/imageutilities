@@ -31,6 +31,10 @@
 #include "image_cpu.h"
 #include "image_allocator_npp.h"
 #include "image_npp.h"
+#include "volume_allocator_cpu.h"
+#include "volume_cpu.h"
+#include "volume_allocator_gpu.h"
+#include "volume_gpu.h"
 
 /* ***************************************************************************
    explicit type definitions for template classes
@@ -80,6 +84,26 @@ namespace iu {
   typedef ImageNpp<Npp32f, 2, iuprivate::ImageAllocatorNpp<Npp32f, 2> > ImageNpp_32f_C2;
   typedef ImageNpp<Npp32f, 3, iuprivate::ImageAllocatorNpp<Npp32f, 3> > ImageNpp_32f_C3;
   typedef ImageNpp<Npp32f, 4, iuprivate::ImageAllocatorNpp<Npp32f, 4> > ImageNpp_32f_C4;
+
+  // Cpu Volumes; 8-bit
+  typedef VolumeCpu<unsigned char, iuprivate::VolumeAllocatorCpu<unsigned char> > VolumeCpu_8u_C1;
+  typedef VolumeCpu<uchar2, iuprivate::VolumeAllocatorCpu<uchar2> > VolumeCpu_8u_C2;
+  typedef VolumeCpu<uchar4, iuprivate::VolumeAllocatorCpu<uchar4> > VolumeCpu_8u_C4;
+
+  // Cpu Volumes; 32-bit
+  typedef VolumeCpu<float, iuprivate::VolumeAllocatorCpu<float> > VolumeCpu_32f_C1;
+  typedef VolumeCpu<float2, iuprivate::VolumeAllocatorCpu<float2> > VolumeCpu_32f_C2;
+  typedef VolumeCpu<float4, iuprivate::VolumeAllocatorCpu<float4> > VolumeCpu_32f_C4;
+
+  // Gpu Volumes; 8-bit
+  typedef VolumeGpu<unsigned char, iuprivate::VolumeAllocatorGpu<unsigned char> > VolumeGpu_8u_C1;
+  typedef VolumeGpu<uchar2, iuprivate::VolumeAllocatorGpu<uchar2> > VolumeGpu_8u_C2;
+  typedef VolumeGpu<uchar4, iuprivate::VolumeAllocatorGpu<uchar4> > VolumeGpu_8u_C4;
+
+  // Gpu Volumes; 32-bit
+  typedef VolumeGpu<float, iuprivate::VolumeAllocatorGpu<float> > VolumeGpu_32f_C1;
+  typedef VolumeGpu<float2, iuprivate::VolumeAllocatorGpu<float2> > VolumeGpu_32f_C2;
+  typedef VolumeGpu<float4, iuprivate::VolumeAllocatorGpu<float4> > VolumeGpu_32f_C4;
 
 } // namespace iu
 
