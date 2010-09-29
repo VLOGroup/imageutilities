@@ -70,14 +70,14 @@ int main(int argc, char** argv)
   else
     std::cout << "sz and sz2 are different" << std::endl;
 
-  iu::ImageNpp_8u_C1 im_npp_8u_C1(sz);
-  iu::ImageNpp_8u_C2 im_npp_8u_C2(sz);
-  iu::ImageNpp_8u_C3 im_npp_8u_C3(sz);
-  iu::ImageNpp_8u_C4 im_npp_8u_C4(sz);
-  iu::ImageNpp_32f_C1 im_npp_32f_C1(sz);
-  iu::ImageNpp_32f_C2 im_npp_32f_C2(sz);
-//  iu::ImageNpp_32f_C3 im_npp_32f_C3(sz);
-  iu::ImageNpp_32f_C4 im_npp_32f_C4(sz);
+  iu::ImageGpu_8u_C1 im_npp_8u_C1(sz);
+  iu::ImageGpu_8u_C2 im_npp_8u_C2(sz);
+  iu::ImageGpu_8u_C3 im_npp_8u_C3(sz);
+  iu::ImageGpu_8u_C4 im_npp_8u_C4(sz);
+  iu::ImageGpu_32f_C1 im_npp_32f_C1(sz);
+  iu::ImageGpu_32f_C2 im_npp_32f_C2(sz);
+//  iu::ImageGpu_32f_C3 im_npp_32f_C3(sz);
+  iu::ImageGpu_32f_C4 im_npp_32f_C4(sz);
 
   // set values
   {

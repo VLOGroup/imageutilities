@@ -12,27 +12,28 @@
  *
  * Project     : ImageUtilities
  * Module      : Core
- * Class       : VolumeAllocatorGpu
+ * Class       : ImageAllocatorGpu
  * Language    : C++
- * Description : Volume allocation functions on the GPU.
+ * Description : Image allocation functions for Gpu images.
  *
  * Author     : Manuel Werlberger
  * EMail      : werlberger@icg.tugraz.at
  *
  */
 
-#ifndef IUCORE_VOLUME_ALLOCATOR_GPU_H
-#define IUCORE_VOLUME_ALLOCATOR_GPU_H
+#ifndef IUCORE_IMAGE_ALLOCATOR_GPU_H
+#define IUCORE_IMAGE_ALLOCATOR_GPU_H
 
 #include <assert.h>
 #include <cuda_runtime.h>
+#include <nppi.h>
 #include "coredefs.h"
 
 namespace iuprivate {
 
 //--------------------------------------------------------------------------
 template <typename PixelType>
-class VolumeAllocatorGpu
+class ImageAllocatorGpu
 {
 public:
   static PixelType* alloc(IuSize size, size_t *pitch)
@@ -40,7 +41,8 @@ public:
     IU_ASSERT(size.width * size.height * size.depth > 0);
     cudaError_t status;
     PixelType* buffer = 0;
-    status = cudaMallocPitch((void **)&buffer, pitch, size.width * sizeof(PixelType), size.height*size.depth);
+    status = cudaMallocPitch((void **)&buffer, pitch,
+                             size.width * sizeof(PixelType), size.height*size.depth);
     IU_ASSERT(status == cudaSuccess);
 
     return buffer;
@@ -63,4 +65,4 @@ public:
 
 } // namespace iuprivate
 
-#endif // IUCORE_VOLUME_ALLOCATOR_GPU_H
+#endif // IUCORE_IMAGE_ALLOCATOR_GPU_H

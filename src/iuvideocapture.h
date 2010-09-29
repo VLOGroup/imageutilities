@@ -52,7 +52,7 @@ public:
   bool getImage(iu::ImageCpu_32f_C1* image);
 
   /** Converts and gets image data. */
-  bool getImage(iu::ImageNpp_32f_C1* image);
+  bool getImage(iu::ImageGpu_32f_C1* image);
 
   /** Query state for available images. */
   bool isNewImageAvailable();

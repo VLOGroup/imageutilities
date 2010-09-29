@@ -30,13 +30,13 @@ namespace iuprivate {
 ///////////////////////////////////////////////////////////////////////////////
 
 // [1D; host] set values; 8-bit
-void setValue(const Npp8u& value, iu::LinearHostMemory_8u* srcdst)
+void setValue(const Npp8u& value, iu::LinearHostMemory_8u_C1* srcdst)
 {
   memset((void*)srcdst->data(), value, srcdst->bytes());
 }
 
 // [1D; host] set values; 32-bit
-void setValue(const float& value, iu::LinearHostMemory_32f* srcdst)
+void setValue(const float& value, iu::LinearHostMemory_32f_C1* srcdst)
 {
   // we are using for loops because memset is only safe on integer type arrays
 
@@ -48,7 +48,7 @@ void setValue(const float& value, iu::LinearHostMemory_32f* srcdst)
 }
 
 // [1D; device] set values; 8-bit
-void setValue(const Npp8u& value, iu::LinearDeviceMemory_8u* srcdst)
+void setValue(const Npp8u& value, iu::LinearDeviceMemory_8u_C1* srcdst)
 {
   // cudaMemset is slow so we are firing up a kernel
   NppStatus status = cuSetValue(value, srcdst);
@@ -56,7 +56,7 @@ void setValue(const Npp8u& value, iu::LinearDeviceMemory_8u* srcdst)
 }
 
 // [1D; host] set values; 32-bit
-void setValue(const Npp32f& value, iu::LinearDeviceMemory_32f* srcdst)
+void setValue(const Npp32f& value, iu::LinearDeviceMemory_32f_C1* srcdst)
 {
   // cudaMemset is slow so we are firing up a kernel
   NppStatus status = cuSetValue(value, srcdst);
@@ -68,7 +68,7 @@ void setValue(const Npp32f& value, iu::LinearDeviceMemory_32f* srcdst)
 
 // [device] clamping of pixels to [min,max]; 32-bit
 void clamp(const Npp32f& min, const Npp32f& max,
-           iu::ImageNpp_32f_C1 *srcdst, const IuRect &roi)
+           iu::ImageGpu_32f_C1 *srcdst, const IuRect &roi)
 {
   NppStatus status = cuClamp(min, max, srcdst, roi);
   IU_ASSERT(status == NPP_SUCCESS);
@@ -77,7 +77,7 @@ void clamp(const Npp32f& min, const Npp32f& max,
 ///////////////////////////////////////////////////////////////////////////////
 
 // [device] conversion 32f_C3 -> 32f_C4
-void convert(const iu::ImageNpp_32f_C3* src, const IuRect& src_roi, iu::ImageNpp_32f_C4* dst, const IuRect& dst_roi)
+void convert(const iu::ImageGpu_32f_C3* src, const IuRect& src_roi, iu::ImageGpu_32f_C4* dst, const IuRect& dst_roi)
 {
   NppStatus status;
   status = cuConvert(src, src_roi, dst, dst_roi);
@@ -85,7 +85,7 @@ void convert(const iu::ImageNpp_32f_C3* src, const IuRect& src_roi, iu::ImageNpp
 }
 
 // [device] conversion 32f_C4 -> 32f_C3
-void convert(const iu::ImageNpp_32f_C4* src, const IuRect& src_roi, iu::ImageNpp_32f_C3* dst, const IuRect& dst_roi)
+void convert(const iu::ImageGpu_32f_C4* src, const IuRect& src_roi, iu::ImageGpu_32f_C3* dst, const IuRect& dst_roi)
 {
   NppStatus status;
   status = cuConvert(src, src_roi, dst, dst_roi);

@@ -420,7 +420,7 @@ __global__ void cuFilterRofDualKernel_32f_C1(
 *******************************************************************************/
 
 // wrapper: median filter; 32-bit; 1-channel
-NppStatus cuFilterMedian3x3(const iu::ImageNpp_32f_C1* src, iu::ImageNpp_32f_C1* dst, const IuRect& roi)
+NppStatus cuFilterMedian3x3(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst, const IuRect& roi)
 {
   // bind textures
   cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<float1>();
@@ -445,7 +445,7 @@ NppStatus cuFilterMedian3x3(const iu::ImageNpp_32f_C1* src, iu::ImageNpp_32f_C1*
 }
 
 // wrapper: Gaussian filter; 32-bit; 1-channel
-NppStatus cuFilterGauss(const iu::ImageNpp_32f_C1* src, iu::ImageNpp_32f_C1* dst, const IuRect& roi, float sigma, int kernel_size)
+NppStatus cuFilterGauss(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst, const IuRect& roi, float sigma, int kernel_size)
 {
   if (kernel_size == 0)
     kernel_size = max(5, (unsigned int)ceil(sigma*  3)*  2 + 1);
@@ -453,7 +453,7 @@ NppStatus cuFilterGauss(const iu::ImageNpp_32f_C1* src, iu::ImageNpp_32f_C1* dst
     ++kernel_size;
 
   // temporary variable for filtering (separabed kernel!)
-  iu::ImageNpp_32f_C1 tmp(src->size());
+  iu::ImageGpu_32f_C1 tmp(src->size());
 
   // bind textures
   cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<float1>();
@@ -484,13 +484,13 @@ NppStatus cuFilterGauss(const iu::ImageNpp_32f_C1* src, iu::ImageNpp_32f_C1* dst
 }
 
 // wrapper: Rof filter; 32-bit; 1-channel
-NppStatus cuFilterRof(const iu::ImageNpp_32f_C1* src, iu::ImageNpp_32f_C1* dst,
+NppStatus cuFilterRof(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
                       const IuRect& roi, float lambda, int iterations)
 {
   // helper variables (v=splitting var; p=dual var)
-  iu::ImageNpp_32f_C1 v(src->size());
-  iu::ImageNpp_32f_C2 p(src->size());
-  Npp32f p_init = 0.0f;
+  iu::ImageGpu_32f_C1 v(src->size());
+  iu::ImageGpu_32f_C2 p(src->size());
+  float2 p_init = make_float2(0.0f,0.0f);
   iuprivate::setValue(p_init, &p, p.roi());
 
   // init output und splitting var with input image.
@@ -521,7 +521,7 @@ NppStatus cuFilterRof(const iu::ImageNpp_32f_C1* src, iu::ImageNpp_32f_C1* dst,
     IU_CHECK_CUDA_ERRORS();
 
     cuFilterRofDualKernel_32f_C1 <<< dimGrid, dimBlock >>>
-        ((float2*)(p.data()), p.stride()/2,
+        (p.data(), p.stride()/2,
          roi.x, roi.y, p.width(), p.height(), tau_d);
     IU_CHECK_CUDA_ERRORS();
   }

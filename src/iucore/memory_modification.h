@@ -43,23 +43,38 @@ namespace iuprivate {
 
 
 // 1D set value; host; 8-bit
-void setValue(const Npp8u& value, iu::LinearHostMemory_8u* srcdst);
-void setValue(const Npp32f& value, iu::LinearHostMemory_32f* srcdst);
-void setValue(const Npp8u& value, iu::LinearDeviceMemory_8u* srcdst);
-void setValue(const Npp32f& value, iu::LinearDeviceMemory_32f* srcdst);
+void setValue(const unsigned char& value, iu::LinearHostMemory_8u_C1* srcdst);
+void setValue(const uchar2& value, iu::LinearHostMemory_8u_C2* srcdst);
+void setValue(const uchar3& value, iu::LinearHostMemory_8u_C3* srcdst);
+void setValue(const uchar4& value, iu::LinearHostMemory_8u_C4* srcdst);
+
+// 1D set value; host; 32-bit
+void setValue(const float& value, iu::LinearHostMemory_32f_C1* srcdst);
+void setValue(const float2& value, iu::LinearHostMemory_32f_C2* srcdst);
+void setValue(const float3& value, iu::LinearHostMemory_32f_C3* srcdst);
+void setValue(const float4& value, iu::LinearHostMemory_32f_C4* srcdst);
+
+// 1D set value; device; 8-bit
+void setValue(const unsigned char& value, iu::LinearDeviceMemory_8u_C1* srcdst);
+void setValue(const uchar2& value, iu::LinearDeviceMemory_8u_C2* srcdst);
+void setValue(const uchar3& value, iu::LinearDeviceMemory_8u_C3* srcdst);
+void setValue(const uchar4& value, iu::LinearDeviceMemory_8u_C4* srcdst);
+
+// 1D set value; device; 32-bit
+void setValue(const float& value, iu::LinearDeviceMemory_32f_C1* srcdst);
+void setValue(const float2& value, iu::LinearDeviceMemory_32f_C2* srcdst);
+void setValue(const float3& value, iu::LinearDeviceMemory_32f_C3* srcdst);
+void setValue(const float4& value, iu::LinearDeviceMemory_32f_C4* srcdst);
 
 // 2D set pixel value; host;
-template<typename PixelType, unsigned int NumChannels, class Allocator>
-void setValue(const PixelType &value, iu::ImageCpu<PixelType, NumChannels, Allocator> *srcdst, const IuRect& roi)
+template<typename PixelType, class Allocator>
+void setValue(const PixelType &value, iu::ImageCpu<PixelType, Allocator> *srcdst, const IuRect& roi)
 {
   for(unsigned int y=roi.y; y<roi.height; ++y)
   {
     for(unsigned int x=roi.x; x<roi.width; ++x)
     {
-      for(unsigned int channel=0; channel<NumChannels; channel++)
-      {
-        srcdst->data(x,y)[channel] = value;
-      }
+      *srcdst->data(x,y) = value;
     }
   }
 }
@@ -74,16 +89,15 @@ void setValue(const PixelType &value, iu::VolumeCpu<PixelType, Allocator> *srcds
     {
       for(unsigned int x=roi.x; x<roi.width; ++x)
       {
-        srcdst->data(x,y,z) = value;
+        *srcdst->data(x,y,z) = value;
       }
     }
   }
 }
 
 // 2D set pixel value; device;
-template<typename PixelType, unsigned int NumChannels, class Allocator>
-void setValue(const PixelType &value,
-              iu::ImageNpp<PixelType, NumChannels, Allocator> *srcdst, const IuRect& roi)
+template<typename PixelType, class Allocator>
+void setValue(const PixelType &value, iu::ImageGpu<PixelType, Allocator> *srcdst, const IuRect& roi)
 {
   NppStatus status;
   status = cuSetValue(value, srcdst, roi);
@@ -92,8 +106,7 @@ void setValue(const PixelType &value,
 
 // 3D set pixel value; device;
 template<typename PixelType, class Allocator>
-void setValue(const PixelType &value,
-              iu::VolumeGpu<PixelType, Allocator> *srcdst, const IuCube& roi)
+void setValue(const PixelType &value, iu::VolumeGpu<PixelType, Allocator> *srcdst, const IuCube& roi)
 {
   NppStatus status;
   status = cuSetValue(value, srcdst, roi);
@@ -102,13 +115,13 @@ void setValue(const PixelType &value,
 
 // 2D clamping. clamps every pixel; device;
 void clamp(const Npp32f& min, const Npp32f& max,
-           iu::ImageNpp_32f_C1 *srcdst, const IuRect &roi);
+           iu::ImageGpu_32f_C1 *srcdst, const IuRect &roi);
 
 // 2D conversion; device; 32-bit 3-channel -> 32-bit 4-channel
-void convert(const iu::ImageNpp_32f_C3* src, const IuRect& src_roi, iu::ImageNpp_32f_C4* dst, const IuRect& dst_roi);
+void convert(const iu::ImageGpu_32f_C3* src, const IuRect& src_roi, iu::ImageGpu_32f_C4* dst, const IuRect& dst_roi);
 
 // 2D conversion; device; 32-bit 4-channel -> 32-bit 3-channel
-void convert(const iu::ImageNpp_32f_C4* src, const IuRect& src_roi, iu::ImageNpp_32f_C3* dst, const IuRect& dst_roi);
+void convert(const iu::ImageGpu_32f_C4* src, const IuRect& src_roi, iu::ImageGpu_32f_C3* dst, const IuRect& dst_roi);
 
 // [host] 2D bit depth conversion; 32f_C1 -> 8u_C1;
 void convert_32f8u_C1(const iu::ImageCpu_32f_C1* src, iu::ImageCpu_8u_C1 *dst,

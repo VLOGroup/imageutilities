@@ -42,7 +42,7 @@ namespace iuprivate {
 */
 
 // kernel; find min/max; 8u_C1
-__global__ void cuMinMaxXKernel_8u_C1(Npp8u min[], Npp8u max[],
+__global__ void cuMinMaxXKernel_8u_C1(unsigned char* min, unsigned char* max,
                                       int xoff, int yoff, int width, int height)
 {
  const int x = blockIdx.x*blockDim.x + threadIdx.x;
@@ -72,7 +72,7 @@ __global__ void cuMinMaxXKernel_8u_C1(Npp8u min[], Npp8u max[],
 }
 
 // kernel; find min/max; 8u_C4
-__global__ void cuMinMaxXKernel_8u_C4(uchar4 min[], uchar4 max[],
+__global__ void cuMinMaxXKernel_8u_C4(uchar4* min, uchar4* max,
                                       int xoff, int yoff, int width, int height)
 {
   const int x = blockIdx.x*blockDim.x + threadIdx.x;
@@ -109,7 +109,7 @@ __global__ void cuMinMaxXKernel_8u_C4(uchar4 min[], uchar4 max[],
 }
 
 // kernel; find min/max; 32f_C1
-__global__ void cuMinMaxXKernel_32f_C1(float min[], float max[],
+__global__ void cuMinMaxXKernel_32f_C1(float* min, float* max,
                                        int xoff, int yoff, int width, int height)
 {
  const int x = blockIdx.x*blockDim.x + threadIdx.x;
@@ -139,7 +139,7 @@ __global__ void cuMinMaxXKernel_32f_C1(float min[], float max[],
 }
 
 // kernel; find min/max; 32f_C2
-__global__ void cuMinMaxXKernel_32f_C2(float2 min[], float2 max[],
+__global__ void cuMinMaxXKernel_32f_C2(float2* min, float2* max,
                                        int xoff, int yoff, int width, int height)
 {
   const int x = blockIdx.x*blockDim.x + threadIdx.x;
@@ -172,7 +172,7 @@ __global__ void cuMinMaxXKernel_32f_C2(float2 min[], float2 max[],
 }
 
 // kernel; find min/max; 32f_C4
-__global__ void cuMinMaxXKernel_32f_C4(float4 min[], float4 max[],
+__global__ void cuMinMaxXKernel_32f_C4(float4* min, float4* max,
                                        int xoff, int yoff, int width, int height)
 {
   const int x = blockIdx.x*blockDim.x + threadIdx.x;
@@ -213,7 +213,7 @@ __global__ void cuMinMaxXKernel_32f_C4(float4 min[], float4 max[],
 */
 
 // kernel; compute sum; 8u_C1
-__global__ void cuSumColKernel_8u_C1(float sum[], int xoff, int yoff, int width, int height)
+__global__ void cuSumColKernel_8u_C1(unsigned char* sum, int xoff, int yoff, int width, int height)
 {
  const int x = blockIdx.x*blockDim.x + threadIdx.x;
  const int y = blockIdx.y*blockDim.y + threadIdx.y;
@@ -236,7 +236,7 @@ __global__ void cuSumColKernel_8u_C1(float sum[], int xoff, int yoff, int width,
 }
 
 // kernel; compute sum; 32f_C1
-__global__ void cuSumColKernel_32f_C1(float sum[], int xoff, int yoff, int width, int height)
+__global__ void cuSumColKernel_32f_C1(float* sum, int xoff, int yoff, int width, int height)
 {
  const int x = blockIdx.x*blockDim.x + threadIdx.x;
  const int y = blockIdx.y*blockDim.y + threadIdx.y;
@@ -263,7 +263,9 @@ __global__ void cuSumColKernel_32f_C1(float sum[], int xoff, int yoff, int width
 */
 
 // kernel: compute L1 norm; |image1-image2|;
-__global__ void  cuNormDiffL1Kernel(Npp32f* dst, size_t stride, int xoff, int yoff, int width, int height) {
+__global__ void  cuNormDiffL1Kernel_32f_C1(float* dst, size_t stride,
+                                           int xoff, int yoff, int width, int height)
+{
   int x = blockIdx.x*blockDim.x + threadIdx.x;
   int y = blockIdx.y*blockDim.y + threadIdx.y;
   const unsigned int oc = y*stride+x;
@@ -281,7 +283,8 @@ __global__ void  cuNormDiffL1Kernel(Npp32f* dst, size_t stride, int xoff, int yo
 }
 
 // kernel: compute L1 norm; |image-value|;
-__global__ void  cuNormDiffValueL1Kernel(Npp32f value, Npp32f* dst, size_t stride, int xoff, int yoff, int width, int height)
+__global__ void  cuNormDiffValueL1Kernel_32f_C1(float value, float* dst, size_t stride,
+                                                int xoff, int yoff, int width, int height)
 {
   int x = blockIdx.x*blockDim.x + threadIdx.x;
   int y = blockIdx.y*blockDim.y + threadIdx.y;
@@ -300,7 +303,8 @@ __global__ void  cuNormDiffValueL1Kernel(Npp32f value, Npp32f* dst, size_t strid
 }
 
 // kernel: compute L2 norm; ||image1-image2||;
-__global__ void  cuNormDiffL2Kernel(Npp32f* dst, size_t stride, int xoff, int yoff, int width, int height)
+__global__ void  cuNormDiffL2Kernel_32f_C1(float* dst, size_t stride,
+                                           int xoff, int yoff, int width, int height)
 {
   int x = blockIdx.x*blockDim.x + threadIdx.x;
   int y = blockIdx.y*blockDim.y + threadIdx.y;
@@ -319,7 +323,8 @@ __global__ void  cuNormDiffL2Kernel(Npp32f* dst, size_t stride, int xoff, int yo
 }
 
 // kernel: compute L2 norm; ||image-value||;
-__global__ void  cuNormDiffValueL2Kernel(Npp32f value, Npp32f* dst, size_t stride, int xoff, int yoff, int width, int height)
+__global__ void  cuNormDiffValueL2Kernel_32f_C1(float value, float* dst, size_t stride,
+                                                int xoff, int yoff, int width, int height)
 {
   int x = blockIdx.x*blockDim.x + threadIdx.x;
   int y = blockIdx.y*blockDim.y + threadIdx.y;
@@ -346,20 +351,16 @@ __global__ void  cuNormDiffValueL2Kernel(Npp32f value, Npp32f* dst, size_t strid
 */
 
 // wrapper: find min/max; 8u_C1
-NppStatus cuMinMax(const iu::ImageNpp_8u_C1 *src, const IuRect &roi, Npp8u& min_C1, Npp8u& max_C1)
+NppStatus cuMinMax(const iu::ImageGpu_8u_C1 *src, const IuRect &roi,
+                   unsigned char& min_C1, unsigned char& max_C1)
 {
-  NppStatus status;
-  NppiSize npp_roi = {roi.width, roi.height};
-  status = nppiMinMax_8u_C1R(src->data(roi.x, roi.y), static_cast<int>(src->pitch()), npp_roi, &min_C1, &max_C1 );
-  return status;
-/* TODO check timing between min/max kernels and npp stuff
   // prepare and bind texture
   tex1_8u_C1__.filterMode = cudaFilterModePoint;
   tex1_8u_C1__.addressMode[0] = cudaAddressModeClamp;
   tex1_8u_C1__.addressMode[1] = cudaAddressModeClamp;
   tex1_8u_C1__.normalized = false;
   cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<uchar1>();
-  cudaBindTexture2D(0, &tex1_8u_C1__, (uchar1*)src->data(), &channel_desc,
+  cudaBindTexture2D(0, &tex1_8u_C1__, src->data(), &channel_desc,
                     src->width(), src->height(), src->pitch());
 
   // fragmentation
@@ -369,54 +370,44 @@ NppStatus cuMinMax(const iu::ImageNpp_8u_C1 *src, const IuRect &roi, Npp8u& min_
 
   // temporary memory for row sums on the host
   int num_row_sums = roi.width-roi.x;
-  iu::ImageNpp_8u_C1 row_mins(num_row_sums, 1);
-  iu::ImageNpp_8u_C1 row_maxs(num_row_sums, 1);
+  iu::LinearDeviceMemory_8u_C1 row_mins(num_row_sums);
+  iu::LinearDeviceMemory_8u_C1 row_maxs(num_row_sums);
 
   cuMinMaxXKernel_8u_C1 <<< dimGridX, dimBlock >>> (
       row_mins.data(), row_maxs.data(), roi.x, roi.y, roi.width, roi.height);
 
   IU_CHECK_CUDA_ERRORS();
 
-  iu::ImageCpu_8u_C1 h_row_mins(num_row_sums, 1);
-  iu::ImageCpu_8u_C1 h_row_maxs(num_row_sums, 1);
-  iuprivate::copy(&row_mins, row_mins.roi(), &h_row_mins, h_row_mins.roi());
-  iuprivate::copy(&row_maxs, row_maxs.roi(), &h_row_maxs, h_row_maxs.roi());
+  iu::LinearHostMemory_8u_C1 h_row_mins(num_row_sums);
+  iu::LinearHostMemory_8u_C1 h_row_maxs(num_row_sums);
+  iuprivate::copy(&row_mins, &h_row_mins);
+  iuprivate::copy(&row_maxs, &h_row_maxs);
 
-  Npp8u* hb_row_mins = h_row_mins.data();
-  Npp8u* hb_row_maxs= h_row_maxs.data();
-
-  min_C1 = hb_row_mins[0];
-  max_C1 = hb_row_maxs[0];
+  min_C1 = *h_row_mins.data();
+  max_C1 = *h_row_maxs.data();
 
   for (int i = 1; i < num_row_sums; ++i)
   {
-    min_C1 = min(min_C1, hb_row_mins[i]);
-    max_C1 = max(max_C1, hb_row_maxs[i]);
+    min_C1 = min(min_C1, *h_row_mins.data(i));
+    max_C1 = max(max_C1, *h_row_maxs.data(i));
   }
 
   cudaUnbindTexture(&tex1_8u_C1__);
   IU_CHECK_CUDA_ERRORS();
   return NPP_SUCCESS;
-  */
 }
 
 
 // wrapper: find min/max; 8u_C4
-NppStatus cuMinMax(const iu::ImageNpp_8u_C4 *src, const IuRect &roi, Npp8u min_C4[4], Npp8u max_C4[4])
+NppStatus cuMinMax(const iu::ImageGpu_8u_C4 *src, const IuRect &roi, uchar4& min_C4, uchar4& max_C4)
 {
-  // nppiMinMax_8u_C4R seems to have a bug
-//  NppStatus status;
-//  NppiSize npp_roi = {roi.width, roi.height};
-//  status = nppiMinMax_8u_C4R(src->data(roi.x, roi.y), src->pitch(), npp_roi, min_C4, max_C4 );
-//  return status;
-
   // prepare and bind texture
   tex1_8u_C4__.filterMode = cudaFilterModePoint;
   tex1_8u_C4__.addressMode[0] = cudaAddressModeClamp;
   tex1_8u_C4__.addressMode[1] = cudaAddressModeClamp;
   tex1_8u_C4__.normalized = false;
   cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<uchar4>();
-  cudaBindTexture2D(0, &tex1_8u_C4__, (uchar4*)src->data(), &channel_desc,
+  cudaBindTexture2D(0, &tex1_8u_C4__, src->data(), &channel_desc,
                     src->width(), src->height(), src->pitch());
 
   // fragmentation
@@ -426,44 +417,34 @@ NppStatus cuMinMax(const iu::ImageNpp_8u_C4 *src, const IuRect &roi, Npp8u min_C
 
   // temporary memory for row sums on the host
   int num_row_sums = roi.width-roi.x;
-  iu::ImageNpp_8u_C4 row_mins(num_row_sums, 1);
-  iu::ImageNpp_8u_C4 row_maxs(num_row_sums, 1);
+  iu::LinearHostMemory_8u_C4 row_mins(num_row_sums);
+  iu::LinearHostMemory_8u_C4 row_maxs(num_row_sums);
 
   cuMinMaxXKernel_8u_C4 <<< dimGridX, dimBlock >>> (
-      (uchar4*)row_mins.data(), (uchar4*)row_maxs.data(),
+      row_mins.data(), row_maxs.data(),
       roi.x, roi.y, roi.width, roi.height);
 
   IU_CHECK_CUDA_ERRORS();
 
-  iu::ImageCpu_8u_C4 h_row_mins(num_row_sums, 1);
-  iu::ImageCpu_8u_C4 h_row_maxs(num_row_sums, 1);
+  iu::LinearHostMemory_8u_C4 h_row_mins(num_row_sums);
+  iu::LinearHostMemory_8u_C4 h_row_maxs(num_row_sums);
   iuprivate::copy(&row_mins, &h_row_mins);
   iuprivate::copy(&row_maxs, &h_row_maxs);
 
-  Npp8u* hb_row_mins = h_row_mins.data();
-  Npp8u* hb_row_maxs= h_row_maxs.data();
-
-  min_C4[0] = hb_row_mins[0];
-  min_C4[1] = hb_row_mins[1];
-  min_C4[2] = hb_row_mins[2];
-  min_C4[3] = hb_row_mins[3];
-
-  max_C4[0] = hb_row_maxs[0];
-  max_C4[1] = hb_row_maxs[1];
-  max_C4[2] = hb_row_maxs[2];
-  max_C4[3] = hb_row_maxs[3];
+  min_C4 = *h_row_mins.data(0);
+  max_C4 = *h_row_maxs.data(0);
 
   for (int i = 1; i < num_row_sums; ++i)
   {
-    min_C4[0] = min(min_C4[0], hb_row_mins[i*4]);
-    min_C4[1] = min(min_C4[0], hb_row_mins[i*4+1]);
-    min_C4[2] = min(min_C4[0], hb_row_mins[i*4+2]);
-    min_C4[3] = min(min_C4[0], hb_row_mins[i*4+3]);
+    min_C4.x = min(min_C4.x, h_row_mins.data(i)->x);
+    min_C4.y = min(min_C4.y, h_row_mins.data(i)->y);
+    min_C4.z = min(min_C4.z, h_row_mins.data(i)->z);
+    min_C4.w = min(min_C4.w, h_row_mins.data(i)->w);
 
-    max_C4[0] = max(max_C4[0], hb_row_maxs[i*4]);
-    max_C4[1] = max(max_C4[0], hb_row_maxs[i*4+1]);
-    max_C4[2] = max(max_C4[0], hb_row_maxs[i*4+2]);
-    max_C4[3] = max(max_C4[0], hb_row_maxs[i*4+3]);
+    max_C4.x = max(max_C4.x, h_row_maxs.data(i)->x);
+    max_C4.y = max(max_C4.y, h_row_maxs.data(i)->y);
+    max_C4.z = max(max_C4.z, h_row_maxs.data(i)->z);
+    max_C4.w = max(max_C4.w, h_row_maxs.data(i)->w);
   }
 
   cudaUnbindTexture(&tex1_8u_C4__);
@@ -472,7 +453,7 @@ NppStatus cuMinMax(const iu::ImageNpp_8u_C4 *src, const IuRect &roi, Npp8u min_C
 }
 
 // wrapper: find min/max; 32f_C1
-NppStatus cuMinMax(const iu::ImageNpp_32f_C1 *src, const IuRect &roi, Npp32f& min_C1, Npp32f& max_C1)
+NppStatus cuMinMax(const iu::ImageGpu_32f_C1 *src, const IuRect &roi, float& min_C1, float& max_C1)
 {
   // prepare and bind texture
   tex1_32f_C1__.filterMode = cudaFilterModePoint;
@@ -480,7 +461,7 @@ NppStatus cuMinMax(const iu::ImageNpp_32f_C1 *src, const IuRect &roi, Npp32f& mi
   tex1_32f_C1__.addressMode[1] = cudaAddressModeClamp;
   tex1_32f_C1__.normalized = false;
   cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<float1>();
-  cudaBindTexture2D(0, &tex1_32f_C1__, (float1*)src->data(), &channel_desc,
+  cudaBindTexture2D(0, &tex1_32f_C1__, src->data(), &channel_desc,
                     src->width(), src->height(), src->pitch());
 
   // fragmentation
@@ -490,29 +471,26 @@ NppStatus cuMinMax(const iu::ImageNpp_32f_C1 *src, const IuRect &roi, Npp32f& mi
 
   // temporary memory for row sums on the host
   int num_row_sums = roi.width-roi.x;
-  iu::ImageNpp_32f_C1 row_mins(num_row_sums, 1);
-  iu::ImageNpp_32f_C1 row_maxs(num_row_sums, 1);
+  iu::LinearDeviceMemory_32f_C1 row_mins(num_row_sums);
+  iu::LinearDeviceMemory_32f_C1 row_maxs(num_row_sums);
 
   cuMinMaxXKernel_32f_C1 <<< dimGridX, dimBlock >>> (
       row_mins.data(), row_maxs.data(), roi.x, roi.y, roi.width, roi.height);
 
   IU_CHECK_CUDA_ERRORS();
 
-  iu::ImageCpu_32f_C1 h_row_mins(num_row_sums, 1);
-  iu::ImageCpu_32f_C1 h_row_maxs(num_row_sums, 1);
+  iu::LinearHostMemory_32f_C1 h_row_mins(num_row_sums);
+  iu::LinearHostMemory_32f_C1 h_row_maxs(num_row_sums);
   iuprivate::copy(&row_mins, &h_row_mins);
   iuprivate::copy(&row_maxs, &h_row_maxs);
 
-  float* hb_row_mins = h_row_mins.data();
-  float* hb_row_maxs= h_row_maxs.data();
-
-  min_C1 = hb_row_mins[0];
-  max_C1 = hb_row_maxs[0];
+  min_C1 = *h_row_mins.data(0);
+  max_C1 = *h_row_maxs.data(0);
 
   for (int i = 1; i < num_row_sums; ++i)
   {
-    min_C1 = min(min_C1, hb_row_mins[i]);
-    max_C1 = max(max_C1, hb_row_maxs[i]);
+    min_C1 = min(min_C1, *h_row_mins.data(i));
+    max_C1 = max(max_C1, *h_row_maxs.data(i));
   }
 
   cudaUnbindTexture(&tex1_32f_C1__);
@@ -520,8 +498,9 @@ NppStatus cuMinMax(const iu::ImageNpp_32f_C1 *src, const IuRect &roi, Npp32f& mi
   return NPP_SUCCESS;
 }
 
+
 // wrapper: find min/max; 32f_C2
-NppStatus cuMinMax(const iu::ImageNpp_32f_C2 *src, const IuRect &roi, Npp32f min_C2[2], Npp32f max_C2[2])
+NppStatus cuMinMax(const iu::ImageGpu_32f_C2 *src, const IuRect &roi, float2& min_C2, float2& max_C2)
 {
   // prepare and bind texture
   tex1_32f_C2__.filterMode = cudaFilterModePoint;
@@ -529,7 +508,7 @@ NppStatus cuMinMax(const iu::ImageNpp_32f_C2 *src, const IuRect &roi, Npp32f min
   tex1_32f_C2__.addressMode[1] = cudaAddressModeClamp;
   tex1_32f_C2__.normalized = false;
   cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<float2>();
-  cudaBindTexture2D(0, &tex1_32f_C2__, (float2*)src->data(), &channel_desc,
+  cudaBindTexture2D(0, &tex1_32f_C2__, src->data(), &channel_desc,
                     src->width(), src->height(), src->pitch());
 
   // fragmentation
@@ -539,36 +518,30 @@ NppStatus cuMinMax(const iu::ImageNpp_32f_C2 *src, const IuRect &roi, Npp32f min
 
   // temporary memory for row sums on the host
   int num_row_sums = roi.width-roi.x;
-  iu::ImageNpp_32f_C2 row_mins(num_row_sums, 1);
-  iu::ImageNpp_32f_C2 row_maxs(num_row_sums, 1);
+  iu::LinearHostMemory_32f_C2 row_mins(num_row_sums);
+  iu::LinearHostMemory_32f_C2 row_maxs(num_row_sums);
 
   cuMinMaxXKernel_32f_C2 <<< dimGridX, dimBlock >>> (
-      (float2*)row_mins.data(), (float2*)row_maxs.data(),
+      row_mins.data(), row_maxs.data(),
       roi.x, roi.y, roi.width, roi.height);
 
   IU_CHECK_CUDA_ERRORS();
 
-  iu::ImageCpu_32f_C2 h_row_mins(num_row_sums, 1);
-  iu::ImageCpu_32f_C2 h_row_maxs(num_row_sums, 1);
+  iu::LinearHostMemory_32f_C2 h_row_mins(num_row_sums);
+  iu::LinearHostMemory_32f_C2 h_row_maxs(num_row_sums);
   iuprivate::copy(&row_mins, &h_row_mins);
   iuprivate::copy(&row_maxs, &h_row_maxs);
 
-  float* hb_row_mins = h_row_mins.data();
-  float* hb_row_maxs= h_row_maxs.data();
-
-  min_C2[0] = hb_row_mins[0];
-  min_C2[1] = hb_row_mins[1];
-
-  max_C2[0] = hb_row_maxs[0];
-  max_C2[1] = hb_row_maxs[1];
+  min_C2 = *h_row_mins.data(0);
+  max_C2 = *h_row_maxs.data(0);
 
   for (int i = 1; i < num_row_sums; ++i)
   {
-    min_C2[0] = min(min_C2[0], hb_row_mins[i*2]);
-    min_C2[1] = min(min_C2[0], hb_row_mins[i*2+1]);
+    min_C2.x = min(min_C2.x, h_row_mins.data(i)->x);
+    min_C2.y = min(min_C2.y, h_row_mins.data(i)->y);
 
-    max_C2[0] = max(max_C2[0], hb_row_maxs[i*2]);
-    max_C2[1] = max(max_C2[0], hb_row_maxs[i*2+1]);
+    max_C2.x = max(max_C2.x, h_row_maxs.data(i)->x);
+    max_C2.y = max(max_C2.y, h_row_maxs.data(i)->y);
   }
 
   cudaUnbindTexture(&tex1_32f_C2__);
@@ -577,7 +550,7 @@ NppStatus cuMinMax(const iu::ImageNpp_32f_C2 *src, const IuRect &roi, Npp32f min
 }
 
 // wrapper: find min/max; 32f_C4
-NppStatus cuMinMax(const iu::ImageNpp_32f_C4 *src, const IuRect &roi, Npp32f min_C4[4], Npp32f max_C4[4])
+NppStatus cuMinMax(const iu::ImageGpu_32f_C4 *src, const IuRect &roi, float4& min_C4, float4& max_C4)
 {
   // prepare and bind texture
   tex1_32f_C4__.filterMode = cudaFilterModePoint;
@@ -585,7 +558,7 @@ NppStatus cuMinMax(const iu::ImageNpp_32f_C4 *src, const IuRect &roi, Npp32f min
   tex1_32f_C4__.addressMode[1] = cudaAddressModeClamp;
   tex1_32f_C4__.normalized = false;
   cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<float4>();
-  cudaBindTexture2D(0, &tex1_32f_C4__, (float4*)src->data(), &channel_desc,
+  cudaBindTexture2D(0, &tex1_32f_C4__, src->data(), &channel_desc,
                     src->width(), src->height(), src->pitch());
 
   // fragmentation
@@ -595,44 +568,34 @@ NppStatus cuMinMax(const iu::ImageNpp_32f_C4 *src, const IuRect &roi, Npp32f min
 
   // temporary memory for row sums on the host
   int num_row_sums = roi.width-roi.x;
-  iu::ImageNpp_32f_C4 row_mins(num_row_sums, 1);
-  iu::ImageNpp_32f_C4 row_maxs(num_row_sums, 1);
+  iu::LinearHostMemory_32f_C4 row_mins(num_row_sums);
+  iu::LinearHostMemory_32f_C4 row_maxs(num_row_sums);
 
   cuMinMaxXKernel_32f_C4 <<< dimGridX, dimBlock >>> (
-      (float4*)row_mins.data(), (float4*)row_maxs.data(),
+      row_mins.data(), row_maxs.data(),
       roi.x, roi.y, roi.width, roi.height);
 
   IU_CHECK_CUDA_ERRORS();
 
-  iu::ImageCpu_32f_C4 h_row_mins(num_row_sums, 1);
-  iu::ImageCpu_32f_C4 h_row_maxs(num_row_sums, 1);
+  iu::LinearHostMemory_32f_C4 h_row_mins(num_row_sums);
+  iu::LinearHostMemory_32f_C4 h_row_maxs(num_row_sums);
   iuprivate::copy(&row_mins, &h_row_mins);
   iuprivate::copy(&row_maxs, &h_row_maxs);
 
-  float* hb_row_mins = h_row_mins.data();
-  float* hb_row_maxs= h_row_maxs.data();
-
-  min_C4[0] = hb_row_mins[0];
-  min_C4[1] = hb_row_mins[1];
-  min_C4[2] = hb_row_mins[2];
-  min_C4[3] = hb_row_mins[3];
-
-  max_C4[0] = hb_row_maxs[0];
-  max_C4[1] = hb_row_maxs[1];
-  max_C4[2] = hb_row_maxs[2];
-  max_C4[3] = hb_row_maxs[3];
+  min_C4 = *h_row_mins.data(0);
+  max_C4 = *h_row_maxs.data(0);
 
   for (int i = 1; i < num_row_sums; ++i)
   {
-    min_C4[0] = min(min_C4[0], hb_row_mins[i*4]);
-    min_C4[1] = min(min_C4[0], hb_row_mins[i*4+1]);
-    min_C4[2] = min(min_C4[0], hb_row_mins[i*4+2]);
-    min_C4[3] = min(min_C4[0], hb_row_mins[i*4+3]);
+    min_C4.x = min(min_C4.x, h_row_mins.data(i)->x);
+    min_C4.y = min(min_C4.y, h_row_mins.data(i)->y);
+    min_C4.z = min(min_C4.z, h_row_mins.data(i)->z);
+    min_C4.w = min(min_C4.w, h_row_mins.data(i)->w);
 
-    max_C4[0] = max(max_C4[0], hb_row_maxs[i*4]);
-    max_C4[1] = max(max_C4[0], hb_row_maxs[i*4+1]);
-    max_C4[2] = max(max_C4[0], hb_row_maxs[i*4+2]);
-    max_C4[3] = max(max_C4[0], hb_row_maxs[i*4+3]);
+    max_C4.x = max(max_C4.x, h_row_maxs.data(i)->x);
+    max_C4.y = max(max_C4.y, h_row_maxs.data(i)->y);
+    max_C4.z = max(max_C4.z, h_row_maxs.data(i)->z);
+    max_C4.w = max(max_C4.w, h_row_maxs.data(i)->w);
   }
 
   cudaUnbindTexture(&tex1_32f_C4__);
@@ -640,12 +603,13 @@ NppStatus cuMinMax(const iu::ImageNpp_32f_C4 *src, const IuRect &roi, Npp32f min
   return NPP_SUCCESS;
 }
 
+
 /*
   WRAPPERS FOR SUM
 */
 
 // wrapper: compute sum; 8u_C1
-NppStatus cuSummation(const iu::ImageNpp_8u_C1 *src, const IuRect &roi, Npp64s& sum)
+NppStatus cuSummation(const iu::ImageGpu_8u_C1 *src, const IuRect &roi, Npp64s& sum)
 {
   // prepare and bind texture
   tex1_8u_C1__.filterMode = cudaFilterModePoint;
@@ -662,20 +626,19 @@ NppStatus cuSummation(const iu::ImageNpp_8u_C1 *src, const IuRect &roi, Npp64s& 
 
   // temporary memory for row sums on the host
   int num_col_sums = roi.width-roi.x;
-  iu::ImageNpp_32f_C1 col_sums(num_col_sums, 1);
+  iu::LinearDeviceMemory_8u_C1 col_sums(num_col_sums);
 
   cuSumColKernel_8u_C1 <<< dimGridX, dimBlock >>> (
       col_sums.data(), roi.x, roi.y, roi.width, roi.height);
 
   // :TODO: 32f vs 32u?
-  iu::ImageCpu_32f_C1 h_col_sums(num_col_sums, 1);
+  iu::LinearHostMemory_8u_C1 h_col_sums(num_col_sums);
   iuprivate::copy(&col_sums, &h_col_sums);
 
-  float* hb_col_sums = h_col_sums.data();
   sum = 0;
   for (int i = 0; i < num_col_sums; ++i)
   {
-    sum += static_cast<Npp32u>(hb_col_sums[i]);
+    sum += static_cast<unsigned int>(*h_col_sums.data(i));
   }
 
   cudaUnbindTexture(&tex1_8u_C1__);
@@ -684,7 +647,7 @@ NppStatus cuSummation(const iu::ImageNpp_8u_C1 *src, const IuRect &roi, Npp64s& 
 }
 
 // wrapper: compute sum; 32f_C1
-NppStatus cuSummation(const iu::ImageNpp_32f_C1 *src, const IuRect &roi, Npp64f& sum)
+NppStatus cuSummation(const iu::ImageGpu_32f_C1 *src, const IuRect &roi, Npp64f& sum)
 {
   // prepare and bind texture
   tex1_32f_C1__.filterMode = cudaFilterModePoint;
@@ -701,19 +664,18 @@ NppStatus cuSummation(const iu::ImageNpp_32f_C1 *src, const IuRect &roi, Npp64f&
 
   // temporary memory for row sums on the host
   int num_col_sums = roi.width-roi.x;
-  iu::ImageNpp_32f_C1 col_sums(num_col_sums, 1);
+  iu::LinearDeviceMemory_32f_C1 col_sums(num_col_sums);
 
   cuSumColKernel_32f_C1 <<< dimGridX, dimBlock >>> (
       col_sums.data(), roi.x, roi.y, roi.width, roi.height);
 
-  iu::ImageCpu_32f_C1 h_col_sums(num_col_sums, 1);
+  iu::LinearHostMemory_32f_C1 h_col_sums(num_col_sums);
   iuprivate::copy(&col_sums, &h_col_sums);
 
-  float* hb_col_sums = h_col_sums.data();
   sum = 0.0;
   for (int i = 0; i < num_col_sums; ++i)
   {
-    sum += hb_col_sums[i];
+    sum += *h_col_sums.data(i);
   }
 
   cudaUnbindTexture(&tex1_32f_C1__);
@@ -726,7 +688,7 @@ NppStatus cuSummation(const iu::ImageNpp_32f_C1 *src, const IuRect &roi, Npp64f&
 */
 
 // wrapper: compute L1 norm; |image1-image2|;
-NppStatus cuNormDiffL1(const iu::ImageNpp_32f_C1* src1, const iu::ImageNpp_32f_C1* src2, const IuRect& roi, Npp64f& norm)
+NppStatus cuNormDiffL1(const iu::ImageGpu_32f_C1* src1, const iu::ImageGpu_32f_C1* src2, const IuRect& roi, Npp64f& norm)
 {
   // prepare and bind texture
   tex1_32f_C1__.filterMode = cudaFilterModePoint;
@@ -748,9 +710,9 @@ NppStatus cuNormDiffL1(const iu::ImageNpp_32f_C1* src1, const iu::ImageNpp_32f_C
   dim3 dimGrid(iu::divUp(roi.width - roi.x, dimBlock.x),
                iu::divUp(roi.height - roi.y, dimBlock.y));
 
-  iu::ImageNpp_32f_C1 squared_deviances(roi.width, roi.height);
+  iu::ImageGpu_32f_C1 squared_deviances(roi.width, roi.height);
 
-  cuNormDiffL1Kernel <<< dimGrid, dimBlock >>> (
+  cuNormDiffL1Kernel_32f_C1 <<< dimGrid, dimBlock >>> (
       squared_deviances.data(roi.x, roi.y), squared_deviances.stride(), roi.x, roi.y, roi.width, roi.height);
 
   Npp64f sum_squared = 0.0;
@@ -762,7 +724,7 @@ NppStatus cuNormDiffL1(const iu::ImageNpp_32f_C1* src1, const iu::ImageNpp_32f_C
 }
 
 // wrapper: compute L1 norm; |image1-value|;
-NppStatus cuNormDiffL1(const iu::ImageNpp_32f_C1* src, const Npp32f& value, const IuRect& roi, Npp64f& norm)
+NppStatus cuNormDiffL1(const iu::ImageGpu_32f_C1* src, const Npp32f& value, const IuRect& roi, Npp64f& norm)
 {
   // prepare and bind texture
   tex1_32f_C1__.filterMode = cudaFilterModePoint;
@@ -777,9 +739,9 @@ NppStatus cuNormDiffL1(const iu::ImageNpp_32f_C1* src, const Npp32f& value, cons
   dim3 dimGrid(iu::divUp(roi.width - roi.x, dimBlock.x),
                iu::divUp(roi.height - roi.y, dimBlock.y));
 
-  iu::ImageNpp_32f_C1 squared_deviances(roi.width, roi.height);
+  iu::ImageGpu_32f_C1 squared_deviances(roi.width, roi.height);
 
-  cuNormDiffValueL1Kernel <<< dimGrid, dimBlock >>> (
+  cuNormDiffValueL1Kernel_32f_C1 <<< dimGrid, dimBlock >>> (
       value, squared_deviances.data(roi.x, roi.y), squared_deviances.stride(),
       roi.x, roi.y, roi.width, roi.height);
 
@@ -792,7 +754,7 @@ NppStatus cuNormDiffL1(const iu::ImageNpp_32f_C1* src, const Npp32f& value, cons
 }
 
 // wrapper: compute L2 norm; ||image1-image2||;
-NppStatus cuNormDiffL2(const iu::ImageNpp_32f_C1* src1, const iu::ImageNpp_32f_C1* src2, const IuRect& roi, Npp64f& norm)
+NppStatus cuNormDiffL2(const iu::ImageGpu_32f_C1* src1, const iu::ImageGpu_32f_C1* src2, const IuRect& roi, Npp64f& norm)
 {
   // prepare and bind texture
   tex1_32f_C1__.filterMode = cudaFilterModePoint;
@@ -814,9 +776,9 @@ NppStatus cuNormDiffL2(const iu::ImageNpp_32f_C1* src1, const iu::ImageNpp_32f_C
   dim3 dimGrid(iu::divUp(roi.width - roi.x, dimBlock.x),
                iu::divUp(roi.height - roi.y, dimBlock.y));
 
-  iu::ImageNpp_32f_C1 squared_deviances(roi.width, roi.height);
+  iu::ImageGpu_32f_C1 squared_deviances(roi.width, roi.height);
 
-  cuNormDiffL2Kernel <<< dimGrid, dimBlock >>> (
+  cuNormDiffL2Kernel_32f_C1 <<< dimGrid, dimBlock >>> (
       squared_deviances.data(roi.x, roi.y), squared_deviances.stride(), roi.x, roi.y, roi.width, roi.height);
 
   Npp64f sum_squared = 0.0;
@@ -828,7 +790,7 @@ NppStatus cuNormDiffL2(const iu::ImageNpp_32f_C1* src1, const iu::ImageNpp_32f_C
 }
 
 // wrapper: compute L2 norm; ||image1-value||;
-NppStatus cuNormDiffL2(const iu::ImageNpp_32f_C1* src, const Npp32f& value, const IuRect& roi, Npp64f& norm)
+NppStatus cuNormDiffL2(const iu::ImageGpu_32f_C1* src, const Npp32f& value, const IuRect& roi, Npp64f& norm)
 {
   // prepare and bind texture
   tex1_32f_C1__.filterMode = cudaFilterModePoint;
@@ -843,9 +805,9 @@ NppStatus cuNormDiffL2(const iu::ImageNpp_32f_C1* src, const Npp32f& value, cons
   dim3 dimGrid(iu::divUp(roi.width - roi.x, dimBlock.x),
                iu::divUp(roi.height - roi.y, dimBlock.y));
 
-  iu::ImageNpp_32f_C1 squared_deviances(roi.width, roi.height);
+  iu::ImageGpu_32f_C1 squared_deviances(roi.width, roi.height);
 
-  cuNormDiffValueL2Kernel <<< dimGrid, dimBlock >>> (
+  cuNormDiffValueL2Kernel_32f_C1 <<< dimGrid, dimBlock >>> (
       value, squared_deviances.data(roi.x, roi.y), squared_deviances.stride(),
       roi.x, roi.y, roi.width, roi.height);
 
@@ -878,7 +840,7 @@ __global__ void cuMseKernel(Npp32f* dst, size_t stride, int xoff, int yoff, int 
 
 
 // wrapper: compute MSE
-NppStatus cuMse(const iu::ImageNpp_32f_C1* src, const iu::ImageNpp_32f_C1* reference, const IuRect& roi, Npp64f& mse)
+NppStatus cuMse(const iu::ImageGpu_32f_C1* src, const iu::ImageGpu_32f_C1* reference, const IuRect& roi, Npp64f& mse)
 {
   tex1_32f_C1__.addressMode[0] = cudaAddressModeClamp;
   tex1_32f_C1__.addressMode[1] = cudaAddressModeClamp;
@@ -899,7 +861,7 @@ NppStatus cuMse(const iu::ImageNpp_32f_C1* src, const iu::ImageNpp_32f_C1* refer
   dim3 dimGrid(iu::divUp(roi.width - roi.x, dimBlock.x),
                iu::divUp(roi.height - roi.y, dimBlock.y));
 
-  iu::ImageNpp_32f_C1 tmp(roi.width, roi.height);
+  iu::ImageGpu_32f_C1 tmp(roi.width, roi.height);
   iuprivate::setValue(0.0f, &tmp, tmp.roi());
 
   cuMseKernel <<< dimGrid,dimBlock >>> (
@@ -968,7 +930,7 @@ __global__ void cuSsimKernel(float c1, float c2, Npp32f* dst, size_t stride, int
 }
 
 // wrapper: compute SSIM
-NppStatus cuSsim(const iu::ImageNpp_32f_C1* src, const iu::ImageNpp_32f_C1* reference, const IuRect& roi, Npp64f& ssim)
+NppStatus cuSsim(const iu::ImageGpu_32f_C1* src, const iu::ImageGpu_32f_C1* reference, const IuRect& roi, Npp64f& ssim)
 {
   tex1_32f_C1__.addressMode[0] = cudaAddressModeClamp;
   tex1_32f_C1__.addressMode[1] = cudaAddressModeClamp;
@@ -989,7 +951,7 @@ NppStatus cuSsim(const iu::ImageNpp_32f_C1* src, const iu::ImageNpp_32f_C1* refe
   dim3 dimGrid(iu::divUp(roi.width - roi.x, dimBlock.x),
                iu::divUp(roi.height - roi.y, dimBlock.y));
 
-  iu::ImageNpp_32f_C1 tmp(roi.width, roi.height);
+  iu::ImageGpu_32f_C1 tmp(roi.width, roi.height);
   iuprivate::setValue(0.0f, &tmp, tmp.roi());
 
   float k1 = 0.01f;

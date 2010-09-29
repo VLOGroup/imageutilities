@@ -50,13 +50,13 @@ namespace iuprivate {
 //void minMax(const iu::ImageCpu_32f_C4* src, const IuRect& roi, float min[4], float max[4]);
 
 // find min/max; device; 8-bit
-void minMax(const iu::ImageNpp_8u_C1* src, const IuRect& roi, Npp8u& min, Npp8u& max);
-void minMax(const iu::ImageNpp_8u_C4* src, const IuRect& roi, Npp8u min[4], Npp8u max[4]);
+void minMax(const iu::ImageGpu_8u_C1 *src, const IuRect &roi, unsigned char& min, unsigned char& max);
+void minMax(const iu::ImageGpu_8u_C4 *src, const IuRect &roi, uchar4 min, uchar4 max);
 
 // find min/max; device; 32-bit
-void minMax(const iu::ImageNpp_32f_C1* src, const IuRect& roi, Npp32f& min, Npp32f& max);
-void minMax(const iu::ImageNpp_32f_C2* src, const IuRect& roi, Npp32f min[2], Npp32f max[2]);
-void minMax(const iu::ImageNpp_32f_C4* src, const IuRect& roi, Npp32f min[4], Npp32f max[4]);
+void minMax(const iu::ImageGpu_32f_C1 *src, const IuRect &roi, float& min, float& max);
+void minMax(const iu::ImageGpu_32f_C2 *src, const IuRect &roi, float2& min, float2& max);
+void minMax(const iu::ImageGpu_32f_C4 *src, const IuRect &roi, float4& min, float4& max);
 
 
 /** Computes the sum of pixels in a certain ROI of an image.
@@ -78,12 +78,12 @@ void minMax(const iu::ImageNpp_32f_C4* src, const IuRect& roi, Npp32f min[4], Np
 //void summation(const iu::ImageCpu_32f_C4* src, const IuRect& roi, Npp64f sum[4]);
 
 // compute sum; device; 8-bit
-void summation(const iu::ImageNpp_8u_C1* src, const IuRect& roi, Npp64s& sum);
-//void summation(iu::ImageNpp_8u_C4* src, const IuRect& roi, Npp8u sum[4]);
+void summation(const iu::ImageGpu_8u_C1* src, const IuRect& roi, Npp64s& sum);
+//void summation(iu::ImageGpu_8u_C4* src, const IuRect& roi, Npp8u sum[4]);
 
 // compute sum; device; 32-bit
-void summation(const iu::ImageNpp_32f_C1* src, const IuRect& roi, Npp64f& sum);
-//void summation(iu::ImageNpp_32f_C4* src, const IuRect& roi, Npp32f sum[4]);
+void summation(const iu::ImageGpu_32f_C1* src, const IuRect& roi, Npp64f& sum);
+//void summation(iu::ImageGpu_32f_C4* src, const IuRect& roi, Npp32f sum[4]);
 
 
 /** Computes the L1 norm of differences between pixel values of two images. |src1-src2|
@@ -92,7 +92,7 @@ void summation(const iu::ImageNpp_32f_C1* src, const IuRect& roi, Npp64f& sum);
  * \param roi Region of interest in the source image.
  * \param norm Contains computed L1 norm.
  */
-void normDiffL1(const iu::ImageNpp_32f_C1* src1, const iu::ImageNpp_32f_C1* src2, const IuRect& roi, Npp64f& norm);
+void normDiffL1(const iu::ImageGpu_32f_C1* src1, const iu::ImageGpu_32f_C1* src2, const IuRect& roi, Npp64f& norm);
 
 /** Computes the L1 norm of differences between pixel values of an image and a constant value. |src-value|
  * \param src1 Pointer to the first source image.
@@ -100,7 +100,7 @@ void normDiffL1(const iu::ImageNpp_32f_C1* src1, const iu::ImageNpp_32f_C1* src2
  * \param roi Region of interest in the source image.
  * \param norm Contains computed L1 norm.
  */
-void normDiffL1(const iu::ImageNpp_32f_C1* src, const Npp32f& value, const IuRect& roi, Npp64f& norm);
+void normDiffL1(const iu::ImageGpu_32f_C1* src, const Npp32f& value, const IuRect& roi, Npp64f& norm);
 
 /** Computes the L2 norm of differences between pixel values of two images. ||src1-src2||
  * \param src1 Pointer to the first source image.
@@ -108,7 +108,7 @@ void normDiffL1(const iu::ImageNpp_32f_C1* src, const Npp32f& value, const IuRec
  * \param roi Region of interest in the source image.
  * \param norm Contains computed L2 norm.
  */
-void normDiffL2(const iu::ImageNpp_32f_C1* src1, const iu::ImageNpp_32f_C1* src2, const IuRect& roi, Npp64f& norm);
+void normDiffL2(const iu::ImageGpu_32f_C1* src1, const iu::ImageGpu_32f_C1* src2, const IuRect& roi, Npp64f& norm);
 
 /** Computes the L2 norm of differences between pixel values of an image and a constant value. ||src-value||
  * \param src Pointer to the first source image.
@@ -116,13 +116,13 @@ void normDiffL2(const iu::ImageNpp_32f_C1* src1, const iu::ImageNpp_32f_C1* src2
  * \param roi Region of interest in the source image.
  * \param norm Contains computed L2 norm.
  */
-void normDiffL2(const iu::ImageNpp_32f_C1* src, const Npp32f& value, const IuRect& roi, Npp64f& norm);
+void normDiffL2(const iu::ImageGpu_32f_C1* src, const Npp32f& value, const IuRect& roi, Npp64f& norm);
 
 // internal computation of the mean-squared error
-void mse(const iu::ImageNpp_32f_C1* src, const iu::ImageNpp_32f_C1* reference, const IuRect& roi, Npp64f& mse);
+void mse(const iu::ImageGpu_32f_C1* src, const iu::ImageGpu_32f_C1* reference, const IuRect& roi, Npp64f& mse);
 
 // internal computation of the structural similarity index
-void ssim(const iu::ImageNpp_32f_C1* src, const iu::ImageNpp_32f_C1* reference, const IuRect& roi, Npp64f& ssim);
+void ssim(const iu::ImageGpu_32f_C1* src, const iu::ImageGpu_32f_C1* reference, const IuRect& roi, Npp64f& ssim);
 
 } // namespace iuprivate
 

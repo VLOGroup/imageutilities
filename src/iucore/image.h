@@ -107,9 +107,6 @@ public:
   /** Returns the distnace in pixels between starts of consecutive rows. */
   virtual size_t stride() const {return 0;};
 
-  /** Returns the number of channels. */
-  virtual unsigned int nChannels() const {return 0;};
-
   /** Returns the bit depth of the data pointer. */
   virtual unsigned int bitDepth() const {return 0;};
 

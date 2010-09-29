@@ -55,9 +55,9 @@ namespace iu {
  * \note supported npp: 32f_C1
  */
 // [device] weighted add; Not-in-place; 32-bit;
-IU_DLLAPI void addWeighted(const iu::ImageNpp_32f_C1* src1, const Npp32f& weight1,
-                           const iu::ImageNpp_32f_C1* src2, const Npp32f& weight2,
-                           iu::ImageNpp_32f_C1* dst, const IuRect& roi);
+IU_DLLAPI void addWeighted(const iu::ImageGpu_32f_C1* src1, const Npp32f& weight1,
+                           const iu::ImageGpu_32f_C1* src2, const Npp32f& weight2,
+                           iu::ImageGpu_32f_C1* dst, const IuRect& roi);
 
 
 /** Multiplication of every pixel with a constant factor. (can be called in-place)
@@ -69,12 +69,12 @@ IU_DLLAPI void addWeighted(const iu::ImageNpp_32f_C1* src1, const Npp32f& weight
  * \note supported npp: 8u_C1, 8u_C4, 32f_C1, 32f_C4,
  */
 // [device] multiplication with factor; Not-in-place; 8-bit;
-IU_DLLAPI void mulC(const ImageNpp_8u_C1* src, const Npp8u& factor, ImageNpp_8u_C1* dst, const IuRect& roi);
-IU_DLLAPI void mulC(const ImageNpp_8u_C4* src, const Npp8u factor[4], ImageNpp_8u_C4* dst, const IuRect& roi);
+IU_DLLAPI void mulC(const ImageGpu_8u_C1* src, const Npp8u& factor, ImageGpu_8u_C1* dst, const IuRect& roi);
+IU_DLLAPI void mulC(const ImageGpu_8u_C4* src, const Npp8u factor[4], ImageGpu_8u_C4* dst, const IuRect& roi);
 
 // [device] multiplication with factor; Not-in-place; 32-bit;
-IU_DLLAPI void mulC(const ImageNpp_32f_C1* src, const Npp32f& factor, ImageNpp_32f_C1* dst, const IuRect& roi);
-IU_DLLAPI void mulC(const ImageNpp_32f_C4* src, const Npp32f factor[4], ImageNpp_32f_C4* dst, const IuRect& roi);
+IU_DLLAPI void mulC(const ImageGpu_32f_C1* src, const Npp32f& factor, ImageGpu_32f_C1* dst, const IuRect& roi);
+IU_DLLAPI void mulC(const ImageGpu_32f_C4* src, const Npp32f factor[4], ImageGpu_32f_C4* dst, const IuRect& roi);
 
 /** In-place multiplication of every pixel with a constant factor.
  * \param factor Multiplication factor applied to each pixel.
@@ -108,12 +108,12 @@ IU_DLLAPI void mulC(const ImageNpp_32f_C4* src, const Npp32f factor[4], ImageNpp
  * \note supported npp: 8u_C1, 8u_C4, 32f_C1, 32f_C4,
  */
 // find min/max; device; 8-bit
-IU_DLLAPI void minMax(const ImageNpp_8u_C1* src, const IuRect& roi, Npp8u& min, Npp8u& max);
-IU_DLLAPI void minMax(const ImageNpp_8u_C4* src, const IuRect& roi, Npp8u min[4], Npp8u max[4]);
+IU_DLLAPI void minMax(const ImageGpu_8u_C1* src, const IuRect& roi, unsigned char& min, unsigned char& max);
+IU_DLLAPI void minMax(const ImageGpu_8u_C4* src, const IuRect& roi, uchar4& min, uchar4& max);
 // find min/max; device; 32-bit
-IU_DLLAPI void minMax(const ImageNpp_32f_C1* src, const IuRect& roi, Npp32f& min, Npp32f& max);
-IU_DLLAPI void minMax(const ImageNpp_32f_C2* src, const IuRect& roi, Npp32f min[2], Npp32f max[2]);
-IU_DLLAPI void minMax(const ImageNpp_32f_C4* src, const IuRect& roi, Npp32f min[4], Npp32f max[4]);
+IU_DLLAPI void minMax(const ImageGpu_32f_C1* src, const IuRect& roi, float& min, float& max);
+IU_DLLAPI void minMax(const ImageGpu_32f_C2* src, const IuRect& roi, float2& min, float2& max);
+IU_DLLAPI void minMax(const ImageGpu_32f_C4* src, const IuRect& roi, float4& min, float4& max);
 
 
 /** Computes the sum of pixels in a certain ROI of an image.
@@ -124,12 +124,12 @@ IU_DLLAPI void minMax(const ImageNpp_32f_C4* src, const IuRect& roi, Npp32f min[
  * \note supported npp: 8u_C1, 8u_C4, 32f_C1, 32f_C4,
  */
 // compute sum; device; 8-bit
-IU_DLLAPI void summation(const ImageNpp_8u_C1* src, const IuRect& roi, Npp64s& sum);
-//IU_DLLAPI void summation(const ImageNpp_8u_C4* src, const IuRect& roi, Npp64s sum[4]);
+IU_DLLAPI void summation(const ImageGpu_8u_C1* src, const IuRect& roi, Npp64s& sum);
+//IU_DLLAPI void summation(const ImageGpu_8u_C4* src, const IuRect& roi, Npp64s sum[4]);
 
 // compute sum; device; 32-bit
-IU_DLLAPI void summation(const ImageNpp_32f_C1* src, const IuRect& roi, Npp64f& sum);
-//IU_DLLAPI void summation(const ImageNpp_32f_C4* src, const IuRect& roi, Npp64f sum[4]);
+IU_DLLAPI void summation(const ImageGpu_32f_C1* src, const IuRect& roi, Npp64f& sum);
+//IU_DLLAPI void summation(const ImageGpu_32f_C4* src, const IuRect& roi, Npp64f sum[4]);
 
 
 /** Computes the L1 norm of differences between pixel values of two images. |src1-src2|
@@ -138,7 +138,7 @@ IU_DLLAPI void summation(const ImageNpp_32f_C1* src, const IuRect& roi, Npp64f& 
  * \param roi Region of interest in the source image.
  * \param norm Contains computed L1 norm.
  */
-IU_DLLAPI void normDiffL1(const ImageNpp_32f_C1* src1, const ImageNpp_32f_C1* src2, const IuRect& roi, Npp64f& norm);
+IU_DLLAPI void normDiffL1(const ImageGpu_32f_C1* src1, const ImageGpu_32f_C1* src2, const IuRect& roi, Npp64f& norm);
 
 /** Computes the L1 norm of differences between pixel values of an image and a constant value. |src-value|
  * \param src1 Pointer to the first source image.
@@ -146,7 +146,7 @@ IU_DLLAPI void normDiffL1(const ImageNpp_32f_C1* src1, const ImageNpp_32f_C1* sr
  * \param roi Region of interest in the source image.
  * \param norm Contains computed L1 norm.
  */
-IU_DLLAPI void normDiffL1(const ImageNpp_32f_C1* src, const Npp32f& value, const IuRect& roi, Npp64f& norm);
+IU_DLLAPI void normDiffL1(const ImageGpu_32f_C1* src, const Npp32f& value, const IuRect& roi, Npp64f& norm);
 
 /** Computes the L2 norm of differences between pixel values of two images. ||src1-src2||
  * \param src1 Pointer to the first source image.
@@ -154,7 +154,7 @@ IU_DLLAPI void normDiffL1(const ImageNpp_32f_C1* src, const Npp32f& value, const
  * \param roi Region of interest in the source image.
  * \param norm Contains computed L2 norm.
  */
-IU_DLLAPI void normDiffL2(const ImageNpp_32f_C1* src1, const ImageNpp_32f_C1* src2, const IuRect& roi, Npp64f& norm);
+IU_DLLAPI void normDiffL2(const ImageGpu_32f_C1* src1, const ImageGpu_32f_C1* src2, const IuRect& roi, Npp64f& norm);
 
 /** Computes the L2 norm of differences between pixel values of an image and a constant value. ||src-value||
  * \param src Pointer to the first source image.
@@ -162,7 +162,7 @@ IU_DLLAPI void normDiffL2(const ImageNpp_32f_C1* src1, const ImageNpp_32f_C1* sr
  * \param roi Region of interest in the source image.
  * \param norm Contains computed L2 norm.
  */
-IU_DLLAPI void normDiffL2(const ImageNpp_32f_C1* src, const Npp32f& value, const IuRect& roi, Npp64f& norm);
+IU_DLLAPI void normDiffL2(const ImageGpu_32f_C1* src, const Npp32f& value, const IuRect& roi, Npp64f& norm);
 
 /** @} */ // end of Statistics
 
@@ -183,7 +183,7 @@ IU_DLLAPI void normDiffL2(const ImageNpp_32f_C1* src, const Npp32f& value, const
  * \param roi Region of interest in the source and reference image.
  * \param mse Contains the computed mean-squared error.
  */
-IU_DLLAPI void mse(const iu::ImageNpp_32f_C1* src, const iu::ImageNpp_32f_C1* reference, const IuRect& roi, Npp64f& mse);
+IU_DLLAPI void mse(const iu::ImageGpu_32f_C1* src, const iu::ImageGpu_32f_C1* reference, const IuRect& roi, Npp64f& mse);
 
 /** Computes the structural similarity index between the src and the reference image.
  * \param src Pointer to the source image.
@@ -191,7 +191,7 @@ IU_DLLAPI void mse(const iu::ImageNpp_32f_C1* src, const iu::ImageNpp_32f_C1* re
  * \param roi Region of interest in the source and reference image.
  * \param mse Contains the computed  structural similarity index.
  */
-IU_DLLAPI void ssim(const iu::ImageNpp_32f_C1* src, const iu::ImageNpp_32f_C1* reference, const IuRect& roi, Npp64f& ssim);
+IU_DLLAPI void ssim(const iu::ImageGpu_32f_C1* src, const iu::ImageGpu_32f_C1* reference, const IuRect& roi, Npp64f& ssim);
 
 /** @} */ // end of Error Measurements
 

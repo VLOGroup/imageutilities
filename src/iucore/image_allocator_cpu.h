@@ -30,16 +30,16 @@
 namespace iuprivate {
 
 //--------------------------------------------------------------------------
-template <typename PixelType, unsigned int NumChannels>
+template <typename PixelType>
 class ImageAllocatorCpu
 {
 public:
   static PixelType* alloc(unsigned int width, unsigned int height, size_t *pitch)
   {
     IU_ASSERT(width * height > 0);
-    PixelType *buffer = new PixelType[width * NumChannels * height];
+    PixelType *buffer = new PixelType[width * height];
     IU_ASSERT(buffer != 0);
-    *pitch = width * sizeof(PixelType) * NumChannels;
+    *pitch = width * sizeof(PixelType);
     return buffer;
   }
 
@@ -58,10 +58,7 @@ public:
     {
       for(unsigned int x=0; x<size.width; ++x)
       {
-        for(unsigned int channel=0; channel<NumChannels; ++channel)
-        {
-          dst[y*dst_stride+x*NumChannels+channel] = src[y*src_stride+x*NumChannels+channel];
-        }
+        dst[y*dst_stride+x] = src[y*src_stride+x];
       }
     }
   }

@@ -24,6 +24,7 @@
 #ifndef IU_CUTIL_H
 #define IU_CUTIL_H
 
+#include <cutil_math.h>
 
 //// ERROR CHECKS ////////////////////////////////////////////
 #ifdef __CUDACC__ // only include this error check in cuda files (seen by nvcc)
@@ -75,6 +76,103 @@ __host__ __device__ inline float sqr(float a)
 {
   return a*a;
 }
+
+/* ****************************************************************************
+ *  uchar2 functions
+ * ****************************************************************************/
+
+// !=
+inline __host__ __device__ bool operator!=(uchar2& a, uchar2& b)
+{
+  return (a.x != b.x) || (a.y != b.y);
+}
+
+// ==
+inline __host__ __device__ bool operator==(uchar2& a, uchar2& b)
+{
+  return (a.x == b.x) && (a.y == b.y);
+}
+
+/* ****************************************************************************
+ *  uchar3 functions
+ * ****************************************************************************/
+
+// !=
+inline __host__ __device__ bool operator!=(uchar3& a, uchar3& b)
+{
+  return (a.x != b.x) || (a.y != b.y) || (a.z != b.z);
+}
+
+// ==
+inline __host__ __device__ bool operator==(uchar3& a, uchar3& b)
+{
+  return (a.x == b.x) && (a.y == b.y) && (a.z == b.z);
+}
+
+/* ****************************************************************************
+ *  uchar4 functions
+ * ****************************************************************************/
+
+// !=
+inline __host__ __device__ bool operator!=(uchar4& a, uchar4& b)
+{
+  return (a.x != b.x) || (a.y != b.y) || (a.z != b.z) || (a.w != b.w);
+}
+
+// ==
+inline __host__ __device__ bool operator==(uchar4& a, uchar4& b)
+{
+  return (a.x == b.x) && (a.y == b.y) && (a.z == b.z) && (a.w == b.w);
+}
+
+/* ****************************************************************************
+ *  float2 functions
+ * ****************************************************************************/
+
+// !=
+inline __host__ __device__ bool operator!=(float2& a, float2& b)
+{
+  return (a.x != b.x) || (a.y != b.y);
+}
+
+// ==
+inline __host__ __device__ bool operator==(float2& a, float2& b)
+{
+  return (a.x == b.x) && (a.y == b.y);
+}
+
+/* ****************************************************************************
+ *  float3 functions
+ * ****************************************************************************/
+
+// !=
+inline __host__ __device__ bool operator!=(float3& a, float3& b)
+{
+  return (a.x != b.x) || (a.y != b.y) || (a.z != b.z);
+}
+
+// ==
+inline __host__ __device__ bool operator==(float3& a, float3& b)
+{
+  return (a.x == b.x) && (a.y == b.y) && (a.z == b.z);
+}
+
+/* ****************************************************************************
+ *  float4 functions
+ * ****************************************************************************/
+
+// !=
+inline __host__ __device__ bool operator!=(float4& a, float4& b)
+{
+  return (a.x != b.x) || (a.y != b.y) || (a.z != b.z) || (a.w != b.w);
+}
+
+// ==
+inline __host__ __device__ bool operator==(float4& a, float4& b)
+{
+  return (a.x == b.x) && (a.y == b.y) && (a.z == b.z) && (a.w == b.w);
+}
+
 
 } // namespace iu
 

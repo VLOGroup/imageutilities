@@ -153,9 +153,9 @@ __global__ void  cuMulCKernel_32f_C4(const float4 factor, float4* dst,
 *******************************************************************************/
 
 // wrapper: weighted add; 32-bit;
-NppStatus cuAddWeighted(const iu::ImageNpp_32f_C1* src1, const Npp32f& weight1,
-                        const iu::ImageNpp_32f_C1* src2, const Npp32f& weight2,
-                        iu::ImageNpp_32f_C1* dst, const IuRect& roi)
+NppStatus cuAddWeighted(const iu::ImageGpu_32f_C1* src1, const Npp32f& weight1,
+                        const iu::ImageGpu_32f_C1* src2, const Npp32f& weight2,
+                        iu::ImageGpu_32f_C1* dst, const IuRect& roi)
 {
   // bind textures
   cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<float1>();
@@ -183,7 +183,7 @@ NppStatus cuAddWeighted(const iu::ImageNpp_32f_C1* src1, const Npp32f& weight1,
 
 
 // wrapper: multiplication with factor; 8-bit; 1-channel
-NppStatus cuMulC(const iu::ImageNpp_8u_C1* src, const Npp8u& factor, iu::ImageNpp_8u_C1* dst, const IuRect& roi)
+NppStatus cuMulC(const iu::ImageGpu_8u_C1* src, const Npp8u& factor, iu::ImageGpu_8u_C1* dst, const IuRect& roi)
 {
   // bind textures
   cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<uchar1>();
@@ -208,7 +208,7 @@ NppStatus cuMulC(const iu::ImageNpp_8u_C1* src, const Npp8u& factor, iu::ImageNp
 }
 
 // wrapper: multiplication with factor; 8-bit; 4-channel
-NppStatus cuMulC(const iu::ImageNpp_8u_C4* src, const Npp8u factor[4], iu::ImageNpp_8u_C4* dst, const IuRect& roi)
+NppStatus cuMulC(const iu::ImageGpu_8u_C4* src, const Npp8u factor[4], iu::ImageGpu_8u_C4* dst, const IuRect& roi)
 {
   // bind textures
   cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<uchar4>();
@@ -223,7 +223,7 @@ NppStatus cuMulC(const iu::ImageNpp_8u_C4* src, const Npp8u factor[4], iu::Image
   uchar4 factor4 = make_uchar4(factor[0], factor[1], factor[2], factor[3]);
 
   cuMulCKernel_8u_C4 <<< dimGrid, dimBlock >>> (
-    factor4, (uchar4*)dst->data(roi.x, roi.y), dst->stride()/dst->nChannels(),
+    factor4, dst->data(roi.x, roi.y), dst->stride(),
     roi.x, roi.y, roi.width, roi.height);
 
 
@@ -236,7 +236,7 @@ NppStatus cuMulC(const iu::ImageNpp_8u_C4* src, const Npp8u factor[4], iu::Image
 }
 
 // wrapper: multiplication with factor; 32-bit; 1-channel
-NppStatus cuMulC(const iu::ImageNpp_32f_C1* src, const Npp32f& factor, iu::ImageNpp_32f_C1* dst, const IuRect& roi)
+NppStatus cuMulC(const iu::ImageGpu_32f_C1* src, const Npp32f& factor, iu::ImageGpu_32f_C1* dst, const IuRect& roi)
 {
   // bind textures
   cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<float1>();
@@ -262,7 +262,7 @@ NppStatus cuMulC(const iu::ImageNpp_32f_C1* src, const Npp32f& factor, iu::Image
 }
 
 // wrapper: multiplication with factor; 32-bit; 4-channel
-NppStatus cuMulC(const iu::ImageNpp_32f_C4* src, const Npp32f factor[4], iu::ImageNpp_32f_C4* dst, const IuRect& roi)
+NppStatus cuMulC(const iu::ImageGpu_32f_C4* src, const Npp32f factor[4], iu::ImageGpu_32f_C4* dst, const IuRect& roi)
 {
   // bind textures
   cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<float4>();
@@ -277,7 +277,7 @@ NppStatus cuMulC(const iu::ImageNpp_32f_C4* src, const Npp32f factor[4], iu::Ima
   float4 factor4 = make_float4(factor[0], factor[1], factor[2], factor[3]);
 
   cuMulCKernel_32f_C4 <<< dimGrid, dimBlock >>> (
-    factor4, (float4*)dst->data(roi.x, roi.y), dst->stride()/dst->nChannels(),
+    factor4, dst->data(roi.x, roi.y), dst->stride(),
     roi.x, roi.y, roi.width, roi.height);
 
 

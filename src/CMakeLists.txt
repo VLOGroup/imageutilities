@@ -62,7 +62,7 @@ endif()
 ## Flags if modules are used.
 ## The modules are included per default unless dependencies not found or omitted by the user.
 ## (the core module is always included!)
-OPTION(VMLIBRARIES_IU_USE_GUI "Including GUI module." ON)
+OPTION(VMLIBRARIES_IU_USE_GUI "Including GUI module." OFF)
 OPTION(VMLIBRARIES_IU_USE_IO "Including IO module." ON)
 OPTION(VMLIBRARIES_IU_USE_IOPGM "Including IOPGM module." ON)
 OPTION(VMLIBRARIES_IU_USE_VIDEOCAPTURE "Including VideCapture IO module." ON)
@@ -341,9 +341,9 @@ SET( IU_PUBLIC_CORE_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/lineardevicememory.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/image.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/image_allocator_cpu.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/image_allocator_npp.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/image_cpu.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/image_npp.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/image_allocator_gpu.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/image_gpu.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/volume.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/volume_allocator_cpu.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/volume_cpu.h

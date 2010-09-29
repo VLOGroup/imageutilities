@@ -45,17 +45,16 @@ __global__ void cuSetValueKernel(T value, T* dst, int length)
 
 // kernel: 2D set values; multi-channel
 template<class T>
-__global__ void cuSetValueKernel(T value, T* dst, size_t stride, unsigned int num_channels,
+__global__ void cuSetValueKernel(T value, T* dst, size_t stride,
                                  int xoff, int yoff, int width, int height)
 {
   int x = blockIdx.x*blockDim.x + threadIdx.x;
   int y = blockIdx.y*blockDim.y + threadIdx.y;
-  const int c =  y*stride+x*num_channels;
+  const int c =  y*stride+x;
 
   if(x+xoff>=0 && y+yoff>=0 && x<width && y<height)
   {
-    for(unsigned int channel = 0; channel<num_channels; ++channel)
-      dst[c+channel] = value;
+    dst[c] = value;
   }
 }
 
@@ -111,8 +110,8 @@ __global__ void cuClampKernel_32f_C1(T min, T max, T* dst, size_t stride,
 ///////////////////////////////////////////////////////////////////////////////
 
 // convert 32f_C3 -> 32f_C4 (float3 -> float4)
-__global__ void cuConvertC3ToC4Kernel(const float* src, size_t src_stride, int src_width, int src_height,
-                                      float* dst, size_t dst_stride, int dst_width, int dst_height)
+__global__ void cuConvertC3ToC4Kernel(const float3* src, size_t src_stride, int src_width, int src_height,
+                                      float4* dst, size_t dst_stride, int dst_width, int dst_height)
 {
   const int x = blockIdx.x*blockDim.x + threadIdx.x;
   const int y = blockIdx.y*blockDim.y + threadIdx.y;
@@ -121,16 +120,13 @@ __global__ void cuConvertC3ToC4Kernel(const float* src, size_t src_stride, int s
 
   if (x<src_width && y<src_height && x<dst_width && y<dst_height)
   {
-    dst[dst_c] = src[src_c];
-    dst[dst_c+1] = src[src_c+1];
-    dst[dst_c+2] = src[src_c+2];
-    dst[dst_c+3] = 1.0f; // make_float4(r, g, b, 1.0f);
+    dst[dst_c] =  make_float4(src[src_c],1.0f);
   }
 }
 
 // convert 32f_C4 -> 32f_C3 (float4 -> float3)
-__global__ void cuConvertC4ToC3Kernel(const float* src, size_t src_stride, int src_width, int src_height,
-                                      float* dst, size_t dst_stride, int dst_width, int dst_height)
+__global__ void cuConvertC4ToC3Kernel(const float4* src, size_t src_stride, int src_width, int src_height,
+                                      float3* dst, size_t dst_stride, int dst_width, int dst_height)
 {
   const int x = blockIdx.x*blockDim.x + threadIdx.x;
   const int y = blockIdx.y*blockDim.y + threadIdx.y;
@@ -139,9 +135,7 @@ __global__ void cuConvertC4ToC3Kernel(const float* src, size_t src_stride, int s
 
   if (x<src_width && y<src_height && x<dst_width && y<dst_height)
   {
-    dst[dst_c] = src[src_c];
-    dst[dst_c+1] = src[src_c+1];
-    dst[dst_c+2] = src[src_c+2];
+    dst[dst_c] = make_float3(src[src_c]);
   }
 }
 

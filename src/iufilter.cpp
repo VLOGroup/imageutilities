@@ -32,16 +32,16 @@ namespace iu {
  * ***************************************************************************/
 
 // 2D device; 32-bit; 1-channel
-void filterMedian3x3(const ImageNpp_32f_C1* src, ImageNpp_32f_C1* dst, const IuRect& roi)
+void filterMedian3x3(const ImageGpu_32f_C1* src, ImageGpu_32f_C1* dst, const IuRect& roi)
 {iuprivate::filterMedian3x3(src, dst, roi);}
 
 // device; 32-bit; 1-channel
-void filterGauss(const ImageNpp_32f_C1* src, ImageNpp_32f_C1* dst, const IuRect& roi,
+void filterGauss(const ImageGpu_32f_C1* src, ImageGpu_32f_C1* dst, const IuRect& roi,
                  float sigma, int kernel_size)
 {iuprivate::filterGauss(src, dst, roi, sigma, kernel_size);}
 
 // device; 32-bit; 1-channel
-void filterRof(const ImageNpp_32f_C1* src, ImageNpp_32f_C1* dst, const IuRect& roi,
+void filterRof(const ImageGpu_32f_C1* src, ImageGpu_32f_C1* dst, const IuRect& roi,
                float lambda, int iterations)
 {iuprivate::filterRof(src, dst, roi, lambda, iterations);}
 
@@ -49,12 +49,12 @@ void filterRof(const ImageNpp_32f_C1* src, ImageNpp_32f_C1* dst, const IuRect& r
      Structure-texture decomposition
  * ***************************************************************************/
 // device; 32-bit; 1-channel
-void decomposeStructureTextureGauss(const iu::ImageNpp_32f_C1* src, iu::ImageNpp_32f_C1* dst,
+void decomposeStructureTextureGauss(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
                                     const IuRect& roi, float weight, float sigma, int kernel_size)
 {iuprivate::decomposeStructureTextureGauss(src, dst, roi, weight, sigma, kernel_size);}
 
 // device; 32-bit; 1-channel
-void decomposeStructureTextureRof(const iu::ImageNpp_32f_C1* src, iu::ImageNpp_32f_C1* dst,
+void decomposeStructureTextureRof(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
                                   const IuRect& roi, float weight, float lambda, int iterations)
 {iuprivate::decomposeStructureTextureRof(src, dst, roi, weight, lambda, iterations);}
 

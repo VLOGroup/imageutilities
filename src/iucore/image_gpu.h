@@ -12,34 +12,33 @@
  *
  * Project     : ImageUtilities
  * Module      : Core
- * Class       : ImageNpp
+ * Class       : ImageGpu
  * Language    : C++
- * Description : Definition of image class for Npp
+ * Description : Definition of image class for Gpu
  *
  * Author     : Manuel Werlberger
  * EMail      : werlberger@icg.tugraz.at
  *
  */
 
-#ifndef IUCORE_IMAGE_NPP_H
-#define IUCORE_IMAGE_NPP_H
+#ifndef IUCORE_IMAGE_GPU_H
+#define IUCORE_IMAGE_GPU_H
 
-#include <nppdefs.h>
 #include "image.h"
-#include "image_allocator_npp.h"
+#include "image_allocator_gpu.h"
 
 namespace iu {
 
-template<typename PixelType, unsigned int NumChannels, class Allocator>
-class ImageNpp : public Image
+template<typename PixelType, class Allocator>
+class ImageGpu : public Image
 {
 public:
-  ImageNpp() :
-      data_(0), pitch_(0), n_channels_(NumChannels), ext_data_pointer_(false)
+  ImageGpu() :
+      data_(0), pitch_(0), ext_data_pointer_(false)
   {
   }
 
-  virtual ~ImageNpp()
+  virtual ~ImageGpu()
   {
     if(!ext_data_pointer_)
     {
@@ -50,40 +49,32 @@ public:
     pitch_ = 0;
   }
 
-  ImageNpp(unsigned int _width, unsigned int _height) :
-      Image(_width, _height), data_(0), pitch_(0), n_channels_(NumChannels),
+  ImageGpu(unsigned int _width, unsigned int _height) :
+      Image(_width, _height), data_(0), pitch_(0),
       ext_data_pointer_(false)
   {
-    data_ = Allocator::alloc(_width, _height, &pitch_);
+    data_ = Allocator::alloc(this->size(), &pitch_);
   }
 
-  ImageNpp(const NppiSize& size) :
-      Image(size.width, size.height), data_(0), pitch_(0), n_channels_(NumChannels),
+  ImageGpu(const IuSize& size) :
+      Image(size), data_(0), pitch_(0),
       ext_data_pointer_(false)
   {
-    data_ = Allocator::alloc(size.width, size.height, &pitch_);
+    data_ = Allocator::alloc(size, &pitch_);
   }
 
-  ImageNpp(const IuSize& size) :
-      Image(size), data_(0), pitch_(0), n_channels_(NumChannels),
+  ImageGpu(const ImageGpu<PixelType, Allocator>& from) :
+      Image(from), data_(0), pitch_(0),
       ext_data_pointer_(false)
   {
     data_ = Allocator::alloc(width(), height(), &pitch_);
-  }
-
-  ImageNpp(const ImageNpp<PixelType, NumChannels, Allocator>& from) :
-      Image(from), data_(0), pitch_(0), n_channels_(NumChannels),
-      ext_data_pointer_(false)
-  {
-    data_ = Allocator::alloc(width(), height(), &pitch_);
-    Allocator::copy(from.data(), from.pitch(), data_, pitch_, this->nppSize());
+    Allocator::copy(from.data(), from.pitch(), data_, pitch_, this->size());
     this->setRoi(from.roi());
   }
 
-  ImageNpp(PixelType* _data, unsigned int _width, unsigned int _height,
+  ImageGpu(PixelType* _data, unsigned int _width, unsigned int _height,
            size_t _pitch, bool ext_data_pointer = false) :
-      Image(_width, _height), data_(0), pitch_(0), n_channels_(NumChannels),
-      ext_data_pointer_(ext_data_pointer)
+      Image(_width, _height), data_(0), pitch_(0), ext_data_pointer_(ext_data_pointer)
   {
     if(ext_data_pointer_)
     {
@@ -98,12 +89,12 @@ public:
         return;
 
       data_ = Allocator::alloc(width(), height(), &pitch_);
-      Allocator::copy(_data, _pitch, data_, pitch_, this->nppSize());
+      Allocator::copy(_data, _pitch, data_, pitch_, this->size());
     }
   }
 
   // :TODO:
-  //ImageNpp& operator= (const ImageNpp<PixelType, numChannels, Allocator>& from);
+  //ImageGpu& operator= (const ImageGpu<PixelType, Allocator>& from);
 
   /** Returns the total amount of bytes saved in the data buffer. */
   size_t bytes() const
@@ -123,12 +114,6 @@ public:
     return pitch_/sizeof(PixelType);
   }
 
-  /** Returns the number of channels. */
-  virtual unsigned int nChannels() const
-  {
-    return n_channels_;
-  }
-
   /** Returns the bit depth of the data pointer. */
   virtual unsigned int bitDepth() const
   {
@@ -141,20 +126,6 @@ public:
     return true;
   }
 
-  /** Returns internal size converted to NppiSize. */
-  NppiSize nppSize() const
-  {
-    NppiSize s = {width(), height()};
-    return s;
-  }
-
-  /** Returns internal ROI converted to NppiRect. */
-  NppiRect nppRoi() const
-  {
-    NppiRect r = {roi().x, roi().y, roi().width, roi().height};
-    return r;
-  }
-
   /** Returns a pointer to the pixel data.
    * The pointer can be offset to position \a (ox/oy).
    * @param[in] ox Horizontal offset of the pointer array.
@@ -163,12 +134,12 @@ public:
    */
   PixelType* data(int ox = 0, int oy = 0)
   {
-    return &data_[oy * stride() + ox * n_channels_];
+    return &data_[oy * stride() + ox];
   }
   const PixelType* data(int ox = 0, int oy = 0) const
   {
     return reinterpret_cast<const PixelType*>(
-        &data_[oy * stride() + ox * n_channels_]);
+        &data_[oy * stride() + ox]);
   }
 
 protected:
@@ -176,10 +147,9 @@ protected:
 private:
   PixelType* data_;
   size_t pitch_;
-  unsigned int n_channels_;
   bool ext_data_pointer_; /**< Flag if data pointer is handled outside the image class. */
 };
 
 } // namespace iuprivate
 
-#endif // IUCORE_IMAGE_NPP_H
+#endif // IUCORE_IMAGE_GPU_H

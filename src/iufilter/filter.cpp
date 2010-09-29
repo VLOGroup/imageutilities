@@ -29,21 +29,21 @@
 namespace iuprivate {
 
 // device; 32-bit; 1-channel
-void filterGauss(const iu::ImageNpp_32f_C1* src, iu::ImageNpp_32f_C1* dst, const IuRect& roi, float sigma, int kernel_size)
+void filterGauss(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst, const IuRect& roi, float sigma, int kernel_size)
 {
   NppStatus status = cuFilterGauss(src, dst, roi, sigma, kernel_size);
   IU_ASSERT(status == NPP_NO_ERROR);
 }
 
 // device; 32-bit; 1-channel
-void filterMedian3x3(const iu::ImageNpp_32f_C1* src, iu::ImageNpp_32f_C1* dst, const IuRect& roi)
+void filterMedian3x3(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst, const IuRect& roi)
 {
   NppStatus status = cuFilterMedian3x3(src, dst, roi);
   IU_ASSERT(status == NPP_NO_ERROR);
 }
 
 // device; 32-bit; 1-channel
-void filterRof(const iu::ImageNpp_32f_C1* src, iu::ImageNpp_32f_C1* dst,
+void filterRof(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
                const IuRect& roi, float lambda, int iterations)
 {
   NppStatus status = cuFilterRof(src, dst, roi, lambda, iterations);
@@ -51,20 +51,20 @@ void filterRof(const iu::ImageNpp_32f_C1* src, iu::ImageNpp_32f_C1* dst,
 }
 
 // device; 32-bit; 1-channel
-void decomposeStructureTextureGauss(const iu::ImageNpp_32f_C1* src, iu::ImageNpp_32f_C1* dst,
+void decomposeStructureTextureGauss(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
                                     const IuRect& roi, float weight, float sigma, int kernel_size)
 {
-  iu::ImageNpp_32f_C1 tmp(dst->size());
+  iu::ImageGpu_32f_C1 tmp(dst->size());
   tmp.setRoi(roi);
   iuprivate::filterGauss(src, &tmp, roi, sigma, kernel_size);
   iuprivate::addWeighted(src, 1.0f, &tmp, -weight, dst, roi);
 }
 
 // device; device; 32-bit; 1-channel
-void decomposeStructureTextureRof(const iu::ImageNpp_32f_C1* src, iu::ImageNpp_32f_C1* dst,
+void decomposeStructureTextureRof(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
                                   const IuRect& roi, float weight, float lambda, int iterations)
 {
-  iu::ImageNpp_32f_C1 tmp(dst->size());
+  iu::ImageGpu_32f_C1 tmp(dst->size());
   tmp.setRoi(dst->roi());
   iuprivate::filterRof(src, &tmp, roi, lambda, iterations);
   iuprivate::addWeighted(src, 1.0f, &tmp, -weight, dst, roi);

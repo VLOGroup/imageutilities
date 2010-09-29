@@ -34,7 +34,7 @@ namespace iuprivate {
 ///////////////////////////////////////////////////////////////////////////////
 
 // wrapper: set values; 1D; 8-bit
-NppStatus cuSetValue(const Npp8u& value, iu::LinearDeviceMemory_8u* dst)
+NppStatus cuSetValue(const Npp8u& value, iu::LinearDeviceMemory_8u_C1* dst)
 {
   // fragmentation
   const unsigned int block_width = 512;
@@ -49,7 +49,7 @@ NppStatus cuSetValue(const Npp8u& value, iu::LinearDeviceMemory_8u* dst)
 }
 
 // wrapper: set values; 1D; 32-bit
-NppStatus cuSetValue(const Npp32f& value, iu::LinearDeviceMemory_32f* dst)
+NppStatus cuSetValue(const Npp32f& value, iu::LinearDeviceMemory_32f_C1* dst)
 {
   // fragmentation
   const unsigned int block_width = 512;
@@ -63,10 +63,10 @@ NppStatus cuSetValue(const Npp32f& value, iu::LinearDeviceMemory_32f* dst)
   return NPP_SUCCESS;
 }
 
-// wrapper: set values (single value); 2D; ...
-template<typename PixelType, unsigned int NumChannels, class Allocator>
+// templated wrapper: set value; 2D;
+template<typename PixelType, class Allocator>
 NppStatus cuSetValueTemplate(const PixelType &value,
-                             iu::ImageNpp<PixelType, NumChannels, Allocator> *dst, const IuRect& roi)
+                             iu::ImageGpu<PixelType, Allocator> *dst, const IuRect& roi)
 {
   // fragmentation
   const unsigned int block_size = 16;
@@ -74,9 +74,8 @@ NppStatus cuSetValueTemplate(const PixelType &value,
   dim3 dimGrid(iu::divUp(roi.width - roi.x, dimBlock.x),
                iu::divUp(roi.height - roi.y, dimBlock.y));
 
-
   cuSetValueKernel <<< dimGrid, dimBlock >>> (
-      value, dst->data(roi.x, roi.y), dst->stride(), NumChannels,
+      value, dst->data(roi.x, roi.y), dst->stride(),
       roi.x, roi.y, roi.width, roi.height);
 
   IU_CHECK_CUDA_ERRORS();
@@ -84,22 +83,22 @@ NppStatus cuSetValueTemplate(const PixelType &value,
 }
 
 // wrapper: set values (single value); 2D; 8-bit;
-NppStatus cuSetValue(const Npp8u& value, iu::ImageNpp_8u_C1 *dst, const IuRect &roi)
+NppStatus cuSetValue(const unsigned char& value, iu::ImageGpu_8u_C1 *dst, const IuRect &roi)
 { return cuSetValueTemplate(value, dst, roi); }
-NppStatus cuSetValue(const Npp8u& value, iu::ImageNpp_8u_C2 *dst, const IuRect &roi)
+NppStatus cuSetValue(const uchar2& value, iu::ImageGpu_8u_C2 *dst, const IuRect &roi)
 { return cuSetValueTemplate(value, dst, roi); }
-NppStatus cuSetValue(const Npp8u& value, iu::ImageNpp_8u_C3 *dst, const IuRect &roi)
+NppStatus cuSetValue(const uchar3& value, iu::ImageGpu_8u_C3 *dst, const IuRect &roi)
 { return cuSetValueTemplate(value, dst, roi); }
-NppStatus cuSetValue(const Npp8u& value, iu::ImageNpp_8u_C4 *dst, const IuRect &roi)
+NppStatus cuSetValue(const uchar4& value, iu::ImageGpu_8u_C4 *dst, const IuRect &roi)
 { return cuSetValueTemplate(value, dst, roi); }
 // wrapper: set values (single value); 2D; 32-bit;
-NppStatus cuSetValue(const Npp32f& value, iu::ImageNpp_32f_C1 *dst, const IuRect &roi)
+NppStatus cuSetValue(const float& value, iu::ImageGpu_32f_C1 *dst, const IuRect &roi)
 { return cuSetValueTemplate(value, dst, roi); }
-NppStatus cuSetValue(const Npp32f& value, iu::ImageNpp_32f_C2 *dst, const IuRect &roi)
+NppStatus cuSetValue(const float2& value, iu::ImageGpu_32f_C2 *dst, const IuRect &roi)
 { return cuSetValueTemplate(value, dst, roi); }
-NppStatus cuSetValue(const Npp32f& value, iu::ImageNpp_32f_C3 *dst, const IuRect &roi)
+NppStatus cuSetValue(const float3& value, iu::ImageGpu_32f_C3 *dst, const IuRect &roi)
 { return cuSetValueTemplate(value, dst, roi); }
-NppStatus cuSetValue(const Npp32f& value, iu::ImageNpp_32f_C4 *dst, const IuRect &roi)
+NppStatus cuSetValue(const float4& value, iu::ImageGpu_32f_C4 *dst, const IuRect &roi)
 { return cuSetValueTemplate(value, dst, roi); }
 
 
@@ -143,7 +142,7 @@ NppStatus cuSetValue(const float4& value, iu::VolumeGpu_32f_C4 *dst, const IuCub
 ///////////////////////////////////////////////////////////////////////////////
 
 NppStatus cuClamp(const Npp32f& min, const Npp32f& max,
-                  iu::ImageNpp_32f_C1 *srcdst, const IuRect &roi)
+                  iu::ImageGpu_32f_C1 *srcdst, const IuRect &roi)
 {
   // bind textures
   cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<float1>();
@@ -167,7 +166,7 @@ NppStatus cuClamp(const Npp32f& min, const Npp32f& max,
 ///////////////////////////////////////////////////////////////////////////////
 
 // convert 32f_C3 -> 32f_C4
-NppStatus cuConvert(const iu::ImageNpp_32f_C3* src, const IuRect& src_roi, iu::ImageNpp_32f_C4* dst, const IuRect& dst_roi)
+NppStatus cuConvert(const iu::ImageGpu_32f_C3* src, const IuRect& src_roi, iu::ImageGpu_32f_C4* dst, const IuRect& dst_roi)
 {
   // fragmentation
   const unsigned int block_size = 16;
@@ -184,7 +183,7 @@ NppStatus cuConvert(const iu::ImageNpp_32f_C3* src, const IuRect& src_roi, iu::I
 }
 
 // convert 32f_C4 -> 32f_C3
-NppStatus cuConvert(const iu::ImageNpp_32f_C4* src, const IuRect& src_roi, iu::ImageNpp_32f_C3* dst, const IuRect& dst_roi)
+NppStatus cuConvert(const iu::ImageGpu_32f_C4* src, const IuRect& src_roi, iu::ImageGpu_32f_C3* dst, const IuRect& dst_roi)
 {
   // fragmentation
   const unsigned int block_size = 16;

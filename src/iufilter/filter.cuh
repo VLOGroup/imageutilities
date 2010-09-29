@@ -30,15 +30,15 @@
 namespace iuprivate {
 
 // cuda wrapper: median filter; 32-bit; 1-channel
-NppStatus cuFilterMedian3x3(const iu::ImageNpp_32f_C1* src, iu::ImageNpp_32f_C1* dst,
+NppStatus cuFilterMedian3x3(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
                             const IuRect& roi);
 
 // cuda wrapper: Gaussian filter; 32-bit; 1-channel
-NppStatus cuFilterGauss(const iu::ImageNpp_32f_C1* src, iu::ImageNpp_32f_C1* dst,
+NppStatus cuFilterGauss(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
                         const IuRect& roi, float sigma, int kernel_size);
 
 // cuda wrapper: Rof filter; 32-bit; 1-channel
-NppStatus cuFilterRof(const iu::ImageNpp_32f_C1* src, iu::ImageNpp_32f_C1* dst,
+NppStatus cuFilterRof(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
                       const IuRect& roi, float lambda, int iterations);
 
 } // namespace iuprivate

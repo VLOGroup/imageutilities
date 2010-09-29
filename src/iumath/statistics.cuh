@@ -42,11 +42,11 @@ namespace iuprivate {
  * \note supported npp: 8u_C1, 8u_C4, 32f_C1, 32f_C4
  * \note 3-channel stuff not supported due to texture usage!
  */
-NppStatus cuMinMax(const iu::ImageNpp_8u_C1 *src, const IuRect &roi, Npp8u& min, Npp8u& max);
-NppStatus cuMinMax(const iu::ImageNpp_8u_C4 *src, const IuRect &roi, Npp8u min[4], Npp8u max[4]);
-NppStatus cuMinMax(const iu::ImageNpp_32f_C1 *src, const IuRect &roi, Npp32f& min, Npp32f& max);
-NppStatus cuMinMax(const iu::ImageNpp_32f_C2 *src, const IuRect &roi, Npp32f min[2], Npp32f max[2]);
-NppStatus cuMinMax(const iu::ImageNpp_32f_C4 *src, const IuRect &roi, Npp32f min[4], Npp32f max[4]);
+NppStatus cuMinMax(const iu::ImageGpu_8u_C1 *src, const IuRect &roi, unsigned char& min, unsigned char& max);
+NppStatus cuMinMax(const iu::ImageGpu_8u_C4 *src, const IuRect &roi, uchar4& min, uchar4& max);
+NppStatus cuMinMax(const iu::ImageGpu_32f_C1 *src, const IuRect &roi, float& min, float& max);
+NppStatus cuMinMax(const iu::ImageGpu_32f_C2 *src, const IuRect &roi, float2& min, float2& max);
+NppStatus cuMinMax(const iu::ImageGpu_32f_C4 *src, const IuRect &roi, float4& min, float4& max);
 
 /* ***************************************************************************
    SUMMATION
@@ -60,10 +60,10 @@ NppStatus cuMinMax(const iu::ImageNpp_32f_C4 *src, const IuRect &roi, Npp32f min
  * \note supported npp: 8u_C1, 8u_C4, 32f_C1, 32f_C4
  * \note 3-channel stuff not supported due to texture usage!
  */
-NppStatus cuSummation(const iu::ImageNpp_8u_C1 *src, const IuRect &roi, Npp64s& sum);
-//NppStatus cuSummation(const iu::ImageNpp_8u_C4 *src, const IuRect &roi, Npp64s sum[4]);
-NppStatus cuSummation(const iu::ImageNpp_32f_C1 *src, const IuRect &roi, Npp64f& sum);
-//NppStatus cuSummation(const iu::ImageNpp_32f_C4 *src, const IuRect &roi, Npp64f sum[4]);
+NppStatus cuSummation(const iu::ImageGpu_8u_C1 *src, const IuRect &roi, Npp64s& sum);
+//NppStatus cuSummation(const iu::ImageGpu_8u_C4 *src, const IuRect &roi, Npp64s sum[4]);
+NppStatus cuSummation(const iu::ImageGpu_32f_C1 *src, const IuRect &roi, Npp64f& sum);
+//NppStatus cuSummation(const iu::ImageGpu_32f_C4 *src, const IuRect &roi, Npp64f sum[4]);
 
 /* ***************************************************************************
    NORMS (L1/L2)
@@ -75,7 +75,7 @@ NppStatus cuSummation(const iu::ImageNpp_32f_C1 *src, const IuRect &roi, Npp64f&
  * \param roi Region of interest in the source image.
  * \param norm Contains computed L1 norm.
  */
-NppStatus cuNormDiffL1(const iu::ImageNpp_32f_C1* src1, const iu::ImageNpp_32f_C1* src2, const IuRect& roi, Npp64f& norm);
+NppStatus cuNormDiffL1(const iu::ImageGpu_32f_C1* src1, const iu::ImageGpu_32f_C1* src2, const IuRect& roi, Npp64f& norm);
 
 /** Cuda wrapper coputing the L1 norm of differences between pixel values of an image and a constant value. |src-value|
  * \param src1 Pointer to the first source image.
@@ -83,7 +83,7 @@ NppStatus cuNormDiffL1(const iu::ImageNpp_32f_C1* src1, const iu::ImageNpp_32f_C
  * \param roi Region of interest in the source image.
  * \param norm Contains computed L1 norm.
  */
-NppStatus cuNormDiffL1(const iu::ImageNpp_32f_C1* src, const Npp32f& value, const IuRect& roi, Npp64f& norm);
+NppStatus cuNormDiffL1(const iu::ImageGpu_32f_C1* src, const Npp32f& value, const IuRect& roi, Npp64f& norm);
 
 /** Cuda wrapper computing the L2 norm of differences between pixel values two images.
  * \param src1 Pointer to the first source image.
@@ -91,7 +91,7 @@ NppStatus cuNormDiffL1(const iu::ImageNpp_32f_C1* src, const Npp32f& value, cons
  * \param roi Region of interest in the source image.
  * \param norm Contains computed L2 norm.
  */
-NppStatus cuNormDiffL2(const iu::ImageNpp_32f_C1* src1, const iu::ImageNpp_32f_C1* src2, const IuRect& roi, Npp64f& norm);
+NppStatus cuNormDiffL2(const iu::ImageGpu_32f_C1* src1, const iu::ImageGpu_32f_C1* src2, const IuRect& roi, Npp64f& norm);
 
 /** Cuda wrapper coputing the L2 norm of differences between pixel values of an image and a constant value. |src-value|
  * \param src1 Pointer to the first source image.
@@ -99,7 +99,7 @@ NppStatus cuNormDiffL2(const iu::ImageNpp_32f_C1* src1, const iu::ImageNpp_32f_C
  * \param roi Region of interest in the source image.
  * \param norm Contains computed L2 norm.
  */
-NppStatus cuNormDiffL2(const iu::ImageNpp_32f_C1* src, const Npp32f& value, const IuRect& roi, Npp64f& norm);
+NppStatus cuNormDiffL2(const iu::ImageGpu_32f_C1* src, const Npp32f& value, const IuRect& roi, Npp64f& norm);
 
 /* ***************************************************************************
    ERROR MEASUREMENTS
@@ -109,13 +109,13 @@ NppStatus cuNormDiffL2(const iu::ImageNpp_32f_C1* src, const Npp32f& value, cons
  *
  *
  */
-NppStatus cuMse(const iu::ImageNpp_32f_C1* src, const iu::ImageNpp_32f_C1* reference, const IuRect& roi, Npp64f& mse);
+NppStatus cuMse(const iu::ImageGpu_32f_C1* src, const iu::ImageGpu_32f_C1* reference, const IuRect& roi, Npp64f& mse);
 
 /** Cuda wrapper to compute structural similarity index between the src and the reference image.
  *
  *
  */
-NppStatus cuSsim(const iu::ImageNpp_32f_C1* src, const iu::ImageNpp_32f_C1* reference, const IuRect& roi, Npp64f& ssim);
+NppStatus cuSsim(const iu::ImageGpu_32f_C1* src, const iu::ImageGpu_32f_C1* reference, const IuRect& roi, Npp64f& ssim);
 
 
 
