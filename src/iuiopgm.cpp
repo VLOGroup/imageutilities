@@ -33,11 +33,10 @@ namespace iu {
 iu::ImageCpu_16u_C1* imread_16u_C1(const std::string& filename)
 { return iuprivate::imread_16u_C1(filename); }
 
-iu::ImageCpu_32f_C1* imread_12u32f_C1(const std::string& filename)
-{ return iuprivate::imread_12u32f_C1(filename); }
+iu::ImageCpu_32f_C1* imread_16u32f_C1(const std::string& filename, int max_val)
+{ return iuprivate::imread_16u32f_C1(filename, max_val); }
 
-iu::ImageNpp_32f_C1* imread_cu12u32f_C1(const std::string& filename)
-{ return iuprivate::imread_cu12u32f_C1(filename); }
-
+iu::ImageNpp_32f_C1* imread_cu16u32f_C1(const std::string& filename, int max_val)
+{ return iuprivate::imread_cu16u32f_C1(filename, max_val); }
 
 } // namespace iu

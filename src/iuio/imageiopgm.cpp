@@ -33,12 +33,13 @@
 
 namespace iuprivate {
 
-  /* ****************************************************************************
+/* ****************************************************************************
 
-     helper functions first
+   helper functions first
 
-   */
-/** Skips a comment. (used for parsing input image)
+*/
+
+  /** Skips a comment. (used for parsing input image)
  * @param src Input stream
  */
 void skipComment(std::istream &src)
@@ -61,10 +62,9 @@ iu::ImageCpu_16u_C1* imread_16u_C1(const std::string& filename)
 
   if(!src)
   {
-    std::cerr << "CudaPnmImage::CudaPnmImage(): Couldn't open image file \"" << filename << "\"" << std::endl;
+    std::cerr << "imread_16u_C1: Couldn't open image file \"" << filename << "\"" << std::endl;
     return 0;
   }
-
 
   skipComment(src);
   std::string type;
@@ -78,12 +78,12 @@ iu::ImageCpu_16u_C1* imread_16u_C1(const std::string& filename)
   else if(type == "P6")
   {
     planes = 3;
-    std::cerr << "Currently not supported" << std::endl;
+    std::cerr << "imread_16u_C1: Color images not supported yet." << std::endl;
     return 0;
   }
   else
   {
-    std::cerr << "CudaPnmImage::CudaPnmImage(): File \"" << filename
+    std::cerr << "imread_16u_C1: File \"" << filename
         << "\" is not a binary gray or color image (PPM type P5 or P6)" << std::endl;
     return 0;
   }
@@ -96,13 +96,13 @@ iu::ImageCpu_16u_C1* imread_16u_C1(const std::string& filename)
   int bit_depth;
   if(maxval <= 255)
   {
-    std::cout << "found 8-bit header..." << std::endl;
+    std::cout << "Loading 8-bit file..." << std::endl;
     return 0;
     bit_depth = 8;
   }
   else if ( (maxval > 255) && (maxval <= 65535) )
   {
-//    std::cout << "found 16-bit header..." << std::endl;
+//    std::cout << "Loading 16-bit file..." << std::endl;
     bit_depth = 16;
   }
   else
@@ -111,6 +111,10 @@ iu::ImageCpu_16u_C1* imread_16u_C1(const std::string& filename)
     return 0;
   }
 
+  // read one additonal '\n' !!!
+  char tmp[16];
+  src.read(tmp,1);
+
   // Allocate memory
   iu::ImageCpu_16u_C1* image = new iu::ImageCpu_16u_C1(width, height);
   src.read((char *)image->data(), image->width() * image->height() * image->nChannels() * 2);
@@ -118,11 +122,11 @@ iu::ImageCpu_16u_C1* imread_16u_C1(const std::string& filename)
 }
 
 //-----------------------------------------------------------------------------
-iu::ImageCpu_32f_C1* imread_12u32f_C1(const std::string& filename)
+iu::ImageCpu_32f_C1* imread_16u32f_C1(const std::string& filename, int max_val)
 {
   iu::ImageCpu_16u_C1* im_16u_C1 = iuprivate::imread_16u_C1(filename);
   iu::ImageCpu_32f_C1* im_32f_C1 = new iu::ImageCpu_32f_C1(im_16u_C1->size());
-  float normalization_factor = 1.0f/static_cast<float>(pow(2.0,12.0));
+  float normalization_factor = 1.0f/static_cast<float>(max_val);
   iu::convert_16u32f_C1(im_16u_C1, im_32f_C1, normalization_factor, 0.0f);
   delete(im_16u_C1);
   return im_32f_C1;
@@ -130,9 +134,9 @@ iu::ImageCpu_32f_C1* imread_12u32f_C1(const std::string& filename)
 
 
 //-----------------------------------------------------------------------------
-iu::ImageNpp_32f_C1* imread_cu12u32f_C1(const std::string& filename)
+iu::ImageNpp_32f_C1* imread_cu16u32f_C1(const std::string& filename, int max_val)
 {
-  iu::ImageCpu_32f_C1* image_32f_C1 = iuprivate::imread_12u32f_C1(filename);
+  iu::ImageCpu_32f_C1* image_32f_C1 = iuprivate::imread_16u32f_C1(filename, max_val);
   iu::ImageNpp_32f_C1* image = new iu::ImageNpp_32f_C1(image_32f_C1->size());
   iu::copy(image_32f_C1, image);
   delete(image_32f_C1);
