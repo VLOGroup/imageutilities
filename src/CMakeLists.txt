@@ -203,7 +203,7 @@ if(VMLIBRARIES_IU_USE_IOPGM)
 
 else()
   message("[-] ImageUtilities omitting IOPGM module")
-  set(VMLIBRARIES_IU_USE_IO OFF CACHE PATH "IU: Omit IOPGM module." FORCE)
+  set(VMLIBRARIES_IU_USE_IOPGM OFF CACHE PATH "IU: Omit IOPGM module." FORCE)
 
 endif()
 

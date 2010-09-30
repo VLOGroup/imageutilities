@@ -134,10 +134,10 @@ iu::ImageCpu_32f_C1* imread_16u32f_C1(const std::string& filename, int max_val)
 
 
 //-----------------------------------------------------------------------------
-iu::ImageNpp_32f_C1* imread_cu16u32f_C1(const std::string& filename, int max_val)
+iu::ImageGpu_32f_C1* imread_cu16u32f_C1(const std::string& filename, int max_val)
 {
   iu::ImageCpu_32f_C1* image_32f_C1 = iuprivate::imread_16u32f_C1(filename, max_val);
-  iu::ImageNpp_32f_C1* image = new iu::ImageNpp_32f_C1(image_32f_C1->size());
+  iu::ImageGpu_32f_C1* image = new iu::ImageGpu_32f_C1(image_32f_C1->size());
   iu::copy(image_32f_C1, image);
   delete(image_32f_C1);
   return image;

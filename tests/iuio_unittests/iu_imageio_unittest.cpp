@@ -26,12 +26,11 @@
 #include <cuda_runtime.h>
 
 
-//#include <cv.h>
+#include <cv.h>
 #include <highgui.h>
 
 #include <iucore.h>
 #include <iuio.h>
-#include <iugui.h>
 
 using namespace iu;
 
@@ -81,19 +80,19 @@ int main(int argc, char** argv)
 
 
   /* device images */
-  iu::ImageNpp_8u_C1* cuim_8u_C1 = iu::imread_cu8u_C1(filename);
+  iu::ImageGpu_8u_C1* cuim_8u_C1 = iu::imread_cu8u_C1(filename);
   iu::imshow(cuim_8u_C1, "8u_C1 device image");
   iu::imsave(cuim_8u_C1, "out_8u_C1_device.png");
 
-  iu::ImageNpp_8u_C4* cuim_8u_C4 = iu::imread_cu8u_C4(filename);
+  iu::ImageGpu_8u_C4* cuim_8u_C4 = iu::imread_cu8u_C4(filename);
   iu::imshow(cuim_8u_C4, "8u_C4 device image");
   iu::imsave(cuim_8u_C4, "out_8u_C4_device.png");
 
-  iu::ImageNpp_32f_C1* cuim_32f_C1 = iu::imread_cu32f_C1(filename);
+  iu::ImageGpu_32f_C1* cuim_32f_C1 = iu::imread_cu32f_C1(filename);
   iu::imshow(cuim_32f_C1, "32f_C1 device image");
   iu::imsave(cuim_32f_C1, "out_32f_C1_device.png");
 
-  iu::ImageNpp_32f_C4* cuim_32f_C4 = iu::imread_cu32f_C4(filename);
+  iu::ImageGpu_32f_C4* cuim_32f_C4 = iu::imread_cu32f_C4(filename);
   iu::imshow(cuim_32f_C4, "32f_C4 device image");
   iu::imsave(cuim_32f_C4, "out_32f_C4_device.png");
 

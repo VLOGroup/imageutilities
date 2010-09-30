@@ -88,7 +88,7 @@ bool VideoCapture::getImage(iu::ImageCpu_32f_C1* image)
 }
 
 //-----------------------------------------------------------------------------
-bool VideoCapture::getImage(iu::ImageNpp_32f_C1* image)
+bool VideoCapture::getImage(iu::ImageGpu_32f_C1* image)
 {
   QMutexLocker locker(cap_->getMutex());
 

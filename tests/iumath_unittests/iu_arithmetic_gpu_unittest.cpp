@@ -22,10 +22,7 @@
  */
 
 // system includes
-#include <QApplication>
 #include <iostream>
-#include <cv.h>
-#include <highgui.h>
 #include <cuda_runtime.h>
 #include <iucore.h>
 #include <iumath.h>

@@ -33,9 +33,9 @@ namespace iuprivate {
 /* Read images from disc. */
 iu::ImageCpu_16u_C1* imread_16u_C1(const std::string& filename);
 iu::ImageCpu_32f_C1* imread_16u32f_C1(const std::string& filename, int max_val=65536);
-iu::ImageNpp_32f_C1* imread_cu16u32f_C1(const std::string& filename, int max_val=65536);
+iu::ImageGpu_32f_C1* imread_cu16u32f_C1(const std::string& filename, int max_val=65536);
 
-//iu::ImageNpp_32f_C1* imread_16u_C4(const std::string& filename);
+//iu::ImageGpu_32f_C1* imread_16u_C4(const std::string& filename);
 
 } // namespace iuprivate
 

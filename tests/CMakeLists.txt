@@ -74,7 +74,7 @@ enable_testing()
 add_subdirectory(iucore_unittests)
 add_subdirectory(iumath_unittests)
 #add_subdirectory(iugui_unittests)
-#add_subdirectory(iuio_unittests)
+add_subdirectory(iuio_unittests)
 
 ## install the tests into the bin directory if you want to
 

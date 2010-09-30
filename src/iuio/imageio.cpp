@@ -126,37 +126,37 @@ iu::ImageCpu_32f_C4* imread_32f_C4(const std::string& filename)
 }
 
 //-----------------------------------------------------------------------------
-iu::ImageNpp_8u_C1* imread_cu8u_C1(const std::string& filename)
+iu::ImageGpu_8u_C1* imread_cu8u_C1(const std::string& filename)
 {
   iu::ImageCpu_8u_C1* im = imread_8u_C1(filename);
-  iu::ImageNpp_8u_C1* cu_im = new iu::ImageNpp_8u_C1(im->size());
+  iu::ImageGpu_8u_C1* cu_im = new iu::ImageGpu_8u_C1(im->size());
   iuprivate::copy(im, cu_im);
   return cu_im;
 }
 
 //-----------------------------------------------------------------------------
-iu::ImageNpp_8u_C4* imread_cu8u_C4(const std::string& filename)
+iu::ImageGpu_8u_C4* imread_cu8u_C4(const std::string& filename)
 {
   iu::ImageCpu_8u_C4* im = imread_8u_C4(filename);
-  iu::ImageNpp_8u_C4* cu_im = new iu::ImageNpp_8u_C4(im->size());
+  iu::ImageGpu_8u_C4* cu_im = new iu::ImageGpu_8u_C4(im->size());
   iuprivate::copy(im, cu_im);
   return cu_im;
 }
 
 //-----------------------------------------------------------------------------
-iu::ImageNpp_32f_C1* imread_cu32f_C1(const std::string& filename)
+iu::ImageGpu_32f_C1* imread_cu32f_C1(const std::string& filename)
 {
   iu::ImageCpu_32f_C1* im = imread_32f_C1(filename);
-  iu::ImageNpp_32f_C1* cu_im = new iu::ImageNpp_32f_C1(im->size());
+  iu::ImageGpu_32f_C1* cu_im = new iu::ImageGpu_32f_C1(im->size());
   iuprivate::copy(im, cu_im);
   return cu_im;
 }
 
 //-----------------------------------------------------------------------------
-iu::ImageNpp_32f_C4* imread_cu32f_C4(const std::string& filename)
+iu::ImageGpu_32f_C4* imread_cu32f_C4(const std::string& filename)
 {
   iu::ImageCpu_32f_C4* im = imread_32f_C4(filename);
-  iu::ImageNpp_32f_C4* cu_im = new iu::ImageNpp_32f_C4(im->size());
+  iu::ImageGpu_32f_C4* cu_im = new iu::ImageGpu_32f_C4(im->size());
   iuprivate::copy(im, cu_im);
   return cu_im;
 }
@@ -230,7 +230,7 @@ bool imsave(iu::ImageCpu_32f_C4* image, const std::string& filename)
 }
 
 //-----------------------------------------------------------------------------
-bool imsave(iu::ImageNpp_8u_C1* image, const std::string& filename)
+bool imsave(iu::ImageGpu_8u_C1* image, const std::string& filename)
 {
   iu::ImageCpu_8u_C1 cpu_image(image->size());
   iuprivate::copy(image, &cpu_image);
@@ -238,7 +238,7 @@ bool imsave(iu::ImageNpp_8u_C1* image, const std::string& filename)
 }
 
 //-----------------------------------------------------------------------------
-bool imsave(iu::ImageNpp_8u_C4* image, const std::string& filename)
+bool imsave(iu::ImageGpu_8u_C4* image, const std::string& filename)
 {
   iu::ImageCpu_8u_C4 cpu_image(image->size());
   iuprivate::copy(image, &cpu_image);
@@ -246,7 +246,7 @@ bool imsave(iu::ImageNpp_8u_C4* image, const std::string& filename)
 }
 
 //-----------------------------------------------------------------------------
-bool imsave(iu::ImageNpp_32f_C1* image, const std::string& filename)
+bool imsave(iu::ImageGpu_32f_C1* image, const std::string& filename)
 {
   iu::ImageCpu_32f_C1 cpu_image(image->size());
   iuprivate::copy(image, &cpu_image);
@@ -254,7 +254,7 @@ bool imsave(iu::ImageNpp_32f_C1* image, const std::string& filename)
 }
 
 //-----------------------------------------------------------------------------
-bool imsave(iu::ImageNpp_32f_C4* image, const std::string& filename)
+bool imsave(iu::ImageGpu_32f_C4* image, const std::string& filename)
 {
   iu::ImageCpu_32f_C4 cpu_image(image->size());
   iuprivate::copy(image, &cpu_image);
@@ -325,7 +325,7 @@ void imshow(iu::ImageCpu_32f_C4* image, const std::string& winname)
 }
 
 //-----------------------------------------------------------------------------
-void imshow(iu::ImageNpp_8u_C1* image, const std::string& winname)
+void imshow(iu::ImageGpu_8u_C1* image, const std::string& winname)
 {
   iu::ImageCpu_8u_C1 cpu_image(image->size());
   iuprivate::copy(image, &cpu_image);
@@ -333,7 +333,7 @@ void imshow(iu::ImageNpp_8u_C1* image, const std::string& winname)
 }
 
 //-----------------------------------------------------------------------------
-void imshow(iu::ImageNpp_8u_C4* image, const std::string& winname)
+void imshow(iu::ImageGpu_8u_C4* image, const std::string& winname)
 {
   iu::ImageCpu_8u_C4 cpu_image(image->size());
   iuprivate::copy(image, &cpu_image);
@@ -341,7 +341,7 @@ void imshow(iu::ImageNpp_8u_C4* image, const std::string& winname)
 }
 
 //-----------------------------------------------------------------------------
-void imshow(iu::ImageNpp_32f_C1* image, const std::string& winname)
+void imshow(iu::ImageGpu_32f_C1* image, const std::string& winname)
 {
   iu::ImageCpu_32f_C1 cpu_image(image->size());
   iuprivate::copy(image, &cpu_image);
@@ -349,7 +349,7 @@ void imshow(iu::ImageNpp_32f_C1* image, const std::string& winname)
 }
 
 //-----------------------------------------------------------------------------
-void imshow(iu::ImageNpp_32f_C4* image, const std::string& winname)
+void imshow(iu::ImageGpu_32f_C4* image, const std::string& winname)
 {
   iu::ImageCpu_32f_C4 cpu_image(image->size());
   iuprivate::copy(image, &cpu_image);
