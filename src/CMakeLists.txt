@@ -26,10 +26,6 @@ set(${IU_PUBLIC_HEADERS} "")
 
 # general settings
 set( CMAKE_DEBUG_POSTFIX "d" )
-set( NPP64 "" )
-if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
-  set( NPP64 "-x64" )
-endif( CMAKE_SIZEOF_VOID_P EQUAL 8 )
 
 FILE(TO_CMAKE_PATH "$ENV{CMAKE_MODULE_PATH}" OT_CMAKE_MODULE_PATH)
 FILE(TO_CMAKE_PATH "$ENV{ICG_CMAKE_MODULE_PATH}" OT_ICG_CMAKE_MODULE_PATH)
@@ -64,9 +60,9 @@ endif()
 ## (the core module is always included!)
 OPTION(VMLIBRARIES_IU_USE_GUI "Including GUI module." OFF)
 OPTION(VMLIBRARIES_IU_USE_IO "Including IO module." ON)
-OPTION(VMLIBRARIES_IU_USE_IOPGM "Including IOPGM module." ON)
-OPTION(VMLIBRARIES_IU_USE_VIDEOCAPTURE "Including VideCapture IO module." ON)
-OPTION(VMLIBRARIES_IU_USE_PGRCAMERA "Including PointGray IO module." ON)
+OPTION(VMLIBRARIES_IU_USE_IOPGM "Including IOPGM module." OFF)
+OPTION(VMLIBRARIES_IU_USE_VIDEOCAPTURE "Including VideCapture IO module." OFF)
+OPTION(VMLIBRARIES_IU_USE_PGRCAMERA "Including PointGray IO module." OFF)
 OPTION(VMLIBRARIES_IU_BUILD_COMBINED_LIBRARY "Building a complete library package. This is just for compatibility reasons." OFF)
 
 
@@ -96,12 +92,6 @@ find_package(CUDASDK REQUIRED)
 cuda_include_directories(${CUDA_INCLUDE_DIRS} ${CUDA_CUT_INCLUDE_DIR})
 include_directories(${CUDA_INCLUDE_DIRS} ${CUDA_CUT_INCLUDE_DIR})
 set(IU_IUCORE_LIB_DEPENDENCIES ${IU_IUCORE_LIB_DEPENDENCIES} ${CUDA_LIBRARIES})
-
-##-----------------------------------------------------------------------------
-# NPP
-find_package(NPP REQUIRED)
-cuda_include_directories(${NPP_INCLUDE_DIRS})
-include_directories(${NPP_INCLUDE_DIRS})
 
 ##-----------------------------------------------------------------------------
 ## Qt
@@ -454,7 +444,7 @@ set_target_properties(${IU_CORE_LIB} PROPERTIES
   SOVERSION ${IMAGEUTILITIES_SOVERSION}
   PUBLIC_HEADER "${IU_PUBLIC_HEADERS}"
   )
-target_link_libraries( ${IU_CORE_LIB} ${NPP_LIBRARIES} ${CUDA_LIBRARIES} )
+target_link_libraries( ${IU_CORE_LIB} ${CUDA_LIBRARIES} )
 set(IU_LIBS ${IU_LIBS} ${IU_CORE_LIB})
 
 ##-----------------------------------------------------------------------------
@@ -468,7 +458,7 @@ set(IU_GUI_LIB iugui)
     SOVERSION ${IMAGEUTILITIES_SOVERSION}
     )
   target_link_libraries( ${IU_GUI_LIB}
-    ${NPP_LIBRARIES} ${CUDA_LIBRARIES}
+    ${CUDA_LIBRARIES}
     ${QT_LIBRARIES}  ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES}
     )
   set(IU_LIBS ${IU_LIBS} ${IU_GUI_LIB})
@@ -486,7 +476,7 @@ if(VMLIBRARIES_IU_USE_IO)
     SOVERSION ${IMAGEUTILITIES_SOVERSION}
     )
   target_link_libraries( ${IU_IO_LIB}
-    ${NPP_LIBRARIES} ${CUDA_LIBRARIES}
+    ${CUDA_LIBRARIES}
     ${OpenCV_LIBS}
     )
   set(IU_LIBS ${IU_LIBS} ${IU_IO_LIB})
@@ -504,7 +494,7 @@ if(VMLIBRARIES_IU_USE_IOPGM)
     SOVERSION ${IMAGEUTILITIES_SOVERSION}
     )
   target_link_libraries( ${IU_IOPGM_LIB}
-    ${NPP_LIBRARIES} ${CUDA_LIBRARIES}
+    ${CUDA_LIBRARIES}
     ${OpenCV_LIBS} ${IU_CORE_LIB}
     )
   set(IU_LIBS ${IU_LIBS} ${IU_IOPGM_LIB})
@@ -521,7 +511,7 @@ if(VMLIBRARIES_IU_USE_VIDEOCAPTURE)
     SOVERSION ${IMAGEUTILITIES_SOVERSION}
     )
   target_link_libraries( ${IU_VIDEOCAPTURE_LIB}
-    ${NPP_LIBRARIES} ${CUDA_LIBRARIES}
+    ${CUDA_LIBRARIES}
     ${QT_LIBRARIES}  ${OpenCV_LIBS}
     )
   set(IU_LIBS ${IU_LIBS} ${IU_VIDEOCAPTURE_LIB})
@@ -539,7 +529,7 @@ if(VMLIBRARIES_IU_USE_PGRCAMERA)
     SOVERSION ${IMAGEUTILITIES_SOVERSION}
     )
   target_link_libraries( ${IU_PGRCAMERA_LIB}
-    ${NPP_LIBRARIES} ${CUDA_LIBRARIES}
+    ${CUDA_LIBRARIES}
     ${QT_LIBRARIES}  ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES}
     ${FLYCAPTURE2_LIBRARIES}
     )
@@ -571,14 +561,14 @@ if(VMLIBRARIES_IU_BUILD_COMBINED_LIBRARY)
   endif( WIN32 )
 
   set( IU_ALL_SHARED_LIBS
-    ${NPP_LIBRARIES} ${CUDA_LIBRARIES}
+    ${CUDA_LIBRARIES}
     ${QT_LIBRARIES}  ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES} ${OpenCV_LIBS} ${FLYCAPTURE2_LIBRARIES}
     )
   TARGET_LINK_LIBRARIES(iu ${IU_ALL_SHARED_LIBS} )
 
   if( NOT WIN32 )
     set( IU_ALL_STATIC_LIBS
-      ${NPP_LIBRARIES} ${CUDA_LIBRARIES}
+      ${CUDA_LIBRARIES}
       ${QT_LIBRARIES}  ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES} ${OpenCV_LIBS} ${FLYCAPTURE2_LIBRARIES}
       )
     TARGET_LINK_LIBRARIES(iu_static ${IU_ALL_STATIC_LIBS} )

@@ -24,7 +24,6 @@
 #ifndef IU_COREDEFS_H
 #define IU_COREDEFS_H
 
-#include <nppdefs.h>
 #include <assert.h>
 
 /** Basic assert macro
@@ -45,6 +44,28 @@
     fprintf(stderr,"  line:       %d\n\n",__LINE__); \
   } \
   } while(false)
+
+/** Error status codes.
+ * Negative error codes represent an error.
+ * Zero means that everything is ok.
+ * Positive error codes represent warnings.
+ */
+typedef enum
+{
+  // error
+  NPP_MEM_COPY_ERROR = -11,
+  NPP_MEM_ALLOC_ERROR = -10,
+  NPP_NOT_SUPPORTED_ERROR = -2,
+  NPP_ERROR = -1,
+
+  // success
+  NPP_NO_ERROR = 0,
+  NPP_SUCCESS = 0,
+
+  // warnings
+  NPP_WARNING = 1
+
+} IuStatus;
 
 /** 2D Size
  * This struct contains width, height and some helper functions to define a 2D size.
@@ -81,26 +102,6 @@ struct IuSize
     return *this;
   }
 
-  // NppiSize wrappers
-
-  IuSize(const NppiSize& from) :
-      width(from.width), height(from.height), depth(1)
-  {
-  }
-
-  IuSize& operator= (const NppiSize& from)
-  {
-    this->width = from.width;
-    this->height = from.height;
-    this->depth = 1;
-    return *this;
-  }
-
-  NppiSize nppiSize()
-  {
-    NppiSize sz = {this->width, this->height};
-    return sz;
-  }
 };
 
 inline bool operator==(const IuSize& lhs, const IuSize& rhs)

@@ -99,7 +99,7 @@ void setValue(const PixelType &value, iu::VolumeCpu<PixelType, Allocator> *srcds
 template<typename PixelType, class Allocator>
 void setValue(const PixelType &value, iu::ImageGpu<PixelType, Allocator> *srcdst, const IuRect& roi)
 {
-  NppStatus status;
+  IuStatus status;
   status = cuSetValue(value, srcdst, roi);
   IU_ASSERT(status == NPP_SUCCESS);
 }
@@ -108,13 +108,13 @@ void setValue(const PixelType &value, iu::ImageGpu<PixelType, Allocator> *srcdst
 template<typename PixelType, class Allocator>
 void setValue(const PixelType &value, iu::VolumeGpu<PixelType, Allocator> *srcdst, const IuCube& roi)
 {
-  NppStatus status;
+  IuStatus status;
   status = cuSetValue(value, srcdst, roi);
   IU_ASSERT(status == NPP_SUCCESS);
 }
 
 // 2D clamping. clamps every pixel; device;
-void clamp(const Npp32f& min, const Npp32f& max,
+void clamp(const float& min, const float& max,
            iu::ImageGpu_32f_C1 *srcdst, const IuRect &roi);
 
 // 2D conversion; device; 32-bit 3-channel -> 32-bit 4-channel

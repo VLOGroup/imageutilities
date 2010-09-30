@@ -51,7 +51,7 @@ void setValue(const float& value, iu::LinearHostMemory_32f_C1* srcdst)
 void setValue(const unsigned char& value, iu::LinearDeviceMemory_8u_C1* srcdst)
 {
   // cudaMemset is slow so we are firing up a kernel
-  NppStatus status = cuSetValue(value, srcdst);
+  IuStatus status = cuSetValue(value, srcdst);
   IU_ASSERT(status == NPP_SUCCESS);
 }
 
@@ -59,7 +59,7 @@ void setValue(const unsigned char& value, iu::LinearDeviceMemory_8u_C1* srcdst)
 void setValue(const float& value, iu::LinearDeviceMemory_32f_C1* srcdst)
 {
   // cudaMemset is slow so we are firing up a kernel
-  NppStatus status = cuSetValue(value, srcdst);
+  IuStatus status = cuSetValue(value, srcdst);
   IU_ASSERT(status == NPP_SUCCESS);
 }
 
@@ -70,7 +70,7 @@ void setValue(const float& value, iu::LinearDeviceMemory_32f_C1* srcdst)
 void clamp(const float& min, const float& max,
            iu::ImageGpu_32f_C1 *srcdst, const IuRect &roi)
 {
-  NppStatus status = cuClamp(min, max, srcdst, roi);
+  IuStatus status = cuClamp(min, max, srcdst, roi);
   IU_ASSERT(status == NPP_SUCCESS);
 }
 
@@ -79,7 +79,7 @@ void clamp(const float& min, const float& max,
 // [device] conversion 32f_C3 -> 32f_C4
 void convert(const iu::ImageGpu_32f_C3* src, const IuRect& src_roi, iu::ImageGpu_32f_C4* dst, const IuRect& dst_roi)
 {
-  NppStatus status;
+  IuStatus status;
   status = cuConvert(src, src_roi, dst, dst_roi);
   IU_ASSERT(status == NPP_NO_ERROR);
 }
@@ -87,7 +87,7 @@ void convert(const iu::ImageGpu_32f_C3* src, const IuRect& src_roi, iu::ImageGpu
 // [device] conversion 32f_C4 -> 32f_C3
 void convert(const iu::ImageGpu_32f_C4* src, const IuRect& src_roi, iu::ImageGpu_32f_C3* dst, const IuRect& dst_roi)
 {
-  NppStatus status;
+  IuStatus status;
   status = cuConvert(src, src_roi, dst, dst_roi);
   IU_ASSERT(status == NPP_NO_ERROR);
 }
@@ -116,7 +116,7 @@ void convert_16u32f_C1(const iu::ImageCpu_16u_C1* src, iu::ImageCpu_32f_C1 *dst,
   {
     for (unsigned int y=0; y<dst->height(); y++)
     {
-      Npp16u val = *src->data(x,y); //((*src->data(x,y) & 0x00ffU) << 8) | ((*src->data(x,y) & 0xff00U) >> 8);
+      unsigned short val = *src->data(x,y); //((*src->data(x,y) & 0x00ffU) << 8) | ((*src->data(x,y) & 0xff00U) >> 8);
       *dst->data(x,y) = mul_constant*(float)val + add_constant;
     }
   }

@@ -42,28 +42,28 @@
 namespace iu {
 
   // Linear Host memory; 8-bit
-//  typedef LinearHostMemory<Npp8u> LinearHostMemory_8u_C1;
+//  typedef LinearHostMemory<unsigned char> LinearHostMemory_8u_C1;
   typedef LinearHostMemory<unsigned char> LinearHostMemory_8u_C1;
   typedef LinearHostMemory<uchar2> LinearHostMemory_8u_C2;
   typedef LinearHostMemory<uchar3> LinearHostMemory_8u_C3;
   typedef LinearHostMemory<uchar4> LinearHostMemory_8u_C4;
 
   // Linear Host memory; 32-bit
-//  typedef LinearHostMemory<Npp32f> LinearHostMemory_32f_C1;
+//  typedef LinearHostMemory<float> LinearHostMemory_32f_C1;
   typedef LinearHostMemory<float> LinearHostMemory_32f_C1;
   typedef LinearHostMemory<float2> LinearHostMemory_32f_C2;
   typedef LinearHostMemory<float3> LinearHostMemory_32f_C3;
   typedef LinearHostMemory<float4> LinearHostMemory_32f_C4;
 
   // Linear device memory; 8-bit
-//  typedef LinearDeviceMemory<Npp8u> LinearDeviceMemory_8u_C1;
+//  typedef LinearDeviceMemory<unsigned char> LinearDeviceMemory_8u_C1;
   typedef LinearDeviceMemory<unsigned char> LinearDeviceMemory_8u_C1;
   typedef LinearDeviceMemory<uchar2> LinearDeviceMemory_8u_C2;
   typedef LinearDeviceMemory<uchar3> LinearDeviceMemory_8u_C3;
   typedef LinearDeviceMemory<uchar4> LinearDeviceMemory_8u_C4;
 
   // Linear device memory; 32-bit
-//  typedef LinearDeviceMemory<Npp32f> LinearDeviceMemory_32f_C1;
+//  typedef LinearDeviceMemory<float> LinearDeviceMemory_32f_C1;
   typedef LinearDeviceMemory<float> LinearDeviceMemory_32f_C1;
   typedef LinearDeviceMemory<float2> LinearDeviceMemory_32f_C2;
   typedef LinearDeviceMemory<float3> LinearDeviceMemory_32f_C3;

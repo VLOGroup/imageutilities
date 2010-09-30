@@ -60,7 +60,7 @@ void mulC(const iu::ImageGpu_32f_C4* src, const float4& factor, iu::ImageGpu_32f
  * \param srcdst Source and destination
  * \param roi Region of interest in the source/destination image
  *
- * \note supported npp: 8u_C1, 8u_C4, 32f_C1, 32f_C4,
+ * \note supported gpu: 8u_C1, 8u_C4, 32f_C1, 32f_C4,
  */
 // multiplication with factor; host; 8-bit
 

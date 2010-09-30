@@ -44,7 +44,7 @@ texture<float2, 2, cudaReadModeElementType> tex_p_32f_C2__;
 *******************************************************************************/
 
 // kernel: median filter; 32-bit; 1-channel
-__global__ void  cuFilterMedian3x3Kernel_32f_C1(Npp32f* dst, const size_t stride,
+__global__ void  cuFilterMedian3x3Kernel_32f_C1(float* dst, const size_t stride,
                                                 const int xoff, const int yoff,
                                                 const int width, const int height)
 {
@@ -247,7 +247,7 @@ __global__ void  cuFilterMedian3x3Kernel_32f_C1(Npp32f* dst, const size_t stride
  * @param kernel_size  lenght of the smoothing kernel [pixels]
  * @param horizontal   defines the direction of convolution
  */
-__global__ void cuFilterGaussKernel_32f_C1(Npp32f* dst, const size_t stride,
+__global__ void cuFilterGaussKernel_32f_C1(float* dst, const size_t stride,
                                            const int xoff, const int yoff,
                                            const int width, const int height,
                                            float sigma, int kernel_size, bool horizontal=true)
@@ -420,7 +420,7 @@ __global__ void cuFilterRofDualKernel_32f_C1(
 *******************************************************************************/
 
 // wrapper: median filter; 32-bit; 1-channel
-NppStatus cuFilterMedian3x3(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst, const IuRect& roi)
+IuStatus cuFilterMedian3x3(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst, const IuRect& roi)
 {
   // bind textures
   cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<float>();
@@ -445,7 +445,7 @@ NppStatus cuFilterMedian3x3(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1*
 }
 
 // wrapper: Gaussian filter; 32-bit; 1-channel
-NppStatus cuFilterGauss(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst, const IuRect& roi, float sigma, int kernel_size)
+IuStatus cuFilterGauss(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst, const IuRect& roi, float sigma, int kernel_size)
 {
   if (kernel_size == 0)
     kernel_size = max(5, (unsigned int)ceil(sigma*  3)*  2 + 1);
@@ -484,7 +484,7 @@ NppStatus cuFilterGauss(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst
 }
 
 // wrapper: Rof filter; 32-bit; 1-channel
-NppStatus cuFilterRof(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
+IuStatus cuFilterRof(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
                       const IuRect& roi, float lambda, int iterations)
 {
   // helper variables (v=splitting var; p=dual var)

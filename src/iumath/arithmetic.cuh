@@ -30,8 +30,8 @@
 namespace iuprivate {
 
 // cuda wrapper: weighted add; Not-in-place; 32-bit;
-NppStatus cuAddWeighted(const iu::ImageGpu_32f_C1* src1, const Npp32f& weight1,
-                        const iu::ImageGpu_32f_C1* src2, const Npp32f& weight2,
+IuStatus cuAddWeighted(const iu::ImageGpu_32f_C1* src1, const float& weight1,
+                        const iu::ImageGpu_32f_C1* src2, const float& weight2,
                         iu::ImageGpu_32f_C1* dst, const IuRect& roi);
 
 
@@ -41,13 +41,13 @@ NppStatus cuAddWeighted(const iu::ImageGpu_32f_C1* src1, const Npp32f& weight1,
  * \param dst Destination image.
  * \param roi Region of interest in the source and destination image
  *
- * \note supported npp: 8u_C1, 8u_C4, 32f_C1, 32f_C4
+ * \note supported gpu: 8u_C1, 8u_C4, 32f_C1, 32f_C4
  * \note 3-channel stuff not supported due to texture usage!
  */
-NppStatus cuMulC(const iu::ImageGpu_8u_C1* src, const unsigned char& factor, iu::ImageGpu_8u_C1* dst, const IuRect& roi);
-NppStatus cuMulC(const iu::ImageGpu_8u_C4* src, const uchar4& factor, iu::ImageGpu_8u_C4* dst, const IuRect& roi);
-NppStatus cuMulC(const iu::ImageGpu_32f_C1* src, const float& factor, iu::ImageGpu_32f_C1* dst, const IuRect& roi);
-NppStatus cuMulC(const iu::ImageGpu_32f_C4* src, const float4& factor, iu::ImageGpu_32f_C4* dst, const IuRect& roi);
+IuStatus cuMulC(const iu::ImageGpu_8u_C1* src, const unsigned char& factor, iu::ImageGpu_8u_C1* dst, const IuRect& roi);
+IuStatus cuMulC(const iu::ImageGpu_8u_C4* src, const uchar4& factor, iu::ImageGpu_8u_C4* dst, const IuRect& roi);
+IuStatus cuMulC(const iu::ImageGpu_32f_C1* src, const float& factor, iu::ImageGpu_32f_C1* dst, const IuRect& roi);
+IuStatus cuMulC(const iu::ImageGpu_32f_C4* src, const float4& factor, iu::ImageGpu_32f_C4* dst, const IuRect& roi);
 
 
 } // namespace iuprivate

@@ -31,14 +31,14 @@ namespace iuprivate {
 // device; 32-bit; 1-channel
 void filterGauss(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst, const IuRect& roi, float sigma, int kernel_size)
 {
-  NppStatus status = cuFilterGauss(src, dst, roi, sigma, kernel_size);
+  IuStatus status = cuFilterGauss(src, dst, roi, sigma, kernel_size);
   IU_ASSERT(status == NPP_NO_ERROR);
 }
 
 // device; 32-bit; 1-channel
 void filterMedian3x3(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst, const IuRect& roi)
 {
-  NppStatus status = cuFilterMedian3x3(src, dst, roi);
+  IuStatus status = cuFilterMedian3x3(src, dst, roi);
   IU_ASSERT(status == NPP_NO_ERROR);
 }
 
@@ -46,7 +46,7 @@ void filterMedian3x3(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst, c
 void filterRof(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
                const IuRect& roi, float lambda, int iterations)
 {
-  NppStatus status = cuFilterRof(src, dst, roi, lambda, iterations);
+  IuStatus status = cuFilterRof(src, dst, roi, lambda, iterations);
   IU_ASSERT(status == NPP_NO_ERROR);
 }
 

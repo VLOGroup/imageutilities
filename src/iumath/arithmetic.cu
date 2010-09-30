@@ -57,7 +57,7 @@ __global__ void cuAddWeightedKernel_32f_C1(
 }
 
 // wrapper: weighted add; 32-bit;
-NppStatus cuAddWeighted(const iu::ImageGpu_32f_C1* src1, const float& weight1,
+IuStatus cuAddWeighted(const iu::ImageGpu_32f_C1* src1, const float& weight1,
                         const iu::ImageGpu_32f_C1* src2, const float& weight2,
                         iu::ImageGpu_32f_C1* dst, const IuRect& roi)
 {
@@ -112,7 +112,7 @@ __global__ void  cuMulCKernel(const unsigned char factor, unsigned char* dst, co
 }
 
 // wrapper: multiplication with factor; 8-bit; 1-channel
-NppStatus cuMulC(const iu::ImageGpu_8u_C1* src, const unsigned char& factor, iu::ImageGpu_8u_C1* dst, const IuRect& roi)
+IuStatus cuMulC(const iu::ImageGpu_8u_C1* src, const unsigned char& factor, iu::ImageGpu_8u_C1* dst, const IuRect& roi)
 {
   // bind textures
   cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<uchar1>();
@@ -158,7 +158,7 @@ __global__ void  cuMulCKernel(const uchar4 factor, uchar4* dst, const size_t str
 }
 
 // wrapper: multiplication with factor; 8-bit; 4-channel
-NppStatus cuMulC(const iu::ImageGpu_8u_C4* src, const uchar4& factor, iu::ImageGpu_8u_C4* dst, const IuRect& roi)
+IuStatus cuMulC(const iu::ImageGpu_8u_C4* src, const uchar4& factor, iu::ImageGpu_8u_C4* dst, const IuRect& roi)
 {
   // bind textures
   cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<uchar4>();
@@ -206,7 +206,7 @@ __global__ void  cuMulCKernel(const float factor, float* dst, const size_t strid
 }
 
 // wrapper: multiplication with factor; 32-bit; 1-channel
-NppStatus cuMulC(const iu::ImageGpu_32f_C1* src, const float& factor, iu::ImageGpu_32f_C1* dst, const IuRect& roi)
+IuStatus cuMulC(const iu::ImageGpu_32f_C1* src, const float& factor, iu::ImageGpu_32f_C1* dst, const IuRect& roi)
 {
   // bind textures
   cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<float>();
@@ -254,7 +254,7 @@ __global__ void  cuMulCKernel(const float4 factor, float4* dst, const size_t str
 }
 
 // wrapper: multiplication with factor; 32-bit; 4-channel
-NppStatus cuMulC(const iu::ImageGpu_32f_C4* src, const float4& factor, iu::ImageGpu_32f_C4* dst, const IuRect& roi)
+IuStatus cuMulC(const iu::ImageGpu_32f_C4* src, const float4& factor, iu::ImageGpu_32f_C4* dst, const IuRect& roi)
 {
   // bind textures
   cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<float4>();

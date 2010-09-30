@@ -240,8 +240,8 @@ __global__ void getOutputKernel_32f_C4(int* output, int xoff, int yoff, int widt
 //}
 //
 ////-----------------------------------------------------------------------------
-//__global__ void createOverlayKernelUC( int* data, Npp8u* overlay, int width, int height, size_t pitch,
-//                                       int _r, int _g, int _b, int _a, Npp8u mask_value)
+//__global__ void createOverlayKernelUC( int* data, unsigned char* overlay, int width, int height, size_t pitch,
+//                                       int _r, int _g, int _b, int _a, unsigned char mask_value)
 //{
 //  /*
 //    oc ... overlay center
@@ -280,7 +280,7 @@ __global__ void getOutputKernel_32f_C4(int* output, int xoff, int yoff, int widt
 *******************************************************************************/
 
 //-----------------------------------------------------------------------------
-NppStatus cuInitTextures()
+IuStatus cuInitTextures()
 {
   // general float texture
   nppglwidget_image_32f_C1__.filterMode = cudaFilterModePoint;
@@ -302,7 +302,7 @@ NppStatus cuInitTextures()
 /** Register a buffer object with CUDA
  * @param pbo index of picture buffer object
  */
-NppStatus cuPboRegister(GLuint pbo, bool& registered)
+IuStatus cuPboRegister(GLuint pbo, bool& registered)
 {
   if(!registered)
   {
@@ -317,7 +317,7 @@ NppStatus cuPboRegister(GLuint pbo, bool& registered)
 /** Unregister a buffer object with CUDA
  * @param pbo index of picture buffer object
  */
-NppStatus cuPboUnregister(GLuint pbo, bool& registered)
+IuStatus cuPboUnregister(GLuint pbo, bool& registered)
 {
   if(registered)
   {
@@ -333,7 +333,7 @@ NppStatus cuPboUnregister(GLuint pbo, bool& registered)
  * @param[out] pbo_out index of picture buffer object for output image
  * @param[in] dImage device memory image
  */
-NppStatus cuGetOutput(int pbo_out, iu::Image* image,
+IuStatus cuGetOutput(int pbo_out, iu::Image* image,
                       float min_val, float max_val, IuRect roi)
 {
   // prepare fragmentation for processing
@@ -492,8 +492,8 @@ NppStatus cuGetOutput(int pbo_out, iu::Image* image,
 //}
 //
 ////-----------------------------------------------------------------------------
-//bool createOverlayUC( int pbo, Cuda::DeviceMemory<Npp8u, 2>* overlay,
-//                                          int r, int g, int b, int a, Npp8u mask_value,
+//bool createOverlayUC( int pbo, Cuda::DeviceMemory<unsigned char, 2>* overlay,
+//                                          int r, int g, int b, int a, unsigned char mask_value,
 //                                          Cuda::Size<2> size)
 //{
 //  int* out_data = NULL;

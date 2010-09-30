@@ -33,22 +33,22 @@ namespace iuprivate {
  * \param value The pixel value to be set.
  * \param buffer Pointer to the buffer
  */
-NppStatus cuSetValue(const unsigned char& value, iu::LinearDeviceMemory_8u_C1* dst);
-NppStatus cuSetValue(const float& value, iu::LinearDeviceMemory_32f_C1* dst);
+IuStatus cuSetValue(const unsigned char& value, iu::LinearDeviceMemory_8u_C1* dst);
+IuStatus cuSetValue(const float& value, iu::LinearDeviceMemory_32f_C1* dst);
 
 /** Sets values of 2D gpu memory.
  * \param value The pixel value to be set.
  * \param dst Destination image
  * \param roi Region of interest of processed pixels
  */
-NppStatus cuSetValue(const unsigned char& value, iu::ImageGpu_8u_C1 *dst, const IuRect &roi);
-NppStatus cuSetValue(const uchar2& value, iu::ImageGpu_8u_C2 *dst, const IuRect &roi);
-NppStatus cuSetValue(const uchar3& value, iu::ImageGpu_8u_C3 *dst, const IuRect &roi);
-NppStatus cuSetValue(const uchar4& value, iu::ImageGpu_8u_C4 *dst, const IuRect &roi);
-NppStatus cuSetValue(const float& value, iu::ImageGpu_32f_C1 *dst, const IuRect &roi);
-NppStatus cuSetValue(const float2& value, iu::ImageGpu_32f_C2 *dst, const IuRect &roi);
-NppStatus cuSetValue(const float3& value, iu::ImageGpu_32f_C3 *dst, const IuRect &roi);
-NppStatus cuSetValue(const float4& value, iu::ImageGpu_32f_C4 *dst, const IuRect &roi);
+IuStatus cuSetValue(const unsigned char& value, iu::ImageGpu_8u_C1 *dst, const IuRect &roi);
+IuStatus cuSetValue(const uchar2& value, iu::ImageGpu_8u_C2 *dst, const IuRect &roi);
+IuStatus cuSetValue(const uchar3& value, iu::ImageGpu_8u_C3 *dst, const IuRect &roi);
+IuStatus cuSetValue(const uchar4& value, iu::ImageGpu_8u_C4 *dst, const IuRect &roi);
+IuStatus cuSetValue(const float& value, iu::ImageGpu_32f_C1 *dst, const IuRect &roi);
+IuStatus cuSetValue(const float2& value, iu::ImageGpu_32f_C2 *dst, const IuRect &roi);
+IuStatus cuSetValue(const float3& value, iu::ImageGpu_32f_C3 *dst, const IuRect &roi);
+IuStatus cuSetValue(const float4& value, iu::ImageGpu_32f_C4 *dst, const IuRect &roi);
 
 
 /** Sets values of 3D gpu memory.
@@ -56,12 +56,12 @@ NppStatus cuSetValue(const float4& value, iu::ImageGpu_32f_C4 *dst, const IuRect
  * \param dst Destination image
  * \param roi Region of interest of processed pixels
  */
-NppStatus cuSetValue(const unsigned char& value, iu::VolumeGpu_8u_C1 *dst, const IuCube &roi);
-NppStatus cuSetValue(const uchar2& value, iu::VolumeGpu_8u_C2 *dst, const IuCube &roi);
-NppStatus cuSetValue(const uchar4& value, iu::VolumeGpu_8u_C4 *dst, const IuCube &roi);
-NppStatus cuSetValue(const float& value, iu::VolumeGpu_32f_C1 *dst, const IuCube &roi);
-NppStatus cuSetValue(const float2& value, iu::VolumeGpu_32f_C2 *dst, const IuCube &roi);
-NppStatus cuSetValue(const float4& value, iu::VolumeGpu_32f_C4 *dst, const IuCube &roi);
+IuStatus cuSetValue(const unsigned char& value, iu::VolumeGpu_8u_C1 *dst, const IuCube &roi);
+IuStatus cuSetValue(const uchar2& value, iu::VolumeGpu_8u_C2 *dst, const IuCube &roi);
+IuStatus cuSetValue(const uchar4& value, iu::VolumeGpu_8u_C4 *dst, const IuCube &roi);
+IuStatus cuSetValue(const float& value, iu::VolumeGpu_32f_C1 *dst, const IuCube &roi);
+IuStatus cuSetValue(const float2& value, iu::VolumeGpu_32f_C2 *dst, const IuCube &roi);
+IuStatus cuSetValue(const float4& value, iu::VolumeGpu_32f_C4 *dst, const IuCube &roi);
 
 /** Clamps all values of srcdst to the interval min/max.
  * \param min Minimum value for the clamping.
@@ -69,18 +69,18 @@ NppStatus cuSetValue(const float4& value, iu::VolumeGpu_32f_C4 *dst, const IuCub
  * \param srcdst Image which pixels are clamped.
  * \param roi Region of interest of processed pixels.
  */
-NppStatus cuClamp(const Npp32f& min, const Npp32f& max,
+IuStatus cuClamp(const float& min, const float& max,
                   iu::ImageGpu_32f_C1 *srcdst, const IuRect &roi);
 
 /** Converts an 32-bit 3-channel image to a 32-bit 4-channel image (adds alpha channel with value 1.0 everywhere)
  *
  */
-NppStatus cuConvert(const iu::ImageGpu_32f_C3* src, const IuRect& src_roi, iu::ImageGpu_32f_C4* dst, const IuRect& dst_roi);
+IuStatus cuConvert(const iu::ImageGpu_32f_C3* src, const IuRect& src_roi, iu::ImageGpu_32f_C4* dst, const IuRect& dst_roi);
 
 /** Converts an 32-bit 4-channel image to a 32-bit 3-channel image (the alpha channel is simply neglected).
  *
  */
-NppStatus cuConvert(const iu::ImageGpu_32f_C4* src, const IuRect& src_roi, iu::ImageGpu_32f_C3* dst, const IuRect& dst_roi);
+IuStatus cuConvert(const iu::ImageGpu_32f_C4* src, const IuRect& src_roi, iu::ImageGpu_32f_C3* dst, const IuRect& dst_roi);
 
 } // namespace iuprivate
 

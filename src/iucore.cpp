@@ -137,7 +137,7 @@ void setValue(const float4 &value, ImageGpu_32f_C4* srcdst, const IuRect& roi) {
      CLAMP
  * ***************************************************************************/
 
-void clamp(const Npp32f& min, const Npp32f& max, iu::ImageGpu_32f_C1 *srcdst, const IuRect &roi)
+void clamp(const float& min, const float& max, iu::ImageGpu_32f_C1 *srcdst, const IuRect &roi)
 { iuprivate::clamp(min, max, srcdst, roi); }
 
 

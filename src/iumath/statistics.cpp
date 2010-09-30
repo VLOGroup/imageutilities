@@ -33,7 +33,7 @@ namespace iuprivate {
 ///////////////////////////////////////////////////////////////////////////////
 
 //// [host] find min/max value of image; 8-bit; 1-channel
-//void minMax(const iu::ImageCpu_8u_C1 *src, const IuRect &roi, Npp8u& min, Npp8u& max)
+//void minMax(const iu::ImageCpu_8u_C1 *src, const IuRect &roi, unsigned char& min, unsigned char& max)
 //{
 //  IppStatus status;
 //  IppiSize roi_size = {roi.width, roi.height};
@@ -42,7 +42,7 @@ namespace iuprivate {
 //}
 
 //// [host] find min/max value of image; 8-bit; 3-channel
-//void minMax(const iu::ImageCpu_8u_C3 *src, const IuRect &roi, Npp8u min[3], Npp8u max[3])
+//void minMax(const iu::ImageCpu_8u_C3 *src, const IuRect &roi, unsigned char min[3], unsigned char max[3])
 //{
 //  IppStatus status;
 //  IppiSize roi_size = {roi.width, roi.height};
@@ -51,7 +51,7 @@ namespace iuprivate {
 //}
 
 //// [host] find min/max value of image; 8-bit; 4-channel
-//void minMax(const iu::ImageCpu_8u_C4 *src, const IuRect &roi, Npp8u min[4], Npp8u max[4])
+//void minMax(const iu::ImageCpu_8u_C4 *src, const IuRect &roi, unsigned char min[4], unsigned char max[4])
 //{
 //  IppStatus status;
 //  IppiSize roi_size = {roi.width, roi.height};
@@ -93,7 +93,7 @@ namespace iuprivate {
 // [device] find min/max value of image; 8-bit; 1-channel
 void minMax(const iu::ImageGpu_8u_C1 *src, const IuRect &roi, unsigned char& min, unsigned char& max)
 {
-  NppStatus status;
+  IuStatus status;
   status = cuMinMax(src, roi, min, max);
   IU_ASSERT(status == NPP_NO_ERROR);
 }
@@ -101,7 +101,7 @@ void minMax(const iu::ImageGpu_8u_C1 *src, const IuRect &roi, unsigned char& min
 // [device] find min/max value of image; 8-bit; 4-channel
 void minMax(const iu::ImageGpu_8u_C4 *src, const IuRect &roi, uchar4& min, uchar4& max)
 {
-  NppStatus status;
+  IuStatus status;
   status = cuMinMax(src, roi, min, max);
   IU_ASSERT(status == NPP_NO_ERROR);
 }
@@ -111,7 +111,7 @@ void minMax(const iu::ImageGpu_8u_C4 *src, const IuRect &roi, uchar4& min, uchar
 // [device] find min/max value of image; 32-bit; 1-channel
 void minMax(const iu::ImageGpu_32f_C1 *src, const IuRect &roi, float& min, float& max)
 {
-  NppStatus status;
+  IuStatus status;
   status = cuMinMax(src, roi, min, max);
   IU_ASSERT(status == NPP_NO_ERROR);
 }
@@ -119,7 +119,7 @@ void minMax(const iu::ImageGpu_32f_C1 *src, const IuRect &roi, float& min, float
 // [device] find min/max value of image; 32-bit; 2-channel
 void minMax(const iu::ImageGpu_32f_C2 *src, const IuRect &roi, float2& min, float2& max)
 {
-  NppStatus status;
+  IuStatus status;
   status = cuMinMax(src, roi, min, max);
   IU_ASSERT(status == NPP_NO_ERROR);
 }
@@ -127,7 +127,7 @@ void minMax(const iu::ImageGpu_32f_C2 *src, const IuRect &roi, float2& min, floa
 // [device] find min/max value of image; 32-bit; 4-channel
 void minMax(const iu::ImageGpu_32f_C4 *src, const IuRect &roi, float4& min, float4& max)
 {
-  NppStatus status;
+  IuStatus status;
   status = cuMinMax(src, roi, min, max);
   IU_ASSERT(status == NPP_NO_ERROR);
 }
@@ -197,17 +197,17 @@ void minMax(const iu::ImageGpu_32f_C4 *src, const IuRect &roi, float4& min, floa
 ///////////////////////////////////////////////////////////////////////////////
 
 // [device] compute sum of image; 8-bit; 1-channel
-void summation(const iu::ImageGpu_8u_C1 *src, const IuRect &roi, Npp64s& sum)
+void summation(const iu::ImageGpu_8u_C1 *src, const IuRect &roi, long& sum)
 {
-  NppStatus status;
+  IuStatus status;
   status = cuSummation(src, roi, sum);
   IU_ASSERT(status == NPP_NO_ERROR);
 }
 
 //// [device] compute sum of image; 8-bit; 4-channel
-//void summation(const iu::ImageGpu_8u_C4 *src, const IuRect &roi, Npp8u sum[4])
+//void summation(const iu::ImageGpu_8u_C4 *src, const IuRect &roi, unsigned char sum[4])
 //{
-//  NppStatus status;
+//  IuStatus status;
 //  status = cusummation(const src, roi, sum);
 //  IU_ASSERT(status == NPP_NO_ERROR);
 //}
@@ -215,17 +215,17 @@ void summation(const iu::ImageGpu_8u_C1 *src, const IuRect &roi, Npp64s& sum)
 ///////////////////////////////////////////////////////////////////////////////
 
 // [device] compute sum of image; 32-bit; 1-channel
-void summation(const iu::ImageGpu_32f_C1 *src, const IuRect &roi, Npp64f &sum)
+void summation(const iu::ImageGpu_32f_C1 *src, const IuRect &roi, double &sum)
 {
-  NppStatus status;
+  IuStatus status;
   status = cuSummation(src, roi, sum);
   IU_ASSERT(status == NPP_NO_ERROR);
 }
 
 //// [device] compute sum of image; 32-bit; 4-channel
-//void summation(const iu::ImageGpu_32f_C4 *src, const IuRect &roi, Npp32f sum[4])
+//void summation(const iu::ImageGpu_32f_C4 *src, const IuRect &roi, float sum[4])
 //{
-//  NppStatus status;
+//  IuStatus status;
 //  status = cusummation(const src, roi, sum);
 //  IU_ASSERT(status == NPP_NO_ERROR);
 //}
@@ -236,33 +236,33 @@ void summation(const iu::ImageGpu_32f_C1 *src, const IuRect &roi, Npp64f &sum)
 */
 
 // [device] compute L1 norm; |image1-image2|;
-void normDiffL1(const iu::ImageGpu_32f_C1* src1, const iu::ImageGpu_32f_C1* src2, const IuRect& roi, Npp64f& norm)
+void normDiffL1(const iu::ImageGpu_32f_C1* src1, const iu::ImageGpu_32f_C1* src2, const IuRect& roi, double& norm)
 {
-  NppStatus status;
+  IuStatus status;
   status = cuNormDiffL1(src1, src2, roi, norm);
   IU_ASSERT(status == NPP_NO_ERROR);
 }
 
 // [device] compute L1 norm; |image-value|;
-void normDiffL1(const iu::ImageGpu_32f_C1* src, const Npp32f& value, const IuRect& roi, Npp64f& norm)
+void normDiffL1(const iu::ImageGpu_32f_C1* src, const float& value, const IuRect& roi, double& norm)
 {
-  NppStatus status;
+  IuStatus status;
   status = cuNormDiffL1(src, value, roi, norm);
   IU_ASSERT(status == NPP_NO_ERROR);
 }
 
 // [device] compute L2 norm; ||image1-image2||;
-void normDiffL2(const iu::ImageGpu_32f_C1* src1, const iu::ImageGpu_32f_C1* src2, const IuRect& roi, Npp64f& norm)
+void normDiffL2(const iu::ImageGpu_32f_C1* src1, const iu::ImageGpu_32f_C1* src2, const IuRect& roi, double& norm)
 {
-  NppStatus status;
+  IuStatus status;
   status = cuNormDiffL2(src1, src2, roi, norm);
   IU_ASSERT(status == NPP_NO_ERROR);
 }
 
 // [device] compute L2 norm; ||image-value||;
-void normDiffL2(const iu::ImageGpu_32f_C1* src, const Npp32f& value, const IuRect& roi, Npp64f& norm)
+void normDiffL2(const iu::ImageGpu_32f_C1* src, const float& value, const IuRect& roi, double& norm)
 {
-  NppStatus status;
+  IuStatus status;
   status = cuNormDiffL2(src, value, roi, norm);
   IU_ASSERT(status == NPP_NO_ERROR);
 }
@@ -272,17 +272,17 @@ void normDiffL2(const iu::ImageGpu_32f_C1* src, const Npp32f& value, const IuRec
 */
 
 // [device] compute MSE;
-void mse(const iu::ImageGpu_32f_C1* src, const iu::ImageGpu_32f_C1* reference, const IuRect& roi, Npp64f& mse)
+void mse(const iu::ImageGpu_32f_C1* src, const iu::ImageGpu_32f_C1* reference, const IuRect& roi, double& mse)
 {
-  NppStatus status;
+  IuStatus status;
   status = cuMse(src, reference, roi, mse);
   IU_ASSERT(status == NPP_NO_ERROR);
 }
 
 // [device] compute SSIM;
-void ssim(const iu::ImageGpu_32f_C1* src, const iu::ImageGpu_32f_C1* reference, const IuRect& roi, Npp64f& ssim)
+void ssim(const iu::ImageGpu_32f_C1* src, const iu::ImageGpu_32f_C1* reference, const IuRect& roi, double& ssim)
 {
-  NppStatus status;
+  IuStatus status;
   status = cuSsim(src, reference, roi, ssim);
   IU_ASSERT(status == NPP_NO_ERROR);
 }

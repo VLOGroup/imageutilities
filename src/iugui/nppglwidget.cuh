@@ -31,9 +31,9 @@
 
 namespace iuprivate
 {
-  NppStatus cuInitTextures();
-  NppStatus cuPboRegister(GLuint pbo, bool& registered);
-  NppStatus cuPboUnregister(GLuint pbo, bool& registered);
+  IuStatus cuInitTextures();
+  IuStatus cuPboRegister(GLuint pbo, bool& registered);
+  IuStatus cuPboUnregister(GLuint pbo, bool& registered);
   // bool pboConnect(GLuint pbo, int* buffer, bool& registered);
   // bool pboDisconnect();
 
@@ -44,7 +44,7 @@ namespace iuprivate
    * @param max_val maximum value (will be mapped to 1)
    * @param size size of area to be drawn
    */
-  NppStatus cuGetOutput( int pbo_dest, iu::Image* image,
+  IuStatus cuGetOutput( int pbo_dest, iu::Image* image,
                          float min_val, float max_val, IuRect size);
 
   //  /** Wrapper to copy the corresponding RGB image data to the pbo
@@ -84,8 +84,8 @@ namespace iuprivate
 //   */
 //  bool createOverlayF( int pbo, Cuda::DeviceMemory<float, 2>* overlay,
 //                       int r, int g, int b, int a, float mask_value, Cuda::Size<2> size);
-//  bool createOverlayUC( int pbo, Cuda::DeviceMemory<Npp8u, 2>* overlay,
-//                        int r, int g, int b, int a, Npp8u mask_value, Cuda::Size<2> size);
+//  bool createOverlayUC( int pbo, Cuda::DeviceMemory<unsigned char, 2>* overlay,
+//                        int r, int g, int b, int a, unsigned char mask_value, Cuda::Size<2> size);
 }
 
 #endif // NPPGLWIDGET_CUH

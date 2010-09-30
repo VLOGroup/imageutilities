@@ -51,13 +51,13 @@ __global__ void cuMinMaxXKernel_8u_C1(unsigned char* min, unsigned char* max,
  float xx = x+xoff+0.5f;
  float yy = y+yoff+0.5f;
 
- Npp8u cur_min = tex2D(tex1_8u_C1__, xx, yy);
- Npp8u cur_max = tex2D(tex1_8u_C1__, xx, yy);
+ unsigned char cur_min = tex2D(tex1_8u_C1__, xx, yy);
+ unsigned char cur_max = tex2D(tex1_8u_C1__, xx, yy);
 
  // find minima of columns
  if (x<width)
  {
-   Npp8u val;
+   unsigned char val;
    for(int y = 0; y < height; ++y)
    {
      yy = y+yoff+0.5f;
@@ -351,7 +351,7 @@ __global__ void  cuNormDiffValueL2Kernel_32f_C1(float value, float* dst, size_t 
 */
 
 // wrapper: find min/max; 8u_C1
-NppStatus cuMinMax(const iu::ImageGpu_8u_C1 *src, const IuRect &roi,
+IuStatus cuMinMax(const iu::ImageGpu_8u_C1 *src, const IuRect &roi,
                    unsigned char& min_C1, unsigned char& max_C1)
 {
   // prepare and bind texture
@@ -398,7 +398,7 @@ NppStatus cuMinMax(const iu::ImageGpu_8u_C1 *src, const IuRect &roi,
 }
 
 // wrapper: find min/max; 8u_C4
-NppStatus cuMinMax(const iu::ImageGpu_8u_C4 *src, const IuRect &roi, uchar4& min_C4, uchar4& max_C4)
+IuStatus cuMinMax(const iu::ImageGpu_8u_C4 *src, const IuRect &roi, uchar4& min_C4, uchar4& max_C4)
 {
   // prepare and bind texture
   tex1_8u_C4__.filterMode = cudaFilterModePoint;
@@ -452,7 +452,7 @@ NppStatus cuMinMax(const iu::ImageGpu_8u_C4 *src, const IuRect &roi, uchar4& min
 }
 
 // wrapper: find min/max; 32f_C1
-NppStatus cuMinMax(const iu::ImageGpu_32f_C1 *src, const IuRect &roi, float& min_C1, float& max_C1)
+IuStatus cuMinMax(const iu::ImageGpu_32f_C1 *src, const IuRect &roi, float& min_C1, float& max_C1)
 {
   // prepare and bind texture
   tex1_32f_C1__.filterMode = cudaFilterModePoint;
@@ -499,7 +499,7 @@ NppStatus cuMinMax(const iu::ImageGpu_32f_C1 *src, const IuRect &roi, float& min
 
 
 // wrapper: find min/max; 32f_C2
-NppStatus cuMinMax(const iu::ImageGpu_32f_C2 *src, const IuRect &roi, float2& min_C2, float2& max_C2)
+IuStatus cuMinMax(const iu::ImageGpu_32f_C2 *src, const IuRect &roi, float2& min_C2, float2& max_C2)
 {
   // prepare and bind texture
   tex1_32f_C2__.filterMode = cudaFilterModePoint;
@@ -549,7 +549,7 @@ NppStatus cuMinMax(const iu::ImageGpu_32f_C2 *src, const IuRect &roi, float2& mi
 }
 
 // wrapper: find min/max; 32f_C4
-NppStatus cuMinMax(const iu::ImageGpu_32f_C4 *src, const IuRect &roi, float4& min_C4, float4& max_C4)
+IuStatus cuMinMax(const iu::ImageGpu_32f_C4 *src, const IuRect &roi, float4& min_C4, float4& max_C4)
 {
   // prepare and bind texture
   tex1_32f_C4__.filterMode = cudaFilterModePoint;
@@ -608,7 +608,7 @@ NppStatus cuMinMax(const iu::ImageGpu_32f_C4 *src, const IuRect &roi, float4& mi
 */
 
 // wrapper: compute sum; 8u_C1
-NppStatus cuSummation(const iu::ImageGpu_8u_C1 *src, const IuRect &roi, Npp64s& sum)
+IuStatus cuSummation(const iu::ImageGpu_8u_C1 *src, const IuRect &roi, long& sum)
 {
   // prepare and bind texture
   tex1_8u_C1__.filterMode = cudaFilterModePoint;
@@ -646,7 +646,7 @@ NppStatus cuSummation(const iu::ImageGpu_8u_C1 *src, const IuRect &roi, Npp64s& 
 }
 
 // wrapper: compute sum; 32f_C1
-NppStatus cuSummation(const iu::ImageGpu_32f_C1 *src, const IuRect &roi, Npp64f& sum)
+IuStatus cuSummation(const iu::ImageGpu_32f_C1 *src, const IuRect &roi, double& sum)
 {
   // prepare and bind texture
   tex1_32f_C1__.filterMode = cudaFilterModePoint;
@@ -687,7 +687,7 @@ NppStatus cuSummation(const iu::ImageGpu_32f_C1 *src, const IuRect &roi, Npp64f&
 */
 
 // wrapper: compute L1 norm; |image1-image2|;
-NppStatus cuNormDiffL1(const iu::ImageGpu_32f_C1* src1, const iu::ImageGpu_32f_C1* src2, const IuRect& roi, Npp64f& norm)
+IuStatus cuNormDiffL1(const iu::ImageGpu_32f_C1* src1, const iu::ImageGpu_32f_C1* src2, const IuRect& roi, double& norm)
 {
   // prepare and bind texture
   tex1_32f_C1__.filterMode = cudaFilterModePoint;
@@ -714,7 +714,7 @@ NppStatus cuNormDiffL1(const iu::ImageGpu_32f_C1* src1, const iu::ImageGpu_32f_C
   cuNormDiffL1Kernel_32f_C1 <<< dimGrid, dimBlock >>> (
       squared_deviances.data(roi.x, roi.y), squared_deviances.stride(), roi.x, roi.y, roi.width, roi.height);
 
-  Npp64f sum_squared = 0.0;
+  double sum_squared = 0.0;
   iuprivate::cuSummation(&squared_deviances, roi, sum_squared);
   norm = sqrt(sum_squared);
 
@@ -723,7 +723,7 @@ NppStatus cuNormDiffL1(const iu::ImageGpu_32f_C1* src1, const iu::ImageGpu_32f_C
 }
 
 // wrapper: compute L1 norm; |image1-value|;
-NppStatus cuNormDiffL1(const iu::ImageGpu_32f_C1* src, const Npp32f& value, const IuRect& roi, Npp64f& norm)
+IuStatus cuNormDiffL1(const iu::ImageGpu_32f_C1* src, const float& value, const IuRect& roi, double& norm)
 {
   // prepare and bind texture
   tex1_32f_C1__.filterMode = cudaFilterModePoint;
@@ -744,7 +744,7 @@ NppStatus cuNormDiffL1(const iu::ImageGpu_32f_C1* src, const Npp32f& value, cons
       value, squared_deviances.data(roi.x, roi.y), squared_deviances.stride(),
       roi.x, roi.y, roi.width, roi.height);
 
-  Npp64f sum_squared = 0.0;
+  double sum_squared = 0.0;
   iuprivate::cuSummation(&squared_deviances, roi, sum_squared);
   norm = sqrt(sum_squared);
 
@@ -753,7 +753,7 @@ NppStatus cuNormDiffL1(const iu::ImageGpu_32f_C1* src, const Npp32f& value, cons
 }
 
 // wrapper: compute L2 norm; ||image1-image2||;
-NppStatus cuNormDiffL2(const iu::ImageGpu_32f_C1* src1, const iu::ImageGpu_32f_C1* src2, const IuRect& roi, Npp64f& norm)
+IuStatus cuNormDiffL2(const iu::ImageGpu_32f_C1* src1, const iu::ImageGpu_32f_C1* src2, const IuRect& roi, double& norm)
 {
   // prepare and bind texture
   tex1_32f_C1__.filterMode = cudaFilterModePoint;
@@ -780,7 +780,7 @@ NppStatus cuNormDiffL2(const iu::ImageGpu_32f_C1* src1, const iu::ImageGpu_32f_C
   cuNormDiffL2Kernel_32f_C1 <<< dimGrid, dimBlock >>> (
       squared_deviances.data(roi.x, roi.y), squared_deviances.stride(), roi.x, roi.y, roi.width, roi.height);
 
-  Npp64f sum_squared = 0.0;
+  double sum_squared = 0.0;
   iuprivate::cuSummation(&squared_deviances, roi, sum_squared);
   norm = sqrt(sum_squared);
 
@@ -789,7 +789,7 @@ NppStatus cuNormDiffL2(const iu::ImageGpu_32f_C1* src1, const iu::ImageGpu_32f_C
 }
 
 // wrapper: compute L2 norm; ||image1-value||;
-NppStatus cuNormDiffL2(const iu::ImageGpu_32f_C1* src, const Npp32f& value, const IuRect& roi, Npp64f& norm)
+IuStatus cuNormDiffL2(const iu::ImageGpu_32f_C1* src, const float& value, const IuRect& roi, double& norm)
 {
   // prepare and bind texture
   tex1_32f_C1__.filterMode = cudaFilterModePoint;
@@ -810,7 +810,7 @@ NppStatus cuNormDiffL2(const iu::ImageGpu_32f_C1* src, const Npp32f& value, cons
       value, squared_deviances.data(roi.x, roi.y), squared_deviances.stride(),
       roi.x, roi.y, roi.width, roi.height);
 
-  Npp64f sum_squared = 0.0;
+  double sum_squared = 0.0;
   iuprivate::cuSummation(&squared_deviances, roi, sum_squared);
   norm = sqrt(sum_squared);
 
@@ -824,7 +824,7 @@ NppStatus cuNormDiffL2(const iu::ImageGpu_32f_C1* src, const Npp32f& value, cons
 
 
 // kernel: compute MSE
-__global__ void cuMseKernel(Npp32f* dst, size_t stride, int xoff, int yoff, int width, int height)
+__global__ void cuMseKernel(float* dst, size_t stride, int xoff, int yoff, int width, int height)
 {
   // calculate absolute texture coordinates
   const int x = blockIdx.x*blockDim.x + threadIdx.x;
@@ -839,7 +839,7 @@ __global__ void cuMseKernel(Npp32f* dst, size_t stride, int xoff, int yoff, int 
 
 
 // wrapper: compute MSE
-NppStatus cuMse(const iu::ImageGpu_32f_C1* src, const iu::ImageGpu_32f_C1* reference, const IuRect& roi, Npp64f& mse)
+IuStatus cuMse(const iu::ImageGpu_32f_C1* src, const iu::ImageGpu_32f_C1* reference, const IuRect& roi, double& mse)
 {
   tex1_32f_C1__.addressMode[0] = cudaAddressModeClamp;
   tex1_32f_C1__.addressMode[1] = cudaAddressModeClamp;
@@ -866,9 +866,9 @@ NppStatus cuMse(const iu::ImageGpu_32f_C1* src, const iu::ImageGpu_32f_C1* refer
   cuMseKernel <<< dimGrid,dimBlock >>> (
       tmp.data(), tmp.stride(), roi.x, roi.y, roi.width, roi.height);
 
-  Npp64f sum = 0.0;
+  double sum = 0.0;
   cuSummation(&tmp, tmp.roi(), sum);
-  mse = sum/(static_cast<Npp32f>(roi.width*roi.height));
+  mse = sum/(static_cast<float>(roi.width*roi.height));
 
   IU_CHECK_CUDA_ERRORS();
   return NPP_SUCCESS;
@@ -876,7 +876,7 @@ NppStatus cuMse(const iu::ImageGpu_32f_C1* src, const iu::ImageGpu_32f_C1* refer
 
 
 // kernel: compute SSIM
-__global__ void cuSsimKernel(float c1, float c2, Npp32f* dst, size_t stride, int xoff, int yoff, int width, int height)
+__global__ void cuSsimKernel(float c1, float c2, float* dst, size_t stride, int xoff, int yoff, int width, int height)
 {
   // calculate absolute texture coordinates
   const int x = blockIdx.x*blockDim.x + threadIdx.x;
@@ -929,7 +929,7 @@ __global__ void cuSsimKernel(float c1, float c2, Npp32f* dst, size_t stride, int
 }
 
 // wrapper: compute SSIM
-NppStatus cuSsim(const iu::ImageGpu_32f_C1* src, const iu::ImageGpu_32f_C1* reference, const IuRect& roi, Npp64f& ssim)
+IuStatus cuSsim(const iu::ImageGpu_32f_C1* src, const iu::ImageGpu_32f_C1* reference, const IuRect& roi, double& ssim)
 {
   tex1_32f_C1__.addressMode[0] = cudaAddressModeClamp;
   tex1_32f_C1__.addressMode[1] = cudaAddressModeClamp;
@@ -962,9 +962,9 @@ NppStatus cuSsim(const iu::ImageGpu_32f_C1* src, const iu::ImageGpu_32f_C1* refe
   cuSsimKernel <<< dimGrid,dimBlock >>> (
       c1, c2, tmp.data(), tmp.stride(), roi.x, roi.y, roi.width, roi.height);
 
-  Npp64f sum = 0.0;
+  double sum = 0.0;
   cuSummation(&tmp, tmp.roi(), sum);
-  ssim = ssim/(static_cast<Npp32f>(roi.width*roi.height));
+  ssim = ssim/(static_cast<float>(roi.width*roi.height));
 
   IU_CHECK_CUDA_ERRORS();
   return NPP_SUCCESS;

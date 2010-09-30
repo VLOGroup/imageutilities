@@ -287,9 +287,9 @@ void NppGLWidgetPrivate::paintGL()
 //              pbo_, cur_overlay->getOverlay(), r, g, b, a,
 //              cur_overlay->getMaskValue(), image_size_);
 //        }
-//        else if( static_cast<Cuda::DeviceOverlay<Npp8u,2>* >(*it) != NULL )
+//        else if( static_cast<Cuda::DeviceOverlay<unsigned char,2>* >(*it) != NULL )
 //        {
-//          Cuda::DeviceOverlay<Npp8u,2>* cur_overlay = static_cast<Cuda::DeviceOverlay<Npp8u,2>* >(*it);
+//          Cuda::DeviceOverlay<unsigned char,2>* cur_overlay = static_cast<Cuda::DeviceOverlay<unsigned char,2>* >(*it);
 //          success &= CudaNppGLWidgetPrivate::createOverlayUC(
 //              pbo_, cur_overlay->getOverlay(), r, g, b, a,
 //              cur_overlay->getMaskValue(), image_size_);
@@ -452,13 +452,13 @@ void NppGLWidgetPrivate::createActions()
 //}
 //
 ////-----------------------------------------------------------------------------
-//void NppGLWidgetPrivate::addOverlay( Cuda::DeviceMemory<Npp8u, 2>* mask, QString name,
-//                              bool active, QColor color, Npp8u mask_value)
+//void NppGLWidgetPrivate::addOverlay( Cuda::DeviceMemory<unsigned char, 2>* mask, QString name,
+//                              bool active, QColor color, unsigned char mask_value)
 //{
 //  if(mask->region_size != image_size_)
 //    qFatal("Size of rendered image and added mask do not match. Currently the region_size must be equal.");
 //
-//  Cuda::DeviceOverlay<Npp8u,2>* overlay = new Cuda::DeviceOverlay<Npp8u,2>(
+//  Cuda::DeviceOverlay<unsigned char,2>* overlay = new Cuda::DeviceOverlay<unsigned char,2>(
 //      mask, name, color, active, mask_value);
 //  overlay->datatype = Cuda::DeviceOverlayBase::UCHAR;
 //  this->addOverlay(static_cast<Cuda::DeviceOverlayBase*>(overlay));

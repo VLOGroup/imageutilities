@@ -69,27 +69,27 @@ void minMax(const ImageGpu_32f_C4* src, const IuRect& roi, float4& min, float4& 
 {iuprivate::minMax(src, roi, min, max);}
 
 // compute sum; device; 8-bit
-void summation(const iu::ImageGpu_8u_C1* src, const IuRect& roi, Npp64s& sum)
+void summation(const iu::ImageGpu_8u_C1* src, const IuRect& roi, long& sum)
 {iuprivate::summation(src, roi, sum);}
-//void summation(iu::ImageGpu_8u_C4* src, const IuRect& roi, Npp64s sum[4]);
+//void summation(iu::ImageGpu_8u_C4* src, const IuRect& roi, long sum[4]);
 
 // compute sum; device; 32-bit
-void summation(const iu::ImageGpu_32f_C1* src, const IuRect& roi, Npp64f& sum)
+void summation(const iu::ImageGpu_32f_C1* src, const IuRect& roi, double& sum)
 {iuprivate::summation(src, roi, sum);}
-//void summation(iu::ImageGpu_32f_C4* src, const IuRect& roi, Npp64f sum[4]);
+//void summation(iu::ImageGpu_32f_C4* src, const IuRect& roi, double sum[4]);
 
 
 // |src1-src2|
-void normDiffL1(const iu::ImageGpu_32f_C1* src1, const iu::ImageGpu_32f_C1* src2, const IuRect& roi, Npp64f& norm)
+void normDiffL1(const iu::ImageGpu_32f_C1* src1, const iu::ImageGpu_32f_C1* src2, const IuRect& roi, double& norm)
 {iuprivate::normDiffL1(src1, src2, roi, norm);}
 // |src-value|
-void normDiffL1(const iu::ImageGpu_32f_C1* src, const float& value, const IuRect& roi, Npp64f& norm)
+void normDiffL1(const iu::ImageGpu_32f_C1* src, const float& value, const IuRect& roi, double& norm)
 {iuprivate::normDiffL1(src, value, roi, norm);}
 // ||src1-src2||
-void normDiffL2(const iu::ImageGpu_32f_C1* src1, const iu::ImageGpu_32f_C1* src2, const IuRect& roi, Npp64f& norm)
+void normDiffL2(const iu::ImageGpu_32f_C1* src1, const iu::ImageGpu_32f_C1* src2, const IuRect& roi, double& norm)
 {iuprivate::normDiffL1(src1, src2, roi, norm);}
 // ||src-value||
-void normDiffL2(const iu::ImageGpu_32f_C1* src, const float& value, const IuRect& roi, Npp64f& norm)
+void normDiffL2(const iu::ImageGpu_32f_C1* src, const float& value, const IuRect& roi, double& norm)
 {iuprivate::normDiffL1(src, value, roi, norm);}
 
 /* ***************************************************************************
@@ -97,11 +97,11 @@ void normDiffL2(const iu::ImageGpu_32f_C1* src, const float& value, const IuRect
  * ***************************************************************************/
 
 // [device] compute mse; 32-bit
-void mse(const iu::ImageGpu_32f_C1* src, const iu::ImageGpu_32f_C1* reference, const IuRect& roi, Npp64f& mse)
+void mse(const iu::ImageGpu_32f_C1* src, const iu::ImageGpu_32f_C1* reference, const IuRect& roi, double& mse)
 {iuprivate::mse(src, reference, roi, mse);}
 
 // [device] compute ssim; 32-bit
-void ssim(const iu::ImageGpu_32f_C1* src, const iu::ImageGpu_32f_C1* reference, const IuRect& roi, Npp64f& ssim)
+void ssim(const iu::ImageGpu_32f_C1* src, const iu::ImageGpu_32f_C1* reference, const IuRect& roi, double& ssim)
 {iuprivate::ssim(src, reference, roi, ssim);}
 
 } // namespace iu

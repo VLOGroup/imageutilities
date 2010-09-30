@@ -115,12 +115,12 @@ int main(int argc, char** argv)
 
   // test summation
   {
-    Npp64s sum_64s_C1;
-    Npp64f sum_64f_C1;
+    long sum_64s_C1;
+    double sum_64f_C1;
 
     iu::summation(&im_gpu_8u_C1, im_gpu_8u_C1.roi(), sum_64s_C1);
-    Npp64s desired_result_64s = sz.width*sz.height*set_value_8u_C1;
-    Npp64f desired_result_64f = sz.width*sz.height*set_value_32f_C1;
+    long desired_result_64s = sz.width*sz.height*set_value_8u_C1;
+    double desired_result_64f = sz.width*sz.height*set_value_32f_C1;
     if(sum_64s_C1 != desired_result_64s)
       return EXIT_FAILURE;
 

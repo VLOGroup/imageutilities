@@ -33,7 +33,7 @@ void addWeighted(const iu::ImageGpu_32f_C1* src1, const float& weight1,
                  const iu::ImageGpu_32f_C1* src2, const float& weight2,
                  iu::ImageGpu_32f_C1* dst, const IuRect& roi)
 {
-  NppStatus status;
+  IuStatus status;
   status = cuAddWeighted(src1, weight1, src2, weight2, dst, roi);
   IU_ASSERT(status == NPP_NO_ERROR);
 }
@@ -43,7 +43,7 @@ void addWeighted(const iu::ImageGpu_32f_C1* src1, const float& weight1,
 // [gpu] multiplication with factor; Not-in-place; 8-bit; 1-channel
 void mulC(const iu::ImageGpu_8u_C1* src, const unsigned char& factor, iu::ImageGpu_8u_C1* dst, const IuRect& roi)
 {
-  NppStatus status;
+  IuStatus status;
   status = cuMulC(src, factor, dst, roi);
   IU_ASSERT(status == NPP_NO_ERROR);
 }
@@ -51,7 +51,7 @@ void mulC(const iu::ImageGpu_8u_C1* src, const unsigned char& factor, iu::ImageG
 // [gpu] multiplication with factor; Not-in-place; 8-bit; 4-channel
 void mulC(const iu::ImageGpu_8u_C4* src, const uchar4& factor, iu::ImageGpu_8u_C4* dst, const IuRect& roi)
 {
-  NppStatus status;
+  IuStatus status;
   status = cuMulC(src, factor, dst, roi);
   IU_ASSERT(status == NPP_NO_ERROR);
 }
@@ -61,7 +61,7 @@ void mulC(const iu::ImageGpu_8u_C4* src, const uchar4& factor, iu::ImageGpu_8u_C
 // [gpu] multiplication with factor; Not-in-place; 32-bit; 1-channel
 void mulC(const iu::ImageGpu_32f_C1* src, const float& factor, iu::ImageGpu_32f_C1* dst, const IuRect& roi)
 {
-  NppStatus status;
+  IuStatus status;
   status = cuMulC(src, factor, dst, roi);
   IU_ASSERT(status == NPP_NO_ERROR);
 }
@@ -69,7 +69,7 @@ void mulC(const iu::ImageGpu_32f_C1* src, const float& factor, iu::ImageGpu_32f_
 // [gpu] multiplication with factor; Not-in-place; 32-bit; 4-channel
 void mulC(const iu::ImageGpu_32f_C4* src, const float4& factor, iu::ImageGpu_32f_C4* dst, const IuRect& roi)
 {
-  NppStatus status;
+  IuStatus status;
   status = cuMulC(src, factor, dst, roi);
   IU_ASSERT(status == NPP_NO_ERROR);
 }

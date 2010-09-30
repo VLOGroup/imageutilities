@@ -26,7 +26,6 @@
 
 #include <assert.h>
 #include <cuda_runtime.h>
-#include <nppi.h>
 #include "coredefs.h"
 
 namespace iuprivate {
