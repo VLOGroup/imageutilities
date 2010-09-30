@@ -105,13 +105,13 @@ void copy(const ImageGpu_32f_C4* src, ImageCpu_32f_C4* dst) { iuprivate::copy(sr
  * ***************************************************************************/
 
 // 1D set value; host; 8-bit
-void setValue(unsigned char value, LinearHostMemory_8u_C1* srcdst)
+void setValue(const unsigned char& value, LinearHostMemory_8u_C1* srcdst)
 {iuprivate::setValue(value, srcdst);}
-void setValue(float value, LinearHostMemory_32f_C1* srcdst)
+void setValue(const float& value, LinearHostMemory_32f_C1* srcdst)
 {iuprivate::setValue(value, srcdst);}
-void setValue(unsigned char value, LinearDeviceMemory_8u_C1* srcdst)
+void setValue(const unsigned char& value, LinearDeviceMemory_8u_C1* srcdst)
 {iuprivate::setValue(value, srcdst);}
-void setValue(float value, LinearDeviceMemory_32f_C1* srcdst)
+void setValue(const float& value, LinearDeviceMemory_32f_C1* srcdst)
 {iuprivate::setValue(value, srcdst);}
 
 void setValue(const unsigned char &value, ImageCpu_8u_C1* srcdst, const IuRect& roi) {iuprivate::setValue(value, srcdst, roi);}

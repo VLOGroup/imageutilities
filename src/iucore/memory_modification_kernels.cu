@@ -50,9 +50,13 @@ __global__ void cuSetValueKernel(T value, T* dst, size_t stride,
 {
   int x = blockIdx.x*blockDim.x + threadIdx.x;
   int y = blockIdx.y*blockDim.y + threadIdx.y;
-  const int c =  y*stride+x;
+  const int c = y*stride+x;
 
-  if(x+xoff>=0 && y+yoff>=0 && x<width && y<height)
+  // add xoff for checks after calculating the output pixel location c
+  x+=xoff;
+  y+=yoff;
+
+  if(x>=0 && y>=0 && x<width && y<height)
   {
     dst[c] = value;
   }
@@ -67,7 +71,11 @@ __global__ void cuSetValueKernel(T value, T* dst, size_t stride, size_t slice_st
   int y = blockIdx.y*blockDim.y + threadIdx.y;
   const int c =  y*stride+x;
 
-  if(x+xoff>=0 && y+yoff>=0 && x<width && y<height)
+  // add xoff for checks after calculating the output pixel location c
+  x+=xoff;
+  y+=yoff;
+
+  if(x>=0 && y>=0 && x<width && y<height)
   {
     for(int z = -min(0,zoff); z<depth; ++z)
       dst[c+z*slice_stride] = value;
@@ -103,7 +111,7 @@ __global__ void cuClampKernel_32f_C1(T min, T max, T* dst, size_t stride,
 
   if(x>=0 && y>=0 && x<width && y<height)
   {
-    dst[c] = clamp(tex2D(tex1_32f_C1__, xx, yy).x, min, max);
+    dst[c] = clamp(tex2D(tex1_32f_C1__, xx, yy), min, max);
   }
 }
 

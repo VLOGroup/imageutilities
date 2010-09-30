@@ -27,20 +27,20 @@ include(${IU_USE_FILE})
 
 set(IU_UNITTEST_TARGETS "")
 
-#cuda_add_executable( iu_linearbuffer_unittest iu_linearbuffer_unittest.cpp )
-#TARGET_LINK_LIBRARIES(iu_linearbuffer_unittest ${IU_LIBRARIES})
-#add_test(iu_linearbuffer_unittest iu_linearbuffer_unittest)
-#set(IU_UNITTEST_TARGETS ${IU_UNITTEST_TARGETS} iu_linearbuffer_unittest)
+cuda_add_executable( iu_linearbuffer_unittest iu_linearbuffer_unittest.cpp )
+TARGET_LINK_LIBRARIES(iu_linearbuffer_unittest ${IU_LIBRARIES})
+add_test(iu_linearbuffer_unittest iu_linearbuffer_unittest)
+set(IU_UNITTEST_TARGETS ${IU_UNITTEST_TARGETS} iu_linearbuffer_unittest)
 
 cuda_add_executable( iu_image_cpu_unittest iu_image_cpu_unittest.cpp )
 TARGET_LINK_LIBRARIES(iu_image_cpu_unittest ${IU_LIBRARIES})
 add_test(iu_image_cpu_unittest iu_image_cpu_unittest)
 set(IU_UNITTEST_TARGETS ${IU_UNITTEST_TARGETS} iu_image_cpu_unittest)
 
-#cuda_add_executable( iu_image_npp_unittest iu_image_npp_unittest.cpp )
-#TARGET_LINK_LIBRARIES(iu_image_npp_unittest ${IU_LIBRARIES})
-#add_test(iu_image_npp_unittest iu_image_npp_unittest)
-#set(IU_UNITTEST_TARGETS ${IU_UNITTEST_TARGETS} iu_image_npp_unittest)
+cuda_add_executable( iu_image_gpu_unittest iu_image_gpu_unittest.cpp )
+TARGET_LINK_LIBRARIES(iu_image_gpu_unittest ${IU_LIBRARIES})
+add_test(iu_image_gpu_unittest iu_image_gpu_unittest)
+set(IU_UNITTEST_TARGETS ${IU_UNITTEST_TARGETS} iu_image_gpu_unittest)
 
 # install targets
 message(STATUS "install targets=${IU_UNITTEST_TARGETS}")

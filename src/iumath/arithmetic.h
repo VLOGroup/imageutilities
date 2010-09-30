@@ -35,12 +35,10 @@ namespace iuprivate {
  * \param weight Weighting of image 2 before its added to image 1.
  * \param dst Result image dst=weight1*src1 + weight1*src2.
  * \param roi Region of interest in the source and destination image
- *
- * \note supported npp: 32f_C1
  */
 // [device] weighted add; Not-in-place; 32-bit;
-void addWeighted(const iu::ImageGpu_32f_C1* src1, const Npp32f& weight1,
-                 const iu::ImageGpu_32f_C1* src2, const Npp32f& weight2,
+void addWeighted(const iu::ImageGpu_32f_C1* src1, const float& weight1,
+                 const iu::ImageGpu_32f_C1* src2, const float& weight2,
                  iu::ImageGpu_32f_C1* dst, const IuRect& roi);
 
 /** Not-in-place multiplication of every pixel with a constant factor.
@@ -48,16 +46,14 @@ void addWeighted(const iu::ImageGpu_32f_C1* src1, const Npp32f& weight1,
  * \param factor Multiplication factor applied to each pixel.
  * \param dst Destination image.
  * \param roi Region of interest in the source and destination image
- *
- * \note supported npp: 8u_C1, 8u_C4, 32f_C1, 32f_C4,
  */
-// [device] multiplication with factor; Not-in-place; 8-bit;
-void mulC(const iu::ImageGpu_8u_C1* src, const Npp8u& factor, iu::ImageGpu_8u_C1* dst, const IuRect& roi);
-void mulC(const iu::ImageGpu_8u_C4* src, const Npp8u factor[4], iu::ImageGpu_8u_C4* dst, const IuRect& roi);
+// [gpu] multiplication with factor; Not-in-place; 8-bit;
+void mulC(const iu::ImageGpu_8u_C1* src, const unsigned char& factor, iu::ImageGpu_8u_C1* dst, const IuRect& roi);
+void mulC(const iu::ImageGpu_8u_C4* src, const uchar4& factor, iu::ImageGpu_8u_C4* dst, const IuRect& roi);
 
-// [device] multiplication with factor; Not-in-place; 32-bit;
-void mulC(const iu::ImageGpu_32f_C1* src, const Npp32f& factor, iu::ImageGpu_32f_C1* dst, const IuRect& roi);
-void mulC(const iu::ImageGpu_32f_C4* src, const Npp32f factor[4], iu::ImageGpu_32f_C4* dst, const IuRect& roi);
+// [gpu] multiplication with factor; Not-in-place; 32-bit;
+void mulC(const iu::ImageGpu_32f_C1* src, const float& factor, iu::ImageGpu_32f_C1* dst, const IuRect& roi);
+void mulC(const iu::ImageGpu_32f_C4* src, const float4& factor, iu::ImageGpu_32f_C4* dst, const IuRect& roi);
 
 /** In-place multiplication of every pixel with a constant factor.
  * \param factor Multiplication factor applied to each pixel.

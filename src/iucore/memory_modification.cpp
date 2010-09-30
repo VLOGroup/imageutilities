@@ -30,7 +30,7 @@ namespace iuprivate {
 ///////////////////////////////////////////////////////////////////////////////
 
 // [1D; host] set values; 8-bit
-void setValue(const Npp8u& value, iu::LinearHostMemory_8u_C1* srcdst)
+void setValue(const unsigned char& value, iu::LinearHostMemory_8u_C1* srcdst)
 {
   memset((void*)srcdst->data(), value, srcdst->bytes());
 }
@@ -40,7 +40,7 @@ void setValue(const float& value, iu::LinearHostMemory_32f_C1* srcdst)
 {
   // we are using for loops because memset is only safe on integer type arrays
 
-  Npp32f* buffer = srcdst->data();
+  float* buffer = srcdst->data();
   for(unsigned int i=0; i<srcdst->length(); ++i)
   {
     buffer[i] = value;
@@ -48,7 +48,7 @@ void setValue(const float& value, iu::LinearHostMemory_32f_C1* srcdst)
 }
 
 // [1D; device] set values; 8-bit
-void setValue(const Npp8u& value, iu::LinearDeviceMemory_8u_C1* srcdst)
+void setValue(const unsigned char& value, iu::LinearDeviceMemory_8u_C1* srcdst)
 {
   // cudaMemset is slow so we are firing up a kernel
   NppStatus status = cuSetValue(value, srcdst);
@@ -56,7 +56,7 @@ void setValue(const Npp8u& value, iu::LinearDeviceMemory_8u_C1* srcdst)
 }
 
 // [1D; host] set values; 32-bit
-void setValue(const Npp32f& value, iu::LinearDeviceMemory_32f_C1* srcdst)
+void setValue(const float& value, iu::LinearDeviceMemory_32f_C1* srcdst)
 {
   // cudaMemset is slow so we are firing up a kernel
   NppStatus status = cuSetValue(value, srcdst);
@@ -67,7 +67,7 @@ void setValue(const Npp32f& value, iu::LinearDeviceMemory_32f_C1* srcdst)
 
 
 // [device] clamping of pixels to [min,max]; 32-bit
-void clamp(const Npp32f& min, const Npp32f& max,
+void clamp(const float& min, const float& max,
            iu::ImageGpu_32f_C1 *srcdst, const IuRect &roi)
 {
   NppStatus status = cuClamp(min, max, srcdst, roi);
@@ -102,7 +102,7 @@ void convert_32f8u_C1(const iu::ImageCpu_32f_C1* src, iu::ImageCpu_8u_C1 *dst,
   {
     for (unsigned int y=0; y<dst->height(); y++)
     {
-      Npp32f val = *src->data(x,y);
+      float val = *src->data(x,y);
       *dst->data(x,y) = mul_constant*val + add_constant;
     }
   }
@@ -117,7 +117,7 @@ void convert_16u32f_C1(const iu::ImageCpu_16u_C1* src, iu::ImageCpu_32f_C1 *dst,
     for (unsigned int y=0; y<dst->height(); y++)
     {
       Npp16u val = *src->data(x,y); //((*src->data(x,y) & 0x00ffU) << 8) | ((*src->data(x,y) & 0xff00U) >> 8);
-      *dst->data(x,y) = mul_constant*(Npp32f)val + add_constant;
+      *dst->data(x,y) = mul_constant*(float)val + add_constant;
     }
   }
 }

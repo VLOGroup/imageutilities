@@ -24,121 +24,216 @@
 // system includes
 #include <iostream>
 #include <cuda_runtime.h>
+#include <cutil_math.h>
 #include <iucore.h>
-
-using namespace iu;
-
-/* compares two float values.
-   taken from [1]
-   [1] http://www.cygnus-software.com/papers/comparingfloats/Comparing%20floating%20point%20numbers.htm
-*/
-bool almostEquals(float A, float B, int maxUlps = 1)
-{
-  // Make sure maxUlps is non-negative and small enough that the
-  // default NAN won't compare as equal to anything.
-  assert(maxUlps > 0 && maxUlps < 4 * 1024 * 1024);
-  int aInt = *(int*)&A;
-  // Make aInt lexicographically ordered as a twos-complement int
-  if (aInt < 0)
-    aInt = 0x80000000 - aInt;
-  // Make bInt lexicographically ordered as a twos-complement int
-  int bInt = *(int*)&B;
-  if (bInt < 0)
-    bInt = 0x80000000 - bInt;
-  int intDiff = abs(aInt - bInt);
-  if (intDiff <= maxUlps)
-    return true;
-  return false;
-}
+#include <iu/iucutil.h>
 
 int main(int argc, char** argv)
 {
-  std::cout << "Starting iu_image_npp_unittest ..." << std::endl;
+  std::cout << "Starting iu_image_gpu_unittest ..." << std::endl;
 
   // test image size
   IuSize sz(79,63);
-  IuSize sz2(120,1);
-  bool check_size = sz == sz2;
-  if(check_size)
-    std::cout << "sz and sz2 are equal" << std::endl;
-  else
-    std::cout << "sz and sz2 are different" << std::endl;
-  sz2 = sz;
-  check_size = sz == sz2;
-  if(check_size)
-    std::cout << "sz and sz2 are equal" << std::endl;
-  else
-    std::cout << "sz and sz2 are different" << std::endl;
 
-  iu::ImageGpu_8u_C1 im_npp_8u_C1(sz);
-  iu::ImageGpu_8u_C2 im_npp_8u_C2(sz);
-  iu::ImageGpu_8u_C3 im_npp_8u_C3(sz);
-  iu::ImageGpu_8u_C4 im_npp_8u_C4(sz);
-  iu::ImageGpu_32f_C1 im_npp_32f_C1(sz);
-  iu::ImageGpu_32f_C2 im_npp_32f_C2(sz);
-//  iu::ImageGpu_32f_C3 im_npp_32f_C3(sz);
-  iu::ImageGpu_32f_C4 im_npp_32f_C4(sz);
+  iu::ImageGpu_8u_C1 im_gpu_8u_C1(sz);
+  iu::ImageGpu_8u_C2 im_gpu_8u_C2(sz);
+  iu::ImageGpu_8u_C3 im_gpu_8u_C3(sz);
+  iu::ImageGpu_8u_C4 im_gpu_8u_C4(sz);
+  iu::ImageGpu_32f_C1 im_gpu_32f_C1(sz);
+  iu::ImageGpu_32f_C2 im_gpu_32f_C2(sz);
+  iu::ImageGpu_32f_C3 im_gpu_32f_C3(sz);
+  iu::ImageGpu_32f_C4 im_gpu_32f_C4(sz);
 
-  // set values
+  unsigned char set_value_8u_C1 = 1;
+  uchar2 set_value_8u_C2 = make_uchar2(2,2);
+  uchar3 set_value_8u_C3 = make_uchar3(3,3,3);
+  uchar4 set_value_8u_C4 = make_uchar4(4,4,4,4);
+  float set_value_32f_C1 = 1.1f;
+  float2 set_value_32f_C2 = make_float2(2.2f);
+  float3 set_value_32f_C3 = make_float3(3.3f);
+  float4 set_value_32f_C4 = make_float4(4.4f);
+
+  // copy values back to cpu to compare the set values
+  iu::ImageCpu_8u_C1 im_cpu_8u_C1(sz);
+  iu::ImageCpu_8u_C2 im_cpu_8u_C2(sz);
+  iu::ImageCpu_8u_C3 im_cpu_8u_C3(sz);
+  iu::ImageCpu_8u_C4 im_cpu_8u_C4(sz);
+  iu::ImageCpu_32f_C1 im_cpu_32f_C1(sz);
+  iu::ImageCpu_32f_C2 im_cpu_32f_C2(sz);
+  iu::ImageCpu_32f_C3 im_cpu_32f_C3(sz);
+  iu::ImageCpu_32f_C4 im_cpu_32f_C4(sz);
+
+
+  // set values on cpu and copy to gpu and back again
   {
-    Npp8u set_value_8u = 2;
-    Npp32f set_value_32f = 1.331f;
+    std::cout << "Testing copy. setValue on cpu (should work because of previous test) and copy forth and back" << std::endl;
 
-    iu::setValue(set_value_8u, &im_npp_8u_C1, im_npp_8u_C1.roi());
-    iu::setValue(set_value_8u, &im_npp_8u_C2, im_npp_8u_C2.roi());
-    iu::setValue(set_value_8u, &im_npp_8u_C4, im_npp_8u_C4.roi());
-    iu::setValue(set_value_32f, &im_npp_32f_C1, im_npp_32f_C1.roi());
-    iu::setValue(set_value_32f, &im_npp_32f_C2, im_npp_32f_C2.roi());
-    iu::setValue(set_value_32f, &im_npp_32f_C4, im_npp_32f_C4.roi());
+    iu::setValue(set_value_8u_C1, &im_cpu_8u_C1, im_cpu_8u_C1.roi());
+    iu::setValue(set_value_8u_C2, &im_cpu_8u_C2, im_cpu_8u_C2.roi());
+    iu::setValue(set_value_8u_C3, &im_cpu_8u_C3, im_cpu_8u_C3.roi());
+    iu::setValue(set_value_8u_C4, &im_cpu_8u_C4, im_cpu_8u_C4.roi());
+    iu::setValue(set_value_32f_C1, &im_cpu_32f_C1, im_cpu_32f_C1.roi());
+    iu::setValue(set_value_32f_C2, &im_cpu_32f_C2, im_cpu_32f_C2.roi());
+    iu::setValue(set_value_32f_C3, &im_cpu_32f_C3, im_cpu_32f_C3.roi());
+    iu::setValue(set_value_32f_C4, &im_cpu_32f_C4, im_cpu_32f_C4.roi());
 
-    // copy test (device -> host) and check if the copied values
-    // are the same then the set values on the device side
+    std::cout << "  copy cpu -> gpu ..." << std::endl;
+    iu::copy(&im_cpu_8u_C1, &im_gpu_8u_C1);
+    iu::copy(&im_cpu_8u_C2, &im_gpu_8u_C2);
+    iu::copy(&im_cpu_8u_C3, &im_gpu_8u_C3);
+    iu::copy(&im_cpu_8u_C4, &im_gpu_8u_C4);
+    iu::copy(&im_cpu_32f_C1, &im_gpu_32f_C1);
+    iu::copy(&im_cpu_32f_C2, &im_gpu_32f_C2);
+    iu::copy(&im_cpu_32f_C3, &im_gpu_32f_C3);
+    iu::copy(&im_cpu_32f_C4, &im_gpu_32f_C4);
+    std::cout << "  copy gpu -> cpu ..." << std::endl;
+    iu::copy(&im_gpu_8u_C1, &im_cpu_8u_C1);
+    iu::copy(&im_gpu_8u_C2, &im_cpu_8u_C2);
+    iu::copy(&im_gpu_8u_C3, &im_cpu_8u_C3);
+    iu::copy(&im_gpu_8u_C4, &im_cpu_8u_C4);
+    iu::copy(&im_gpu_32f_C1, &im_cpu_32f_C1);
+    iu::copy(&im_gpu_32f_C2, &im_cpu_32f_C2);
+    iu::copy(&im_gpu_32f_C3, &im_cpu_32f_C3);
+    iu::copy(&im_gpu_32f_C4, &im_cpu_32f_C4);
+
+    std::cout << "  check copied values on cpu ..." << std::endl;
+    // check if set values are correct
+    for (unsigned int y = 0; y<sz.height; ++y)
     {
-      iu::ImageCpu_8u_C1 cp_cpu_8u_C1(sz);
-      iu::ImageCpu_8u_C2 cp_cpu_8u_C2(sz);
-      iu::ImageCpu_8u_C4 cp_cpu_8u_C4(sz);
-      iu::ImageCpu_32f_C1 cp_cpu_32f_C1(sz);
-      iu::ImageCpu_32f_C2 cp_cpu_32f_C2(sz);
-      iu::ImageCpu_32f_C4 cp_cpu_32f_C4(sz);
-
-      iu::copy(&im_npp_8u_C1, &cp_cpu_8u_C1);
-      iu::copy(&im_npp_8u_C2, &cp_cpu_8u_C2);
-      iu::copy(&im_npp_8u_C4, &cp_cpu_8u_C4);
-      iu::copy(&im_npp_32f_C1, &cp_cpu_32f_C1);
-      iu::copy(&im_npp_32f_C2, &cp_cpu_32f_C2);
-      iu::copy(&im_npp_32f_C4, &cp_cpu_32f_C4);
-
-      // check if set values are correct
-      for (unsigned int y = 0; y<sz.height; ++y)
+      for (unsigned int x = 0; x<sz.width; ++x)
       {
-        for (unsigned int x = 0; x<sz.width; ++x)
-        {
-          if( cp_cpu_8u_C1.data(x,y)[0] != set_value_8u)
-            return EXIT_FAILURE;
-          if((cp_cpu_8u_C2.data(x,y)[0] != set_value_8u) &&
-             (cp_cpu_8u_C2.data(x,y)[1] != set_value_8u))
-            return EXIT_FAILURE;
-          if((cp_cpu_8u_C4.data(x,y)[0] != set_value_8u) &&
-             (cp_cpu_8u_C4.data(x,y)[1] != set_value_8u) &&
-             (cp_cpu_8u_C4.data(x,y)[2] != set_value_8u) &&
-             (cp_cpu_8u_C4.data(x,y)[3] != set_value_8u))
-            return EXIT_FAILURE;
+        // 8-bit
+        if( *im_cpu_8u_C1.data(x,y) != set_value_8u_C1)
+          return EXIT_FAILURE;
+        if( *im_cpu_8u_C2.data(x,y) != set_value_8u_C2)
+          return EXIT_FAILURE;
+        if( *im_cpu_8u_C3.data(x,y) != set_value_8u_C3)
+          return EXIT_FAILURE;
+        if( *im_cpu_8u_C4.data(x,y) != set_value_8u_C4)
+          return EXIT_FAILURE;
 
-          if( !almostEquals( cp_cpu_32f_C1.data(x,y)[0], set_value_32f))
-            return EXIT_FAILURE;
-          if( !almostEquals(cp_cpu_32f_C2.data(x,y)[0], set_value_32f) &&
-              !almostEquals(cp_cpu_32f_C2.data(x,y)[1], set_value_32f) )
-            return EXIT_FAILURE;
-          if( !almostEquals(cp_cpu_32f_C4.data(x,y)[0], set_value_32f) &&
-              !almostEquals(cp_cpu_32f_C4.data(x,y)[1], set_value_32f) &&
-              !almostEquals(cp_cpu_32f_C4.data(x,y)[2], set_value_32f) &&
-              !almostEquals(cp_cpu_32f_C4.data(x,y)[3], set_value_32f) )
-            return EXIT_FAILURE;
-        }
+        // 32-bit
+        if( *im_cpu_32f_C1.data(x,y) != set_value_32f_C1)
+          return EXIT_FAILURE;
+        if( *im_cpu_32f_C2.data(x,y) != set_value_32f_C2)
+          return EXIT_FAILURE;
+        if( *im_cpu_32f_C3.data(x,y) != set_value_32f_C3)
+          return EXIT_FAILURE;
+        if( *im_cpu_32f_C4.data(x,y) != set_value_32f_C4)
+          return EXIT_FAILURE;
       }
     }
   }
 
+  // set values on gpu
+  {
+    std::cout << "Testing setValue on gpu (implecitely testing copy gpu->cpu) ..." << std::endl;
+
+    iu::setValue(set_value_8u_C1, &im_gpu_8u_C1, im_gpu_8u_C1.roi());
+    iu::setValue(set_value_8u_C2, &im_gpu_8u_C2, im_gpu_8u_C2.roi());
+    iu::setValue(set_value_8u_C3, &im_gpu_8u_C3, im_gpu_8u_C3.roi());
+    iu::setValue(set_value_8u_C4, &im_gpu_8u_C4, im_gpu_8u_C4.roi());
+    iu::setValue(set_value_32f_C1, &im_gpu_32f_C1, im_gpu_32f_C1.roi());
+    iu::setValue(set_value_32f_C2, &im_gpu_32f_C2, im_gpu_32f_C2.roi());
+    iu::setValue(set_value_32f_C3, &im_gpu_32f_C3, im_gpu_32f_C3.roi());
+    iu::setValue(set_value_32f_C4, &im_gpu_32f_C4, im_gpu_32f_C4.roi());
+
+    std::cout << "Copy gpu images to cpu for checking the set values." << std::endl;
+    iu::copy(&im_gpu_8u_C1, &im_cpu_8u_C1);
+    iu::copy(&im_gpu_8u_C2, &im_cpu_8u_C2);
+    iu::copy(&im_gpu_8u_C3, &im_cpu_8u_C3);
+    iu::copy(&im_gpu_8u_C4, &im_cpu_8u_C4);
+    iu::copy(&im_gpu_32f_C1, &im_cpu_32f_C1);
+    iu::copy(&im_gpu_32f_C2, &im_cpu_32f_C2);
+    iu::copy(&im_gpu_32f_C3, &im_cpu_32f_C3);
+    iu::copy(&im_gpu_32f_C4, &im_cpu_32f_C4);
+
+    // check if set values are correct
+    for (unsigned int y = 0; y<sz.height; ++y)
+    {
+      for (unsigned int x = 0; x<sz.width; ++x)
+      {
+        // 8-bit
+        if( *im_cpu_8u_C1.data(x,y) != set_value_8u_C1)
+          return EXIT_FAILURE;
+//        if( *im_cpu_8u_C2.data(x,y) != set_value_8u_C2)
+//          return EXIT_FAILURE;
+//        if( *im_cpu_8u_C3.data(x,y) != set_value_8u_C3)
+//          return EXIT_FAILURE;
+//        if( *im_cpu_8u_C4.data(x,y) != set_value_8u_C4)
+//          return EXIT_FAILURE;
+
+//        // 32-bit
+//        if( *im_cpu_32f_C1.data(x,y) != set_value_32f_C1)
+//          return EXIT_FAILURE;
+//        if( *im_cpu_32f_C2.data(x,y) != set_value_32f_C2)
+//          return EXIT_FAILURE;
+//        if( *im_cpu_32f_C3.data(x,y) != set_value_32f_C3)
+//          return EXIT_FAILURE;
+//        if( *im_cpu_32f_C4.data(x,y) != set_value_32f_C4)
+//          return EXIT_FAILURE;
+      }
+    }
+  }
+
+  // copy gpu -> gpu test
+  {
+    std::cout << "testing copy gpu -> gpu  ..." << std::endl;
+
+    iu::ImageGpu_8u_C1 cp_gpu_8u_C1(sz);
+    iu::ImageGpu_8u_C2 cp_gpu_8u_C2(sz);
+    iu::ImageGpu_8u_C3 cp_gpu_8u_C3(sz);
+    iu::ImageGpu_8u_C4 cp_gpu_8u_C4(sz);
+    iu::ImageGpu_32f_C1 cp_gpu_32f_C1(sz);
+    iu::ImageGpu_32f_C2 cp_gpu_32f_C2(sz);
+    iu::ImageGpu_32f_C3 cp_gpu_32f_C3(sz);
+    iu::ImageGpu_32f_C4 cp_gpu_32f_C4(sz);
+
+    iu::copy(&im_gpu_8u_C1, &cp_gpu_8u_C1);
+    iu::copy(&im_gpu_8u_C2, &cp_gpu_8u_C2);
+    iu::copy(&im_gpu_8u_C3, &cp_gpu_8u_C3);
+    iu::copy(&im_gpu_8u_C4, &cp_gpu_8u_C4);
+    iu::copy(&im_gpu_32f_C1, &cp_gpu_32f_C1);
+    iu::copy(&im_gpu_32f_C2, &cp_gpu_32f_C2);
+    iu::copy(&im_gpu_32f_C3, &cp_gpu_32f_C3);
+    iu::copy(&im_gpu_32f_C4, &cp_gpu_32f_C4);
+
+    iu::copy(&cp_gpu_8u_C1, &im_cpu_8u_C1);
+    iu::copy(&cp_gpu_8u_C2, &im_cpu_8u_C2);
+    iu::copy(&cp_gpu_8u_C3, &im_cpu_8u_C3);
+    iu::copy(&cp_gpu_8u_C4, &im_cpu_8u_C4);
+    iu::copy(&cp_gpu_32f_C1, &im_cpu_32f_C1);
+    iu::copy(&cp_gpu_32f_C2, &im_cpu_32f_C2);
+    iu::copy(&cp_gpu_32f_C3, &im_cpu_32f_C3);
+    iu::copy(&cp_gpu_32f_C4, &im_cpu_32f_C4);
+
+    // check if set values are correct
+    for (unsigned int y = 0; y<sz.height; ++y)
+    {
+      for (unsigned int x = 0; x<sz.width; ++x)
+      {
+        // 8-bit
+        if( *im_cpu_8u_C1.data(x,y) != set_value_8u_C1)
+          return EXIT_FAILURE;
+        if( *im_cpu_8u_C2.data(x,y) != set_value_8u_C2)
+          return EXIT_FAILURE;
+        if( *im_cpu_8u_C3.data(x,y) != set_value_8u_C3)
+          return EXIT_FAILURE;
+        if( *im_cpu_8u_C4.data(x,y) != set_value_8u_C4)
+          return EXIT_FAILURE;
+
+        // 32-bit
+        if( *im_cpu_32f_C1.data(x,y) != set_value_32f_C1)
+          return EXIT_FAILURE;
+        if( *im_cpu_32f_C2.data(x,y) != set_value_32f_C2)
+          return EXIT_FAILURE;
+        if( *im_cpu_32f_C3.data(x,y) != set_value_32f_C3)
+          return EXIT_FAILURE;
+        if( *im_cpu_32f_C4.data(x,y) != set_value_32f_C4)
+          return EXIT_FAILURE;
+      }
+    }
+  }
 
 
   std::cout << std::endl;

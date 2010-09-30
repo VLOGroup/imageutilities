@@ -51,8 +51,8 @@ __global__ void cuMinMaxXKernel_8u_C1(unsigned char* min, unsigned char* max,
  float xx = x+xoff+0.5f;
  float yy = y+yoff+0.5f;
 
- Npp8u cur_min = tex2D(tex1_8u_C1__, xx, yy).x;
- Npp8u cur_max = tex2D(tex1_8u_C1__, xx, yy).x;
+ Npp8u cur_min = tex2D(tex1_8u_C1__, xx, yy);
+ Npp8u cur_max = tex2D(tex1_8u_C1__, xx, yy);
 
  // find minima of columns
  if (x<width)
@@ -61,7 +61,7 @@ __global__ void cuMinMaxXKernel_8u_C1(unsigned char* min, unsigned char* max,
    for(int y = 0; y < height; ++y)
    {
      yy = y+yoff+0.5f;
-     val = tex2D(tex1_8u_C1__, xx, yy).x;
+     val = tex2D(tex1_8u_C1__, xx, yy);
      if(val < cur_min) cur_min = val;
      if(val > cur_max) cur_max = val;
    }
@@ -118,8 +118,8 @@ __global__ void cuMinMaxXKernel_32f_C1(float* min, float* max,
  float xx = x+xoff+0.5f;
  float yy = y+yoff+0.5f;
 
- float cur_min = tex2D(tex1_32f_C1__, xx, yy).x;
- float cur_max = tex2D(tex1_32f_C1__, xx, yy).x;
+ float cur_min = tex2D(tex1_32f_C1__, xx, yy);
+ float cur_max = tex2D(tex1_32f_C1__, xx, yy);
 
  // find minima of columns
  if (x<width)
@@ -128,7 +128,7 @@ __global__ void cuMinMaxXKernel_32f_C1(float* min, float* max,
    for(int y = 0; y < height; ++y)
    {
      yy = y+yoff+0.5f;
-     val = tex2D(tex1_32f_C1__, xx, yy).x;
+     val = tex2D(tex1_32f_C1__, xx, yy);
      if(val < cur_min) cur_min = val;
      if(val > cur_max) cur_max = val;
    }
@@ -229,7 +229,7 @@ __global__ void cuSumColKernel_8u_C1(unsigned char* sum, int xoff, int yoff, int
    for(int y = yoff; y < height; ++y)
    {
      yy = y+0.5f;
-     cur_sum += tex2D(tex1_8u_C1__, xx, yy).x;
+     cur_sum += tex2D(tex1_8u_C1__, xx, yy);
    }
    sum[x] = cur_sum;
  }
@@ -252,7 +252,7 @@ __global__ void cuSumColKernel_32f_C1(float* sum, int xoff, int yoff, int width,
    for(int y = yoff; y < height; ++y)
    {
      yy = y+0.5f;
-     cur_sum += tex2D(tex1_32f_C1__, xx, yy).x;
+     cur_sum += tex2D(tex1_32f_C1__, xx, yy);
    }
    sum[x] = cur_sum;
  }
@@ -278,7 +278,7 @@ __global__ void  cuNormDiffL1Kernel_32f_C1(float* dst, size_t stride,
 
   if(x>=0 && y>= 0 && x<width && y<height)
   {
-    dst[oc] = fabs(tex2D(tex1_32f_C1__, xx, yy).x - tex2D(tex2_32f_C1__, xx, yy).x);
+    dst[oc] = fabs(tex2D(tex1_32f_C1__, xx, yy) - tex2D(tex2_32f_C1__, xx, yy));
   }
 }
 
@@ -298,7 +298,7 @@ __global__ void  cuNormDiffValueL1Kernel_32f_C1(float value, float* dst, size_t 
 
   if(x>=0 && y>= 0 && x<width && y<height)
   {
-    dst[oc] = fabs(tex2D(tex1_32f_C1__, xx, yy).x - value);
+    dst[oc] = fabs(tex2D(tex1_32f_C1__, xx, yy) - value);
   }
 }
 
@@ -318,7 +318,7 @@ __global__ void  cuNormDiffL2Kernel_32f_C1(float* dst, size_t stride,
 
   if(x>=0 && y>= 0 && x<width && y<height)
   {
-    dst[oc] = iu::sqr(tex2D(tex1_32f_C1__, xx, yy).x - tex2D(tex2_32f_C1__, xx, yy).x);
+    dst[oc] = iu::sqr(tex2D(tex1_32f_C1__, xx, yy) - tex2D(tex2_32f_C1__, xx, yy));
   }
 }
 
@@ -338,7 +338,7 @@ __global__ void  cuNormDiffValueL2Kernel_32f_C1(float value, float* dst, size_t 
 
   if(x>=0 && y>= 0 && x<width && y<height)
   {
-    dst[oc] = iu::sqr(tex2D(tex1_32f_C1__, xx, yy).x - value);
+    dst[oc] = iu::sqr(tex2D(tex1_32f_C1__, xx, yy) - value);
   }
 }
 
@@ -833,7 +833,7 @@ __global__ void cuMseKernel(Npp32f* dst, size_t stride, int xoff, int yoff, int 
 
   if ((x < width) && (y < height))
   {
-    float diff = tex2D(tex1_32f_C1__, x+xoff+0.5f, y+yoff+0.5f).x - tex2D(tex2_32f_C1__, x+xoff+0.5f, y+yoff+0.5f).x;
+    float diff = tex2D(tex1_32f_C1__, x+xoff+0.5f, y+yoff+0.5f) - tex2D(tex2_32f_C1__, x+xoff+0.5f, y+yoff+0.5f);
     dst[y*stride + x] = diff*diff;
   }
 }
@@ -896,8 +896,8 @@ __global__ void cuSsimKernel(float c1, float c2, Npp32f* dst, size_t stride, int
     {
       for (int dy=hkl; dy<=hkr; dy++)
       {
-        mu_in += tex2D(tex1_32f_C1__, x+dx+0.5f, y+dy+0.5f).x;
-        mu_ref += tex2D(tex2_32f_C1__, x+dx+0.5f, y+dy+0.5f).x;
+        mu_in += tex2D(tex1_32f_C1__, x+dx+0.5f, y+dy+0.5f);
+        mu_ref += tex2D(tex2_32f_C1__, x+dx+0.5f, y+dy+0.5f);
         n++;
       }
     }
@@ -912,8 +912,8 @@ __global__ void cuSsimKernel(float c1, float c2, Npp32f* dst, size_t stride, int
     {
       for (int dy=hkl; dy<=hkr; dy++)
       {
-        float in = tex2D(tex1_32f_C1__, x+dx+0.5f, y+dy+0.5f).x - mu_in;
-        float ref = tex2D(tex2_32f_C1__, x+dx+0.5f, y+dy+0.5f).x - mu_ref;
+        float in = tex2D(tex1_32f_C1__, x+dx+0.5f, y+dy+0.5f) - mu_in;
+        float ref = tex2D(tex2_32f_C1__, x+dx+0.5f, y+dy+0.5f) - mu_ref;
 
         sigma_in  += in*in;
         sigma_ref += ref*ref;

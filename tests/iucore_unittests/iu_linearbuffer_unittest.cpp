@@ -25,48 +25,48 @@
 #include <iostream>
 #include <cuda_runtime.h>
 #include <iucore.h>
+#include <iu/iucutil.h>
 
-using namespace iu;
 
 int main(int argc, char** argv)
 {
   unsigned int length = 1e7;
 
   // create linar hostbuffer
-  iu::LinearHostMemory_8u* h_8u = new iu::LinearHostMemory_8u(length);
-  iu::LinearHostMemory_32f* h_32f = new iu::LinearHostMemory_32f(length);
+  iu::LinearHostMemory_8u_C1* h_8u_C1 = new iu::LinearHostMemory_8u_C1(length);
+  iu::LinearHostMemory_32f_C1* h_32f_C1 = new iu::LinearHostMemory_32f_C1(length);
 
   // create linear devicebuffer
-  iu::LinearDeviceMemory_8u* d_8u = new iu::LinearDeviceMemory_8u(length);
-  iu::LinearDeviceMemory_32f* d_32f = new iu::LinearDeviceMemory_32f(length);
+  iu::LinearDeviceMemory_8u_C1* d_8u_C1 = new iu::LinearDeviceMemory_8u_C1(length);
+  iu::LinearDeviceMemory_32f_C1* d_32f_C1 = new iu::LinearDeviceMemory_32f_C1(length);
 
   // temporary variables to check the values
-  iu::LinearHostMemory_8u check_8u(d_8u->length());
-  iu::LinearHostMemory_32f check_32f(d_32f->length());
+  iu::LinearHostMemory_8u_C1 check_8u_C1(d_8u_C1->length());
+  iu::LinearHostMemory_32f_C1 check_32f_C1(d_32f_C1->length());
 
   // dummy copy tests:
   // host->host
-  iu::copy(h_8u, &check_8u);
-  iu::copy(h_32f, &check_32f);
+  iu::copy(h_8u_C1, &check_8u_C1);
+  iu::copy(h_32f_C1, &check_32f_C1);
   // host->device
-  iu::copy(h_8u, d_8u);
-  iu::copy(h_32f, d_32f);
+  iu::copy(h_8u_C1, d_8u_C1);
+  iu::copy(h_32f_C1, d_32f_C1);
   // device->host
-  iu::copy(d_8u, h_8u);
-  iu::copy(d_32f, h_32f);
+  iu::copy(d_8u_C1, h_8u_C1);
+  iu::copy(d_32f_C1, h_32f_C1);
 
 
   // values to be set
-  Npp8u val_8u = 1;
+  unsigned char val_8u = 1;
   float val_32f = 1.0f;
 
   // set host values
-  iu::setValue(val_8u, h_8u);
-  iu::setValue(val_32f, h_32f);
+  iu::setValue(val_8u, h_8u_C1);
+  iu::setValue(val_32f, h_32f_C1);
 
   // set device values
-  iu::setValue(val_8u, d_8u);
-  iu::setValue(val_32f, d_32f);
+  iu::setValue(val_8u, d_8u_C1);
+  iu::setValue(val_32f, d_32f_C1);
 
 
   ////////////////////////////////////////////////////////////////////////////
@@ -74,16 +74,16 @@ int main(int argc, char** argv)
    */
 
   // copy device variables back to the cpu and check its values
-  iu::copy(d_8u, &check_8u);
-  iu::copy(d_32f, &check_32f);
+  iu::copy(d_8u_C1, &check_8u_C1);
+  iu::copy(d_32f_C1, &check_32f_C1);
 
   // check if the values are ok
-  for (unsigned int i = 0; i<check_8u.length(); ++i)
+  for (unsigned int i = 0; i<check_8u_C1.length(); ++i)
   {
-    assert(h_8u->data()[i] == val_8u);
-    assert(h_32f->data()[i] == val_32f);
-    assert(check_8u.data()[i] == val_8u);
-    assert(check_32f.data()[i] == val_32f);
+    assert(*h_8u_C1->data(i) == val_8u);
+    assert(*h_32f_C1->data(i) == val_32f);
+    assert(*check_8u_C1.data(i) == val_8u);
+    assert(*check_32f_C1.data(i) == val_32f);
   }
 
   ////////////////////////////////////////////////////////////////////////////
@@ -95,24 +95,24 @@ int main(int argc, char** argv)
   val_32f = 2.0f;
 
   // set host values
-  iu::setValue(val_8u, h_8u);
-  iu::setValue(val_32f, h_32f);
+  iu::setValue(val_8u, h_8u_C1);
+  iu::setValue(val_32f, h_32f_C1);
 
   // copy host to device
-  iu::copy(h_8u, d_8u);
-  iu::copy(h_32f, d_32f);
+  iu::copy(h_8u_C1, d_8u_C1);
+  iu::copy(h_32f_C1, d_32f_C1);
 
   // copy device variables back to the cpu and check its values
-  iu::copy(d_8u, &check_8u);
-  iu::copy(d_32f, &check_32f);
+  iu::copy(d_8u_C1, &check_8u_C1);
+  iu::copy(d_32f_C1, &check_32f_C1);
 
   // check if the values are ok
-  for (unsigned int i = 0; i<check_8u.length(); ++i)
+  for (unsigned int i = 0; i<check_8u_C1.length(); ++i)
   {
-    assert(h_8u->data()[i] == val_8u);
-    assert(h_32f->data()[i] == val_32f);
-    assert(check_8u.data()[i] == val_8u);
-    assert(check_32f.data()[i] == val_32f);
+    assert(h_8u_C1->data()[i] == val_8u);
+    assert(h_32f_C1->data()[i] == val_32f);
+    assert(check_8u_C1.data()[i] == val_8u);
+    assert(check_32f_C1.data()[i] == val_32f);
   }
 
   ////////////////////////////////////////////////////////////////////////////
@@ -132,11 +132,11 @@ int main(int argc, char** argv)
 //  iu::LinearHostMemory_8u fb_h_8u_tmp2(fb_h_8u_tmp1);
 
   //  CLEANUP
-  delete(h_8u);
-  delete(h_32f);
+  delete(h_8u_C1);
+  delete(h_32f_C1);
 
-  delete(d_8u);
-  delete(d_32f);
+  delete(d_8u_C1);
+  delete(d_32f_C1);
 
   std::cout << std::endl;
   std::cout << "**************************************************************************" << std::endl;

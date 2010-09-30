@@ -34,8 +34,8 @@
 namespace iuprivate {
 
 // textures only used within this file
-texture<float1, 2, cudaReadModeElementType> tex_u_32f_C1__;
-texture<float1, 2, cudaReadModeElementType> tex_v_32f_C1__;
+texture<float, 2, cudaReadModeElementType> tex_u_32f_C1__;
+texture<float, 2, cudaReadModeElementType> tex_v_32f_C1__;
 texture<float2, 2, cudaReadModeElementType> tex_p_32f_C2__;
 
 
@@ -71,7 +71,7 @@ __global__ void  cuFilterMedian3x3Kernel_32f_C1(Npp32f* dst, const size_t stride
     // Load input 3x3 block into shared memory
     {
       // for each thread: copy the data of the current input position to shared mem
-      sh_in[shc] = tex2D(tex1_32f_C1__, xx, yy).x;
+      sh_in[shc] = tex2D(tex1_32f_C1__, xx, yy);
 
       // Note: the FLT_MAX prevents us from overemphasizing the border pixels if they are outliers!
 
@@ -83,28 +83,28 @@ __global__ void  cuFilterMedian3x3Kernel_32f_C1(Npp32f* dst, const size_t stride
         if (y == 0)
           sh_in[shc-shp-1] = FLT_MAX; // left-upper corner (image)
         else if (ty == 1)
-          sh_in[shc-shp-1] = tex2D(tex1_32f_C1__, xx, yy-1.0f).x; // left-upper corner (block)
+          sh_in[shc-shp-1] = tex2D(tex1_32f_C1__, xx, yy-1.0f); // left-upper corner (block)
 
         sh_in[shc-1] = sh_in[shc];     // left border (image)
 
         if (y == height-1)
           sh_in[shc+shp-1] = FLT_MAX; // left-lower corner (image)
         else if (ty == blockDim.y)
-          sh_in[shc+shp-1] = tex2D(tex1_32f_C1__, xx, yy+1.0f).x; // left-lower corner (block)
+          sh_in[shc+shp-1] = tex2D(tex1_32f_C1__, xx, yy+1.0f); // left-lower corner (block)
       }
       else if (tx == 1) // at left block border (inside image w.r.t x)
       {
         if (y == 0)
-          sh_in[shc-shp-1] = tex2D(tex1_32f_C1__, xx-1.0f, yy).x; // left-upper corner (block, outside)
+          sh_in[shc-shp-1] = tex2D(tex1_32f_C1__, xx-1.0f, yy); // left-upper corner (block, outside)
         else if (ty == 1)
-          sh_in[shc-shp-1] = tex2D(tex1_32f_C1__, xx-1.0f, yy-1.0f).x; // left-upper corner (block, inside)
+          sh_in[shc-shp-1] = tex2D(tex1_32f_C1__, xx-1.0f, yy-1.0f); // left-upper corner (block, inside)
 
-        sh_in[shc-1] = tex2D(tex1_32f_C1__, xx-1.0f, yy).x; // left border (block)
+        sh_in[shc-1] = tex2D(tex1_32f_C1__, xx-1.0f, yy); // left border (block)
 
         if (y == height-1)
-          sh_in[shc+shp-1] = tex2D(tex1_32f_C1__, xx-1.0f, yy).x; // left-lower corner (block, outside)
+          sh_in[shc+shp-1] = tex2D(tex1_32f_C1__, xx-1.0f, yy); // left-lower corner (block, outside)
         else if (ty == blockDim.y)
-          sh_in[shc+shp-1] = tex2D(tex1_32f_C1__, xx-1.0f, yy+1.0f).x; // left-lower corner (block, inside)
+          sh_in[shc+shp-1] = tex2D(tex1_32f_C1__, xx-1.0f, yy+1.0f); // left-lower corner (block, inside)
       }
 
 
@@ -113,39 +113,39 @@ __global__ void  cuFilterMedian3x3Kernel_32f_C1(Npp32f* dst, const size_t stride
         if (y == 0)
           sh_in[shc-shp+1] = FLT_MAX; // right-upper corner (image)
         else if (ty == 1)
-          sh_in[shc-shp+1] = tex2D(tex1_32f_C1__, xx, yy-1.0f).x; // right-upper corner (block)
+          sh_in[shc-shp+1] = tex2D(tex1_32f_C1__, xx, yy-1.0f); // right-upper corner (block)
 
         sh_in[shc+1] = sh_in[shc]; // right border (image)
 
         if (y == height-1)
           sh_in[shc+shp+1] = FLT_MAX; // right-lower corner (image)
         else if (ty == blockDim.y)
-          sh_in[shc+shp+1] = tex2D(tex1_32f_C1__, xx, yy+1.0f).x; // right-lower corner (block)
+          sh_in[shc+shp+1] = tex2D(tex1_32f_C1__, xx, yy+1.0f); // right-lower corner (block)
       }
       else if (tx == blockDim.x) // at right block border (inside image w.r.t x)
       {
         if (y == 0)
-          sh_in[shc-shp+1] = tex2D(tex1_32f_C1__, xx+1.0f, yy).x; // right-upper corner (block, outside)
+          sh_in[shc-shp+1] = tex2D(tex1_32f_C1__, xx+1.0f, yy); // right-upper corner (block, outside)
         else if (ty == 1)
-          sh_in[shc-shp+1] = tex2D(tex1_32f_C1__, xx+1.0f, yy-1.0f).x; // right-upper corner (block, inside)
+          sh_in[shc-shp+1] = tex2D(tex1_32f_C1__, xx+1.0f, yy-1.0f); // right-upper corner (block, inside)
 
-        sh_in[shc+1] = tex2D(tex1_32f_C1__, xx+1.0f, yy).x; // right border (block)
+        sh_in[shc+1] = tex2D(tex1_32f_C1__, xx+1.0f, yy); // right border (block)
 
         if (y == height-1)
-          sh_in[shc+shp+1] = tex2D(tex1_32f_C1__, xx+1.0f, yy).x; // right-lower corner (block, outside)
+          sh_in[shc+shp+1] = tex2D(tex1_32f_C1__, xx+1.0f, yy); // right-lower corner (block, outside)
         else if (ty == blockDim.y)
-          sh_in[shc+shp+1] = tex2D(tex1_32f_C1__, xx+1.0f, yy+1.0f).x; // right-lower corner (block, inside)
+          sh_in[shc+shp+1] = tex2D(tex1_32f_C1__, xx+1.0f, yy+1.0f); // right-lower corner (block, inside)
       }
 
       if (y == 0)
         sh_in[shc-shp] = sh_in[shc]; // upper border (image)
       else if (ty == 1)
-        sh_in[shc-shp] = tex2D(tex1_32f_C1__, xx, yy-1.0f).x; // upper border (block)
+        sh_in[shc-shp] = tex2D(tex1_32f_C1__, xx, yy-1.0f); // upper border (block)
 
       if (y == height-1)
         sh_in[shc+shp] = sh_in[shc]; // lower border (image)
       else if (ty == blockDim.y)
-        sh_in[shc+shp] = tex2D(tex1_32f_C1__, xx, yy+1.0f).x; // lower border (block)
+        sh_in[shc+shp] = tex2D(tex1_32f_C1__, xx, yy+1.0f); // lower border (block)
 
       __syncthreads();
     }
@@ -272,16 +272,16 @@ __global__ void cuFilterGaussKernel_32f_C1(Npp32f* dst, const size_t stride,
       float g0 = 1.0f / (sqrt(2.0f * 3.141592653589793f) * sigma);
       float g1 = exp(-0.5f / (sigma * sigma));
       float g2 = g1 * g1;
-      sum = g0 * tex2D(tex1_32f_C1__, xx, yy).x;
+      sum = g0 * tex2D(tex1_32f_C1__, xx, yy);
       float sum_coeff = g0;
       for (int i = 1; i <= half_kernel_elements; i++)
       {
         g0 *= g1;
         g1 *= g2;
         int cur_xx = max(0, min(width - 1, (int) x + (int) i));
-        sum += g0 * tex2D(tex1_32f_C1__, cur_xx, yy).x;
+        sum += g0 * tex2D(tex1_32f_C1__, cur_xx, yy);
         cur_xx = max(0, min(width - 1, (int) x - (int) i));
-        sum += g0 * tex2D(tex1_32f_C1__, cur_xx, yy).x;
+        sum += g0 * tex2D(tex1_32f_C1__, cur_xx, yy);
         sum_coeff += 2.0f*g0;
       }
       dst[oc] = sum/sum_coeff;
@@ -292,16 +292,16 @@ __global__ void cuFilterGaussKernel_32f_C1(Npp32f* dst, const size_t stride,
       float g0 = 1.0f / (sqrt(2.0f * 3.141592653589793f) * sigma);
       float g1 = exp(-0.5f / (sigma * sigma));
       float g2 = g1 * g1;
-      sum = g0 * tex2D(tex1_32f_C1__, xx, yy).x;
+      sum = g0 * tex2D(tex1_32f_C1__, xx, yy);
       float sum_coeff = g0;
       for (int j = 1; j <= half_kernel_elements; j++)
       {
         g0 *= g1;
         g1 *= g2;
         int cur_yy = max(0, min(height - 1, (int) y + (int) j));
-        sum += g0 * tex2D(tex1_32f_C1__, xx, cur_yy).x;
+        sum += g0 * tex2D(tex1_32f_C1__, xx, cur_yy);
         cur_yy = max(0, min(height - 1, (int) y - (int) j));
-        sum += g0 *  tex2D(tex1_32f_C1__, xx, cur_yy).x;
+        sum += g0 *  tex2D(tex1_32f_C1__, xx, cur_yy);
         sum_coeff += 2.0f*g0;
       }
       dst[oc] = sum/sum_coeff;
@@ -338,9 +338,9 @@ __global__ void cuFilterRofPrimalKernel_32f_C1(
   if(x>=0 && y>= 0 && x<width && y<height)
   {
     // texture fetches
-    float u = tex2D(tex_u_32f_C1__, xx, yy).x;
+    float u = tex2D(tex_u_32f_C1__, xx, yy);
     float v = u;
-    float f = tex2D(tex1_32f_C1__, xx, yy).x;
+    float f = tex2D(tex1_32f_C1__, xx, yy);
 
     float2 p_c = tex2D(tex_p_32f_C2__, xx, yy);
     float2 p_w = tex2D(tex_p_32f_C2__, xx-1.0f, yy);
@@ -390,10 +390,10 @@ __global__ void cuFilterRofDualKernel_32f_C1(
   {
     // texture fetches
     float2 p = tex2D(tex_p_32f_C2__, xx, yy);
-    float u = tex2D(tex_v_32f_C1__, xx, yy).x;
+    float u = tex2D(tex_v_32f_C1__, xx, yy);
 
-    float u_x = tex2D(tex_v_32f_C1__, xx+1.0f, yy).x - u;
-    float u_y = tex2D(tex_v_32f_C1__, xx, yy+1.0f).x - u;
+    float u_x = tex2D(tex_v_32f_C1__, xx+1.0f, yy) - u;
+    float u_y = tex2D(tex_v_32f_C1__, xx, yy+1.0f) - u;
 
     // update dual variable
     float p_new_1 = p.x + tau_d*u_x;
@@ -423,7 +423,7 @@ __global__ void cuFilterRofDualKernel_32f_C1(
 NppStatus cuFilterMedian3x3(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst, const IuRect& roi)
 {
   // bind textures
-  cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<float1>();
+  cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<float>();
   cudaBindTexture2D(0, &tex1_32f_C1__, src->data(), &channel_desc, src->width(), src->height(), src->pitch());
 
   // fragmentation
@@ -456,7 +456,7 @@ NppStatus cuFilterGauss(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst
   iu::ImageGpu_32f_C1 tmp(src->size());
 
   // bind textures
-  cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<float1>();
+  cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<float>();
 
   // fragmentation
   unsigned int block_size = 16;
@@ -498,7 +498,7 @@ NppStatus cuFilterRof(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
   iuprivate::copy(src, &v);
 
   // bind textures
-  cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<float1>();
+  cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<float>();
   cudaBindTexture2D(0, &tex1_32f_C1__, src->data(), &channel_desc, src->width(), src->height(), src->pitch());
   cudaBindTexture2D(0, &tex_u_32f_C1__, dst->data(), &channel_desc, dst->width(), dst->height(), dst->pitch());
   cudaBindTexture2D(0, &tex_v_32f_C1__, v.data(), &channel_desc, v.width(), v.height(), v.pitch());

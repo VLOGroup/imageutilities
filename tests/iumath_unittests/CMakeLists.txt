@@ -27,17 +27,20 @@ include(${IU_USE_FILE})
 
 message("IU_LIBRARIES=${IU_LIBRARIES}")
 
-cuda_add_executable( iu_arithmetic_npp_unittest iu_arithmetic_npp_unittest.cpp )
-TARGET_LINK_LIBRARIES(iu_arithmetic_npp_unittest ${IU_LIBRARIES})
+set(IU_UNITTEST_TARGETS "")
 
-cuda_add_executable( iu_statistics_npp_unittest iu_statistics_npp_unittest.cpp )
-TARGET_LINK_LIBRARIES(iu_statistics_npp_unittest ${IU_LIBRARIES})
+cuda_add_executable( iu_arithmetic_gpu_unittest iu_arithmetic_gpu_unittest.cpp )
+TARGET_LINK_LIBRARIES(iu_arithmetic_gpu_unittest ${IU_LIBRARIES})
+add_test(iu_statistics_gpu_unittest iu_statistics_gpu_unittest)
+set(IU_UNITTEST_TARGETS iu_arithmetic_gpu_unittest)
+
+# cuda_add_executable( iu_statistics_gpu_unittest iu_statistics_gpu_unittest.cpp )
+# TARGET_LINK_LIBRARIES(iu_statistics_gpu_unittest ${IU_LIBRARIES})
+# add_test(iu_statistics_gpu_unittest iu_statistics_gpu_unittest)
+# set(IU_UNITTEST_TARGETS iu_statistics_gpu_unittest)
 
 # install targets
-set(IU_UNITTEST_TARGETS iu_arithmetic_npp_unittest iu_statistics_npp_unittest)
 message(STATUS "install targets=${IU_UNITTEST_TARGETS}")
 install(TARGETS ${IU_UNITTEST_TARGETS} RUNTIME DESTINATION bin)
 
-# run tests:
-add_test(iu_statistics_npp_unittest iu_statistics_npp_unittest)
-add_test(iu_statistics_npp_unittest iu_statistics_npp_unittest)
+

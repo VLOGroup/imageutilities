@@ -62,11 +62,11 @@ int main(int argc, char** argv)
   // test image size
   IuSize sz(79,63);
 
-  iu::ImageNpp_8u_C1 im_npp_8u_C1(sz);
-  iu::ImageNpp_8u_C4 im_npp_8u_C4(sz);
-  iu::ImageNpp_32f_C1 im_npp_32f_C1(sz);
-  iu::ImageNpp_32f_C2 im_npp_32f_C2(sz);
-  iu::ImageNpp_32f_C4 im_npp_32f_C4(sz);
+  iu::ImageGpu_8u_C1 im_npp_8u_C1(sz);
+  iu::ImageGpu_8u_C4 im_npp_8u_C4(sz);
+  iu::ImageGpu_32f_C1 im_npp_32f_C1(sz);
+  iu::ImageGpu_32f_C2 im_npp_32f_C2(sz);
+  iu::ImageGpu_32f_C4 im_npp_32f_C4(sz);
 
 
   Npp8u set_value_8u = 2;

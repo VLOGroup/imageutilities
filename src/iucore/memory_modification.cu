@@ -63,6 +63,9 @@ NppStatus cuSetValue(const Npp32f& value, iu::LinearDeviceMemory_32f_C1* dst)
   return NPP_SUCCESS;
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
+
 // templated wrapper: set value; 2D;
 template<typename PixelType, class Allocator>
 NppStatus cuSetValueTemplate(const PixelType &value,
@@ -71,8 +74,9 @@ NppStatus cuSetValueTemplate(const PixelType &value,
   // fragmentation
   const unsigned int block_size = 16;
   dim3 dimBlock(block_size, block_size);
-  dim3 dimGrid(iu::divUp(roi.width - roi.x, dimBlock.x),
-               iu::divUp(roi.height - roi.y, dimBlock.y));
+  dim3 dimGrid(iu::divUp(roi.width, dimBlock.x),
+               iu::divUp(roi.height, dimBlock.y));
+
 
   cuSetValueKernel <<< dimGrid, dimBlock >>> (
       value, dst->data(roi.x, roi.y), dst->stride(),
@@ -104,7 +108,7 @@ NppStatus cuSetValue(const float4& value, iu::ImageGpu_32f_C4 *dst, const IuRect
 
 ///////////////////////////////////////////////////////////////////////////////
 
-// wrapper: set values (single value); 3D; ...
+// templated wrapper: set values (single value); 3D; ...
 template<typename PixelType, class Allocator>
 NppStatus cuSetValueTemplate(const PixelType &value,
                              iu::VolumeGpu<PixelType, Allocator> *dst, const IuCube& roi)
@@ -112,8 +116,8 @@ NppStatus cuSetValueTemplate(const PixelType &value,
   // fragmentation
   const unsigned int block_size = 16;
   dim3 dimBlock(block_size, block_size);
-  dim3 dimGrid(iu::divUp(roi.width - roi.x, dimBlock.x),
-               iu::divUp(roi.height - roi.y, dimBlock.y));
+  dim3 dimGrid(iu::divUp(roi.width, dimBlock.x),
+               iu::divUp(roi.height, dimBlock.y));
 
   cuSetValueKernel <<< dimGrid, dimBlock >>> (
       value, dst->data(roi.x, roi.y, roi.z), dst->stride(), dst->slice_stride(),
@@ -145,15 +149,14 @@ NppStatus cuClamp(const Npp32f& min, const Npp32f& max,
                   iu::ImageGpu_32f_C1 *srcdst, const IuRect &roi)
 {
   // bind textures
-  cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<float1>();
+  cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<float>();
   cudaBindTexture2D(0, &tex1_32f_C1__, srcdst->data(), &channel_desc, srcdst->width(), srcdst->height(), srcdst->pitch());
 
   // fragmentation
   const unsigned int block_size = 16;
   dim3 dimBlock(block_size, block_size);
-  dim3 dimGrid(iu::divUp(roi.width - roi.x, dimBlock.x),
-               iu::divUp(roi.height - roi.y, dimBlock.y));
-
+  dim3 dimGrid(iu::divUp(roi.width, dimBlock.x),
+               iu::divUp(roi.height, dimBlock.y));
 
   cuClampKernel_32f_C1 <<< dimGrid, dimBlock >>> (
       min, max, srcdst->data(roi.x, roi.y), srcdst->stride(),

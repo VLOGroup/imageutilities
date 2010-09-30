@@ -33,24 +33,22 @@ namespace iu {
  * ***************************************************************************/
 
 // [device] weighted add; Not-in-place; 32-bit;
-void addWeighted(const iu::ImageGpu_32f_C1* src1, const Npp32f& weight1,
-                 const iu::ImageGpu_32f_C1* src2, const Npp32f& weight2,
+void addWeighted(const iu::ImageGpu_32f_C1* src1, const float& weight1,
+                 const iu::ImageGpu_32f_C1* src2, const float& weight2,
                  iu::ImageGpu_32f_C1* dst, const IuRect& roi)
 {iuprivate::addWeighted(src1, weight1, src2, weight2, dst, roi);}
 
-// [device] multiplication with factor; Not-in-place; 8-bit;
-void mulC(const ImageGpu_8u_C1* src, const Npp8u& factor, ImageGpu_8u_C1* dst, const IuRect& roi)
+// [gpu] multiplication with factor; Not-in-place; 8-bit;
+void mulC(const iu::ImageGpu_8u_C1* src, const unsigned char& factor, iu::ImageGpu_8u_C1* dst, const IuRect& roi)
 {iuprivate::mulC(src, factor, dst, roi);}
-void mulC(const ImageGpu_8u_C4* src, const Npp8u factor[4], ImageGpu_8u_C4* dst, const IuRect& roi)
-{iuprivate::mulC(src, factor, dst, roi);}
-
-// [device] multiplication with factor; Not-in-place; 32-bit;
-void mulC(const ImageGpu_32f_C1* src, const Npp32f& factor, ImageGpu_32f_C1* dst, const IuRect& roi)
-{iuprivate::mulC(src, factor, dst, roi);}
-void mulC(const ImageGpu_32f_C4* src, const Npp32f factor[4], ImageGpu_32f_C4* dst, const IuRect& roi)
+void mulC(const iu::ImageGpu_8u_C4* src, const uchar4& factor, iu::ImageGpu_8u_C4* dst, const IuRect& roi)
 {iuprivate::mulC(src, factor, dst, roi);}
 
-
+// [gpu] multiplication with factor; Not-in-place; 32-bit;
+void mulC(const iu::ImageGpu_32f_C1* src, const float& factor, iu::ImageGpu_32f_C1* dst, const IuRect& roi)
+{iuprivate::mulC(src, factor, dst, roi);}
+void mulC(const iu::ImageGpu_32f_C4* src, const float4& factor, iu::ImageGpu_32f_C4* dst, const IuRect& roi)
+{iuprivate::mulC(src, factor, dst, roi);}
 
 /* ***************************************************************************
      STATISTICS
@@ -85,13 +83,13 @@ void summation(const iu::ImageGpu_32f_C1* src, const IuRect& roi, Npp64f& sum)
 void normDiffL1(const iu::ImageGpu_32f_C1* src1, const iu::ImageGpu_32f_C1* src2, const IuRect& roi, Npp64f& norm)
 {iuprivate::normDiffL1(src1, src2, roi, norm);}
 // |src-value|
-void normDiffL1(const iu::ImageGpu_32f_C1* src, const Npp32f& value, const IuRect& roi, Npp64f& norm)
+void normDiffL1(const iu::ImageGpu_32f_C1* src, const float& value, const IuRect& roi, Npp64f& norm)
 {iuprivate::normDiffL1(src, value, roi, norm);}
 // ||src1-src2||
 void normDiffL2(const iu::ImageGpu_32f_C1* src1, const iu::ImageGpu_32f_C1* src2, const IuRect& roi, Npp64f& norm)
 {iuprivate::normDiffL1(src1, src2, roi, norm);}
 // ||src-value||
-void normDiffL2(const iu::ImageGpu_32f_C1* src, const Npp32f& value, const IuRect& roi, Npp64f& norm)
+void normDiffL2(const iu::ImageGpu_32f_C1* src, const float& value, const IuRect& roi, Npp64f& norm)
 {iuprivate::normDiffL1(src, value, roi, norm);}
 
 /* ***************************************************************************

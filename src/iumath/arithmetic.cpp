@@ -29,8 +29,8 @@ namespace iuprivate {
 ///////////////////////////////////////////////////////////////////////////////
 
 // [device] weighted add; Not-in-place; 32-bit;
-void addWeighted(const iu::ImageGpu_32f_C1* src1, const Npp32f& weight1,
-                 const iu::ImageGpu_32f_C1* src2, const Npp32f& weight2,
+void addWeighted(const iu::ImageGpu_32f_C1* src1, const float& weight1,
+                 const iu::ImageGpu_32f_C1* src2, const float& weight2,
                  iu::ImageGpu_32f_C1* dst, const IuRect& roi)
 {
   NppStatus status;
@@ -40,24 +40,16 @@ void addWeighted(const iu::ImageGpu_32f_C1* src1, const Npp32f& weight1,
 
 ///////////////////////////////////////////////////////////////////////////////
 
-// [device] multiplication with factor; Not-in-place; 8-bit; 1-channel
-void mulC(const iu::ImageGpu_8u_C1* src, const Npp8u& factor, iu::ImageGpu_8u_C1* dst, const IuRect& roi)
+// [gpu] multiplication with factor; Not-in-place; 8-bit; 1-channel
+void mulC(const iu::ImageGpu_8u_C1* src, const unsigned char& factor, iu::ImageGpu_8u_C1* dst, const IuRect& roi)
 {
   NppStatus status;
   status = cuMulC(src, factor, dst, roi);
   IU_ASSERT(status == NPP_NO_ERROR);
 }
 
-//// [device] multiplication with factor; Not-in-place; 8-bit; 3-channel
-//void mulC(const iu::ImageGpu_8u_C3* src, const Npp8u factor[3], iu::ImageGpu_8u_C3* dst, const IuRect& roi)
-//{
-//  NppStatus status;
-//  status = cuMulC(src, factor, dst, roi);
-//  IU_ASSERT(status == NPP_NO_ERROR);
-//}
-
-// [device] multiplication with factor; Not-in-place; 8-bit; 4-channel
-void mulC(const iu::ImageGpu_8u_C4* src, const Npp8u factor[4], iu::ImageGpu_8u_C4* dst, const IuRect& roi)
+// [gpu] multiplication with factor; Not-in-place; 8-bit; 4-channel
+void mulC(const iu::ImageGpu_8u_C4* src, const uchar4& factor, iu::ImageGpu_8u_C4* dst, const IuRect& roi)
 {
   NppStatus status;
   status = cuMulC(src, factor, dst, roi);
@@ -66,24 +58,16 @@ void mulC(const iu::ImageGpu_8u_C4* src, const Npp8u factor[4], iu::ImageGpu_8u_
 
 ///////////////////////////////////////////////////////////////////////////////
 
-// [device] multiplication with factor; Not-in-place; 32-bit; 1-channel
-void mulC(const iu::ImageGpu_32f_C1* src, const Npp32f& factor, iu::ImageGpu_32f_C1* dst, const IuRect& roi)
+// [gpu] multiplication with factor; Not-in-place; 32-bit; 1-channel
+void mulC(const iu::ImageGpu_32f_C1* src, const float& factor, iu::ImageGpu_32f_C1* dst, const IuRect& roi)
 {
   NppStatus status;
   status = cuMulC(src, factor, dst, roi);
   IU_ASSERT(status == NPP_NO_ERROR);
 }
 
-//// [device] multiplication with factor; Not-in-place; 32-bit; 3-channel
-//void mulC(const iu::ImageGpu_32f_C3* src, const Npp32f factor[3], iu::ImageGpu_32f_C3* dst, const IuRect& roi)
-//{
-//  NppStatus status;
-//  status = cuMulC(src, factor, dst, roi);
-//  IU_ASSERT(status == NPP_NO_ERROR);
-//}
-
-// [device] multiplication with factor; Not-in-place; 32-bit; 4-channel
-void mulC(const iu::ImageGpu_32f_C4* src, const Npp32f factor[3], iu::ImageGpu_32f_C4* dst, const IuRect& roi)
+// [gpu] multiplication with factor; Not-in-place; 32-bit; 4-channel
+void mulC(const iu::ImageGpu_32f_C4* src, const float4& factor, iu::ImageGpu_32f_C4* dst, const IuRect& roi)
 {
   NppStatus status;
   status = cuMulC(src, factor, dst, roi);
