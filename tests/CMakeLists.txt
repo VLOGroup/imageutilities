@@ -53,11 +53,6 @@ if(UNIX)
   add_definitions( -g )
 endif()
 
-set( NPP64 "" )
-if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
-  set( NPP64 "-x64" )
-endif( CMAKE_SIZEOF_VOID_P EQUAL 8 )
-
 IF(WIN32)
   ADD_DEFINITIONS(-DWIN32)
   # for msvc 8 deprecated warning removal

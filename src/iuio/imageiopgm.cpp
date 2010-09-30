@@ -117,7 +117,7 @@ iu::ImageCpu_16u_C1* imread_16u_C1(const std::string& filename)
 
   // Allocate memory
   iu::ImageCpu_16u_C1* image = new iu::ImageCpu_16u_C1(width, height);
-  src.read((char *)image->data(), image->width() * image->height() * planes * 2);
+  src.read((char*)image->data(), image->width() * image->height() * planes * 2);
   return image;
 }
 

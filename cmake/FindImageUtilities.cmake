@@ -202,14 +202,6 @@ else(IU_INCLUDE_DIRS AND IU_LIBRARY_DIR)
       include_directories(${CUDA_INCLUDE_DIRS} ${CUDA_CUT_INCLUDE_DIR})
       set(IU_IUCORE_LIB_DEPENDENCIES ${IU_IUCORE_LIB_DEPENDENCIES} ${CUDA_LIBRARIES})
     endif(CUDA_FOUND AND CUDASDK_FOUND)
-
-    # NPP
-    find_package(NPP REQUIRED)
-    if(NPP_FOUND)
-      cuda_include_directories(${NPP_INCLUDE_DIRS})
-      include_directories(${NPP_INCLUDE_DIRS})
-      set(IU_IUCORE_LIB_DEPENDENCIES ${IU_IUCORE_LIB_DEPENDENCIES} ${NPP_LIBRARIES})
-    endif(NPP_FOUND)
   endif(IU_IUCORE_FOUND)
 
   ## GUI module

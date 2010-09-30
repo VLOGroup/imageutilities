@@ -27,20 +27,22 @@ include(${IU_USE_FILE})
 
 message("IU_LIBRARIES=${IU_LIBRARIES}")
 
+set(IU_UNITTEST_TARGETS "")
+
 cuda_add_executable( iu_imageio_unittest iu_imageio_unittest.cpp )
 TARGET_LINK_LIBRARIES(iu_imageio_unittest ${IU_LIBRARIES})
-add_test(iu_imageio_unittest iu_imageio_unittest)
-set(IU_UNITTEST_TARGETS iu_imageio_unittest)
+set(IU_UNITTEST_TARGETS ${IU_UNITTEST_TARGETS} iu_imageio_unittest)
+#add_test(iu_imageio_unittest iu_imageio_unittest)
 
 cuda_add_executable( iu_imageio16_unittest iu_imageio16_unittest.cpp )
 TARGET_LINK_LIBRARIES(iu_imageio16_unittest ${IU_LIBRARIES})
-add_test(iu_imageio_unittest iu_imageio_unittest)
-set(IU_UNITTEST_TARGETS iu_imageio16_unittest)
+set(IU_UNITTEST_TARGETS ${IU_UNITTEST_TARGETS} iu_imageio16_unittest)
+#add_test(iu_imageio_unittest iu_imageio_unittest)
 
 # cuda_add_executable( iu_videocapture_unittest iu_videocapture_unittest.cpp )
 # TARGET_LINK_LIBRARIES(iu_videocapture_unittest ${IU_LIBRARIES})
+# set(IU_UNITTEST_TARGETS ${IU_UNITTEST_TARGETS} iu_videocapture_unittest)
 # add_test(iu_imageio_unittest iu_imageio_unittest)
-# set(IU_UNITTEST_TARGETS iu_videocapture_unittest)
 
 # install targets
 message(STATUS "install targets=${IU_UNITTEST_TARGETS}")
