@@ -53,17 +53,17 @@
 typedef enum
 {
   // error
-  NPP_MEM_COPY_ERROR = -11,
-  NPP_MEM_ALLOC_ERROR = -10,
-  NPP_NOT_SUPPORTED_ERROR = -2,
-  NPP_ERROR = -1,
+  IU_MEM_COPY_ERROR = -11,
+  IU_MEM_ALLOC_ERROR = -10,
+  IU_NOT_SUPPORTED_ERROR = -2,
+  IU_ERROR = -1,
 
   // success
-  NPP_NO_ERROR = 0,
-  NPP_SUCCESS = 0,
+  IU_NO_ERROR = 0,
+  IU_SUCCESS = 0,
 
   // warnings
-  NPP_WARNING = 1
+  IU_WARNING = 1
 
 } IuStatus;
 

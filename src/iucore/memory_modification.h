@@ -101,7 +101,7 @@ void setValue(const PixelType &value, iu::ImageGpu<PixelType, Allocator> *srcdst
 {
   IuStatus status;
   status = cuSetValue(value, srcdst, roi);
-  IU_ASSERT(status == NPP_SUCCESS);
+  IU_ASSERT(status == IU_SUCCESS);
 }
 
 // 3D set pixel value; device;
@@ -110,7 +110,7 @@ void setValue(const PixelType &value, iu::VolumeGpu<PixelType, Allocator> *srcds
 {
   IuStatus status;
   status = cuSetValue(value, srcdst, roi);
-  IU_ASSERT(status == NPP_SUCCESS);
+  IU_ASSERT(status == IU_SUCCESS);
 }
 
 // 2D clamping. clamps every pixel; device;

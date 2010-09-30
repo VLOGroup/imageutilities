@@ -394,7 +394,7 @@ IuStatus cuMinMax(const iu::ImageGpu_8u_C1 *src, const IuRect &roi,
 
   cudaUnbindTexture(&tex1_8u_C1__);
   IU_CHECK_CUDA_ERRORS();
-  return NPP_SUCCESS;
+  return IU_SUCCESS;
 }
 
 // wrapper: find min/max; 8u_C4
@@ -448,7 +448,7 @@ IuStatus cuMinMax(const iu::ImageGpu_8u_C4 *src, const IuRect &roi, uchar4& min_
 
   cudaUnbindTexture(&tex1_8u_C4__);
   IU_CHECK_CUDA_ERRORS();
-  return NPP_SUCCESS;
+  return IU_SUCCESS;
 }
 
 // wrapper: find min/max; 32f_C1
@@ -494,7 +494,7 @@ IuStatus cuMinMax(const iu::ImageGpu_32f_C1 *src, const IuRect &roi, float& min_
 
   cudaUnbindTexture(&tex1_32f_C1__);
   IU_CHECK_CUDA_ERRORS();
-  return NPP_SUCCESS;
+  return IU_SUCCESS;
 }
 
 
@@ -545,7 +545,7 @@ IuStatus cuMinMax(const iu::ImageGpu_32f_C2 *src, const IuRect &roi, float2& min
 
   cudaUnbindTexture(&tex1_32f_C2__);
   IU_CHECK_CUDA_ERRORS();
-  return NPP_SUCCESS;
+  return IU_SUCCESS;
 }
 
 // wrapper: find min/max; 32f_C4
@@ -599,7 +599,7 @@ IuStatus cuMinMax(const iu::ImageGpu_32f_C4 *src, const IuRect &roi, float4& min
 
   cudaUnbindTexture(&tex1_32f_C4__);
   IU_CHECK_CUDA_ERRORS();
-  return NPP_SUCCESS;
+  return IU_SUCCESS;
 }
 
 
@@ -642,7 +642,7 @@ IuStatus cuSummation(const iu::ImageGpu_8u_C1 *src, const IuRect &roi, long& sum
 
   cudaUnbindTexture(&tex1_8u_C1__);
   IU_CHECK_CUDA_ERRORS();
-  return NPP_SUCCESS;
+  return IU_SUCCESS;
 }
 
 // wrapper: compute sum; 32f_C1
@@ -679,7 +679,7 @@ IuStatus cuSummation(const iu::ImageGpu_32f_C1 *src, const IuRect &roi, double& 
 
   cudaUnbindTexture(&tex1_32f_C1__);
   IU_CHECK_CUDA_ERRORS();
-  return NPP_SUCCESS;
+  return IU_SUCCESS;
 }
 
 /*
@@ -719,7 +719,7 @@ IuStatus cuNormDiffL1(const iu::ImageGpu_32f_C1* src1, const iu::ImageGpu_32f_C1
   norm = sqrt(sum_squared);
 
   IU_CHECK_CUDA_ERRORS();
-  return NPP_SUCCESS;
+  return IU_SUCCESS;
 }
 
 // wrapper: compute L1 norm; |image1-value|;
@@ -749,7 +749,7 @@ IuStatus cuNormDiffL1(const iu::ImageGpu_32f_C1* src, const float& value, const 
   norm = sqrt(sum_squared);
 
   IU_CHECK_CUDA_ERRORS();
-  return NPP_SUCCESS;
+  return IU_SUCCESS;
 }
 
 // wrapper: compute L2 norm; ||image1-image2||;
@@ -785,7 +785,7 @@ IuStatus cuNormDiffL2(const iu::ImageGpu_32f_C1* src1, const iu::ImageGpu_32f_C1
   norm = sqrt(sum_squared);
 
   IU_CHECK_CUDA_ERRORS();
-  return NPP_SUCCESS;
+  return IU_SUCCESS;
 }
 
 // wrapper: compute L2 norm; ||image1-value||;
@@ -815,7 +815,7 @@ IuStatus cuNormDiffL2(const iu::ImageGpu_32f_C1* src, const float& value, const 
   norm = sqrt(sum_squared);
 
   IU_CHECK_CUDA_ERRORS();
-  return NPP_SUCCESS;
+  return IU_SUCCESS;
 }
 
 /*
@@ -871,7 +871,7 @@ IuStatus cuMse(const iu::ImageGpu_32f_C1* src, const iu::ImageGpu_32f_C1* refere
   mse = sum/(static_cast<float>(roi.width*roi.height));
 
   IU_CHECK_CUDA_ERRORS();
-  return NPP_SUCCESS;
+  return IU_SUCCESS;
 }
 
 
@@ -967,7 +967,7 @@ IuStatus cuSsim(const iu::ImageGpu_32f_C1* src, const iu::ImageGpu_32f_C1* refer
   ssim = ssim/(static_cast<float>(roi.width*roi.height));
 
   IU_CHECK_CUDA_ERRORS();
-  return NPP_SUCCESS;
+  return IU_SUCCESS;
 }
 
 } // namespace iuprivate

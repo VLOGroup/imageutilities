@@ -52,7 +52,7 @@ void setValue(const unsigned char& value, iu::LinearDeviceMemory_8u_C1* srcdst)
 {
   // cudaMemset is slow so we are firing up a kernel
   IuStatus status = cuSetValue(value, srcdst);
-  IU_ASSERT(status == NPP_SUCCESS);
+  IU_ASSERT(status == IU_SUCCESS);
 }
 
 // [1D; host] set values; 32-bit
@@ -60,7 +60,7 @@ void setValue(const float& value, iu::LinearDeviceMemory_32f_C1* srcdst)
 {
   // cudaMemset is slow so we are firing up a kernel
   IuStatus status = cuSetValue(value, srcdst);
-  IU_ASSERT(status == NPP_SUCCESS);
+  IU_ASSERT(status == IU_SUCCESS);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -71,7 +71,7 @@ void clamp(const float& min, const float& max,
            iu::ImageGpu_32f_C1 *srcdst, const IuRect &roi)
 {
   IuStatus status = cuClamp(min, max, srcdst, roi);
-  IU_ASSERT(status == NPP_SUCCESS);
+  IU_ASSERT(status == IU_SUCCESS);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -81,7 +81,7 @@ void convert(const iu::ImageGpu_32f_C3* src, const IuRect& src_roi, iu::ImageGpu
 {
   IuStatus status;
   status = cuConvert(src, src_roi, dst, dst_roi);
-  IU_ASSERT(status == NPP_NO_ERROR);
+  IU_ASSERT(status == IU_SUCCESS);
 }
 
 // [device] conversion 32f_C4 -> 32f_C3
@@ -89,7 +89,7 @@ void convert(const iu::ImageGpu_32f_C4* src, const IuRect& src_roi, iu::ImageGpu
 {
   IuStatus status;
   status = cuConvert(src, src_roi, dst, dst_roi);
-  IU_ASSERT(status == NPP_NO_ERROR);
+  IU_ASSERT(status == IU_SUCCESS);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

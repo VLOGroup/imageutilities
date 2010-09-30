@@ -47,7 +47,7 @@ do { \
     fprintf(stderr,"  file:       %s\n",__FILE__); \
     fprintf(stderr,"  function:   %s\n",__FUNCTION__); \
     fprintf(stderr,"  line:       %d\n\n",__LINE__); \
-    return NPP_ERROR; \
+    return IU_ERROR; \
   } \
 } while(false)
 #else // __IU_CHECK_FOR_CUDA_ERRORS_ENABLED__

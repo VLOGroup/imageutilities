@@ -441,7 +441,7 @@ IuStatus cuFilterMedian3x3(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* 
 
   // error check
   IU_CHECK_CUDA_ERRORS();
-  return NPP_SUCCESS;
+  return IU_SUCCESS;
 }
 
 // wrapper: Gaussian filter; 32-bit; 1-channel
@@ -480,7 +480,7 @@ IuStatus cuFilterGauss(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
 
   // error check
   IU_CHECK_CUDA_ERRORS();
-  return NPP_SUCCESS;
+  return IU_SUCCESS;
 }
 
 // wrapper: Rof filter; 32-bit; 1-channel
@@ -534,7 +534,7 @@ IuStatus cuFilterRof(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
 
   // error check
   IU_CHECK_CUDA_ERRORS();
-  return NPP_SUCCESS;
+  return IU_SUCCESS;
 }
 
 } // namespace iuprivate

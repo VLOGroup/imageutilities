@@ -45,7 +45,7 @@ IuStatus cuSetValue(const unsigned char& value, iu::LinearDeviceMemory_8u_C1* ds
       value, dst->data(), dst->length());
 
   IU_CHECK_CUDA_ERRORS();
-  return NPP_SUCCESS;
+  return IU_SUCCESS;
 }
 
 // wrapper: set values; 1D; 32-bit
@@ -60,7 +60,7 @@ IuStatus cuSetValue(const float& value, iu::LinearDeviceMemory_32f_C1* dst)
       value, dst->data(), dst->length());
 
   IU_CHECK_CUDA_ERRORS();
-  return NPP_SUCCESS;
+  return IU_SUCCESS;
 }
 
 
@@ -83,7 +83,7 @@ IuStatus cuSetValueTemplate(const PixelType &value,
       roi.x, roi.y, roi.width, roi.height);
 
   IU_CHECK_CUDA_ERRORS();
-  return NPP_SUCCESS;
+  return IU_SUCCESS;
 }
 
 // wrapper: set values (single value); 2D; 8-bit;
@@ -124,7 +124,7 @@ IuStatus cuSetValueTemplate(const PixelType &value,
       roi.x, roi.y, roi.z, roi.width, roi.height, roi.depth);
 
   IU_CHECK_CUDA_ERRORS();
-  return NPP_SUCCESS;
+  return IU_SUCCESS;
 }
 
 // wrapper: set values (single value); 3D; 8-bit;
@@ -163,7 +163,7 @@ IuStatus cuClamp(const float& min, const float& max,
       roi.x, roi.y, roi.width, roi.height);
 
   IU_CHECK_CUDA_ERRORS();
-  return NPP_SUCCESS;
+  return IU_SUCCESS;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -182,7 +182,7 @@ IuStatus cuConvert(const iu::ImageGpu_32f_C3* src, const IuRect& src_roi, iu::Im
       dst->data(dst_roi.x, dst_roi.y), dst->stride(), dst_roi.width, dst_roi.height);
 
   IU_CHECK_CUDA_ERRORS();
-  return NPP_SUCCESS;
+  return IU_SUCCESS;
 }
 
 // convert 32f_C4 -> 32f_C3
@@ -199,7 +199,7 @@ IuStatus cuConvert(const iu::ImageGpu_32f_C4* src, const IuRect& src_roi, iu::Im
       dst->data(dst_roi.x, dst_roi.y), dst->stride(), dst_roi.width, dst_roi.height);
 
   IU_CHECK_CUDA_ERRORS();
-  return NPP_SUCCESS;
+  return IU_SUCCESS;
 }
 
 

@@ -295,7 +295,7 @@ IuStatus cuInitTextures()
   nppglwidget_image_32f_C4__.normalized = false;
 
   IU_CHECK_CUDA_ERRORS();
-  return NPP_SUCCESS;
+  return IU_SUCCESS;
 }
 
 //-----------------------------------------------------------------------------
@@ -310,7 +310,7 @@ IuStatus cuPboRegister(GLuint pbo, bool& registered)
     registered = true;
   }
   IU_CHECK_CUDA_ERRORS();
-  return NPP_SUCCESS;
+  return IU_SUCCESS;
 }
 
 //-----------------------------------------------------------------------------
@@ -325,7 +325,7 @@ IuStatus cuPboUnregister(GLuint pbo, bool& registered)
     registered = false;
   }
   IU_CHECK_CUDA_ERRORS();
-  return NPP_SUCCESS;
+  return IU_SUCCESS;
 }
 
 //-----------------------------------------------------------------------------
@@ -375,7 +375,7 @@ IuStatus cuGetOutput(int pbo_out, iu::Image* image,
 
   cudaGLUnmapBufferObject(pbo_out);
   IU_CHECK_CUDA_ERRORS();
-  return NPP_SUCCESS;
+  return IU_SUCCESS;
 }
 //
 ////-----------------------------------------------------------------------------

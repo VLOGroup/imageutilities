@@ -262,10 +262,10 @@ void NppGLWidgetPrivate::paintGL()
   if (image_loaded_)   // always check if ready for processing
   {
     // attach to CUDA
-    success &= (NPP_SUCCESS == cuPboRegister(pbo_, registered_));
+    success &= (IU_SUCCESS == cuPboRegister(pbo_, registered_));
 
     // write intensity values to pbo
-    success &= (NPP_SUCCESS == cuGetOutput(pbo_, image_, minimum_value_,
+    success &= (IU_SUCCESS == cuGetOutput(pbo_, image_, minimum_value_,
                                            maximum_value_, image_size_));
 
 //    // check all overlays if they should be painted
@@ -303,7 +303,7 @@ void NppGLWidgetPrivate::paintGL()
 
 
     // detach from CUDA
-    success &= (NPP_SUCCESS == cuPboUnregister(pbo_, registered_));
+    success &= (IU_SUCCESS == cuPboUnregister(pbo_, registered_));
 
     IU_ASSERT(success == true);
     if(!success)
