@@ -28,31 +28,6 @@
 #include <iucore.h>
 #include <iu/iucutil.h>
 
-using namespace iu;
-
-/* compares two float values.
-   taken from [1]
-   [1] http://www.cygnus-software.com/papers/comparingfloats/Comparing%20floating%20point%20numbers.htm
-*/
-bool almostEquals(float A, float B, int maxUlps = 1)
-{
-  // Make sure maxUlps is non-negative and small enough that the
-  // default NAN won't compare as equal to anything.
-  assert(maxUlps > 0 && maxUlps < 4 * 1024 * 1024);
-  int aInt = *(int*)&A;
-  // Make aInt lexicographically ordered as a twos-complement int
-  if (aInt < 0)
-    aInt = 0x80000000 - aInt;
-  // Make bInt lexicographically ordered as a twos-complement int
-  int bInt = *(int*)&B;
-  if (bInt < 0)
-    bInt = 0x80000000 - bInt;
-  int intDiff = abs(aInt - bInt);
-  if (intDiff <= maxUlps)
-    return true;
-  return false;
-}
-
 int main(int argc, char** argv)
 {
   std::cout << "Starting iu_image_cpu_unittest ..." << std::endl;
@@ -69,122 +44,102 @@ int main(int argc, char** argv)
   iu::ImageCpu_32f_C3 im_cpu_32f_C3(sz);
   iu::ImageCpu_32f_C4 im_cpu_32f_C4(sz);
 
-  // set values
   unsigned char set_value_8u_C1 = 1;
   uchar2 set_value_8u_C2 = make_uchar2(2,2);
   uchar3 set_value_8u_C3 = make_uchar3(3,3,3);
   uchar4 set_value_8u_C4 = make_uchar4(4,4,4,4);
   float set_value_32f_C1 = 1.1f;
-  float2 set_value_32f_C2 = make_float2(2.2f, 2.2f);
+  float2 set_value_32f_C2 = make_float2(2.2f);
   float3 set_value_32f_C3 = make_float3(3.3f);
   float4 set_value_32f_C4 = make_float4(4.4f);
 
-  iu::setValue(set_value_8u_C1, &im_cpu_8u_C1, im_cpu_8u_C1.roi());
-  iu::setValue(set_value_8u_C2, &im_cpu_8u_C2, im_cpu_8u_C2.roi());
-  iu::setValue(set_value_8u_C3, &im_cpu_8u_C3, im_cpu_8u_C3.roi());
-  iu::setValue(set_value_8u_C4, &im_cpu_8u_C4, im_cpu_8u_C4.roi());
-  iu::setValue(set_value_32f_C1, &im_cpu_32f_C1, im_cpu_32f_C1.roi());
-  iu::setValue(set_value_32f_C2, &im_cpu_32f_C2, im_cpu_32f_C2.roi());
-  iu::setValue(set_value_32f_C3, &im_cpu_32f_C3, im_cpu_32f_C3.roi());
-  iu::setValue(set_value_32f_C4, &im_cpu_32f_C4, im_cpu_32f_C4.roi());
+  // set values test
   {
+    std::cout << "testing setValue on cpu ..." << std::endl;
+
+    iu::setValue(set_value_8u_C1, &im_cpu_8u_C1, im_cpu_8u_C1.roi());
+    iu::setValue(set_value_8u_C2, &im_cpu_8u_C2, im_cpu_8u_C2.roi());
+    iu::setValue(set_value_8u_C3, &im_cpu_8u_C3, im_cpu_8u_C3.roi());
+    iu::setValue(set_value_8u_C4, &im_cpu_8u_C4, im_cpu_8u_C4.roi());
+    iu::setValue(set_value_32f_C1, &im_cpu_32f_C1, im_cpu_32f_C1.roi());
+    iu::setValue(set_value_32f_C2, &im_cpu_32f_C2, im_cpu_32f_C2.roi());
+    iu::setValue(set_value_32f_C3, &im_cpu_32f_C3, im_cpu_32f_C3.roi());
+    iu::setValue(set_value_32f_C4, &im_cpu_32f_C4, im_cpu_32f_C4.roi());
+    {
+      // check if set values are correct
+      for (unsigned int y = 0; y<sz.height; ++y)
+      {
+        for (unsigned int x = 0; x<sz.width; ++x)
+        {
+          if( *im_cpu_8u_C1.data(x,y) != set_value_8u_C1)
+            return EXIT_FAILURE;
+          if( *im_cpu_8u_C2.data(x,y) != set_value_8u_C2)
+            return EXIT_FAILURE;
+          if( *im_cpu_8u_C3.data(x,y) != set_value_8u_C3)
+            return EXIT_FAILURE;
+          if( *im_cpu_8u_C4.data(x,y) != set_value_8u_C4)
+            return EXIT_FAILURE;
+
+          if( *im_cpu_32f_C1.data(x,y) != set_value_32f_C1)
+            return EXIT_FAILURE;
+          if( *im_cpu_32f_C2.data(x,y) != set_value_32f_C2)
+            return EXIT_FAILURE;
+          if( *im_cpu_32f_C3.data(x,y) != set_value_32f_C3)
+            return EXIT_FAILURE;
+          if( *im_cpu_32f_C4.data(x,y) != set_value_32f_C4)
+            return EXIT_FAILURE;
+        }
+      }
+    }
+  }
+
+  // copy test
+  {
+    std::cout << "testing copy cpu -> cpu ..." << std::endl;
+
+    iu::ImageCpu_8u_C1 cp_cpu_8u_C1(sz);
+    iu::ImageCpu_8u_C2 cp_cpu_8u_C2(sz);
+    iu::ImageCpu_8u_C3 cp_cpu_8u_C3(sz);
+    iu::ImageCpu_8u_C4 cp_cpu_8u_C4(sz);
+    iu::ImageCpu_32f_C1 cp_cpu_32f_C1(sz);
+    iu::ImageCpu_32f_C2 cp_cpu_32f_C2(sz);
+    iu::ImageCpu_32f_C3 cp_cpu_32f_C3(sz);
+    iu::ImageCpu_32f_C4 cp_cpu_32f_C4(sz);
+
+    iu::copy(&im_cpu_8u_C1, &cp_cpu_8u_C1);
+    iu::copy(&im_cpu_8u_C2, &cp_cpu_8u_C2);
+    iu::copy(&im_cpu_8u_C3, &cp_cpu_8u_C3);
+    iu::copy(&im_cpu_8u_C4, &cp_cpu_8u_C4);
+    iu::copy(&im_cpu_32f_C1, &cp_cpu_32f_C1);
+    iu::copy(&im_cpu_32f_C2, &cp_cpu_32f_C2);
+    iu::copy(&im_cpu_32f_C3, &cp_cpu_32f_C3);
+    iu::copy(&im_cpu_32f_C4, &cp_cpu_32f_C4);
+
     // check if set values are correct
     for (unsigned int y = 0; y<sz.height; ++y)
     {
       for (unsigned int x = 0; x<sz.width; ++x)
       {
-        if( *im_cpu_8u_C1.data(x,y) != set_value_8u_C1)
+        if( *cp_cpu_8u_C1.data(x,y) != set_value_8u_C1)
           return EXIT_FAILURE;
-        if( *im_cpu_8u_C2.data(x,y) != set_value_8u_C2)
+        if( *cp_cpu_8u_C2.data(x,y) != set_value_8u_C2)
           return EXIT_FAILURE;
-        if( *im_cpu_8u_C3.data(x,y) != set_value_8u_C3)
+        if( *cp_cpu_8u_C3.data(x,y) != set_value_8u_C3)
           return EXIT_FAILURE;
-        if( *im_cpu_8u_C4.data(x,y) != set_value_8u_C4)
-          return EXIT_FAILURE;
-
-        if( *im_cpu_32f_C1.data(x,y) != set_value_32f_C1)
-          return EXIT_FAILURE;
-        if( *im_cpu_32f_C2.data(x,y) != set_value_32f_C2)
-          return EXIT_FAILURE;
-        if( *im_cpu_32f_C3.data(x,y) != set_value_32f_C3)
-          return EXIT_FAILURE;
-        if( *im_cpu_32f_C4.data(x,y) != set_value_32f_C4)
+        if( *cp_cpu_8u_C4.data(x,y) != set_value_8u_C4)
           return EXIT_FAILURE;
 
-//        if( !almostEquals( im_cpu_32f_C1.data(x,y)[0], set_value_32f*1))
-//          return EXIT_FAILURE;
-//        if( !almostEquals(im_cpu_32f_C2.data(x,y)[0], set_value_32f*2) &&
-//            !almostEquals(im_cpu_32f_C2.data(x,y)[1], set_value_32f*2) )
-//          return EXIT_FAILURE;
-//        if( !almostEquals(im_cpu_32f_C3.data(x,y)[0], set_value_32f*3) &&
-//            !almostEquals(im_cpu_32f_C3.data(x,y)[1], set_value_32f*3) &&
-//            !almostEquals(im_cpu_32f_C3.data(x,y)[2], set_value_32f*3) )
-//          return EXIT_FAILURE;
-//        if( !almostEquals(im_cpu_32f_C4.data(x,y)[0], set_value_32f*4) &&
-//            !almostEquals(im_cpu_32f_C4.data(x,y)[1], set_value_32f*4) &&
-//            !almostEquals(im_cpu_32f_C4.data(x,y)[2], set_value_32f*4) &&
-//            !almostEquals(im_cpu_32f_C4.data(x,y)[3], set_value_32f*4) )
-//          return EXIT_FAILURE;
+        if( *cp_cpu_32f_C1.data(x,y) != set_value_32f_C1)
+          return EXIT_FAILURE;
+        if( *cp_cpu_32f_C2.data(x,y) != set_value_32f_C2)
+          return EXIT_FAILURE;
+        if( *cp_cpu_32f_C3.data(x,y) != set_value_32f_C3)
+          return EXIT_FAILURE;
+        if( *cp_cpu_32f_C4.data(x,y) != set_value_32f_C4)
+          return EXIT_FAILURE;
       }
     }
   }
-//  // copy test
-//  {
-//    iu::ImageCpu_8u_C1 cp_cpu_8u_C1(sz);
-//    iu::ImageCpu_8u_C2 cp_cpu_8u_C2(sz);
-//    iu::ImageCpu_8u_C3 cp_cpu_8u_C3(sz);
-//    iu::ImageCpu_8u_C4 cp_cpu_8u_C4(sz);
-//    iu::ImageCpu_32f_C1 cp_cpu_32f_C1(sz);
-//    iu::ImageCpu_32f_C2 cp_cpu_32f_C2(sz);
-//    iu::ImageCpu_32f_C3 cp_cpu_32f_C3(sz);
-//    iu::ImageCpu_32f_C4 cp_cpu_32f_C4(sz);
-
-//    iu::copy(&im_cpu_8u_C1, &cp_cpu_8u_C1);
-//    iu::copy(&im_cpu_8u_C2, &cp_cpu_8u_C2);
-//    iu::copy(&im_cpu_8u_C3, &cp_cpu_8u_C3);
-//    iu::copy(&im_cpu_8u_C4, &cp_cpu_8u_C4);
-//    iu::copy(&im_cpu_32f_C1, &cp_cpu_32f_C1);
-//    iu::copy(&im_cpu_32f_C2, &cp_cpu_32f_C2);
-//    iu::copy(&im_cpu_32f_C3, &cp_cpu_32f_C3);
-//    iu::copy(&im_cpu_32f_C4, &cp_cpu_32f_C4);
-
-//    // check if set values are correct
-//    for (unsigned int y = 0; y<sz.height; ++y)
-//    {
-//      for (unsigned int x = 0; x<sz.width; ++x)
-//      {
-//        if( cp_cpu_8u_C1.data(x,y)[0] != set_value_8u*1)
-//          return EXIT_FAILURE;
-//        if((cp_cpu_8u_C2.data(x,y)[0] != set_value_8u*2) &&
-//           (cp_cpu_8u_C2.data(x,y)[1] != set_value_8u*2))
-//          return EXIT_FAILURE;
-//        if((cp_cpu_8u_C3.data(x,y)[0] != set_value_8u*3) &&
-//           (cp_cpu_8u_C3.data(x,y)[1] != set_value_8u*3) &&
-//           (cp_cpu_8u_C3.data(x,y)[2] != set_value_8u*3))
-//          return EXIT_FAILURE;
-//        if((cp_cpu_8u_C4.data(x,y)[0] != set_value_8u*4) &&
-//           (cp_cpu_8u_C4.data(x,y)[1] != set_value_8u*4) &&
-//           (cp_cpu_8u_C4.data(x,y)[2] != set_value_8u*4) &&
-//           (cp_cpu_8u_C4.data(x,y)[3] != set_value_8u*4))
-//          return EXIT_FAILURE;
-
-//        if( !almostEquals( cp_cpu_32f_C1.data(x,y)[0], set_value_32f*1))
-//          return EXIT_FAILURE;
-//        if( !almostEquals(cp_cpu_32f_C2.data(x,y)[0], set_value_32f*2) &&
-//            !almostEquals(cp_cpu_32f_C2.data(x,y)[1], set_value_32f*2) )
-//          return EXIT_FAILURE;
-//        if( !almostEquals(cp_cpu_32f_C3.data(x,y)[0], set_value_32f*3) &&
-//            !almostEquals(cp_cpu_32f_C3.data(x,y)[1], set_value_32f*3) &&
-//            !almostEquals(cp_cpu_32f_C3.data(x,y)[2], set_value_32f*3) )
-//          return EXIT_FAILURE;
-//        if( !almostEquals(cp_cpu_32f_C4.data(x,y)[0], set_value_32f*4) &&
-//            !almostEquals(cp_cpu_32f_C4.data(x,y)[1], set_value_32f*4) &&
-//            !almostEquals(cp_cpu_32f_C4.data(x,y)[2], set_value_32f*4) &&
-//            !almostEquals(cp_cpu_32f_C4.data(x,y)[3], set_value_32f*4) )
-//          return EXIT_FAILURE;
-//      }
-//    }
-//  }
 
   std::cout << std::endl;
   std::cout << "**************************************************************************" << std::endl;
