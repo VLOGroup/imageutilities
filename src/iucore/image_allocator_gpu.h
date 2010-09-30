@@ -42,7 +42,7 @@ public:
     cudaError_t status;
     PixelType* buffer = 0;
     status = cudaMallocPitch((void **)&buffer, pitch,
-                             size.width * sizeof(PixelType), size.height*size.depth);
+                             size.width * sizeof(PixelType), size.height);
     IU_ASSERT(status == cudaSuccess);
 
     return buffer;
@@ -57,7 +57,7 @@ public:
   {
     cudaError_t status;
     status = cudaMemcpy2D(dst, dst_pitch, src, src_pitch,
-                          size.width * sizeof(PixelType), size.height*size.depth,
+                          size.width * sizeof(PixelType), size.height,
                           cudaMemcpyDeviceToDevice);
     IU_ASSERT(status == cudaSuccess);
   }

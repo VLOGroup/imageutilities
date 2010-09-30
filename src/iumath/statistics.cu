@@ -366,10 +366,10 @@ NppStatus cuMinMax(const iu::ImageGpu_8u_C1 *src, const IuRect &roi,
   // fragmentation
   const unsigned int block_width = 512;
   dim3 dimBlock(block_width, 1, 1);
-  dim3 dimGridX(iu::divUp(roi.width-roi.x, block_width), 1);
+  dim3 dimGridX(iu::divUp(roi.width, block_width), 1);
 
   // temporary memory for row sums on the host
-  int num_row_sums = roi.width-roi.x;
+  int num_row_sums = roi.width;
   iu::LinearDeviceMemory_8u_C1 row_mins(num_row_sums);
   iu::LinearDeviceMemory_8u_C1 row_maxs(num_row_sums);
 
@@ -397,7 +397,6 @@ NppStatus cuMinMax(const iu::ImageGpu_8u_C1 *src, const IuRect &roi,
   return NPP_SUCCESS;
 }
 
-
 // wrapper: find min/max; 8u_C4
 NppStatus cuMinMax(const iu::ImageGpu_8u_C4 *src, const IuRect &roi, uchar4& min_C4, uchar4& max_C4)
 {
@@ -413,12 +412,12 @@ NppStatus cuMinMax(const iu::ImageGpu_8u_C4 *src, const IuRect &roi, uchar4& min
   // fragmentation
   const unsigned int block_width = 512;
   dim3 dimBlock(block_width, 1, 1);
-  dim3 dimGridX(iu::divUp(roi.width-roi.x, block_width), 1);
+  dim3 dimGridX(iu::divUp(roi.width, block_width), 1);
 
   // temporary memory for row sums on the host
-  int num_row_sums = roi.width-roi.x;
-  iu::LinearHostMemory_8u_C4 row_mins(num_row_sums);
-  iu::LinearHostMemory_8u_C4 row_maxs(num_row_sums);
+  int num_row_sums = roi.width;
+  iu::LinearDeviceMemory_8u_C4 row_mins(num_row_sums);
+  iu::LinearDeviceMemory_8u_C4 row_maxs(num_row_sums);
 
   cuMinMaxXKernel_8u_C4 <<< dimGridX, dimBlock >>> (
       row_mins.data(), row_maxs.data(),
@@ -467,10 +466,10 @@ NppStatus cuMinMax(const iu::ImageGpu_32f_C1 *src, const IuRect &roi, float& min
   // fragmentation
   const unsigned int block_width = 512;
   dim3 dimBlock(block_width, 1, 1);
-  dim3 dimGridX(iu::divUp(roi.width-roi.x, block_width), 1);
+  dim3 dimGridX(iu::divUp(roi.width, block_width), 1);
 
   // temporary memory for row sums on the host
-  int num_row_sums = roi.width-roi.x;
+  int num_row_sums = roi.width;
   iu::LinearDeviceMemory_32f_C1 row_mins(num_row_sums);
   iu::LinearDeviceMemory_32f_C1 row_maxs(num_row_sums);
 
@@ -514,12 +513,12 @@ NppStatus cuMinMax(const iu::ImageGpu_32f_C2 *src, const IuRect &roi, float2& mi
   // fragmentation
   const unsigned int block_width = 512;
   dim3 dimBlock(block_width, 1, 1);
-  dim3 dimGridX(iu::divUp(roi.width-roi.x, block_width), 1);
+  dim3 dimGridX(iu::divUp(roi.width, block_width), 1);
 
   // temporary memory for row sums on the host
-  int num_row_sums = roi.width-roi.x;
-  iu::LinearHostMemory_32f_C2 row_mins(num_row_sums);
-  iu::LinearHostMemory_32f_C2 row_maxs(num_row_sums);
+  int num_row_sums = roi.width;
+  iu::LinearDeviceMemory_32f_C2 row_mins(num_row_sums);
+  iu::LinearDeviceMemory_32f_C2 row_maxs(num_row_sums);
 
   cuMinMaxXKernel_32f_C2 <<< dimGridX, dimBlock >>> (
       row_mins.data(), row_maxs.data(),
@@ -564,12 +563,12 @@ NppStatus cuMinMax(const iu::ImageGpu_32f_C4 *src, const IuRect &roi, float4& mi
   // fragmentation
   const unsigned int block_width = 512;
   dim3 dimBlock(block_width, 1, 1);
-  dim3 dimGridX(iu::divUp(roi.width-roi.x, block_width), 1);
+  dim3 dimGridX(iu::divUp(roi.width, block_width), 1);
 
   // temporary memory for row sums on the host
-  int num_row_sums = roi.width-roi.x;
-  iu::LinearHostMemory_32f_C4 row_mins(num_row_sums);
-  iu::LinearHostMemory_32f_C4 row_maxs(num_row_sums);
+  int num_cols = roi.width;
+  iu::LinearDeviceMemory_32f_C4 row_mins(num_cols);
+  iu::LinearDeviceMemory_32f_C4 row_maxs(num_cols);
 
   cuMinMaxXKernel_32f_C4 <<< dimGridX, dimBlock >>> (
       row_mins.data(), row_maxs.data(),
@@ -577,15 +576,15 @@ NppStatus cuMinMax(const iu::ImageGpu_32f_C4 *src, const IuRect &roi, float4& mi
 
   IU_CHECK_CUDA_ERRORS();
 
-  iu::LinearHostMemory_32f_C4 h_row_mins(num_row_sums);
-  iu::LinearHostMemory_32f_C4 h_row_maxs(num_row_sums);
+  iu::LinearHostMemory_32f_C4 h_row_mins(num_cols);
+  iu::LinearHostMemory_32f_C4 h_row_maxs(num_cols);
   iuprivate::copy(&row_mins, &h_row_mins);
   iuprivate::copy(&row_maxs, &h_row_maxs);
 
   min_C4 = *h_row_mins.data(0);
   max_C4 = *h_row_maxs.data(0);
 
-  for (int i = 1; i < num_row_sums; ++i)
+  for (int i = 1; i < num_cols; ++i)
   {
     min_C4.x = min(min_C4.x, h_row_mins.data(i)->x);
     min_C4.y = min(min_C4.y, h_row_mins.data(i)->y);
@@ -622,10 +621,10 @@ NppStatus cuSummation(const iu::ImageGpu_8u_C1 *src, const IuRect &roi, Npp64s& 
   // fragmentation
   const unsigned int block_width = 512;
   dim3 dimBlock(block_width, 1, 1);
-  dim3 dimGridX(iu::divUp(roi.width-roi.x, block_width), 1);
+  dim3 dimGridX(iu::divUp(roi.width, block_width), 1);
 
   // temporary memory for row sums on the host
-  int num_col_sums = roi.width-roi.x;
+  int num_col_sums = roi.width;
   iu::LinearDeviceMemory_8u_C1 col_sums(num_col_sums);
 
   cuSumColKernel_8u_C1 <<< dimGridX, dimBlock >>> (
@@ -660,10 +659,10 @@ NppStatus cuSummation(const iu::ImageGpu_32f_C1 *src, const IuRect &roi, Npp64f&
   // fragmentation
   const unsigned int block_width = 512;
   dim3 dimBlock(block_width, 1, 1);
-  dim3 dimGridX(iu::divUp(roi.width-roi.x, block_width), 1);
+  dim3 dimGridX(iu::divUp(roi.width, block_width), 1);
 
   // temporary memory for row sums on the host
-  int num_col_sums = roi.width-roi.x;
+  int num_col_sums = roi.width;
   iu::LinearDeviceMemory_32f_C1 col_sums(num_col_sums);
 
   cuSumColKernel_32f_C1 <<< dimGridX, dimBlock >>> (

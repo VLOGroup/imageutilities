@@ -99,7 +99,7 @@ void minMax(const iu::ImageGpu_8u_C1 *src, const IuRect &roi, unsigned char& min
 }
 
 // [device] find min/max value of image; 8-bit; 4-channel
-void minMax(const iu::ImageGpu_8u_C4 *src, const IuRect &roi, uchar4 min, uchar4 max)
+void minMax(const iu::ImageGpu_8u_C4 *src, const IuRect &roi, uchar4& min, uchar4& max)
 {
   NppStatus status;
   status = cuMinMax(src, roi, min, max);

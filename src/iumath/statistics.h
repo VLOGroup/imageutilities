@@ -51,7 +51,7 @@ namespace iuprivate {
 
 // find min/max; device; 8-bit
 void minMax(const iu::ImageGpu_8u_C1 *src, const IuRect &roi, unsigned char& min, unsigned char& max);
-void minMax(const iu::ImageGpu_8u_C4 *src, const IuRect &roi, uchar4 min, uchar4 max);
+void minMax(const iu::ImageGpu_8u_C4 *src, const IuRect &roi, uchar4& min, uchar4& max);
 
 // find min/max; device; 32-bit
 void minMax(const iu::ImageGpu_32f_C1 *src, const IuRect &roi, float& min, float& max);

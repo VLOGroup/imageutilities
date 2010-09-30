@@ -34,10 +34,10 @@ TARGET_LINK_LIBRARIES(iu_arithmetic_gpu_unittest ${IU_LIBRARIES})
 add_test(iu_statistics_gpu_unittest iu_statistics_gpu_unittest)
 set(IU_UNITTEST_TARGETS iu_arithmetic_gpu_unittest)
 
-# cuda_add_executable( iu_statistics_gpu_unittest iu_statistics_gpu_unittest.cpp )
-# TARGET_LINK_LIBRARIES(iu_statistics_gpu_unittest ${IU_LIBRARIES})
-# add_test(iu_statistics_gpu_unittest iu_statistics_gpu_unittest)
-# set(IU_UNITTEST_TARGETS iu_statistics_gpu_unittest)
+cuda_add_executable( iu_statistics_gpu_unittest iu_statistics_gpu_unittest.cpp )
+TARGET_LINK_LIBRARIES(iu_statistics_gpu_unittest ${IU_LIBRARIES})
+add_test(iu_statistics_gpu_unittest iu_statistics_gpu_unittest)
+set(IU_UNITTEST_TARGETS iu_statistics_gpu_unittest)
 
 # install targets
 message(STATUS "install targets=${IU_UNITTEST_TARGETS}")

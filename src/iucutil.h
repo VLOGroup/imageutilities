@@ -158,7 +158,7 @@ inline __host__ __device__ uchar4 operator*(uchar4 a, unsigned char s)
 {
     return make_uchar4(a.x * s, a.y * s, a.z * s,  a.w * s);
 }
-inline __host__ __device__ uchar4 operator*(uchar s, uchar4 a)
+inline __host__ __device__ uchar4 operator*(unsigned char s, uchar4 a)
 {
     return make_uchar4(a.x * s, a.y * s, a.z * s,  a.w * s);
 }

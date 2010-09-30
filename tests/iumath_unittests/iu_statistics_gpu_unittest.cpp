@@ -29,6 +29,7 @@
 #include <cuda_runtime.h>
 #include <iucore.h>
 #include <iumath.h>
+#include <iucutil.h>
 
 using namespace iu;
 
@@ -57,57 +58,56 @@ bool almostEquals(float A, float B, int maxUlps = 1)
 
 int main(int argc, char** argv)
 {
-  std::cout << "Starting iu_image_npp_unittest ..." << std::endl;
+  std::cout << "Starting iu_image_gpu_unittest ..." << std::endl;
 
   // test image size
   IuSize sz(79,63);
 
-  iu::ImageGpu_8u_C1 im_npp_8u_C1(sz);
-  iu::ImageGpu_8u_C4 im_npp_8u_C4(sz);
-  iu::ImageGpu_32f_C1 im_npp_32f_C1(sz);
-  iu::ImageGpu_32f_C2 im_npp_32f_C2(sz);
-  iu::ImageGpu_32f_C4 im_npp_32f_C4(sz);
+  iu::ImageGpu_8u_C1 im_gpu_8u_C1(sz);
+  iu::ImageGpu_8u_C4 im_gpu_8u_C4(sz);
+  iu::ImageGpu_32f_C1 im_gpu_32f_C1(sz);
+  iu::ImageGpu_32f_C2 im_gpu_32f_C2(sz);
+  iu::ImageGpu_32f_C4 im_gpu_32f_C4(sz);
 
+  unsigned char set_value_8u_C1 = 1;
+  uchar4 set_value_8u_C4 = make_uchar4(4);
+  float set_value_32f_C1 = 1.331f;
+  float2 set_value_32f_C2 = make_float2(2.331f);
+  float4 set_value_32f_C4 = make_float4(4.331f);
 
-  Npp8u set_value_8u = 2;
-  Npp32f set_value_32f = 1.331f;
-
-  iu::setValue(set_value_8u, &im_npp_8u_C1, im_npp_8u_C1.roi());
-  iu::setValue(set_value_8u, &im_npp_8u_C4, im_npp_8u_C4.roi());
-  iu::setValue(set_value_32f, &im_npp_32f_C1, im_npp_32f_C1.roi());
-  iu::setValue(set_value_32f, &im_npp_32f_C2, im_npp_32f_C2.roi());
-  iu::setValue(set_value_32f, &im_npp_32f_C4, im_npp_32f_C4.roi());
+  iu::setValue(set_value_8u_C1, &im_gpu_8u_C1, im_gpu_8u_C1.roi());
+  iu::setValue(set_value_8u_C4, &im_gpu_8u_C4, im_gpu_8u_C4.roi());
+  iu::setValue(set_value_32f_C1, &im_gpu_32f_C1, im_gpu_32f_C1.roi());
+  iu::setValue(set_value_32f_C2, &im_gpu_32f_C2, im_gpu_32f_C2.roi());
+  iu::setValue(set_value_32f_C4, &im_gpu_32f_C4, im_gpu_32f_C4.roi());
 
   // test minMax
   {
-    Npp8u min_8u_C1, max_8u_C1;
-    Npp8u min_8u_C4[4], max_8u_C4[4];
-    Npp32f min_32f_C1, max_32f_C1;
-    Npp32f min_32f_C4[4], max_32f_C4[4];
+    unsigned char min_8u_C1, max_8u_C1;
+    uchar4 min_8u_C4, max_8u_C4;
+    float min_32f_C1, max_32f_C1;
+    float2 min_32f_C2, max_32f_C2;
+    float4 min_32f_C4, max_32f_C4;
 
-    iu::minMax(&im_npp_8u_C1, im_npp_8u_C1.roi(), min_8u_C1, max_8u_C1);
-    if(min_8u_C1 != set_value_8u || max_8u_C1 != set_value_8u)
-      return EXIT_FAILURE;
-    iu::minMax(&im_npp_8u_C4, im_npp_8u_C4.roi(), min_8u_C4, max_8u_C4);
-    if((min_8u_C4[0] != set_value_8u) || (max_8u_C4[0] != set_value_8u) ||
-       (min_8u_C4[1] != set_value_8u) || (max_8u_C4[1] != set_value_8u) ||
-       (min_8u_C4[2] != set_value_8u) || (max_8u_C4[2] != set_value_8u) ||
-       (min_8u_C4[3] != set_value_8u) || (max_8u_C4[3] != set_value_8u) )
+    iu::minMax(&im_gpu_8u_C1, im_gpu_8u_C1.roi(), min_8u_C1, max_8u_C1);
+    if(min_8u_C1 != set_value_8u_C1 || max_8u_C1 != set_value_8u_C1)
       return EXIT_FAILURE;
 
-    iu::minMax(&im_npp_32f_C1, im_npp_32f_C1.roi(), min_32f_C1, max_32f_C1);
-    if( !almostEquals(min_32f_C1, set_value_32f) ||
-        !almostEquals(max_32f_C1, set_value_32f) )
+    iu::minMax(&im_gpu_8u_C4, im_gpu_8u_C4.roi(), min_8u_C4, max_8u_C4);
+    if(min_8u_C4 != set_value_8u_C4 || max_8u_C4 != set_value_8u_C4)
       return EXIT_FAILURE;
-    iu::minMax(&im_npp_32f_C4, im_npp_32f_C4.roi(), min_32f_C4, max_32f_C4);
-    if(!almostEquals(min_32f_C4[0], set_value_32f) ||
-       !almostEquals(max_32f_C4[0], set_value_32f) ||
-       !almostEquals(min_32f_C4[1], set_value_32f) ||
-       !almostEquals(max_32f_C4[1], set_value_32f) ||
-       !almostEquals(min_32f_C4[2], set_value_32f) ||
-       !almostEquals(max_32f_C4[2], set_value_32f) ||
-       !almostEquals(min_32f_C4[3], set_value_32f) ||
-       !almostEquals(max_32f_C4[3], set_value_32f) )
+
+    iu::minMax(&im_gpu_32f_C1, im_gpu_32f_C1.roi(), min_32f_C1, max_32f_C1);
+    if( !almostEquals(min_32f_C1, set_value_32f_C1) ||
+        !almostEquals(max_32f_C1, set_value_32f_C1) )
+      return EXIT_FAILURE;
+
+    iu::minMax(&im_gpu_32f_C2, im_gpu_32f_C2.roi(), min_32f_C2, max_32f_C2);
+    if(min_32f_C2 != set_value_32f_C2 || max_32f_C2 != set_value_32f_C2)
+      return EXIT_FAILURE;
+
+    iu::minMax(&im_gpu_32f_C4, im_gpu_32f_C4.roi(), min_32f_C4, max_32f_C4);
+    if(min_32f_C4 != set_value_32f_C4 || max_32f_C4 != set_value_32f_C4)
       return EXIT_FAILURE;
   } // end test minMax
 
@@ -118,13 +118,13 @@ int main(int argc, char** argv)
     Npp64s sum_64s_C1;
     Npp64f sum_64f_C1;
 
-    iu::summation(&im_npp_8u_C1, im_npp_8u_C1.roi(), sum_64s_C1);
-    Npp64s desired_result_64s = sz.width*sz.height*set_value_8u;
-    Npp64f desired_result_64f = sz.width*sz.height*set_value_32f;
+    iu::summation(&im_gpu_8u_C1, im_gpu_8u_C1.roi(), sum_64s_C1);
+    Npp64s desired_result_64s = sz.width*sz.height*set_value_8u_C1;
+    Npp64f desired_result_64f = sz.width*sz.height*set_value_32f_C1;
     if(sum_64s_C1 != desired_result_64s)
       return EXIT_FAILURE;
 
-    iu::summation(&im_npp_32f_C1, im_npp_32f_C1.roi(), sum_64f_C1);
+    iu::summation(&im_gpu_32f_C1, im_gpu_32f_C1.roi(), sum_64f_C1);
     if( !almostEquals(sum_64f_C1, desired_result_64f, 10) )
       return EXIT_FAILURE;
   } // end test summation
