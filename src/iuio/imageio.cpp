@@ -280,7 +280,7 @@ void imshow(iu::ImageCpu_8u_C1* image, const std::string& winname)
 void imshow(iu::ImageCpu_8u_C3* image, const std::string& winname)
 {
   IuSize sz = image->size();
-  cv::Mat mat_8u(sz.height, sz.width, CV_8UC3, image->data(), image->pitch());
+  cv::Mat mat_8u(sz.height, sz.width, CV_8UC3, (unsigned char*)image->data(), image->pitch());
   cv::Mat bgr(sz.height, sz.width, CV_8UC3);
   cv::cvtColor(mat_8u, bgr, CV_RGB2BGR);
   cv::imshow(winname, bgr);
@@ -290,7 +290,7 @@ void imshow(iu::ImageCpu_8u_C3* image, const std::string& winname)
 void imshow(iu::ImageCpu_8u_C4* image, const std::string& winname)
 {
   IuSize sz = image->size();
-  cv::Mat mat_8u(sz.height, sz.width, CV_8UC4, image->data(), image->pitch());
+  cv::Mat mat_8u(sz.height, sz.width, CV_8UC4, (unsigned char*)image->data(), image->pitch());
   cv::Mat bgr(sz.height, sz.width, CV_8UC3);
   cv::cvtColor(mat_8u, bgr, CV_RGBA2BGR);
   cv::imshow(winname, bgr);
@@ -308,7 +308,7 @@ void imshow(iu::ImageCpu_32f_C1* image, const std::string& winname)
 void imshow(iu::ImageCpu_32f_C3* image, const std::string& winname)
 {
   IuSize sz = image->size();
-  cv::Mat mat_32f(sz.height, sz.width, CV_32FC3, image->data(), image->pitch());
+  cv::Mat mat_32f(sz.height, sz.width, CV_32FC3, (float*)image->data(), image->pitch());
   cv::Mat bgr;
   cv::cvtColor(mat_32f, bgr, CV_RGB2BGR);
   cv::imshow(winname, bgr);
@@ -318,7 +318,7 @@ void imshow(iu::ImageCpu_32f_C3* image, const std::string& winname)
 void imshow(iu::ImageCpu_32f_C4* image, const std::string& winname)
 {
   IuSize sz = image->size();
-  cv::Mat mat_32f(sz.height, sz.width, CV_32FC4, image->data(), image->pitch());
+  cv::Mat mat_32f(sz.height, sz.width, CV_32FC4, (float*)image->data(), image->pitch());
   cv::Mat bgr;
   cv::cvtColor(mat_32f, bgr, CV_RGBA2BGR);
   cv::imshow(winname, bgr);

@@ -476,8 +476,7 @@ if(VMLIBRARIES_IU_USE_IO)
     SOVERSION ${IMAGEUTILITIES_SOVERSION}
     )
   target_link_libraries( ${IU_IO_LIB}
-    ${CUDA_LIBRARIES}
-    ${OpenCV_LIBS}
+    ${CUDA_LIBRARIES} ${OpenCV_LIBS}
     )
   set(IU_LIBS ${IU_LIBS} ${IU_IO_LIB})
 endif(VMLIBRARIES_IU_USE_IO)
