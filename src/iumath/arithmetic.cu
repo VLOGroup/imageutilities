@@ -81,7 +81,7 @@ IuStatus cuAddWeighted(const iu::ImageGpu_32f_C1* src1, const float& weight1,
   cudaUnbindTexture(&tex2_32f_C1__);
 
   // error check
-  IU_CHECK_CUDA_ERRORS();
+  IU_CHECK_AND_RETURN_CUDA_ERRORS();
   return IU_SUCCESS;
 }
 
@@ -131,7 +131,7 @@ IuStatus cuMulC(const iu::ImageGpu_8u_C1* src, const unsigned char& factor, iu::
   cudaUnbindTexture(&tex1_8u_C1__);
 
   // error check
-  IU_CHECK_CUDA_ERRORS();
+  IU_CHECK_AND_RETURN_CUDA_ERRORS();
   return IU_SUCCESS;
 }
 
@@ -179,7 +179,7 @@ IuStatus cuMulC(const iu::ImageGpu_8u_C4* src, const uchar4& factor, iu::ImageGp
   cudaUnbindTexture(&tex1_8u_C4__);
 
   // error check
-  IU_CHECK_CUDA_ERRORS();
+  IU_CHECK_AND_RETURN_CUDA_ERRORS();
   return IU_SUCCESS;
 }
 
@@ -227,7 +227,7 @@ IuStatus cuMulC(const iu::ImageGpu_32f_C1* src, const float& factor, iu::ImageGp
   cudaUnbindTexture(&tex1_32f_C1__);
 
   // error check
-  IU_CHECK_CUDA_ERRORS();
+  IU_CHECK_AND_RETURN_CUDA_ERRORS();
   return IU_SUCCESS;
 }
 
@@ -275,7 +275,7 @@ IuStatus cuMulC(const iu::ImageGpu_32f_C4* src, const float4& factor, iu::ImageG
   cudaUnbindTexture(&tex1_32f_C4__);
 
   // error check
-  IU_CHECK_CUDA_ERRORS();
+  IU_CHECK_AND_RETURN_CUDA_ERRORS();
   return IU_SUCCESS;
 }
 

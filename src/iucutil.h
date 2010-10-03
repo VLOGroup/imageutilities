@@ -25,8 +25,35 @@
 #define IU_CUTIL_H
 
 #include <cutil_math.h>
+#include <iucore/coredefs.h>
 
 //// ERROR CHECKS ////////////////////////////////////////////
+
+
+#include <stdio.h>
+
+/** Print CUDA error. */
+namespace iu {
+inline IuStatus checkCudaErrorState(bool print_error = true)
+{
+  IuStatus status;
+  cudaThreadSynchronize();
+  if (cudaError_t err = cudaGetLastError())
+  {
+    fprintf(stderr,"\n\n ImageUtilities: CUDA Error: %s\n",cudaGetErrorString(err));
+    fprintf(stderr,"  file:       %s\n",__FILE__);
+    fprintf(stderr,"  function:   %s\n",__FUNCTION__);
+    fprintf(stderr,"  line:       %d\n\n",__LINE__);
+    status = IU_CUDA_ERROR;
+  }
+  else
+  {
+    status = IU_NO_ERROR;
+  }
+  return status;
+}
+}
+
 #ifdef __CUDACC__ // only include this error check in cuda files (seen by nvcc)
 
 // MACROS
@@ -34,25 +61,19 @@
 
 //-----------------------------------------------------------------------------
 #define __IU_CHECK_FOR_CUDA_ERRORS_ENABLED__ // enables checking for cuda errors
+
+#ifdef __IU_CHECK_FOR_CUDA_ERRORS_ENABLED__
+
 /** CUDA ERROR HANDLING (CHECK FOR CUDA ERRORS)
  */
-#ifdef __IU_CHECK_FOR_CUDA_ERRORS_ENABLED__
-#include <stdio.h>
-#define IU_CHECK_CUDA_ERRORS() \
-do { \
-  cudaThreadSynchronize(); \
-  if (cudaError_t err = cudaGetLastError()) \
-  { \
-    fprintf(stderr,"\n\n ImageUtilities: CUDA Error: %s\n",cudaGetErrorString(err)); \
-    fprintf(stderr,"  file:       %s\n",__FILE__); \
-    fprintf(stderr,"  function:   %s\n",__FUNCTION__); \
-    fprintf(stderr,"  line:       %d\n\n",__LINE__); \
-    return IU_ERROR; \
-  } \
-} while(false)
+#define IU_CHECK_AND_RETURN_CUDA_ERRORS() \
+  if( iu::checkCudaErrorState(true) != IU_NO_ERROR ) return IU_CUDA_ERROR; \
+
 #else // __IU_CHECK_FOR_CUDA_ERRORS_ENABLED__
-#define IU_CHECK_CUDA_ERRORS() {}
+#define IU_CHECK_FOR_CUDA_ERRORS() {}
+#define IU_PRINT_CUDA_ERRORS() {}
 #endif // __IU_CHECK_FOR_CUDA_ERRORS_ENABLED__
+
 
 
 #endif // __CUDACC__

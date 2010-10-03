@@ -55,6 +55,7 @@ typedef enum
   // error
   IU_MEM_COPY_ERROR = -11,
   IU_MEM_ALLOC_ERROR = -10,
+  IU_CUDA_ERROR = -3,
   IU_NOT_SUPPORTED_ERROR = -2,
   IU_ERROR = -1,
 

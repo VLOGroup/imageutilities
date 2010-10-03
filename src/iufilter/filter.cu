@@ -440,7 +440,7 @@ IuStatus cuFilterMedian3x3(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* 
   cudaUnbindTexture(&tex1_32f_C1__);
 
   // error check
-  IU_CHECK_CUDA_ERRORS();
+  IU_CHECK_AND_RETURN_CUDA_ERRORS();
   return IU_SUCCESS;
 }
 
@@ -479,7 +479,7 @@ IuStatus cuFilterGauss(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
   cudaUnbindTexture(&tex1_32f_C1__);
 
   // error check
-  IU_CHECK_CUDA_ERRORS();
+  IU_CHECK_AND_RETURN_CUDA_ERRORS();
   return IU_SUCCESS;
 }
 
@@ -518,12 +518,12 @@ IuStatus cuFilterRof(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
     cuFilterRofPrimalKernel_32f_C1 <<< dimGrid, dimBlock >>>
         (dst->data(roi.x, roi.y), v.data(roi.x, roi.y), dst->stride(),
          roi.x, roi.y, dst->width(), dst->height(), lambda, tau_p);
-    IU_CHECK_CUDA_ERRORS();
+    IU_CHECK_AND_RETURN_CUDA_ERRORS();
 
     cuFilterRofDualKernel_32f_C1 <<< dimGrid, dimBlock >>>
         (p.data(), p.stride()/2,
          roi.x, roi.y, p.width(), p.height(), tau_d);
-    IU_CHECK_CUDA_ERRORS();
+    IU_CHECK_AND_RETURN_CUDA_ERRORS();
   }
 
   // unbind textures
@@ -533,7 +533,7 @@ IuStatus cuFilterRof(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
   cudaUnbindTexture(&tex_p_32f_C2__);
 
   // error check
-  IU_CHECK_CUDA_ERRORS();
+  IU_CHECK_AND_RETURN_CUDA_ERRORS();
   return IU_SUCCESS;
 }
 

@@ -44,7 +44,7 @@ IuStatus cuSetValue(const unsigned char& value, iu::LinearDeviceMemory_8u_C1* ds
   cuSetValueKernel <<< dimGrid, dimBlock >>> (
       value, dst->data(), dst->length());
 
-  IU_CHECK_CUDA_ERRORS();
+  IU_CHECK_AND_RETURN_CUDA_ERRORS();
   return IU_SUCCESS;
 }
 
@@ -59,7 +59,7 @@ IuStatus cuSetValue(const float& value, iu::LinearDeviceMemory_32f_C1* dst)
   cuSetValueKernel <<< dimGrid, dimBlock >>> (
       value, dst->data(), dst->length());
 
-  IU_CHECK_CUDA_ERRORS();
+  IU_CHECK_AND_RETURN_CUDA_ERRORS();
   return IU_SUCCESS;
 }
 
@@ -82,7 +82,7 @@ IuStatus cuSetValueTemplate(const PixelType &value,
       value, dst->data(roi.x, roi.y), dst->stride(),
       roi.x, roi.y, roi.width, roi.height);
 
-  IU_CHECK_CUDA_ERRORS();
+  IU_CHECK_AND_RETURN_CUDA_ERRORS();
   return IU_SUCCESS;
 }
 
@@ -123,7 +123,7 @@ IuStatus cuSetValueTemplate(const PixelType &value,
       value, dst->data(roi.x, roi.y, roi.z), dst->stride(), dst->slice_stride(),
       roi.x, roi.y, roi.z, roi.width, roi.height, roi.depth);
 
-  IU_CHECK_CUDA_ERRORS();
+  IU_CHECK_AND_RETURN_CUDA_ERRORS();
   return IU_SUCCESS;
 }
 
@@ -162,7 +162,7 @@ IuStatus cuClamp(const float& min, const float& max,
       min, max, srcdst->data(roi.x, roi.y), srcdst->stride(),
       roi.x, roi.y, roi.width, roi.height);
 
-  IU_CHECK_CUDA_ERRORS();
+  IU_CHECK_AND_RETURN_CUDA_ERRORS();
   return IU_SUCCESS;
 }
 
@@ -181,7 +181,7 @@ IuStatus cuConvert(const iu::ImageGpu_32f_C3* src, const IuRect& src_roi, iu::Im
       src->data(src_roi.x, src_roi.y), src->stride(), src_roi.width, src_roi.height,
       dst->data(dst_roi.x, dst_roi.y), dst->stride(), dst_roi.width, dst_roi.height);
 
-  IU_CHECK_CUDA_ERRORS();
+  IU_CHECK_AND_RETURN_CUDA_ERRORS();
   return IU_SUCCESS;
 }
 
@@ -198,7 +198,7 @@ IuStatus cuConvert(const iu::ImageGpu_32f_C4* src, const IuRect& src_roi, iu::Im
       src->data(src_roi.x, src_roi.y), src->stride(), src_roi.width, src_roi.height,
       dst->data(dst_roi.x, dst_roi.y), dst->stride(), dst_roi.width, dst_roi.height);
 
-  IU_CHECK_CUDA_ERRORS();
+  IU_CHECK_AND_RETURN_CUDA_ERRORS();
   return IU_SUCCESS;
 }
 
