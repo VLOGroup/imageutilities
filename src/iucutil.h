@@ -27,6 +27,13 @@
 #include <cutil_math.h>
 #include <iucore/coredefs.h>
 
+#ifdef WIN32
+  #include <time.h>
+  #include <windows.h>
+#else
+  #include <sys/time.h>
+#endif
+
 //// ERROR CHECKS ////////////////////////////////////////////
 
 
@@ -98,6 +105,22 @@ __host__ __device__ static inline float sqr(float a)
   return a*a;
 }
 
+//// VARIOUS OTHER HELPER FUNCTIONS ////////////////////////////////////////////
+// getTime
+static inline double getTime()
+{
+  cudaThreadSynchronize();
+#ifdef WIN32
+  LARGE_INTEGER current_time,frequency;
+  QueryPerformanceCounter (&current_time);
+  QueryPerformanceFrequency(&frequency);
+  return current_time.QuadPart*1000.0/frequency.QuadPart;
+#else
+  timeval time;
+  gettimeofday(&time, NULL);
+  return time.tv_sec * 1000.0 + time.tv_usec / 1000.0;
+#endif
+}
 
 } // namespace iu
 
