@@ -77,7 +77,6 @@ IuStatus cuSetValueTemplate(const PixelType &value,
   dim3 dimGrid(iu::divUp(roi.width, dimBlock.x),
                iu::divUp(roi.height, dimBlock.y));
 
-
   cuSetValueKernel <<< dimGrid, dimBlock >>> (
       value, dst->data(roi.x, roi.y), dst->stride(),
       roi.x, roi.y, roi.width, roi.height);

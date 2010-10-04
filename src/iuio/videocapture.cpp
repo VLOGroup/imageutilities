@@ -56,6 +56,12 @@ VideoCapture::~VideoCapture()
 {
 }
 
+////-----------------------------------------------------------------------------
+//bool grab()
+//{
+//  return cv::VideoCapture::grab();
+//}
+
 //-----------------------------------------------------------------------------
 bool VideoCapture::retrieve(cv::Mat &image, int channel)
 {
@@ -71,13 +77,11 @@ IuStatus VideoCapture::retrieve(iu::ImageCpu_8u_C1 *image)
     return IU_ERROR;
   }
 
-  // TODO: check size of image
-
-  if (!this->grab())
-  {
-    printf("VideoCapture: No more frames available.\n");
-    return IU_ERROR;
-  }
+//  if (!this->grab())
+//  {
+//    printf("VideoCapture: No more frames available.\n");
+//    return IU_ERROR;
+//  }
 
   if (!this->retrieve(frame_))
   {
@@ -85,16 +89,48 @@ IuStatus VideoCapture::retrieve(iu::ImageCpu_8u_C1 *image)
     return IU_ERROR;
   }
 
+  // TODO: check size of image
+  if(image->size() != IuSize(frame_.cols, frame_.rows))
+    return IU_ERROR;
+
   cv::Mat mat_8u(image->height(), image->width(), CV_8UC1, image->data(), image->pitch());
   // convert to grayscale image
-  cvtColor(frame_, mat_8u, CV_BGR2GRAY);
+  cv::cvtColor(frame_, mat_8u, CV_BGR2GRAY);
   return IU_SUCCESS;
 }
 
 //-----------------------------------------------------------------------------
 IuStatus VideoCapture::retrieve(iu::ImageCpu_32f_C1 *image)
 {
-  return IU_ERROR;
+  if (!this->isOpened())
+  {
+    printf("VideoCapture: Capture device not ready.\n");
+    return IU_ERROR;
+  }
+
+//  if (!this->grab())
+//  {
+//    printf("VideoCapture: No more frames available.\n");
+//    return IU_ERROR;
+//  }
+
+  if (!this->retrieve(frame_))
+  {
+    printf("VideoCapture: Frame couldn't be retrieved.\n");
+    return IU_ERROR;
+  }
+
+  // TODO: check size of image
+  if(image->size() != IuSize(frame_.cols, frame_.rows))
+    return IU_ERROR;
+
+  cv::Mat mat_8u;
+  // convert to grayscale image
+  cv::cvtColor(frame_, mat_8u, CV_BGR2GRAY);
+
+  cv::Mat im_mat(image->height(), image->width(), CV_32FC1, image->data(), image->pitch());
+  mat_8u.convertTo(im_mat, im_mat.type(), 1.0f/255.0f, 0);
+  return IU_SUCCESS;
 }
 
 //-----------------------------------------------------------------------------
@@ -114,7 +150,42 @@ IuSize VideoCapture::size()
 {
   int width = static_cast<int>(this->get(CV_CAP_PROP_FRAME_WIDTH));
   int height = static_cast<int>(this->get(CV_CAP_PROP_FRAME_HEIGHT));
-  printf("w/h = %d/%d\n", width, height);
+
+  // crappy driver (or opencv?) returns 0 in linux with usb cameras
+
+  // first try to get width/height from the frame member
+  if(width == 0 || height == 0)
+  {
+    width  = frame_.cols;
+    height  = frame_.rows;
+  }
+
+  // if there is no frame grabbed yet you have to get one. This should only be the last fallback!
+  if (width == 0 || height == 0)
+  {
+    if (this->retrieve(frame_))
+    {
+      width  = frame_.cols;
+      height  = frame_.rows;
+    }
+    else
+    {
+      if(this->grab())
+      {
+        if(this->retrieve(frame_))
+        {
+          width  = frame_.cols;
+          height  = frame_.rows;
+        }
+        else
+          printf("VideoCapture: Frame couldn't be retrieved.\n");
+      }
+      else
+        printf("VideoCapture: Frame couldn't be grabbed.\n");
+    }
+  }
+
+  //  printf("w/h = %d/%d\n", width, height);
   IuSize sz(width, height);
   return sz;
 }
@@ -135,6 +206,8 @@ VideoCapture::VideoCapture() { vidcap_ = new iuprivate::VideoCapture(); }
 VideoCapture::VideoCapture(std::string& filename) { vidcap_ = new iuprivate::VideoCapture(filename); }
 VideoCapture::VideoCapture(int device) { vidcap_ = new iuprivate::VideoCapture(device); }
 VideoCapture::~VideoCapture() { delete(vidcap_); }
+
+bool VideoCapture::grab() { return vidcap_->grab(); }
 
 IuStatus VideoCapture::retrieve(iu::ImageCpu_8u_C1 *image) { return vidcap_->retrieve(image); }
 IuStatus VideoCapture::retrieve(iu::ImageCpu_32f_C1 *image) { return vidcap_->retrieve(image); }

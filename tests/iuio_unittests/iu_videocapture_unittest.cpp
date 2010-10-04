@@ -34,7 +34,7 @@ int main(int argc, char** argv)
 {
  iu::VideoCapture* cap = 0;
 
-  int device = 1;
+  int device = -1;
   if(argc < 2)
   {
     std::cout << "using camera" << std::endl;
@@ -47,17 +47,30 @@ int main(int argc, char** argv)
     cap = new iu::VideoCapture(filename);
   }
 
+  //    printf("cap image size = %d/%d\n", cap->size().width, cap->size().height);
+  iu::ImageCpu_8u_C1 im_8u_C1(cap->size());
+  iu::ImageCpu_32f_C1 im_32f_C1(cap->size());
+  iu::ImageGpu_32f_C1 im_gpu_32f_C1(cap->size());
+
   for(;;)
   {
-    printf("cap image size = %d/%d\n", cap->size().width, cap->size().height);
-    iu::ImageCpu_8u_C1 im_8u_C1(cap->size());
 
-    printf("trying to get image\n");
-    if(cap->retrieve(&im_8u_C1) == IU_SUCCESS)
+    if(cap->grab())
     {
-      printf("display image\n");
-      iu::imshow(&im_8u_C1, "cpu image");
-      printf("next round\n");
+//      if(cap->retrieve(&im_8u_C1) == IU_SUCCESS)
+//        iu::imshow(&im_8u_C1, "cpu_8u_C1 image");
+//      else
+//        printf("8u_C1 retrieve failed\n");
+
+//      if(cap->retrieve(&im_32f_C1) == IU_SUCCESS)
+//        iu::imshow(&im_32f_C1, "cpu_32f_C1 image");
+//      else
+//        printf("32f_C1 retrieve failed\n");
+
+      if(cap->retrieve(&im_gpu_32f_C1) == IU_SUCCESS)
+        iu::imshow(&im_gpu_32f_C1, "gpu_32f_C1 image");
+      else
+        printf("32f_C1 retrieve failed\n");
     }
     //printf("wait\n");
     //cv::waitKey();

@@ -49,6 +49,9 @@ public:
   /** Default destructor. */
   ~VideoCapture();
 
+  // grab the next frame
+  virtual bool grab();
+
   /** Retrieves cpu image (8-bit; 1-channel). */
   virtual IuStatus retrieve(iu::ImageCpu_8u_C1* image);
 

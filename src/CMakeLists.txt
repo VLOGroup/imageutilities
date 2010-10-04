@@ -73,6 +73,8 @@ if(UNIX)
   add_definitions(-Wall)
   # and debug flags
   add_definitions(-g)
+
+  add_definitions(-fPIC)
 endif()
 
 IF(WIN32)
@@ -91,7 +93,7 @@ find_package(CUDA 3.1 REQUIRED)
 find_package(CUDASDK REQUIRED)
 cuda_include_directories(${CUDA_INCLUDE_DIRS} ${CUDA_CUT_INCLUDE_DIR})
 include_directories(${CUDA_INCLUDE_DIRS} ${CUDA_CUT_INCLUDE_DIR})
-set(IU_IUCORE_LIB_DEPENDENCIES ${IU_IUCORE_LIB_DEPENDENCIES} ${CUDA_LIBRARIES} ${CUDA_CUT_LIBRARY})
+set(IU_IUCORE_LIB_DEPENDENCIES ${IU_IUCORE_LIB_DEPENDENCIES} ${CUDA_LIBRARIES})
 message("CUDA_CUT_INCLUDE_DIR=${CUDA_CUT_INCLUDE_DIR}")
 message("CUDA_LIBRARIES=${CUDA_LIBRARIES}")
 message("CUDA_CUT_LIBRARY=${CUDA_CUT_LIBRARY}")
@@ -431,12 +433,12 @@ set( IU_ALL_FILES
   ${IU_PGRCAMERA_MOC_SOURCES}
   )
 
-IF(NOT WIN32)
-  SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fPIC"  )
-  SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_DEBUG} -fPIC"  )
-  SET(CMAKE_C_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fPIC"  )
-  SET(CMAKE_C_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_DEBUG} -fPIC"  )
-endif()
+# IF(NOT WIN32)
+#   SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fPIC"  )
+#   SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_DEBUG} -fPIC"  )
+#   SET(CMAKE_C_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fPIC"  )
+#   SET(CMAKE_C_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_DEBUG} -fPIC"  )
+# endif()
 
 set( IU_LIBS "") # variable where all libs that are built are saved
 
@@ -450,7 +452,7 @@ set_target_properties(${IU_CORE_LIB} PROPERTIES
   SOVERSION ${IMAGEUTILITIES_SOVERSION}
   PUBLIC_HEADER "${IU_PUBLIC_HEADERS}"
   )
-target_link_libraries( ${IU_CORE_LIB} ${CUDA_LIBRARIES} )
+target_link_libraries( ${IU_CORE_LIB} ${CUDA_LIBRARIES}  ${CUDA_CUT_LIBRARY})
 set(IU_LIBS ${IU_LIBS} ${IU_CORE_LIB})
 
 ##-----------------------------------------------------------------------------

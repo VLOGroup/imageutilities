@@ -56,6 +56,9 @@ public:
   /** Default destructor. */
   ~VideoCapture();
 
+//  /** Grabs a new image. */
+//  virtual bool grab();
+
   /** Retrieves a cv::mat. */
   virtual bool retrieve(cv::Mat& image, int channel = 0);
 

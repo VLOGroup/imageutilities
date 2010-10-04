@@ -35,7 +35,7 @@ int main(int argc, char** argv)
 {
   cv::VideoCapture* cap = 0;
 
-  int device = 1;
+  int device = -1;
   if(argc < 2)
   {
     std::cout << "using camera" << std::endl;

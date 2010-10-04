@@ -40,6 +40,8 @@ int main(int argc, char** argv)
     exit(EXIT_FAILURE);
   }
 
+
+
   const std::string filename = argv[1];
 
   cv::Mat cvim = cv::imread(filename, 0);
