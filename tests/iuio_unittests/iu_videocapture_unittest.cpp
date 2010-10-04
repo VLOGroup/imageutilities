@@ -32,7 +32,7 @@
 
 int main(int argc, char** argv)
 {
- iu::VideoCapture* cap = 0;
+  iu::VideoCapture* cap = 0;
 
   int device = -1;
   if(argc < 2)
