@@ -32,8 +32,6 @@
 #include <iucore.h>
 #include <iuio.h>
 
-using namespace iu;
-
 int main(int argc, char** argv)
 {
   if(argc < 2)

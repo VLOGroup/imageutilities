@@ -50,17 +50,19 @@ public:
   ~VideoCapture();
 
   /** Retrieves cpu image (8-bit; 1-channel). */
-  virtual bool retrieve(iu::ImageCpu_8u_C1* image);
+  virtual IuStatus retrieve(iu::ImageCpu_8u_C1* image);
 
   /** Retrieves cpu image (32-bit; 1-channel). */
-  virtual bool retrieve(iu::ImageCpu_32_C1* image);
+  virtual IuStatus retrieve(iu::ImageCpu_32f_C1* image);
 
   /** Retrieves gpu image (32-bit; 1-channel). */
-  virtual bool retrieve(iu::ImageGpu_32_C1* image);
+  virtual IuStatus retrieve(iu::ImageGpu_32f_C1* image);
 
+  /** Returns the size of the available images. */
+  IuSize size();
 
 private:
-  iuprivate::VideoCapture vidcap_;
+  iuprivate::VideoCapture* vidcap_;
 
 };
 

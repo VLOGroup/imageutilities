@@ -168,14 +168,14 @@ if(VMLIBRARIES_IU_USE_IO AND OpenCV_INCLUDE_DIRS)
 
   set( IU_IO_HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/iuio/imageio.h
-    # ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videocapture.h
-    # ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videocapture_private.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videocapture.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videocapture_private.h
     )
 
   set( IU_IO_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/iuio.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/iuio/imageio.cpp
-    # ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videocapture.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videocapture.cpp
     )
 
 else()
@@ -626,6 +626,10 @@ install(FILES ${IU_CONNECTOR_HEADERS}
   DESTINATION include/iu/iuconnector
   COMPONENT Headers
   )
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videocapture.h
+  DESTINATION include/iu/iuio
+  COMPONENT Headers
+)
 install(FILES ${IU_CMAKE_FILES}
   DESTINATION cmake
   )

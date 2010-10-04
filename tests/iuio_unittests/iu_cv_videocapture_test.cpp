@@ -28,40 +28,41 @@
 #include <iudefs.h>
 #include <iucore.h>
 #include <iuio.h>
+#include <cv.h>
 #include <highgui.h>
 
 int main(int argc, char** argv)
 {
- iu::VideoCapture* cap = 0;
+  cv::VideoCapture* cap = 0;
 
   int device = 1;
   if(argc < 2)
   {
     std::cout << "using camera" << std::endl;
-    cap = new iu::VideoCapture(device);
+    cap = new cv::VideoCapture(device);
   }
   else
   {
     std::string filename = argv[1];
     std::cout << "reading video " << filename << std::endl;
-    cap = new iu::VideoCapture(filename);
+    cap = new cv::VideoCapture(filename);
   }
 
   for(;;)
   {
-    printf("cap image size = %d/%d\n", cap->size().width, cap->size().height);
-    iu::ImageCpu_8u_C1 im_8u_C1(cap->size());
+    double width = cap->get(CV_CAP_PROP_FRAME_WIDTH);
+    double height = cap->get(CV_CAP_PROP_FRAME_HEIGHT);
+    printf("w/h=%f/%f\n", width, height);
 
-    printf("trying to get image\n");
-    if(cap->retrieve(&im_8u_C1) == IU_SUCCESS)
+
+    cv::Mat frame;
+    *cap >> frame;
+
     {
       printf("display image\n");
-      iu::imshow(&im_8u_C1, "cpu image");
+      cv::imshow("cv image", frame);
       printf("next round\n");
     }
-    //printf("wait\n");
-    //cv::waitKey();
-    //printf("main next round...\n");
     if(cv::waitKey(30) >= 0) break;
   }
 

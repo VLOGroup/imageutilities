@@ -56,16 +56,20 @@ public:
   /** Default destructor. */
   ~VideoCapture();
 
+  /** Retrieves a cv::mat. */
+  virtual bool retrieve(cv::Mat& image, int channel = 0);
+
   /** Retrieves cpu image (8-bit; 1-channel). */
-  virtual bool retrieve(iu::ImageCpu_8u_C1* image);
+  virtual IuStatus retrieve(iu::ImageCpu_8u_C1* image);
 
   /** Retrieves cpu image (32-bit; 1-channel). */
-  virtual bool retrieve(iu::ImageCpu_32_C1* image);
+  virtual IuStatus retrieve(iu::ImageCpu_32f_C1* image);
 
   /** Retrieves gpu image (32-bit; 1-channel). */
-  virtual bool retrieve(iu::ImageGpu_32_C1* image);
+  virtual IuStatus retrieve(iu::ImageGpu_32f_C1* image);
 
-  IuSize getSize();
+  /** Returns the size of the available images. */
+  IuSize size();
 
 protected:
   cv::Mat frame_; /**< Current frame. Used to read internally. */

@@ -29,8 +29,8 @@
 
 namespace iu {
 
-/** \defgroup IO
- *  \brief The IO module.
+/** \defgroup IMAGEIO
+ *  \brief The image IO module.
  *  TODO more detailed docu
  *  @{
  */
@@ -98,8 +98,21 @@ IU_DLLAPI void imshow(iu::ImageGpu_32f_C1* image, const std::string& winname);
 IU_DLLAPI void imshow(iu::ImageGpu_32f_C4* image, const std::string& winname);
 
 
-/** @} */ // end of IO
+/** @} */ // end of IMAGEIO
 
 } // namespace iu
+
+
+/** \defgroup VIDEOIO
+ *  \brief The video IO module.
+ *  TODO more detailed docu
+ *  @{
+ */
+
+// VideoCapture
+#include "iuio/videocapture.h"
+
+/** @} */ // end of IMAGEIO
+
 
 #endif // IUIO_MODULE_H

@@ -1,4 +1,4 @@
-%/*
+ /*
  * Copyright (c) ICG. All rights reserved.
  *
  * Institute for Computer Graphics and Vision
@@ -21,102 +21,102 @@
  *
  */
 
+#include <iucore/copy.h>
+#include "videocapture_private.h"
 #include "videocapture.h"
+
+/* ****************************************************************************
+ *
+ *  private interface implementation
+ *
+ * ***************************************************************************/
 
 namespace iuprivate {
 
 //-----------------------------------------------------------------------------
 VideoCapture::VideoCapture() :
-    stop__(false),
-    sleep_time_usecs_(30),
-    cv_cap_(0),
-    ext_frame_(0),
-    ext_new_image_available_(0)
+  cv::VideoCapture()
 {
 }
 
 //-----------------------------------------------------------------------------
 VideoCapture::VideoCapture(std::string &filename) :
-    stop__(false),
-    sleep_time_usecs_(30),
-    cv_cap_(0),
-    ext_frame_(0),
-    ext_new_image_available_(0)
+  cv::VideoCapture(filename)
 {
-  cv_cap_ = new cv::VideoCapture(filename);
-  // grab the first frame
-  if (cv_cap_->isOpened())
-    (*cv_cap_) >> frame_;
 }
 
 //-----------------------------------------------------------------------------
 VideoCapture::VideoCapture(int device) :
-    stop__(false),
-    sleep_time_usecs_(30),
-    cv_cap_(0),
-    ext_frame_(0),
-    ext_new_image_available_(0)
+  cv::VideoCapture(device)
 {
-  cv_cap_ = new cv::VideoCapture(device);
-  // grab the first frame
-  if (cv_cap_->isOpened())
-    (*cv_cap_) >> frame_;
 }
 
 //-----------------------------------------------------------------------------
 VideoCapture::~VideoCapture()
 {
-  printf("delete VideoCapture");
-  stop__ = true;
-  wait();
-  cv_cap_->release();
-  delete(cv_cap_);
 }
 
 //-----------------------------------------------------------------------------
-void VideoCapture::run()
+bool VideoCapture::retrieve(cv::Mat &image, int channel)
 {
-  forever
+  return cv::VideoCapture::retrieve(image, channel);
+}
+
+//-----------------------------------------------------------------------------
+IuStatus VideoCapture::retrieve(iu::ImageCpu_8u_C1 *image)
+{
+  if (!this->isOpened())
   {
-    if(stop__)
-      return;
-
-    // first check if capture device is (still) ok
-    if (!cv_cap_->isOpened())
-    {
-      printf("VideoCapture: Capture device not ready\n");
-      stop__ = true;
-      return;
-    }
-
-    printf(": get next frame\n");
-    (*cv_cap_) >> frame_;
-
-    // copy to 'external' data
-    printf(": cp frame to external data\n");
-    if(ext_frame_ != 0)
-    {
-      QMutexLocker lock(&mutex_);
-      printf("! : cp operation\n");
-      frame_.copyTo(*ext_frame_);
-      printf("! : cp set flag");
-      *ext_new_image_available_ = true;
-      printf("! : cp done\n");
-    }
-
-    printf(": sleep\n");
-    this->usleep(sleep_time_usecs_);
+    printf("VideoCapture: Capture device not ready.\n");
+    return IU_ERROR;
   }
+
+  // TODO: check size of image
+
+  if (!this->grab())
+  {
+    printf("VideoCapture: No more frames available.\n");
+    return IU_ERROR;
+  }
+
+  if (!this->retrieve(frame_))
+  {
+    printf("VideoCapture: Frame couldn't be retrieved.\n");
+    return IU_ERROR;
+  }
+
+  cv::Mat mat_8u(image->height(), image->width(), CV_8UC1, image->data(), image->pitch());
+  // convert to grayscale image
+  cvtColor(frame_, mat_8u, CV_BGR2GRAY);
+  return IU_SUCCESS;
 }
 
 //-----------------------------------------------------------------------------
-void VideoCapture::registerExternalImage(cv::Mat* image, bool* new_image_available,
-                                               IuSize& cap_size)
+IuStatus VideoCapture::retrieve(iu::ImageCpu_32f_C1 *image)
 {
-  QMutexLocker lock(&mutex_);
-  ext_frame_ = image;
-  ext_new_image_available_ = new_image_available;
-  cap_size = IuSize(frame_.cols, frame_.rows);
+  return IU_ERROR;
+}
+
+//-----------------------------------------------------------------------------
+IuStatus VideoCapture::retrieve(iu::ImageGpu_32f_C1 *image)
+{
+  IuSize sz = this->size();
+  iu::ImageCpu_32f_C1 cpu_image(sz.width, sz.height);
+  IuStatus status = this->retrieve(&cpu_image);
+  if(status < IU_SUCCESS)
+    return IU_ERROR;
+  iuprivate::copy(&cpu_image, image);
+  return IU_SUCCESS;
+}
+
+//-----------------------------------------------------------------------------
+IuSize VideoCapture::size()
+{
+  int width = static_cast<int>(this->get(CV_CAP_PROP_FRAME_WIDTH));
+  int height = static_cast<int>(this->get(CV_CAP_PROP_FRAME_HEIGHT));
+  printf("w/h = %d/%d\n", width, height);
+  IuSize sz(width, height);
+  return sz;
 }
 
 
@@ -129,4 +129,17 @@ void VideoCapture::registerExternalImage(cv::Mat* image, bool* new_image_availab
  *  public interface implementation
  *
  * ***************************************************************************/
-void VideoCap
+namespace iu {
+
+VideoCapture::VideoCapture() { vidcap_ = new iuprivate::VideoCapture(); }
+VideoCapture::VideoCapture(std::string& filename) { vidcap_ = new iuprivate::VideoCapture(filename); }
+VideoCapture::VideoCapture(int device) { vidcap_ = new iuprivate::VideoCapture(device); }
+VideoCapture::~VideoCapture() { delete(vidcap_); }
+
+IuStatus VideoCapture::retrieve(iu::ImageCpu_8u_C1 *image) { return vidcap_->retrieve(image); }
+IuStatus VideoCapture::retrieve(iu::ImageCpu_32f_C1 *image) { return vidcap_->retrieve(image); }
+IuStatus VideoCapture::retrieve(iu::ImageGpu_32f_C1 *image) { return vidcap_->retrieve(image); }
+
+IuSize VideoCapture::size() { return vidcap_->size(); }
+
+} // namespace iu

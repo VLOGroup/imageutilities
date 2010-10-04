@@ -34,7 +34,8 @@ class ImageGpu : public Image
 {
 public:
   ImageGpu() :
-      data_(0), pitch_(0), ext_data_pointer_(false)
+    Image(),
+    data_(0), pitch_(0), ext_data_pointer_(false)
   {
   }
 
