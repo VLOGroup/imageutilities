@@ -12,22 +12,21 @@
  *
  * Project     : ImageUtilities
  * Module      : IO
- * Class       : VideoCapture
+ * Class       : VideoCaptureThread
  * Language    : C++
- * Description : Definition of the private interface of retrieving images throuth the VideoCaptureThread.
+ * Description : Definition of a thread to capture videos from either files or cameras with OpenCVs VideoCapture.
  *
  * Author     : Manuel Werlberger
  * EMail      : werlberger@icg.tugraz.at
  *
  */
 
-
-#ifndef IUPRIVATE_VIDEOCAPTURE_H
-#define IUPRIVATE_VIDEOCAPTURE_H
+#ifndef IUPRIVATE_VIDEOIO_H
+#define IUPRIVATE_VIDEOIO_H
 
 #include <cv.h>
+#include <highgui.h>
 #include <iudefs.h>
-#include "videocapturethread.h"
 
 namespace iuprivate {
 
@@ -35,36 +34,38 @@ class VideoCapture
 {
 public:
   /** Default constructor. */
-  VideoCapture();
+  VideoCaptureThread();
 
   /** Constructor that opens a video file. */
-  VideoCapture(std::string& filename);
+  VideoCaptureThread(std::string& filename);
 
   /** Constructor that opens a camera. */
-  VideoCapture(int device);
+  VideoCaptureThread(int device);
 
   /** Default destructor. */
-  ~VideoCapture();
+  ~VideoCaptureThread();
 
-  /** Converts and gets image data. */
-  bool getImage(iu::ImageCpu_32f_C1* image);
+  /** The starting point of the thread. Here all the magic happens. */
+  void run();
 
-  /** Converts and gets image data. */
-  bool getImage(iu::ImageGpu_32f_C1* image);
+  inline QMutex* getMutex() {return &mutex_;}
 
-  /** Query state for available images. */
-  inline bool isNewImageAvailable() {return new_image_available_;}
-
-  /** Returns the image size of the stream. */
-  IuSize size();
+  /** Registers an external image where the data is copied to when available. */
+  void registerExternalImage(cv::Mat*, bool* new_image_available,
+                             IuSize& cap_size);
 
 private:
-  VideoCaptureThread* cap_;
-  IuSize size_;
-  cv::Mat frame_;
-  bool new_image_available_;
+  QMutex mutex_; /**< Lock to simplify read and write access of images. */
+  bool stop_thread_; /**< Flag of the threads run state. */
+  unsigned long sleep_time_usecs_; /**< The thread sleeps for \a sleep_time_usecs_ microseconds after grabbing an image. */
+
+  cv::VideoCapture* cv_cap_; /**< OpenCVs video capture. This is used to read all the data. */
+  cv::Mat frame_; /**< Current frame. Used to read internally. */
+
+  cv::Mat* ext_frame_; /**< External frame that is used for external sync. */
+  bool* ext_new_image_available_; /**< External flag if there is a new image available. Gets set when the external image is updated. */
 };
 
 } // namespace iuprivate
 
-#endif // IUPRIVATE_VIDEOCAPTURE_H
+#endif // IUPRIVATE_VIDEOCAPTURETHREAD_H

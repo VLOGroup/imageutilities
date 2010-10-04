@@ -12,105 +12,113 @@
  *
  * Project     : ImageUtilities
  * Module      : IO
- * Class       : VideoCapture
+ * Class       : VideoCaptureThread
  * Language    : C++
- * Description : Definition of the private interface of retrieving images throuth the VideoCaptureThread.
+ * Description : Implementation of a thread to capture videos from either files or cameras with OpenCVs VideoCapture.
  *
  * Author     : Manuel Werlberger
  * EMail      : werlberger@icg.tugraz.at
  *
  */
 
-#include <QMutex>
-#include <QMutexLocker>
-#include <iudefs.h>
-#include <iucore/copy.h>
-#include "videocapture.h"
+#include "videocapturethread.h"
 
 namespace iuprivate {
 
 //-----------------------------------------------------------------------------
-VideoCapture::VideoCapture() :
-	new_image_available_(false)
+VideoCaptureThread::VideoCaptureThread() :
+    stop_thread_(false),
+    sleep_time_usecs_(30),
+    cv_cap_(0),
+    ext_frame_(0),
+    ext_new_image_available_(0)
 {
-  cap_ = new VideoCaptureThread();
-  cap_->registerExternalImage(&frame_, &new_image_available_, size_);
-  cap_->start();
 }
 
 //-----------------------------------------------------------------------------
-VideoCapture::VideoCapture(std::string& filename) :
-    new_image_available_(false)
+VideoCaptureThread::VideoCaptureThread(std::string &filename) :
+    stop_thread_(false),
+    sleep_time_usecs_(30),
+    cv_cap_(0),
+    ext_frame_(0),
+    ext_new_image_available_(0)
 {
-  cap_ = new VideoCaptureThread(filename);
-  cap_->registerExternalImage(&frame_, &new_image_available_, size_);
-  cap_->start();
+  cv_cap_ = new cv::VideoCapture(filename);
+  // grab the first frame
+  if (cv_cap_->isOpened())
+    (*cv_cap_) >> frame_;
 }
 
 //-----------------------------------------------------------------------------
-VideoCapture::VideoCapture(int device) :
-    new_image_available_(false)
+VideoCaptureThread::VideoCaptureThread(int device) :
+    stop_thread_(false),
+    sleep_time_usecs_(30),
+    cv_cap_(0),
+    ext_frame_(0),
+    ext_new_image_available_(0)
 {
-  cap_ = new VideoCaptureThread(device);
-  cap_->registerExternalImage(&frame_, &new_image_available_, size_);
-  cap_->start();
+  cv_cap_ = new cv::VideoCapture(device);
+  // grab the first frame
+  if (cv_cap_->isOpened())
+    (*cv_cap_) >> frame_;
 }
 
 //-----------------------------------------------------------------------------
-VideoCapture::~VideoCapture()
+VideoCaptureThread::~VideoCaptureThread()
 {
-  cap_->quit();
-  delete(cap_);
+  printf("delete VideoCaptureThread");
+  stop_thread_ = true;
+  wait();
+  cv_cap_->release();
+  delete(cv_cap_);
 }
 
 //-----------------------------------------------------------------------------
-bool VideoCapture::getImage(iu::ImageCpu_32f_C1* image)
+void VideoCaptureThread::run()
 {
-  QMutexLocker locker(cap_->getMutex());
+  forever
+  {
+    if(stop_thread_)
+      return;
 
-  printf("VideCapture::getImage: 0\n");
-  if(!new_image_available_)
-    return false;
-  printf("VideCapture::getImage: 1\n");
+    // first check if capture device is (still) ok
+    if (!cv_cap_->isOpened())
+    {
+      printf("VideoCaptureThread: Capture device not ready\n");
+      stop_thread_ = true;
+      return;
+    }
 
-  printf("! VideCapture::getImage: 2\n");
-  cv::Mat frame_8u_C1;
-  printf("! VideCapture::getImage: 3\n");
-  cv::cvtColor(frame_, frame_8u_C1, CV_BGR2GRAY);
-  printf("! VideCapture::getImage: 4\n");
-  cv::Mat image_mat(image->height(), image->width(), CV_32FC1, image->data(), image->pitch());
-  printf("! VideCapture::getImage: 5\n");
-  frame_8u_C1.convertTo(image_mat, image_mat.type(), 1.0f/255.0f, 0);
-  printf("! VideCapture::getImage: 6\n");
+    printf("thread: get next frame\n");
+    (*cv_cap_) >> frame_;
 
-  new_image_available_ = false;
-  return true;
+    // copy to 'external' data
+    printf("thread: cp frame to external data\n");
+    if(ext_frame_ != 0)
+    {
+      QMutexLocker lock(&mutex_);
+      printf("! thread: cp operation\n");
+      frame_.copyTo(*ext_frame_);
+      printf("! thread: cp set flag");
+      *ext_new_image_available_ = true;
+      printf("! thread: cp done\n");
+    }
+
+    printf("thread: sleep\n");
+    this->usleep(sleep_time_usecs_);
+  }
 }
 
 //-----------------------------------------------------------------------------
-bool VideoCapture::getImage(iu::ImageGpu_32f_C1* image)
+void VideoCaptureThread::registerExternalImage(cv::Mat* image, bool* new_image_available,
+                                               IuSize& cap_size)
 {
-  QMutexLocker locker(cap_->getMutex());
-
-  printf("VideCapture::getImage: 1\n");
-  if(!new_image_available_)
-    return false;
-
-  printf("VideCapture::getImage: 2\n");
-  iu::ImageCpu_32f_C1 cpu_image(frame_.cols, frame_.rows);
-  printf("VideCapture::getImage: 3\n");
-  iuprivate::copy(&cpu_image, image);
-  printf("VideCapture::getImage: 4\n");
-
-  new_image_available_ = false;
-  printf("VideCapture::getImage: 5\n");
-  return true;
+  QMutexLocker lock(&mutex_);
+  ext_frame_ = image;
+  ext_new_image_available_ = new_image_available;
+  cap_size = IuSize(frame_.cols, frame_.rows);
 }
 
-//-----------------------------------------------------------------------------
-IuSize VideoCapture::size()
-{
-  return size_;
-}
 
 } // namespace iuprivate
+
