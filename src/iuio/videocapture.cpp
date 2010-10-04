@@ -1,4 +1,4 @@
-/*
+%/*
  * Copyright (c) ICG. All rights reserved.
  *
  * Institute for Computer Graphics and Vision
@@ -12,22 +12,22 @@
  *
  * Project     : ImageUtilities
  * Module      : IO
- * Class       : VideoCaptureThread
+ * Class       : VideoCapture
  * Language    : C++
- * Description : Implementation of a thread to capture videos from either files or cameras with OpenCVs VideoCapture.
+ * Description : Implementation of a  to capture videos from either files or cameras with OpenCVs VideoCapture.
  *
  * Author     : Manuel Werlberger
  * EMail      : werlberger@icg.tugraz.at
  *
  */
 
-#include "videocapturethread.h"
+#include "videocapture.h"
 
 namespace iuprivate {
 
 //-----------------------------------------------------------------------------
-VideoCaptureThread::VideoCaptureThread() :
-    stop_thread_(false),
+VideoCapture::VideoCapture() :
+    stop__(false),
     sleep_time_usecs_(30),
     cv_cap_(0),
     ext_frame_(0),
@@ -36,8 +36,8 @@ VideoCaptureThread::VideoCaptureThread() :
 }
 
 //-----------------------------------------------------------------------------
-VideoCaptureThread::VideoCaptureThread(std::string &filename) :
-    stop_thread_(false),
+VideoCapture::VideoCapture(std::string &filename) :
+    stop__(false),
     sleep_time_usecs_(30),
     cv_cap_(0),
     ext_frame_(0),
@@ -50,8 +50,8 @@ VideoCaptureThread::VideoCaptureThread(std::string &filename) :
 }
 
 //-----------------------------------------------------------------------------
-VideoCaptureThread::VideoCaptureThread(int device) :
-    stop_thread_(false),
+VideoCapture::VideoCapture(int device) :
+    stop__(false),
     sleep_time_usecs_(30),
     cv_cap_(0),
     ext_frame_(0),
@@ -64,53 +64,53 @@ VideoCaptureThread::VideoCaptureThread(int device) :
 }
 
 //-----------------------------------------------------------------------------
-VideoCaptureThread::~VideoCaptureThread()
+VideoCapture::~VideoCapture()
 {
-  printf("delete VideoCaptureThread");
-  stop_thread_ = true;
+  printf("delete VideoCapture");
+  stop__ = true;
   wait();
   cv_cap_->release();
   delete(cv_cap_);
 }
 
 //-----------------------------------------------------------------------------
-void VideoCaptureThread::run()
+void VideoCapture::run()
 {
   forever
   {
-    if(stop_thread_)
+    if(stop__)
       return;
 
     // first check if capture device is (still) ok
     if (!cv_cap_->isOpened())
     {
-      printf("VideoCaptureThread: Capture device not ready\n");
-      stop_thread_ = true;
+      printf("VideoCapture: Capture device not ready\n");
+      stop__ = true;
       return;
     }
 
-    printf("thread: get next frame\n");
+    printf(": get next frame\n");
     (*cv_cap_) >> frame_;
 
     // copy to 'external' data
-    printf("thread: cp frame to external data\n");
+    printf(": cp frame to external data\n");
     if(ext_frame_ != 0)
     {
       QMutexLocker lock(&mutex_);
-      printf("! thread: cp operation\n");
+      printf("! : cp operation\n");
       frame_.copyTo(*ext_frame_);
-      printf("! thread: cp set flag");
+      printf("! : cp set flag");
       *ext_new_image_available_ = true;
-      printf("! thread: cp done\n");
+      printf("! : cp done\n");
     }
 
-    printf("thread: sleep\n");
+    printf(": sleep\n");
     this->usleep(sleep_time_usecs_);
   }
 }
 
 //-----------------------------------------------------------------------------
-void VideoCaptureThread::registerExternalImage(cv::Mat* image, bool* new_image_available,
+void VideoCapture::registerExternalImage(cv::Mat* image, bool* new_image_available,
                                                IuSize& cap_size)
 {
   QMutexLocker lock(&mutex_);
@@ -122,3 +122,11 @@ void VideoCaptureThread::registerExternalImage(cv::Mat* image, bool* new_image_a
 
 } // namespace iuprivate
 
+
+
+/* ****************************************************************************
+ *
+ *  public interface implementation
+ *
+ * ***************************************************************************/
+void VideoCap

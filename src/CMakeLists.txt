@@ -91,7 +91,10 @@ find_package(CUDA 3.1 REQUIRED)
 find_package(CUDASDK REQUIRED)
 cuda_include_directories(${CUDA_INCLUDE_DIRS} ${CUDA_CUT_INCLUDE_DIR})
 include_directories(${CUDA_INCLUDE_DIRS} ${CUDA_CUT_INCLUDE_DIR})
-set(IU_IUCORE_LIB_DEPENDENCIES ${IU_IUCORE_LIB_DEPENDENCIES} ${CUDA_LIBRARIES})
+set(IU_IUCORE_LIB_DEPENDENCIES ${IU_IUCORE_LIB_DEPENDENCIES} ${CUDA_LIBRARIES} ${CUDA_CUT_LIBRARY})
+message("CUDA_CUT_INCLUDE_DIR=${CUDA_CUT_INCLUDE_DIR}")
+message("CUDA_LIBRARIES=${CUDA_LIBRARIES}")
+message("CUDA_CUT_LIBRARY=${CUDA_CUT_LIBRARY}")
 
 ##-----------------------------------------------------------------------------
 ## Qt
@@ -165,11 +168,14 @@ if(VMLIBRARIES_IU_USE_IO AND OpenCV_INCLUDE_DIRS)
 
   set( IU_IO_HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/iuio/imageio.h
+    # ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videocapture.h
+    # ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videocapture_private.h
     )
 
   set( IU_IO_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/iuio.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/iuio/imageio.cpp
+    # ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videocapture.cpp
     )
 
 else()

@@ -21,19 +21,26 @@
  *
  */
 
-#ifndef IU_VIDEOCAPTURE_H
-#define IU_VIDEOCAPTURE_H
+#ifndef IUPRIVATE_VIDEOCAPTURE_H
+#define IUPRIVATE_VIDEOCAPTURE_H
 
+#include <cv.h>
+#include <highgui.h>
 #include <iudefs.h>
 
-// forward declarations
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the IU API.  It exists purely as an
+// implementation detail.  This header file may change from version to
+// version without notice, or even be removed.
+//
+
+
 namespace iuprivate {
-class VideoCapture;
-}
 
-namespace iu {
-
-class IU_DLLAPI VideoCapture
+class VideoCapture : public cv::VideoCapture
 {
 public:
 
@@ -58,12 +65,13 @@ public:
   /** Retrieves gpu image (32-bit; 1-channel). */
   virtual bool retrieve(iu::ImageGpu_32_C1* image);
 
+  IuSize getSize();
 
-private:
-  iuprivate::VideoCapture vidcap_;
+protected:
+  cv::Mat frame_; /**< Current frame. Used to read internally. */
 
 };
 
-} // namespace iu
+} // namespace iuprivate
 
-#endif // IU_VIDEOCAPTURE_H
+#endif // IUPRIVATE_VIDEOCAPTURE_H
