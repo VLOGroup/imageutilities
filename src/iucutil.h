@@ -34,7 +34,7 @@
 
 /** Print CUDA error. */
 namespace iu {
-inline IuStatus checkCudaErrorState(bool print_error = true)
+static inline IuStatus checkCudaErrorState(bool print_error = true)
 {
   IuStatus status;
   cudaThreadSynchronize();
@@ -80,7 +80,7 @@ inline IuStatus checkCudaErrorState(bool print_error = true)
 
 
 
-//// SMALL CUDA HELPERS (DEFINED INLINE) ////////////////////////////////////////////
+//// SMALL CUDA HELPERS (DEFINED static inline) ////////////////////////////////////////////
 namespace iu {
 //
 /** Round a / b to nearest higher integer value.
@@ -88,12 +88,12 @@ namespace iu {
  * @param[in] b Denominator
  * @return a / b rounded up
  */
-__host__ __device__ inline unsigned int divUp(unsigned int a, unsigned int b)
+__host__ __device__ static inline unsigned int divUp(unsigned int a, unsigned int b)
 {
   return (a % b != 0) ? (a / b + 1) : (a / b);
 }
 
-__host__ __device__ inline float sqr(float a)
+__host__ __device__ static inline float sqr(float a)
 {
   return a*a;
 }
@@ -113,19 +113,19 @@ __host__ __device__ inline float sqr(float a)
  * ****************************************************************************/
 
 // create uchar2 from a single uchar
-static __inline__ __host__ __device__ uchar2 make_uchar2(unsigned char x)
+static inline __host__ __device__ uchar2 make_uchar2(unsigned char x)
 {
   uchar2 t; t.x = x; t.y = x; return t;
 }
 
 // !=
-inline __host__ __device__ bool operator!=(uchar2& a, uchar2& b)
+static inline __host__ __device__ bool operator!=(uchar2& a, uchar2& b)
 {
   return (a.x != b.x) || (a.y != b.y);
 }
 
 // ==
-inline __host__ __device__ bool operator==(uchar2& a, uchar2& b)
+static inline __host__ __device__ bool operator==(uchar2& a, uchar2& b)
 {
   return (a.x == b.x) && (a.y == b.y);
 }
@@ -135,19 +135,19 @@ inline __host__ __device__ bool operator==(uchar2& a, uchar2& b)
  * ****************************************************************************/
 
 // create uchar3 from a single uchar
-static __inline__ __host__ __device__ uchar3 make_uchar3(unsigned char x)
+static inline __host__ __device__ uchar3 make_uchar3(unsigned char x)
 {
   uchar3 t; t.x = x; t.y = x; t.z = x; return t;
 }
 
 // !=
-inline __host__ __device__ bool operator!=(uchar3& a, uchar3& b)
+static inline __host__ __device__ bool operator!=(uchar3& a, uchar3& b)
 {
   return (a.x != b.x) || (a.y != b.y) || (a.z != b.z);
 }
 
 // ==
-inline __host__ __device__ bool operator==(uchar3& a, uchar3& b)
+static inline __host__ __device__ bool operator==(uchar3& a, uchar3& b)
 {
   return (a.x == b.x) && (a.y == b.y) && (a.z == b.z);
 }
@@ -157,34 +157,34 @@ inline __host__ __device__ bool operator==(uchar3& a, uchar3& b)
  * ****************************************************************************/
 
 // create uchar4 from a single uchar
-static __inline__ __host__ __device__ uchar4 make_uchar4(unsigned char x)
+static inline __host__ __device__ uchar4 make_uchar4(unsigned char x)
 {
   uchar4 t; t.x = x; t.y = x; t.z = x; t.w = x; return t;
 }
 
 // !=
-inline __host__ __device__ bool operator!=(uchar4& a, uchar4& b)
+static inline __host__ __device__ bool operator!=(uchar4& a, uchar4& b)
 {
   return (a.x != b.x) || (a.y != b.y) || (a.z != b.z) || (a.w != b.w);
 }
 
 // ==
-inline __host__ __device__ bool operator==(uchar4& a, uchar4& b)
+static inline __host__ __device__ bool operator==(uchar4& a, uchar4& b)
 {
   return (a.x == b.x) && (a.y == b.y) && (a.z == b.z) && (a.w == b.w);
 }
 
 // multiply with constant
-inline __host__ __device__ uchar4 operator*(uchar4 a, unsigned char s)
+static inline __host__ __device__ uchar4 operator*(uchar4 a, unsigned char s)
 {
     return make_uchar4(a.x * s, a.y * s, a.z * s,  a.w * s);
 }
-inline __host__ __device__ uchar4 operator*(unsigned char s, uchar4 a)
+static inline __host__ __device__ uchar4 operator*(unsigned char s, uchar4 a)
 {
     return make_uchar4(a.x * s, a.y * s, a.z * s,  a.w * s);
 }
 // elementwise multiply
-inline __host__ __device__ uchar4 operator*(uchar4 a, uchar4 b)
+static inline __host__ __device__ uchar4 operator*(uchar4 a, uchar4 b)
 {
     return make_uchar4(a.x * b.x, a.y * b.y, a.z * b.z,  a.w * b.w);
 }
@@ -195,13 +195,13 @@ inline __host__ __device__ uchar4 operator*(uchar4 a, uchar4 b)
 
 
 // !=
-inline __host__ __device__ bool operator!=(float2& a, float2& b)
+static inline __host__ __device__ bool operator!=(float2& a, float2& b)
 {
   return (a.x != b.x) || (a.y != b.y);
 }
 
 // ==
-inline __host__ __device__ bool operator==(float2& a, float2& b)
+static inline __host__ __device__ bool operator==(float2& a, float2& b)
 {
   return (a.x == b.x) && (a.y == b.y);
 }
@@ -211,13 +211,13 @@ inline __host__ __device__ bool operator==(float2& a, float2& b)
  * ****************************************************************************/
 
 // !=
-inline __host__ __device__ bool operator!=(float3& a, float3& b)
+static inline __host__ __device__ bool operator!=(float3& a, float3& b)
 {
   return (a.x != b.x) || (a.y != b.y) || (a.z != b.z);
 }
 
 // ==
-inline __host__ __device__ bool operator==(float3& a, float3& b)
+static inline __host__ __device__ bool operator==(float3& a, float3& b)
 {
   return (a.x == b.x) && (a.y == b.y) && (a.z == b.z);
 }
@@ -227,19 +227,19 @@ inline __host__ __device__ bool operator==(float3& a, float3& b)
  * ****************************************************************************/
 
 // !=
-inline __host__ __device__ bool operator!=(float4& a, float4& b)
+static inline __host__ __device__ bool operator!=(float4& a, float4& b)
 {
   return (a.x != b.x) || (a.y != b.y) || (a.z != b.z) || (a.w != b.w);
 }
 
 // ==
-inline __host__ __device__ bool operator==(float4& a, float4& b)
+static inline __host__ __device__ bool operator==(float4& a, float4& b)
 {
   return (a.x == b.x) && (a.y == b.y) && (a.z == b.z) && (a.w == b.w);
 }
 
 // elementwise multiply
-inline __host__ __device__ float4 operator*(float4 a, float4 b)
+static inline __host__ __device__ float4 operator*(float4 a, float4 b)
 {
     return make_float4(a.x * b.x, a.y * b.y, a.z * b.z,  a.w * b.w);
 }
