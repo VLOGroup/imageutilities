@@ -94,9 +94,6 @@ find_package(CUDASDK REQUIRED)
 cuda_include_directories(${CUDA_INCLUDE_DIRS} ${CUDA_CUT_INCLUDE_DIR})
 include_directories(${CUDA_INCLUDE_DIRS} ${CUDA_CUT_INCLUDE_DIR})
 set(IU_IUCORE_LIB_DEPENDENCIES ${IU_IUCORE_LIB_DEPENDENCIES} ${CUDA_LIBRARIES})
-message("CUDA_CUT_INCLUDE_DIR=${CUDA_CUT_INCLUDE_DIR}")
-message("CUDA_LIBRARIES=${CUDA_LIBRARIES}")
-message("CUDA_CUT_LIBRARY=${CUDA_CUT_LIBRARY}")
 
 ##-----------------------------------------------------------------------------
 ## Qt
@@ -452,7 +449,7 @@ set_target_properties(${IU_CORE_LIB} PROPERTIES
   SOVERSION ${IMAGEUTILITIES_SOVERSION}
   PUBLIC_HEADER "${IU_PUBLIC_HEADERS}"
   )
-target_link_libraries( ${IU_CORE_LIB} ${CUDA_LIBRARIES}  ${CUDA_CUT_LIBRARY})
+target_link_libraries( ${IU_CORE_LIB} ${CUDA_LIBRARIES})
 set(IU_LIBS ${IU_LIBS} ${IU_CORE_LIB})
 
 ##-----------------------------------------------------------------------------
