@@ -105,9 +105,7 @@ IU_DLLAPI void copy(const LinearDeviceMemory_32f_C4* src, LinearHostMemory_32f_C
 // 2D; copy host -> host;
 /** Copy methods for host to host 2D copy
  * \param src Source image [host].
- * \param src_roi Region of interest in the source image.
  * \param dst Destination image [host]
- * \param dst_roi Region of interest in the dsetination image.
  */
 IU_DLLAPI void copy(const ImageCpu_8u_C1* src, ImageCpu_8u_C1* dst);
 IU_DLLAPI void copy(const ImageCpu_8u_C2* src, ImageCpu_8u_C2* dst);
@@ -121,9 +119,7 @@ IU_DLLAPI void copy(const ImageCpu_32f_C4* src, ImageCpu_32f_C4* dst);
 // 2D; copy device -> device;
 /** Copy methods for device to device 2D copy
  * \param src Source image [device].
- * \param src_roi Region of interest in the source image.
  * \param dst Destination image [device]
- * \param dst_roi Region of interest in the dsetination image.
  */
 IU_DLLAPI void copy(const ImageGpu_8u_C1* src, ImageGpu_8u_C1* dst);
 IU_DLLAPI void copy(const ImageGpu_8u_C2* src, ImageGpu_8u_C2* dst);
@@ -137,9 +133,7 @@ IU_DLLAPI void copy(const ImageGpu_32f_C4* src, ImageGpu_32f_C4* dst);
 // 2D; copy host -> device;
 /** Copy methods for host to device 2D copy
  * \param src Source image [host].
- * \param src_roi Region of interest in the source image.
  * \param dst Destination image [device]
- * \param dst_roi Region of interest in the dsetination image.
  */
 IU_DLLAPI void copy(const ImageCpu_8u_C1* src, ImageGpu_8u_C1* dst);
 IU_DLLAPI void copy(const ImageCpu_8u_C2* src, ImageGpu_8u_C2* dst);
@@ -153,9 +147,7 @@ IU_DLLAPI void copy(const ImageCpu_32f_C4* src, ImageGpu_32f_C4* dst);
 // 2D; copy device -> host;
 /** Copy methods for device to host 2D copy
  * \param src Source image [device].
- * \param src_roi Region of interest in the source image.
  * \param dst Destination image [host]
- * \param dst_roi Region of interest in the dsetination image.
  */
 IU_DLLAPI void copy(const ImageGpu_8u_C1* src, ImageCpu_8u_C1* dst);
 IU_DLLAPI void copy(const ImageGpu_8u_C2* src, ImageCpu_8u_C2* dst);
@@ -167,6 +159,57 @@ IU_DLLAPI void copy(const ImageGpu_32f_C3* src, ImageCpu_32f_C3* dst);
 IU_DLLAPI void copy(const ImageGpu_32f_C4* src, ImageCpu_32f_C4* dst);
 
 /** \} */ // end of Copy2D
+
+// 3D; copy host -> host;
+/** Copy methods for host to host 3D copy
+ * \param src Source volume [host].
+ * \param dst Destination volume [host]
+ */
+IU_DLLAPI void copy(const VolumeCpu_8u_C1* src, VolumeCpu_8u_C1* dst);
+IU_DLLAPI void copy(const VolumeCpu_8u_C2* src, VolumeCpu_8u_C2* dst);
+IU_DLLAPI void copy(const VolumeCpu_8u_C4* src, VolumeCpu_8u_C4* dst);
+IU_DLLAPI void copy(const VolumeCpu_32f_C1* src, VolumeCpu_32f_C1* dst);
+IU_DLLAPI void copy(const VolumeCpu_32f_C2* src, VolumeCpu_32f_C2* dst);
+IU_DLLAPI void copy(const VolumeCpu_32f_C4* src, VolumeCpu_32f_C4* dst);
+
+// 3D; copy device -> device;
+/** Copy methods for device to device 3D copy
+ * \param src Source volume [device].
+ * \param dst Destination volume [device]
+ */
+IU_DLLAPI void copy(const VolumeGpu_8u_C1* src, VolumeGpu_8u_C1* dst);
+IU_DLLAPI void copy(const VolumeGpu_8u_C2* src, VolumeGpu_8u_C2* dst);
+IU_DLLAPI void copy(const VolumeGpu_8u_C4* src, VolumeGpu_8u_C4* dst);
+IU_DLLAPI void copy(const VolumeGpu_32f_C1* src, VolumeGpu_32f_C1* dst);
+IU_DLLAPI void copy(const VolumeGpu_32f_C2* src, VolumeGpu_32f_C2* dst);
+IU_DLLAPI void copy(const VolumeGpu_32f_C4* src, VolumeGpu_32f_C4* dst);
+
+// 3D; copy host -> device;
+/** Copy methods for host to device 3D copy
+ * \param src Source volume [host].
+ * \param dst Destination volume [device]
+ */
+IU_DLLAPI void copy(const VolumeCpu_8u_C1* src, VolumeGpu_8u_C1* dst);
+IU_DLLAPI void copy(const VolumeCpu_8u_C2* src, VolumeGpu_8u_C2* dst);
+IU_DLLAPI void copy(const VolumeCpu_8u_C4* src, VolumeGpu_8u_C4* dst);
+IU_DLLAPI void copy(const VolumeCpu_32f_C1* src, VolumeGpu_32f_C1* dst);
+IU_DLLAPI void copy(const VolumeCpu_32f_C2* src, VolumeGpu_32f_C2* dst);
+IU_DLLAPI void copy(const VolumeCpu_32f_C4* src, VolumeGpu_32f_C4* dst);
+
+// 3D; copy device -> host;
+/** Copy methods for device to host 3D copy
+ * \param src Source volume [device].
+ * \param dst Destination volume [host]
+ */
+IU_DLLAPI void copy(const VolumeGpu_8u_C1* src, VolumeCpu_8u_C1* dst);
+IU_DLLAPI void copy(const VolumeGpu_8u_C2* src, VolumeCpu_8u_C2* dst);
+IU_DLLAPI void copy(const VolumeGpu_8u_C4* src, VolumeCpu_8u_C4* dst);
+IU_DLLAPI void copy(const VolumeGpu_32f_C1* src, VolumeCpu_32f_C1* dst);
+IU_DLLAPI void copy(const VolumeGpu_32f_C2* src, VolumeCpu_32f_C2* dst);
+IU_DLLAPI void copy(const VolumeGpu_32f_C4* src, VolumeCpu_32f_C4* dst);
+
+/** \} */ // end of Copy3D
+
 
 /* ***************************************************************************
      SET
@@ -225,6 +268,38 @@ IU_DLLAPI void setValue(const float3& value, ImageGpu_32f_C3* srcdst, const IuRe
 IU_DLLAPI void setValue(const float4& value, ImageGpu_32f_C4* srcdst, const IuRect& roi);
 
 /** \} */ // end of Set2D
+
+
+//////////////////////////////////////////////////////////////////////////////
+/** \defgroup Set3D 3D Memory Set
+ * \ingroup Core
+ * Set methods for 3D images.
+ * \{
+ */
+
+/** \fn void setValue(<datatype> value, Image<datatype>* srcdst, const IuCube& roi)
+ * \brief Sets all pixel in the region of interest to a certain value.
+ * \ingroup Set3D
+ * \param value The pixel value to be set.
+ * \param image Pointer to the image.
+ * \param roi Region of interest which should be set.
+ */
+// host:
+IU_DLLAPI void setValue(const unsigned char& value, VolumeCpu_8u_C1* srcdst, const IuCube& roi);
+IU_DLLAPI void setValue(const uchar2& value, VolumeCpu_8u_C2* srcdst, const IuCube& roi);
+IU_DLLAPI void setValue(const uchar4& value, VolumeCpu_8u_C4* srcdst, const IuCube& roi);
+IU_DLLAPI void setValue(const float& value, VolumeCpu_32f_C1* srcdst, const IuCube& roi);
+IU_DLLAPI void setValue(const float2& value, VolumeCpu_32f_C2* srcdst, const IuCube& roi);
+IU_DLLAPI void setValue(const float4& value, VolumeCpu_32f_C4* srcdst, const IuCube& roi);
+// device:
+IU_DLLAPI void setValue(const unsigned char& value, VolumeGpu_8u_C1* srcdst, const IuCube& roi);
+IU_DLLAPI void setValue(const uchar2& value, VolumeGpu_8u_C2* srcdst, const IuCube& roi);
+IU_DLLAPI void setValue(const uchar4& value, VolumeGpu_8u_C4* srcdst, const IuCube& roi);
+IU_DLLAPI void setValue(const float& value, VolumeGpu_32f_C1* srcdst, const IuCube& roi);
+IU_DLLAPI void setValue(const float2& value, VolumeGpu_32f_C2* srcdst, const IuCube& roi);
+IU_DLLAPI void setValue(const float4& value, VolumeGpu_32f_C4* srcdst, const IuCube& roi);
+
+/** \} */ // end of Set3D
 
 //////////////////////////////////////////////////////////////////////////////
 /** \defgroup Clamp

@@ -35,7 +35,7 @@ template <typename PixelType>
 class VolumeAllocatorCpu
 {
 public:
-  static float* alloc(unsigned int width, unsigned int height, unsigned int depth, size_t *pitch)
+  static PixelType* alloc(unsigned int width, unsigned int height, unsigned int depth, size_t *pitch)
   {
     IU_ASSERT(width * height * depth > 0);
     PixelType *buffer = new PixelType[width*height*depth];

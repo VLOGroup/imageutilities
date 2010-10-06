@@ -170,7 +170,7 @@ void copy(const iu::VolumeGpu<PixelType, AllocatorGpu> *src,
   status = cudaMemcpy2D(dst->data(dst->roi().x, dst->roi().y, dst->roi().z), dst->pitch(),
                         src->data(src->roi().x, src->roi().y, dst->roi().z), src->pitch(),
                         roi_width * sizeof(PixelType), roi_height*roi_depth,
-                        cudaMemcpyDeviceToDevice);
+                        cudaMemcpyDeviceToHost);
   IU_ASSERT(status == cudaSuccess);
 }
 

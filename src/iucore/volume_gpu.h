@@ -53,21 +53,21 @@ public:
       Volume(_width, _height, _depth), data_(0), pitch_(0),
       ext_data_pointer_(false)
   {
-    data_ = Allocator::alloc(_width, _height, _depth, &pitch_);
+    data_ = Allocator::alloc(this->size(), &pitch_);
   }
 
   VolumeGpu(const IuSize& size) :
       Volume(size), data_(0), pitch_(0),
       ext_data_pointer_(false)
   {
-    data_ = Allocator::alloc(size.width, size.height, size.depth, &pitch_);
+    data_ = Allocator::alloc(this->size(), &pitch_);
   }
 
   VolumeGpu(const VolumeGpu<PixelType, Allocator>& from) :
       Volume(from), data_(0), pitch_(0),
       ext_data_pointer_(false)
   {
-    data_ = Allocator::alloc(from.width(), from.height(), from.depth(), &pitch_);
+    data_ = Allocator::alloc(this->size(), &pitch_);
     Allocator::copy(from.data(), from.pitch(), data_, pitch_, this->size());
     this->setRoi(from.roi());
   }
@@ -89,7 +89,7 @@ public:
       if(_data == 0)
         return;
 
-      data_ = Allocator::alloc(_width, _height, _depth, &pitch_);
+      data_ = Allocator::alloc(this->size(), &pitch_);
       Allocator::copy(_data, _pitch, data_, pitch_, this->size());
     }
   }
