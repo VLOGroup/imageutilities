@@ -122,6 +122,7 @@ iu::ImageCpu_32f_C4* imread_32f_C4(const std::string& filename)
 
   IU_ASSERT( mat_32f_C3.size() == im_mat.size() );
   cv::cvtColor(mat_32f_C3, im_mat, CV_BGR2RGBA);
+  // FIXMEEEE the alpha layer is 0 !!!
   return im;
 }
 
