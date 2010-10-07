@@ -14,7 +14,7 @@
  * Module      : Unit Tests
  * Class       : none
  * Language    : C++
- * Description : Unit tests for npp images
+ * Description : Unit tests for gpu images
  *
  * Author     : Manuel Werlberger
  * EMail      : werlberger@icg.tugraz.at

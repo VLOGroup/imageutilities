@@ -1,0 +1,69 @@
+/*
+ * Copyright (c) ICG. All rights reserved.
+ *
+ * Institute for Computer Graphics and Vision
+ * Graz University of Technology / Austria
+ *
+ *
+ * This software is distributed WITHOUT ANY WARRANTY; without even
+ * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the above copyright notices for more information.
+ *
+ *
+ * Project     : ImageUtilities
+ * Module      : Filter Module
+ * Class       : Wrapper
+ * Language    : C
+ * Description : Public interfaces to filter module
+ *
+ * Author     : Manuel Werlberger
+ * EMail      : werlberger@icg.tugraz.at
+ *
+ */
+
+#ifndef IU_TRANSFORM_MODULE_H
+#define IU_TRANSFORM_MODULE_H
+
+#include "iudefs.h"
+
+namespace iu {
+
+/** \defgroup Geometric Transformation
+ *  \brief Geometric image transformations
+ *  TODO more detailed docu
+ *  @{
+ */
+
+/* ***************************************************************************
+     Geometric Transformations
+ * ***************************************************************************/
+
+//////////////////////////////////////////////////////////////////////////////
+/* ***************************************************************************
+     Image resize
+ * ***************************************************************************/
+/** @defgroup Image Resize
+ *  @ingroup Geometric Transformation
+ *  TODO more detailed docu
+ *  @{
+ */
+
+/** Image reduction.
+ * \brief Scaling the image \a src down to the size of \a dst.
+ * \param[in] src Source image [device]
+ * \param[out] dst Destination image [device]
+ * \param[in] interpolation The type of interpolation used for scaling down the image.
+ * \param[in] gauss_prefilter Toggles gauss prefiltering. The sigma and kernel size is chosen dependent on the scale factor.
+ * \param[in] bicubic_bspline_prefilter Only reasonable for cubic interpolation. Yields sharper results when switched on.
+ */
+void reduce(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
+            IuInterpolationType interpolation = IU_INTERPOLATE_LINEAR,
+            bool gauss_prefilter = false, bool bicubic_bspline_prefilter = false);
+
+/** @} */ // end of Image Resize
+
+
+} // namespace iu
+
+
+#endif // IU_TRANSFORM_MODULE_H

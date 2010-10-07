@@ -68,6 +68,14 @@ typedef enum
 
 } IuStatus;
 
+/** Interpolation types. */
+typedef enum
+{
+  IU_INTERPOLATE_NEAREST, /**< nearest neighbour interpolation. */
+  IU_INTERPOLATE_LINEAR, /**< nearest linear interpolation. */
+  IU_INTERPOLATE_CUBIC /**< nearest cubic interpolation. */
+} IuInterpolationType;
+
 /** 2D Size
  * This struct contains width, height and some helper functions to define a 2D size.
  */

@@ -325,6 +325,7 @@ SET( IU_PUBLIC_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iumath.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iufilter.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iutransform.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucoreippconnector.h
   )
 
@@ -344,6 +345,7 @@ SET( IU_PUBLIC_CORE_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/volume_cpu.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/volume_allocator_gpu.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/volume_gpu.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/imagepyramid.h
   ${CMAKE_CURRENT_SOURCE_DIR}/../../common/include/derivatives.h
   )
 
@@ -367,8 +369,8 @@ SET( IU_FILTER_HEADERS
   )
 
 SET( IU_TRANSFORM_HEADERS
-  ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/resample.h
-  #${CMAKE_CURRENT_SOURCE_DIR}/iutransform/resample.cuh
+  ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/reduce.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/reduce.cuh
   )
 
 
@@ -385,7 +387,7 @@ SET( IU_HEADERS
   ${IU_CORE_HEADERS}
   ${IU_MATH_HEADERS}
   ${IU_FILTER_HEADERS}
-  #${IU_TRANSFORM_HEADERS}
+  ${IU_TRANSFORM_HEADERS}
   )
 
 SET( IU_SOURCES
@@ -401,14 +403,19 @@ SET( IU_SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/iufilter.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/iufilter/filter.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/iufilter/filter.cu
-  #${CMAKE_CURRENT_SOURCE_DIR}/iutransform/transform.cpp
-  #${CMAKE_CURRENT_SOURCE_DIR}/iutransform/transform.cu
-  #${CMAKE_CURRENT_SOURCE_DIR}/iutransform/transform_kernels.cu
+  ${CMAKE_CURRENT_SOURCE_DIR}/iutransform.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/cubictexture.cu
+  ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/cubictexture_kernels.cu
+  ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/reduce.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/reduce.cu
+  ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/reduce_kernels.cu
   )
 
 # denote kernel files as header only to not confuse the compiler
 set_source_files_properties(
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/memory_modification_kernels.cu
+  ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/reduce_kernels.cu
+  ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/cubictexture_kernels.cu
   PROPERTIES HEADER_FILE_ONLY yes
   )
 

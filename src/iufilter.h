@@ -39,6 +39,9 @@ namespace iu {
  * ***************************************************************************/
 
 //////////////////////////////////////////////////////////////////////////////
+/* ***************************************************************************
+     Denoising
+ * ***************************************************************************/
 /** @defgroup Denoising
  *  @ingroup Filter
  *  TODO more detailed docu
@@ -76,7 +79,11 @@ IU_DLLAPI void filterGauss(const ImageGpu_32f_C1* src, ImageGpu_32f_C1* dst, con
 
 /** @} */ // end of Denoising
 
+
 //////////////////////////////////////////////////////////////////////////////
+/* ***************************************************************************
+     Structure-Texture Decomposition
+ * ***************************************************************************/
 /** @defgroup Structure-Texture Decomposition
  *  @ingroup Filter
  *  TODO more detailed docu
@@ -100,5 +107,6 @@ IU_DLLAPI void decomposeStructureTextureRof(const iu::ImageGpu_32f_C1* src, iu::
 /** @} */ // end of Filter Module
 
 } // namespace iu
+
 
 #endif // IU_FILTER_MODULE_H

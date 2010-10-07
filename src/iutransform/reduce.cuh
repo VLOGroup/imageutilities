@@ -11,27 +11,30 @@
  *
  *
  * Project     : ImageUtilities
- * Module      : Geometric Transform
+ * Module      : Filter
  * Class       : none
- * Language    : C++
- * Description : Definition of geometric transformations
+ * Language    : CUDA
+ * Description : Definition of CUDA wrappers for reduce functions on Gpu images
  *
  * Author     : Manuel Werlberger
  * EMail      : werlberger@icg.tugraz.at
  *
  */
 
-#ifndef IUPRIVATE_RESAMPLE_H
-#define IUPRIVATE_RESAMPLE_H
+#ifndef IUPRIVATE_REDUCE_CUH
+#define IUPRIVATE_REDUCE_CUH
 
-#include "core/coredefs.h"
-#include "core/memorydefs.h"
+#include <iucore/coredefs.h>
+#include <iucore/memorydefs.h>
 
 namespace iuprivate {
 
-// device; 32-bit; 1-channel
-void reduce(const iu::ImageNpp_32f_C1* src, iu::ImageNpp_32f_C1* dst, bool prefilter);
+IuStatus cuCubicBSplinePrefilter_32f_C1I(iu::ImageGpu_32f_C1 *input);
+IuStatus cuReduce(iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
+                  IuInterpolationType interpolation);
+
+
 
 } // namespace iuprivate
 
-#endif // IUPRIVATE_RESAMPLE_H
+#endif // IUPRIVATE_REDUCE_CUH
