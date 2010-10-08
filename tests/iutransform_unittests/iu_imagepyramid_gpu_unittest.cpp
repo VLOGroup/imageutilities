@@ -46,21 +46,37 @@ int main(int argc, char** argv)
   std::cout << "reading image " << filename << std::endl;
   iu::ImageGpu_32f_C1* image = iu::imread_cu32f_C1(filename);
 
-  iu::imshow(image, "input");
+  iu::imshow(image, "original input");
+
+  unsigned int levels = 8;
+  iu::ImagePyramid_32f_C1 pyramid(levels, image->size(), 0.8f);
 
 
-  // reduce to half image size
-  iu::ImageGpu_32f_C1 reduce1_linear(image->width()/2.0f, image->height()/2.0f);
-  iu::reduce(image, &reduce1_linear, IU_INTERPOLATE_LINEAR, true, false);
-  iu::imshow(&reduce1_linear, "reduce1_linear");
+  std::stringstream stream;
+  std::string winname;
 
-  iu::ImageGpu_32f_C1 reduce1_cubic(image->width()/2.0f, image->height()/2.0f);
-  iu::reduce(image, &reduce1_cubic, IU_INTERPOLATE_CUBIC, false, false);
-  iu::imshow(&reduce1_cubic, "reduce1_cubic");
 
-  iu::ImageGpu_32f_C1 reduce1_cubic_filtered(image->width()*0.8f, image->height()*0.8f);
-  iu::reduce(image, &reduce1_cubic_filtered, IU_INTERPOLATE_CUBIC, false, true);
-  iu::imshow(&reduce1_cubic_filtered, "reduce1_cubic_filtered");
+  iu::copy(image, pyramid.image(0));
+  iu::imshow(pyramid.image(0), "level 0");
+
+  double time = iu::getTime();
+
+  // print all the created level sizes:
+  for(unsigned int i=1; i<pyramid.numLevels(); ++i)
+  {
+    std::cout << "level " << i << ": size=" << pyramid.size(i).width << "/" << pyramid.size(i).height
+              << "; rate=" << pyramid.scaleFactor(i) << std::endl;
+
+    iu::reduce(pyramid.image(i-1), pyramid.image(i), IU_INTERPOLATE_CUBIC, 0, 0);
+
+    stream.clear();
+    stream << "level " << i;
+    winname = stream.str();
+    iu::imshow(pyramid.image(i), winname);
+  }
+
+  time = iu::getTime() - time;
+  std::cout << "time for building imagepyramid = " << time << "ms" << std::endl;
 
   cv::waitKey();
 
