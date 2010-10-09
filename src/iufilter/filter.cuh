@@ -41,6 +41,9 @@ IuStatus cuFilterGauss(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
 IuStatus cuFilterRof(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
                       const IuRect& roi, float lambda, int iterations);
 
+// cuda wrapper: Cubic bspline coefficients prefilter.
+IuStatus cuCubicBSplinePrefilter_32f_C1I(iu::ImageGpu_32f_C1 *input);
+
 } // namespace iuprivate
 
 #endif // IUPRIVATE_FILTER_CUH

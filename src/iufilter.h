@@ -104,6 +104,14 @@ IU_DLLAPI void decomposeStructureTextureRof(const iu::ImageGpu_32f_C1* src, iu::
 
 /** @} */ // end of Structure-Texture Decomposition
 
+
+//////////////////////////////////////////////////////////////////////////////
+/* ***************************************************************************
+     other filters
+ * ***************************************************************************/
+IU_DLLAPI void cubicBSplinePrefilter(iu::ImageGpu_32f_C1* srcdst);
+
+
 /** @} */ // end of Filter Module
 
 } // namespace iu

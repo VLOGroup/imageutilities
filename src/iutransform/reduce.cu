@@ -29,26 +29,6 @@
 namespace iuprivate {
 
 //-----------------------------------------------------------------------------
-IuStatus cuCubicBSplinePrefilter_32f_C1I(iu::ImageGpu_32f_C1 *input)
-{
-  const unsigned int block_size = 64;
-  const unsigned int width  = input->width();
-  const unsigned int height = input->height();
-
-  dim3 dimBlockX(block_size,1,1);
-  dim3 dimGridX(iu::divUp(height, block_size),1,1);
-  cuSamplesToCoefficients2DX<float><<<dimGridX, dimBlockX>>>(input->data(),
-                                                             width, height, input->stride());
-
-  dim3 dimBlockY(block_size,1,1);
-  dim3 dimGridY(iu::divUp(width, block_size),1,1);
-  cuSamplesToCoefficients2DY<float><<<dimGridY, dimBlockY>>>(input->data(),
-                                                             width, height, input->stride());
-
-  return iu::checkCudaErrorState();
-}
-
-//-----------------------------------------------------------------------------
 IuStatus cuReduce(iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
                   IuInterpolationType interpolation)
 {

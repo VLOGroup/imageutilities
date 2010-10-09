@@ -49,6 +49,9 @@ void decomposeStructureTextureGauss(const iu::ImageGpu_32f_C1* src, iu::ImageGpu
 void decomposeStructureTextureRof(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
                                   const IuRect& roi, float weight, float lambda, int iterations);
 
+// Cubic B-Spline coefficients prefilter
+void cubicBSplinePrefilter(iu::ImageGpu_32f_C1* srcdst);
+
 } // namespace iuprivate
 
 #endif // IUPRIVATE_FILTER_H

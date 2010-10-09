@@ -36,26 +36,38 @@ class ImagePyramid
 public:
   /** Default constrcutor. */
   ImagePyramid() :
-    images_(0), rates_(0), nlevels_(0)
+    images_(0), scale_factors_(0), num_levels_(0)
   {
   }
 
-  /** Constructor for an image pyramid with defined number of levels, size and scale rate. */
-  ImagePyramid(unsigned int& nlevels, const IuSize& size, const float& rate)
+  /** Constructor for an image pyramid with defined number of levels, size and scale rate.
+   * @param max_num_levels Defines the maximum number of levels. This is changed the shorter side gets below \a size_bound.
+   * @param size The size for the finest level (=0).
+   * @param rate Multiplicative scale factor.
+   */
+  ImagePyramid(unsigned int& max_num_levels, const IuSize& size, const float& scale_factor,
+               unsigned int size_bound=1)
   {
-    images_ = new ImageType*[nlevels];
-    rates_ = new float[nlevels];
-    nlevels_ = nlevels;
+    // TODO calculate the maximum number of levels
+    if(size_bound == 0) size_bound = 1;
+    unsigned int shorter_side = (size.width<size.height) ? size.width : size.height;
+    float ratio = static_cast<float>(shorter_side) / static_cast<float>(size_bound);
+    // +1 because the original size is level 0
+    unsigned int possible_num_levels = static_cast<int>(-logf(ratio)/logf(scale_factor)) + 1;
+    if(max_num_levels > possible_num_levels)
+      max_num_levels = possible_num_levels;
+
+    images_ = new ImageType*[max_num_levels];
+    scale_factors_ = new float[max_num_levels];
+    num_levels_ = max_num_levels;
 
     // init rate for each level
-    float cur_rate = 1;
-    for (unsigned int i=0; i<nlevels; i++)
+    for (unsigned int i=0; i<max_num_levels; i++)
     {
-      rates_[i] = cur_rate;
-      cur_rate *= rate;
+      scale_factors_[i] = pow(scale_factor, static_cast<float>(i));
 
       // alloc image memory
-      IuSize sz((int)(size.width*rates_[i]+0.5f), (int)(size.height*rates_[i]+0.5f));
+      IuSize sz((int)(size.width*scale_factors_[i]+0.5f), (int)(size.height*scale_factors_[i]+0.5f));
       images_[i] = new ImageType(sz);
     }
   }
@@ -67,35 +79,35 @@ public:
       return;
 
     // delete all arrays and hold elements!
-    for (unsigned int i=0; i<nlevels_; i++)
+    for (unsigned int i=0; i<num_levels_; i++)
     {
       delete(images_[i]);
       images_[i] = 0;
     }
     delete[] images_;
     images_ = 0;
-    delete[] rates_;
-    rates_ = 0;
-    nlevels_ = 0;
+    delete[] scale_factors_;
+    scale_factors_ = 0;
+    num_levels_ = 0;
   }
 
   /** Returns a pointer to the image from the specified level \a i. */
   ImageType* image(unsigned int i) {return images_[i];}
 
   /** Returns the number of available levels. */
-  unsigned int numLevels() {return nlevels_;}
+  unsigned int numLevels() {return num_levels_;}
 
   /** Returns the image size of the i-th level. */
   IuSize size(unsigned int i) {return images_[i]->size();}
 
   /** Returns the scale factor (multiplicative factor) from the current level to the base level. */
-  float scaleFactor(unsigned int i) {return rates_[i];}
+  float scaleFactor(unsigned int i) {return scale_factors_[i];}
 
 
 private:
   ImageType** images_; /**< Pointer to array of (level+1) layer images (pointers - dynamically allocated). */
-  float* rates_;       /**< Pointer to the array of (level+1) ratios of i-th levels to the zero level (rate-i). */
-  unsigned int nlevels_;          /**< Number of levels in the pyramid. */
+  float* scale_factors_;       /**< Pointer to the array of (level+1) ratios of i-th levels to the zero level (rate-i). */
+  unsigned int num_levels_;          /**< Number of levels in the pyramid. */
 
 };
 

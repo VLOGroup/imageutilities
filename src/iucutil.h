@@ -11,10 +11,10 @@
  *
  *
  * Project     : ImageUtilities
- * Module      : Global
+ * Module      : global
  * Class       : none
- * Language    : C++
- * Description : Global typedefinitions and macros for ImageUtilities. (e.g. dll export stuff, ...)
+ * Language    : C/CUDA
+ * Description : Common cuda functionality that might also be interesting for other applications.
  *
  * Author     : Manuel Werlberger
  * EMail      : werlberger@icg.tugraz.at
@@ -27,6 +27,12 @@
 #include <cutil_math.h>
 #include <iucore/coredefs.h>
 
+// including some common device functions
+#include <iucore/vectormath_kernels.cuh>
+#include <iucore/bsplinetexture_kernels.cuh>
+
+
+// includes for time measurements
 #ifdef WIN32
   #include <time.h>
   #include <windows.h>
@@ -89,21 +95,6 @@ static inline IuStatus checkCudaErrorState(bool print_error = true)
 
 //// SMALL CUDA HELPERS (DEFINED static inline) ////////////////////////////////////////////
 namespace iu {
-//
-/** Round a / b to nearest higher integer value.
- * @param[in] a Numerator
- * @param[in] b Denominator
- * @return a / b rounded up
- */
-__host__ __device__ static inline unsigned int divUp(unsigned int a, unsigned int b)
-{
-  return (a % b != 0) ? (a / b + 1) : (a / b);
-}
-
-__host__ __device__ static inline float sqr(float a)
-{
-  return a*a;
-}
 
 //// VARIOUS OTHER HELPER FUNCTIONS ////////////////////////////////////////////
 // getTime
@@ -123,148 +114,5 @@ static inline double getTime()
 }
 
 } // namespace iu
-
-
-///////////////////////////////////////////////////////////////////////////////
-// the operator stuff is not part of the iu namespace
-// so it can be used wituout this using iu stuff!
-///////////////////////////////////////////////////////////////////////////////
-
-
-/* ****************************************************************************
- *  uchar2 functions
- * ****************************************************************************/
-
-// create uchar2 from a single uchar
-static inline __host__ __device__ uchar2 make_uchar2(unsigned char x)
-{
-  uchar2 t; t.x = x; t.y = x; return t;
-}
-
-// !=
-static inline __host__ __device__ bool operator!=(uchar2& a, uchar2& b)
-{
-  return (a.x != b.x) || (a.y != b.y);
-}
-
-// ==
-static inline __host__ __device__ bool operator==(uchar2& a, uchar2& b)
-{
-  return (a.x == b.x) && (a.y == b.y);
-}
-
-/* ****************************************************************************
- *  uchar3 functions
- * ****************************************************************************/
-
-// create uchar3 from a single uchar
-static inline __host__ __device__ uchar3 make_uchar3(unsigned char x)
-{
-  uchar3 t; t.x = x; t.y = x; t.z = x; return t;
-}
-
-// !=
-static inline __host__ __device__ bool operator!=(uchar3& a, uchar3& b)
-{
-  return (a.x != b.x) || (a.y != b.y) || (a.z != b.z);
-}
-
-// ==
-static inline __host__ __device__ bool operator==(uchar3& a, uchar3& b)
-{
-  return (a.x == b.x) && (a.y == b.y) && (a.z == b.z);
-}
-
-/* ****************************************************************************
- *  uchar4 functions
- * ****************************************************************************/
-
-// create uchar4 from a single uchar
-static inline __host__ __device__ uchar4 make_uchar4(unsigned char x)
-{
-  uchar4 t; t.x = x; t.y = x; t.z = x; t.w = x; return t;
-}
-
-// !=
-static inline __host__ __device__ bool operator!=(uchar4& a, uchar4& b)
-{
-  return (a.x != b.x) || (a.y != b.y) || (a.z != b.z) || (a.w != b.w);
-}
-
-// ==
-static inline __host__ __device__ bool operator==(uchar4& a, uchar4& b)
-{
-  return (a.x == b.x) && (a.y == b.y) && (a.z == b.z) && (a.w == b.w);
-}
-
-// multiply with constant
-static inline __host__ __device__ uchar4 operator*(uchar4 a, unsigned char s)
-{
-    return make_uchar4(a.x * s, a.y * s, a.z * s,  a.w * s);
-}
-static inline __host__ __device__ uchar4 operator*(unsigned char s, uchar4 a)
-{
-    return make_uchar4(a.x * s, a.y * s, a.z * s,  a.w * s);
-}
-// elementwise multiply
-static inline __host__ __device__ uchar4 operator*(uchar4 a, uchar4 b)
-{
-    return make_uchar4(a.x * b.x, a.y * b.y, a.z * b.z,  a.w * b.w);
-}
-
-/* ****************************************************************************
- *  float2 functions
- * ****************************************************************************/
-
-
-// !=
-static inline __host__ __device__ bool operator!=(float2& a, float2& b)
-{
-  return (a.x != b.x) || (a.y != b.y);
-}
-
-// ==
-static inline __host__ __device__ bool operator==(float2& a, float2& b)
-{
-  return (a.x == b.x) && (a.y == b.y);
-}
-
-/* ****************************************************************************
- *  float3 functions
- * ****************************************************************************/
-
-// !=
-static inline __host__ __device__ bool operator!=(float3& a, float3& b)
-{
-  return (a.x != b.x) || (a.y != b.y) || (a.z != b.z);
-}
-
-// ==
-static inline __host__ __device__ bool operator==(float3& a, float3& b)
-{
-  return (a.x == b.x) && (a.y == b.y) && (a.z == b.z);
-}
-
-/* ****************************************************************************
- *  float4 functions
- * ****************************************************************************/
-
-// !=
-static inline __host__ __device__ bool operator!=(float4& a, float4& b)
-{
-  return (a.x != b.x) || (a.y != b.y) || (a.z != b.z) || (a.w != b.w);
-}
-
-// ==
-static inline __host__ __device__ bool operator==(float4& a, float4& b)
-{
-  return (a.x == b.x) && (a.y == b.y) && (a.z == b.z) && (a.w == b.w);
-}
-
-// elementwise multiply
-static inline __host__ __device__ float4 operator*(float4 a, float4 b)
-{
-    return make_float4(a.x * b.x, a.y * b.y, a.z * b.z,  a.w * b.w);
-}
 
 #endif // IUCUTIL_H

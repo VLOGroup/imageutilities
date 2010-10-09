@@ -29,6 +29,9 @@
 #include <iucore/iutextures.cuh>
 #include <iucore/copy.h>
 #include <iucore/memory_modification.h>
+
+#include "filterbspline_kernels.cu"
+
 #include "filter.cuh"
 
 namespace iuprivate {
@@ -440,8 +443,7 @@ IuStatus cuFilterMedian3x3(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* 
   cudaUnbindTexture(&tex1_32f_C1__);
 
   // error check
-  IU_CHECK_AND_RETURN_CUDA_ERRORS();
-  return IU_SUCCESS;
+  return iu::checkCudaErrorState();
 }
 
 // wrapper: Gaussian filter; 32-bit; 1-channel
@@ -479,8 +481,7 @@ IuStatus cuFilterGauss(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
   cudaUnbindTexture(&tex1_32f_C1__);
 
   // error check
-  IU_CHECK_AND_RETURN_CUDA_ERRORS();
-  return IU_SUCCESS;
+  return iu::checkCudaErrorState();
 }
 
 // wrapper: Rof filter; 32-bit; 1-channel
@@ -533,8 +534,29 @@ IuStatus cuFilterRof(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
   cudaUnbindTexture(&tex_p_32f_C2__);
 
   // error check
-  IU_CHECK_AND_RETURN_CUDA_ERRORS();
-  return IU_SUCCESS;
+  return iu::checkCudaErrorState();
+}
+
+
+//-----------------------------------------------------------------------------
+// wrapper: cubic bspline coefficients prefilter.
+IuStatus cuCubicBSplinePrefilter_32f_C1I(iu::ImageGpu_32f_C1 *input)
+{
+  const unsigned int block_size = 64;
+  const unsigned int width  = input->width();
+  const unsigned int height = input->height();
+
+  dim3 dimBlockX(block_size,1,1);
+  dim3 dimGridX(iu::divUp(height, block_size),1,1);
+  cuSamplesToCoefficients2DX<float> <<< dimGridX, dimBlockX >>> (
+    input->data(), width, height, input->stride());
+
+  dim3 dimBlockY(block_size,1,1);
+  dim3 dimGridY(iu::divUp(width, block_size),1,1);
+  cuSamplesToCoefficients2DY<float> <<< dimGridY, dimBlockY >>> (
+    input->data(), width, height, input->stride());
+
+  return iu::checkCudaErrorState();
 }
 
 } // namespace iuprivate

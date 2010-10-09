@@ -59,4 +59,10 @@ void decomposeStructureTextureRof(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_3
 {iuprivate::decomposeStructureTextureRof(src, dst, roi, weight, lambda, iterations);}
 
 
+/* ***************************************************************************
+     other filters
+ * ***************************************************************************/
+void cubicBSplinePrefilter(iu::ImageGpu_32f_C1* srcdst)
+{ iuprivate::cubicBSplinePrefilter(srcdst); }
+
 } // namespace iu

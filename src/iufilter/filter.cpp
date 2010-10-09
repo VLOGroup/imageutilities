@@ -70,4 +70,11 @@ void decomposeStructureTextureRof(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_3
   iuprivate::addWeighted(src, 1.0f, &tmp, -weight, dst, roi);
 }
 
+// device; 32-bit; 1-channel
+void cubicBSplinePrefilter(iu::ImageGpu_32f_C1* srcdst)
+{
+  IuStatus status = cuCubicBSplinePrefilter_32f_C1I(srcdst);
+  IU_ASSERT(status == IU_SUCCESS);
+}
+
 } // namespace iuprivate

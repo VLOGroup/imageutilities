@@ -54,7 +54,9 @@ namespace iu {
  * \param[out] dst Destination image [device]
  * \param[in] interpolation The type of interpolation used for scaling down the image.
  * \param[in] gauss_prefilter Toggles gauss prefiltering. The sigma and kernel size is chosen dependent on the scale factor.
- * \param[in] bicubic_bspline_prefilter Only reasonable for cubic interpolation. Yields sharper results when switched on.
+ * \param[in] bicubic_bspline_prefilter Only reasonable for cubic interpolation.
+ *
+ * \note The bcubic_bspline_prefilter yields sharper results when switched on. Note that this only works nicely with a scale_factor=0.5f.
  */
 void reduce(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
             IuInterpolationType interpolation = IU_INTERPOLATE_LINEAR,

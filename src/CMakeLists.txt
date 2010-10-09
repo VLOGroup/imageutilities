@@ -346,6 +346,8 @@ SET( IU_PUBLIC_CORE_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/volume_allocator_gpu.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/volume_gpu.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/imagepyramid.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/vectormath_kernels.cuh
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/bsplinetexture_kernels.cuh
   ${CMAKE_CURRENT_SOURCE_DIR}/../../common/include/derivatives.h
   )
 
@@ -354,6 +356,7 @@ SET( IU_CORE_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/copy.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/memory_modification.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/memory_modification.cuh
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/memory_modification_kernels.cu
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/iutextures.cuh
   )
 SET( IU_MATH_HEADERS
@@ -403,9 +406,8 @@ SET( IU_SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/iufilter.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/iufilter/filter.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/iufilter/filter.cu
+  ${CMAKE_CURRENT_SOURCE_DIR}/iufilter/filterbspline_kernels.cu
   ${CMAKE_CURRENT_SOURCE_DIR}/iutransform.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/cubictexture.cu
-  ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/cubictexture_kernels.cu
   ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/reduce.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/reduce.cu
   ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/reduce_kernels.cu
@@ -414,8 +416,8 @@ SET( IU_SOURCES
 # denote kernel files as header only to not confuse the compiler
 set_source_files_properties(
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/memory_modification_kernels.cu
-  ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/reduce_kernels.cu
-  ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/cubictexture_kernels.cu
+  ${CMAKE_CURRENT_SOURCE_DIR}/iufilter/filterbspline_kernels.cu
+   ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/reduce_kernels.cu
   PROPERTIES HEADER_FILE_ONLY yes
   )
 

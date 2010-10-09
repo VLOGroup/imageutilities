@@ -48,9 +48,10 @@ int main(int argc, char** argv)
 
   iu::imshow(image, "original input");
 
-  unsigned int levels = 8;
-  iu::ImagePyramid_32f_C1 pyramid(levels, image->size(), 0.8f);
+  unsigned int levels = 100;
+  iu::ImagePyramid_32f_C1 pyramid(levels, image->size(), 0.8f, 32);
 
+  std::cout << "#levels changed to " << levels << " to fit the pyramid" << std::endl;
 
   std::stringstream stream;
   std::string winname;
@@ -60,6 +61,10 @@ int main(int argc, char** argv)
   iu::imshow(pyramid.image(0), "level 0");
 
   double time = iu::getTime();
+
+  std::cout << "level " << 0 << ": size=" << pyramid.size(0).width << "/" << pyramid.size(0).height
+            << "; rate=" << pyramid.scaleFactor(0) << std::endl;
+
 
   // print all the created level sizes:
   for(unsigned int i=1; i<pyramid.numLevels(); ++i)
