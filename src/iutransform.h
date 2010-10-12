@@ -58,9 +58,9 @@ namespace iu {
  *
  * \note The bcubic_bspline_prefilter yields sharper results when switched on. Note that this only works nicely with a scale_factor=0.5f.
  */
-void reduce(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
-            IuInterpolationType interpolation = IU_INTERPOLATE_LINEAR,
-            bool gauss_prefilter = false, bool bicubic_bspline_prefilter = false);
+IU_DLLAPI void reduce(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
+                      IuInterpolationType interpolation = IU_INTERPOLATE_LINEAR,
+                      bool gauss_prefilter = false, bool bicubic_bspline_prefilter = false);
 
 /** @} */ // end of Image Resize
 
