@@ -39,8 +39,8 @@ inline __device__ __host__ unsigned int UMIN(unsigned int a, unsigned int b)
 
 #define IU_BSPLINE_POLE (sqrtf(3.0f)-2.0f)  // pole for cubic b-spline
 
-template<class floatN> __device__ floatN InitialCausalCoefficient(
-  floatN* c,        // coefficients
+template<class PixelType> __device__ PixelType InitialCausalCoefficient(
+  PixelType* c,        // coefficients
   unsigned int DataLength,  // number of coefficients
   int step)
 {
@@ -49,7 +49,7 @@ template<class floatN> __device__ floatN InitialCausalCoefficient(
   // this initialization corresponds to mirror boundaries
   // accelerated loop
   float zn = IU_BSPLINE_POLE;
-  floatN Sum = *c;
+  PixelType Sum = *c;
   for (unsigned int n = 1; n < Horizon; n++) {
     c += step;
     Sum += zn * *c;
@@ -58,31 +58,34 @@ template<class floatN> __device__ floatN InitialCausalCoefficient(
   return(Sum);
 }
 
-template<class floatN> __device__ floatN InitialAntiCausalCoefficient(
-  floatN* c,        // last coefficient
+template<class PixelType> __device__ PixelType InitialAntiCausalCoefficient(
+  PixelType* c,        // last coefficient
   unsigned int DataLength,  // number of samples or coefficients
   int step)
 {
   // this initialization corresponds to mirror boundaries
-  return((IU_BSPLINE_POLE / (IU_BSPLINE_POLE * IU_BSPLINE_POLE - 1.0f)) * (IU_BSPLINE_POLE * c[-step] + *c));
+  return((IU_BSPLINE_POLE / (IU_BSPLINE_POLE * IU_BSPLINE_POLE - 1.0f)) *
+         (IU_BSPLINE_POLE * c[-step] + *c));
 }
 
-template<class floatN> __device__ void ConvertToInterpolationCoefficients(
-  floatN* coeffs,   // input samples --> output coefficients
+//-----------------------------------------------------------------------------
+template<class PixelType> __device__ void ConvertToInterpolationCoefficients(
+  PixelType* coeffs,   // input samples --> output coefficients
   unsigned int DataLength,  // number of samples or coefficients
   int step)
 {
   // compute the overall gain
-  const float Lambda = (1.0f - IU_BSPLINE_POLE) * (1.0f - 1.0f / IU_BSPLINE_POLE);
+  const float lambda = (1.0f - IU_BSPLINE_POLE) *
+      (1.0f - 1.0f / IU_BSPLINE_POLE);
 
   // causal initialization
-  floatN* c = coeffs;
-  floatN previous_c;  //cache the previously calculated c rather than look it up again (faster!)
-  *c = previous_c = Lambda * InitialCausalCoefficient(c, DataLength, step);
+  PixelType* c = coeffs;
+  PixelType previous_c;  //cache the previously calculated c rather than look it up again (faster!)
+  *c = previous_c = lambda * InitialCausalCoefficient(c, DataLength, step);
   // causal recursion
   for (unsigned int n = 1; n < DataLength; ++n) {
     c += step;
-    *c = previous_c = Lambda * (*c) + IU_BSPLINE_POLE * previous_c;
+    *c = previous_c = lambda * (*c) + IU_BSPLINE_POLE * previous_c;
   }
 
   // anticausal initialization
@@ -97,28 +100,28 @@ template<class floatN> __device__ void ConvertToInterpolationCoefficients(
 #undef IU_BSPLINE_POLE
 
 //-----------------------------------------------------------------------------
-template<class floatN> __global__ void cuSamplesToCoefficients2DX(
-  floatN* image, unsigned int width, unsigned int height, size_t stride)
+template<class PixelType> __global__ void cuSamplesToCoefficients2DX(
+  PixelType* image, unsigned int width, unsigned int height, size_t stride)
 {
   const unsigned int y = blockIdx.x * blockDim.x + threadIdx.x;
   if (y < height)
   {
     // process lines in x-direction
-    floatN* line = image + y * stride;  //direct access
+    PixelType* line = image + y * stride;  //direct access
 
     ConvertToInterpolationCoefficients(line, width, 1);
   }
 }
 
 //-----------------------------------------------------------------------------
-template<class floatN> __global__ void cuSamplesToCoefficients2DY(
-  floatN* image, unsigned int width, unsigned int height, size_t stride)
+template<class PixelType> __global__ void cuSamplesToCoefficients2DY(
+  PixelType* image, unsigned int width, unsigned int height, size_t stride)
 {
   const unsigned int x = blockIdx.x * blockDim.x + threadIdx.x;
   if (x < width)
   {
     // process lines in y-direction
-    floatN* line = image + x;  //direct access
+    PixelType* line = image + x;  //direct access
 
     ConvertToInterpolationCoefficients(line, height, stride);
   }
