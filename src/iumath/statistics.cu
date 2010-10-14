@@ -25,6 +25,7 @@
 #define IUMATH_STATISTICS_CU
 
 #include <iucore/copy.h>
+#include <iucore/setvalue.h>
 #include <iucore/memory_modification.h>
 #include <iucutil.h>
 #include <iucore/iutextures.cuh>

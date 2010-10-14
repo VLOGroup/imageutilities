@@ -22,8 +22,9 @@
  */
 
 #include "iucore.h"
-#include "iucore/copy.h"
-#include "iucore/memory_modification.h"
+#include <iucore/copy.h>
+#include <iucore/setvalue.h>
+#include <iucore/clamp.h>
 
 namespace iu {
 

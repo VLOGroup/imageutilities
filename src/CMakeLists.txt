@@ -354,9 +354,9 @@ SET( IU_PUBLIC_CORE_HEADERS
 # all the additional headers follow here below (we split that two for better overview and the seperated libs)
 SET( IU_CORE_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/copy.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/memory_modification.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/memory_modification.cuh
-  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/memory_modification_kernels.cu
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/setvalue.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/convert.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/clamp.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/iutextures.cuh
   )
 SET( IU_MATH_HEADERS
@@ -394,9 +394,12 @@ SET( IU_HEADERS
 
 SET( IU_SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/memory_modification.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/memory_modification.cu
-  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/memory_modification_kernels.cu
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/setvalue.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/setvalue.cu
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/convert.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/convert.cu
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/clamp.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/clamp.cu
   ${CMAKE_CURRENT_SOURCE_DIR}/iumath.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/iumath/arithmetic.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/iumath/arithmetic.cu
@@ -413,7 +416,6 @@ SET( IU_SOURCES
 
 # denote kernel files as header only to not confuse the compiler
 set_source_files_properties(
-  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/memory_modification_kernels.cu
   ${CMAKE_CURRENT_SOURCE_DIR}/iufilter/filterbspline_kernels.cu
   PROPERTIES HEADER_FILE_ONLY yes
   )

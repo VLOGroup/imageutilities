@@ -34,18 +34,17 @@ namespace iuprivate {
 //-----------------------------------------------------------------------------
 /** Reduces src image (bound to texture) by the scale_factor rate using bicubic interpolation.
  * @param dst Reduced (output) image.
- * @param dst_step_bytes Pith for output image in bytes.
+ * @param dst_stride Pith for output image in bytes.
  * @param dst_width Width of output image.
  * @param dst_height Height of output image.
  * @param rate Scale factor for x AND y direction. (val>1 for multiplication in kernel)
  */
 __global__ void cuReduceCubicKernel(float* dst,
-                                    size_t dst_step_bytes, int dst_width, int dst_height,
+                                    size_t dst_stride, int dst_width, int dst_height,
                                     float x_factor, float y_factor)
 {
   const int x = blockIdx.x*blockDim.x + threadIdx.x;
   const int y = blockIdx.y*blockDim.y + threadIdx.y;
-  const size_t step_pixels = dst_step_bytes / sizeof(float);
 
   if (x<dst_width && y<dst_height)
   {
@@ -54,25 +53,24 @@ __global__ void cuReduceCubicKernel(float* dst,
     const float yy = (y + 0.5f) * y_factor;
 
     // bilinear reduction
-    dst[y*step_pixels + x] = iu::cubicTex2D(tex1_32f_C1__, xx, yy);
+    dst[y*dst_stride + x] = iu::cubicTex2D(tex1_32f_C1__, xx, yy);
   }
 }
 
 //-----------------------------------------------------------------------------
 /** Reduces src image (bound to texture) by the scale_factor rate using linear or nearest neighbour interpolation.
  * @param dst Reduced (output) image.
- * @param dst_step_bytes Pith for output image in bytes.
+ * @param dst_stride Pith for output image in bytes.
  * @param dst_width Width of output image.
  * @param dst_height Height of output image.
  * @param rate Scale factor for x AND y direction. (val>1 for multiplication in kernel)
  */
 __global__ void cuReduceKernel(float* dst,
-                               size_t dst_step_bytes, int dst_width, int dst_height,
+                               size_t dst_stride, int dst_width, int dst_height,
                                float x_factor, float y_factor)
 {
   const int x = blockIdx.x*blockDim.x + threadIdx.x;
   const int y = blockIdx.y*blockDim.y + threadIdx.y;
-  const size_t step_pixels = dst_step_bytes / sizeof(float);
 
   if (x<dst_width && y<dst_height)
   {
@@ -81,7 +79,7 @@ __global__ void cuReduceKernel(float* dst,
     const float yy = (y + 0.5f) * y_factor;
 
     // bilinear reduction
-    dst[y*step_pixels + x] = tex2D(tex1_32f_C1__, xx, yy);
+    dst[y*dst_stride + x] = tex2D(tex1_32f_C1__, xx, yy);
   }
 }
 
@@ -106,7 +104,7 @@ IuStatus cuReduce(iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
   // bind src image to texture and use as input for reduction
   cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<float>();
   cudaBindTexture2D(0, &tex1_32f_C1__, src->data(), &channel_desc,
-                    src->width(), src->height(), src->pitch());
+                    src->width(), src->height(), src->stride());
 
   // fragmentation
   unsigned int block_size = 16;
@@ -130,14 +128,13 @@ IuStatus cuReduce(iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
   case IU_INTERPOLATE_NEAREST:
   case IU_INTERPOLATE_LINEAR: // fallthrough intended
     cuReduceKernel <<< dimGridOut, dimBlock >>> (
-        dst->data(), dst->pitch(), dst->width(), dst->height(), x_factor, y_factor);
+        dst->data(), dst->stride(), dst->width(), dst->height(), x_factor, y_factor);
     break;
   case IU_INTERPOLATE_CUBIC:
     cuReduceCubicKernel <<< dimGridOut, dimBlock >>> (
-        dst->data(), dst->pitch(), dst->width(), dst->height(), x_factor, y_factor);
+        dst->data(), dst->stride(), dst->width(), dst->height(), x_factor, y_factor);
     break;
   }
-
 
   cudaUnbindTexture(&tex1_32f_C1__);
 

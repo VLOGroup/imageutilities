@@ -28,6 +28,7 @@
 #include <iucutil.h>
 #include <iucore/iutextures.cuh>
 #include <iucore/copy.h>
+#include <iucore/setvalue.h>
 #include <iucore/memory_modification.h>
 
 #include "filterbspline_kernels.cu"

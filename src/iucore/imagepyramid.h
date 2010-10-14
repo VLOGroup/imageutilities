@@ -21,6 +21,8 @@
  *
  */
 
+#include <math.h>
+
 #ifndef IUCORE_IMAGEPYRAMID_H
 #define IUCORE_IMAGEPYRAMID_H
 

@@ -75,7 +75,7 @@ IuStatus reduce(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
     iuprivate::cubicBSplinePrefilter(filtered);
   }
 
-  cuReduce(filtered, dst, interpolation);
+  status = cuReduce(filtered, dst, interpolation);
 
 
   // cleanup
@@ -84,7 +84,7 @@ IuStatus reduce(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
     delete(filtered);
   }
 
-  return IU_SUCCESS;
+  return status;
 }
 
 }
