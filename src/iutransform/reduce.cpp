@@ -23,10 +23,22 @@
 
 #include <iucore/copy.h>
 #include <iufilter/filter.h>
-#include "reduce.cuh"
 #include "reduce.h"
 
 namespace iuprivate {
+
+/* ***************************************************************************
+ *  Declaration of CUDA WRAPPERS
+ * ***************************************************************************/
+extern IuStatus cuReduce(iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
+                         IuInterpolationType interpolation);
+
+/* ***************************************************************************/
+
+
+/* ***************************************************************************
+ *  FUNCTION IMPLEMENTATIONS
+ * ***************************************************************************/
 
 // device; 32-bit; 1-channel
 IuStatus reduce(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
@@ -59,9 +71,7 @@ IuStatus reduce(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
   {
     filtered = new iu::ImageGpu_32f_C1(src->size());
     iuprivate::copy(src, filtered);
-    status = iuprivate::cuCubicBSplinePrefilter_32f_C1I(filtered);
-    if(status != IU_SUCCESS)
-      return IU_ERROR;
+    iuprivate::cubicBSplinePrefilter(filtered);
   }
 
   cuReduce(filtered, dst, interpolation);
