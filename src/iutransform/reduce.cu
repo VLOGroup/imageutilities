@@ -104,7 +104,7 @@ IuStatus cuReduce(iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
   // bind src image to texture and use as input for reduction
   cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<float>();
   cudaBindTexture2D(0, &tex1_32f_C1__, src->data(), &channel_desc,
-                    src->width(), src->height(), src->stride());
+                    src->width(), src->height(), src->pitch());
 
   // fragmentation
   unsigned int block_size = 16;
