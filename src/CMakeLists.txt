@@ -155,7 +155,7 @@ endif()
 ## IO MODULE: OpenCV for Image I/O
 find_package( OpenCV QUIET )
 # only include if IO module is used and OpenCV found.
-if(VMLIBRARIES_IU_USE_IO AND OpenCV_INCLUDE_DIRS)
+if(VMLIBRARIES_IU_USE_IO AND OpenCV_LIBS)
 
   message("[+] ImageUtilities include IO module")
   include_directories(${OpenCV_INCLUDE_DIRS})
@@ -505,7 +505,7 @@ if(VMLIBRARIES_IU_USE_IOPGM)
     )
   target_link_libraries( ${IU_IOPGM_LIB}
     ${CUDA_LIBRARIES}
-    ${OpenCV_LIBS} ${IU_CORE_LIB}
+    ${IU_CORE_LIB}
     )
   set(IU_LIBS ${IU_LIBS} ${IU_IOPGM_LIB})
 endif(VMLIBRARIES_IU_USE_IOPGM)

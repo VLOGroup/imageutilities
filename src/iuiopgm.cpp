@@ -21,7 +21,6 @@
  *
  */
 
-#include "iuio.h"
 #include "iuio/imageiopgm.h"
 
 namespace iu {

@@ -21,6 +21,7 @@
  *
  */
 
+#include <math.h>
 #include <iucore/copy.h>
 #include <iufilter/filter.h>
 #include "reduce.h"

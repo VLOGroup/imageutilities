@@ -24,7 +24,11 @@
 #ifndef IU_CUTIL_H
 #define IU_CUTIL_H
 
+
+#ifdef __CUDACC__ // only include this error check in cuda files (seen by nvcc)
 #include <cutil_math.h>
+#endif
+
 #include <iucore/coredefs.h>
 
 // including some common device functions
