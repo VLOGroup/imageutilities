@@ -25,6 +25,7 @@
 #include <iucore/copy.h>
 #include <iucore/setvalue.h>
 #include <iucore/clamp.h>
+//#include <iuconnector/iumatlabconnector.h>
 
 namespace iu {
 
@@ -205,9 +206,9 @@ void clamp(const float& min, const float& max, iu::ImageGpu_32f_C1 *srcdst, cons
 { iuprivate::clamp(min, max, srcdst, roi); }
 
 
-///* ***************************************************************************
-//     MEMORY CONVERSIONS
-// * ***************************************************************************/
+/* ***************************************************************************
+ *  MEMORY CONVERSIONS
+ * ***************************************************************************/
 
 // conversion; device; 32-bit 3-channel -> 32-bit 4-channel
 void convert(const ImageGpu_32f_C3* src, const IuRect& src_roi, ImageGpu_32f_C4* dst, const IuRect& dst_roi)
@@ -225,6 +226,36 @@ void convert_32f8u_C1(const iu::ImageCpu_32f_C1* src, iu::ImageCpu_8u_C1* dst,
 void convert_16u32f_C1(const iu::ImageCpu_16u_C1* src, iu::ImageCpu_32f_C1 *dst,
                        float mul_constant, float add_constant)
 {iuprivate::convert_16u32f_C1(src, dst, mul_constant, add_constant);}
+
+
+///* ***************************************************************************
+// *  MATLAB CONNECTORS
+// * ***************************************************************************/
+
+//// matlab -> cpu: 32-bit; 1-channel
+//IuStatus convertMatlabToCpu(double* matlab_src_buffer,
+//                            unsigned int width, unsigned int height, size_t pitch,
+//                            iu::ImageCpu_32f_C1 *dst)
+//{ return iuprivate::convertMatlabToCpu(matlab_src_buffer, width, height, pitch, dst); }
+
+
+//// matlab -> gpu: 32-bit; 1-channel
+//IuStatus convertMatlabToGpu(double* matlab_src_buffer,
+//                            unsigned int width, unsigned int height, size_t pitch,
+//                            iu::ImageGpu_32f_C1 *dst)
+//{ return iuprivate::convertMatlabToGpu(matlab_src_buffer, width, height, pitch, dst); }
+
+//// cpu -> matlab: 32-bit; 1-channel
+//IuStatus convertCpuToMatlab(iu::ImageCpu_32f_C1 *src,
+//                            double* matlab_dst_buffer, unsigned int width, unsigned int height,
+//                            size_t pitch)
+//{ return iuprivate::convertMatlabToCpu(src, matlab_dst_buffer, width, height, pitch); }
+
+//// gpu -> matlab: 32-bit; 1-channel
+//IuStatus convertGpuToMatlab(iu::ImageGpu_32f_C1 *src,
+//                            double* matlab_dst_buffer, unsigned int width, unsigned int height,
+//                            size_t pitch)
+//{ return iuprivate::convertMatlabToGpu(src, matlab_dst_buffer, width, height, pitch); }
 
 
 } // namespace iu

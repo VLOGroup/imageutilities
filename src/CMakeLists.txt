@@ -358,6 +358,8 @@ SET( IU_CORE_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/convert.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/clamp.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/iutextures.cuh
+  ${CMAKE_CURRENT_SOURCE_DIR}/iuconnector/iumatlabconnector.h
+
   )
 SET( IU_MATH_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/iumath/arithmetic.h

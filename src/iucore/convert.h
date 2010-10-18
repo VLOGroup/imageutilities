@@ -22,8 +22,8 @@
  */
 
 
-#ifndef IUCORE_CONVERT_H
-#define IUCORE_CONVERT_H
+#ifndef IUPRIVATE_IUCORE_CONVERT_H
+#define IUPRIVATE_IUCORE_CONVERT_H
 
 //
 //  W A R N I N G
@@ -55,4 +55,4 @@ void convert(const iu::ImageGpu_32f_C4* src, const IuRect& src_roi, iu::ImageGpu
 
 } // namespace iuprivate
 
-#endif // IUCORE_CONVERT_H
+#endif // IUPRIVATE_IUCORE_CONVERT_H
