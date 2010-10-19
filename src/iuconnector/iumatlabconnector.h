@@ -43,9 +43,10 @@ namespace iuprivate {
 
 //-----------------------------------------------------------------------------
 // [host] conversion from matlab to ImageCpu memory layout
-//template<typename PixelType, class Allocator>
+template<typename PixelType, class Allocator>
 IuStatus convertMatlabToCpu(double* matlab_src_buffer, unsigned int width, unsigned int height,
-                            size_t pitch, iu::ImageCpu_32f_C1 *dst)
+                            iu::ImageCpu<PixelType, Allocator> *dst)
+
 {
   if(width > dst->width() || height > dst->height())
   {
@@ -67,14 +68,14 @@ IuStatus convertMatlabToCpu(double* matlab_src_buffer, unsigned int width, unsig
 
 //-----------------------------------------------------------------------------
 // [device] conversion from matlab to ImageGpu memory layout
-//template<typename PixelType, class Allocator>
+template<typename PixelType, class Allocator>
 IuStatus convertMatlabToGpu(double* matlab_src_buffer, unsigned int width, unsigned int height,
-                            size_t pitch, iu::ImageGpu_32f_C1 *dst)
+                            iu::ImageGpu<PixelType, Allocator> *dst)
 {
   iu::ImageCpu_32f_C1 tmp_cpu(dst->size());
   tmp_cpu.roi() = dst->roi();
 
-  IuStatus status = convertMatlabToCpu(matlab_src_buffer, width, height, pitch, &tmp_cpu);
+  IuStatus status = convertMatlabToCpu(matlab_src_buffer, width, height, &tmp_cpu);
   if(status != IU_SUCCESS)
     return status;
 
@@ -84,10 +85,9 @@ IuStatus convertMatlabToGpu(double* matlab_src_buffer, unsigned int width, unsig
 
 //-----------------------------------------------------------------------------
 // [host] conversion from ImageCpu to matlab memory layout
-//template<typename PixelType, class Allocator>
-IuStatus convertCpuToMatlab(iu::ImageCpu_32f_C1 *src,
-                            double* matlab_dst_buffer, unsigned int width, unsigned int height,
-                            size_t pitch)
+template<typename PixelType, class Allocator>
+IuStatus convertCpuToMatlab(iu::ImageCpu<PixelType, Allocator> *src,
+                            double* matlab_dst_buffer, unsigned int width, unsigned int height)
 {
   if(width > src->width() || height > src->height())
   {
@@ -109,23 +109,22 @@ IuStatus convertCpuToMatlab(iu::ImageCpu_32f_C1 *src,
 
 //-----------------------------------------------------------------------------
 // [device] conversion from matlab to ImageGpu memory layout
-//template<typename PixelType, class Allocator>
-IuStatus convertGpuToMatlab(iu::ImageGpu_32f_C1 *src,
-                            double* matlab_dst_buffer, unsigned int width, unsigned int height,
-                            size_t pitch)
+template<typename PixelType, class Allocator>
+IuStatus convertGpuToMatlab(iu::ImageGpu<PixelType, Allocator> *src,
+                            double* matlab_dst_buffer, unsigned int width, unsigned int height)
 {
   iu::ImageCpu_32f_C1 tmp_cpu(src->size());
   tmp_cpu.roi() = src->roi();
+  iu::copy(src, &tmp_cpu);
 
-  IuStatus status = convertMatlabToCpu(matlab_dst_buffer, width, height, pitch, &tmp_cpu);
+  IuStatus status = iuprivate::convertCpuToMatlab(&tmp_cpu, matlab_dst_buffer, width, height);
   if(status != IU_SUCCESS)
     return status;
 
-  iu::copy(&tmp_cpu, src);
   return IU_NO_ERROR;
 }
 
-}
+} // namespace iuprivate
 
 
 #endif // IUPRIVATE_IUMATLABCONNECTOR_H
