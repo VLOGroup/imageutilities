@@ -46,6 +46,7 @@ int main(int argc, char** argv)
 
   cv::Mat cvim = cv::imread(filename, 0);
   cv::imshow("OpenCV grayscale image", cvim);
+  cv::resize(cvim, cvim, cv::Size(131,61));
 
   cv::Mat cvim_rgb = cv::imread(filename, 1);
   cv::imshow("OpenCV color image", cvim_rgb);

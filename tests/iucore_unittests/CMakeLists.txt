@@ -47,6 +47,11 @@ TARGET_LINK_LIBRARIES(iu_volume_gpu_unittest ${IU_LIBRARIES})
 add_test(iu_volume_gpu_unittest iu_volume_gpu_unittest)
 set(IU_UNITTEST_TARGETS ${IU_UNITTEST_TARGETS} iu_volume_gpu_unittest)
 
+cuda_add_executable( iu_malloc_gpu_unittest iu_malloc_gpu_unittest.cpp )
+TARGET_LINK_LIBRARIES(iu_malloc_gpu_unittest ${IU_LIBRARIES})
+add_test(iu_malloc_gpu_unittest iu_malloc_gpu_unittest)
+set(IU_UNITTEST_TARGETS ${IU_UNITTEST_TARGETS} iu_malloc_gpu_unittest)
+
 # install targets
 message(STATUS "install targets=${IU_UNITTEST_TARGETS}")
 install(TARGETS ${IU_UNITTEST_TARGETS} RUNTIME DESTINATION bin)

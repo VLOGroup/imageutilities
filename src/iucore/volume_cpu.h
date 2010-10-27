@@ -153,7 +153,7 @@ public:
   const PixelType* data(int ox = 0, int oy = 0, int oz = 0) const
   {
     return reinterpret_cast<const PixelType*>(
-        &data_[oz*stride()*height() + oy*stride() + ox]);
+        &data_[oz*slice_stride() + oy*stride() + ox]);
   }
 
 protected:
