@@ -26,12 +26,6 @@
 
 #include <assert.h>
 
-#ifdef WIN32
-  #undef NOMINMAX
-  #define NOMINMAX
-#endif WIN32
-
-
 /** Basic assert macro
  * This macro should be used to enforce any kind of pre or post conditions.
  * Unlike the C assertion this assert also prints an error/warning as output in release mode.
@@ -259,16 +253,5 @@ struct IuCube
 
 };
 
-
-namespace iu {
-
-/* Definition of min/max functions */
-template<typename Type>
-inline Type min(Type a, Type b) {return (a<b)?a:b;}
-
-template<typename Type>
-inline Type max(Type a, Type b) {return (a>b)?a:b;}
-
-} // namespace iu
 #endif // IU_COREDEFS_H
 

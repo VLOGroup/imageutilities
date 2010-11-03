@@ -36,6 +36,15 @@
 #include <iucore/bsplinetexture_kernels.cuh>
 
 
+///// SIMPLE MIN MAX HELPERS
+template<typename Type>
+inline __host__ __device__ Type IUMIN(Type a, Type b) {return (a<b)?a:b;}
+
+template<typename Type>
+inline __host__ __device__ Type IUMAX(Type a, Type b) {return (a>b)?a:b;}
+
+
+
 // includes for time measurements
 #ifdef WIN32
   #include <time.h>

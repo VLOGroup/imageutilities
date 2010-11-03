@@ -55,9 +55,9 @@ IuStatus convertMatlabToCpu(double* matlab_src_buffer, unsigned int width, unsig
   }
 
   // iterate over the smaller block of input and output
-  for (unsigned int y = iu::max(0, dst->roi().y); y<iu::min(height, dst->roi().height); ++y)
+  for (unsigned int y = IUMAX(0, dst->roi().y); y<IUMIN(height, dst->roi().height); ++y)
   {
-    for (unsigned int x = iu::max(0, dst->roi().x); x<iu::min(width, dst->roi().width); ++x)
+    for (unsigned int x = IUMAX(0, dst->roi().x); x<IUMIN(width, dst->roi().width); ++x)
     {
       *dst->data(x,y) = static_cast<float>(matlab_src_buffer[y + x*height]);
     }
@@ -96,9 +96,9 @@ IuStatus convertCpuToMatlab(iu::ImageCpu<PixelType, Allocator> *src,
   }
 
   // iterate over the smaller block of input and output
-  for (unsigned int y = iu::max(0, src->roi().y); y<iu::min(height, src->roi().height); ++y)
+  for (unsigned int y = IUMAX(0, src->roi().y); y<IUMIN(height, src->roi().height); ++y)
   {
-    for (unsigned int x = iu::max(0, src->roi().x); x<iu::min(width, src->roi().width); ++x)
+    for (unsigned int x = IUMAX(0, src->roi().x); x<IUMIN(width, src->roi().width); ++x)
     {
       matlab_dst_buffer[y + x*height] = static_cast<double>(*src->data(x,y));
     }
