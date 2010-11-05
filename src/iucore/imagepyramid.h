@@ -69,7 +69,8 @@ public:
       scale_factors_[i] = pow(scale_factor, static_cast<float>(i));
 
       // alloc image memory
-      IuSize sz((int)(size.width*scale_factors_[i]+0.5f), (int)(size.height*scale_factors_[i]+0.5f));
+      IuSize sz(static_cast<int>(round(static_cast<double>(size.width)*static_cast<double>(scale_factors_[i]))),
+                static_cast<int>(round(static_cast<double>(size.height)*static_cast<double>(scale_factors_[i]))));
       images_[i] = new ImageType(sz);
     }
   }
