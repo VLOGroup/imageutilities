@@ -177,6 +177,10 @@ struct IuRect
     return *this;
   }
 
+  IuSize size()
+  {
+    return IuSize(this->width, this->height);
+  }
 
 };
 
