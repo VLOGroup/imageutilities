@@ -394,6 +394,26 @@ IU_DLLAPI IuStatus convertMatlabToCpu(double* matlab_src_buffer, unsigned int wi
 IU_DLLAPI IuStatus convertMatlabToGpu(double* matlab_src_buffer, unsigned int width, unsigned int height,
                                       iu::ImageGpu_32f_C1 *dst);
 
+/** Converts 3-channel matlab memory layout to an 4-channel ImageCpu memory layout.
+ * \param matlab_src_buffer Matlab image buffer.
+ * \param width Width of the matlab image.
+ * \param height Height of the matlab image.
+ * \param pitch Pitch of the matlab image memory.
+ * \param dst Destination image on the device.
+ */
+IU_DLLAPI IuStatus convertMatlabC3ToCpuC4(double* matlab_src_buffer, unsigned int width, unsigned int height,
+                                          iu::ImageCpu_32f_C4 *dst);
+
+/** Converts 3-channel matlab memory layout to an 4-channel ImageGpu memory layout.
+ * \param matlab_src_buffer Matlab image buffer.
+ * \param width Width of the matlab image.
+ * \param height Height of the matlab image.
+ * \param pitch Pitch of the matlab image memory.
+ * \param dst Destination image on the device.
+ */
+IU_DLLAPI IuStatus convertMatlabC3ToGpuC4(double* matlab_src_buffer, unsigned int width, unsigned int height,
+                                          iu::ImageGpu_32f_C4 *dst);
+
 /** Converts matlab memory layout to an ImageCpu memory layout.
  * \param matlab_src_buffer Matlab image buffer.
  * \param width Width of the matlab image.

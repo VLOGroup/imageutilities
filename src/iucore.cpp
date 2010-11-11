@@ -243,6 +243,16 @@ IuStatus convertMatlabToGpu(double* matlab_src_buffer, unsigned int width, unsig
                             iu::ImageGpu_32f_C1 *dst)
 { return iuprivate::convertMatlabToGpu(matlab_src_buffer, width, height, dst); }
 
+// matlab -> cpu: 32-bit; 3-channel -> 4-channel
+IuStatus convertMatlabC3ToCpuC4(double* matlab_src_buffer, unsigned int width, unsigned int height,
+                                iu::ImageCpu_32f_C4 *dst)
+{ return iuprivate::convertMatlabC3ToCpuC4(matlab_src_buffer, width, height, dst); }
+
+// matlab -> gpu: 32-bit; 3-channel -> 4-channel
+IuStatus convertMatlabC3ToGpuC4(double* matlab_src_buffer, unsigned int width, unsigned int height,
+                                iu::ImageGpu_32f_C4 *dst)
+{ return iuprivate::convertMatlabC3ToGpuC4(matlab_src_buffer, width, height, dst); }
+
 // cpu -> matlab: 32-bit; 1-channel
 IuStatus convertCpuToMatlab(iu::ImageCpu_32f_C1 *src,
                             double* matlab_dst_buffer, unsigned int width, unsigned int height)
