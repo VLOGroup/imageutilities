@@ -25,6 +25,7 @@
 #define IMAGE_ALLOCATOR_CPU_H
 
 #include <cstring>
+#include <math.h>
 #include "coredefs.h"
 
 namespace iuprivate {
@@ -37,6 +38,10 @@ public:
   static PixelType* alloc(unsigned int width, unsigned int height, size_t *pitch)
   {
     IU_ASSERT(width * height > 0);
+    // manually pitch the memory to 32-byte alignment (for better support of eg. IPP functions)
+    *pitch = width * sizeof(PixelType);
+    unsigned int elements_to_pitch = (32-(*pitch % 32))/sizeof(PixelType);
+    width += elements_to_pitch;
     PixelType *buffer = new PixelType[width * height];
     IU_ASSERT(buffer != 0);
     *pitch = width * sizeof(PixelType);

@@ -103,6 +103,8 @@ iu::ImageCpu_32f_C3* imread_32f_C3(const std::string& filename)
   iu::ImageCpu_32f_C3* im = new iu::ImageCpu_32f_C3(sz);
   cv::Mat im_mat(sz.height, sz.width, CV_32FC3, im->data(), im->pitch());
 
+  printf("im_pitch=%d\n", mat.step);
+
   IU_ASSERT( mat_32f_C3.size() == im_mat.size() );
   cv::cvtColor(mat_32f_C3, im_mat, CV_BGR2RGB);
   return im;
