@@ -144,8 +144,6 @@ public:
   }
 
 protected:
-
-private:
   PixelType* data_;
   size_t pitch_;
   bool ext_data_pointer_; /**< Flag if data pointer is handled outside the image class. */

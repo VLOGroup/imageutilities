@@ -34,7 +34,8 @@ class ImageCpu : public Image
 {
 public:
   ImageCpu() :
-      data_(0), pitch_(0), ext_data_pointer_(false)
+    Image(),
+    data_(0), pitch_(0), ext_data_pointer_(false)
   {
   }
 
@@ -50,22 +51,22 @@ public:
   }
 
   ImageCpu(unsigned int _width, unsigned int _height) :
-      Image(_width, _height), data_(0), pitch_(0),
-      ext_data_pointer_(false)
+    Image(_width, _height), data_(0), pitch_(0),
+    ext_data_pointer_(false)
   {
     data_ = Allocator::alloc(_width, _height, &pitch_);
   }
 
   ImageCpu(const IuSize& size) :
-      Image(size.width, size.height), data_(0), pitch_(0),
-      ext_data_pointer_(false)
+    Image(size.width, size.height), data_(0), pitch_(0),
+    ext_data_pointer_(false)
   {
     data_ = Allocator::alloc(size.width, size.height, &pitch_);
   }
 
   ImageCpu(const ImageCpu<PixelType, Allocator>& from) :
-      Image(from), data_(0), pitch_(0),
-      ext_data_pointer_(false)
+    Image(from), data_(0), pitch_(0),
+    ext_data_pointer_(false)
   {
     data_ = Allocator::alloc(width(), height(), &pitch_);
     Allocator::copy(from.data(), from.pitch(), data_, pitch_, this->size());
@@ -73,8 +74,8 @@ public:
 
   ImageCpu(PixelType* _data, unsigned int _width, unsigned int _height,
            size_t _pitch, bool ext_data_pointer = false) :
-      Image(_width, _height), data_(0), pitch_(0),
-      ext_data_pointer_(ext_data_pointer)
+    Image(_width, _height), data_(0), pitch_(0),
+    ext_data_pointer_(ext_data_pointer)
   {
     if(ext_data_pointer_)
     {
@@ -88,7 +89,7 @@ public:
       Allocator::copy(_data, _pitch, data_, pitch_, this->size());
     }
   }
-      // :TODO:
+  // :TODO:
   //ImageCpu& operator= (const ImageCpu<PixelType, Allocator>& from);
 
   /** Returns the total amount of bytes saved in the data buffer. */
@@ -134,12 +135,10 @@ public:
   const PixelType* data(int ox = 0, int oy = 0) const
   {
     return reinterpret_cast<const PixelType*>(
-        &data_[oy * stride() + ox]);
+          &data_[oy * stride() + ox]);
   }
 
 protected:
-
-private:
   PixelType* data_;
   size_t pitch_;
   bool ext_data_pointer_; /**< Flag if data pointer is handled outside the image class. */

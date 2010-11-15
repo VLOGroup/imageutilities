@@ -38,7 +38,7 @@ endif(NOT VMLIBRARIES_DIR)
 set(IU_USE_FILE ${VMLIBRARIES_CMAKE_ROOT}/UseImageUtilities.cmake CACHE FILEPATH "USE file for including the correct headers and libs.")
 
 # set a variable for all possible modules
-set(IU_MODULES iucore iugui iuio iuiopgm iuvideocapture iupgrcamera)
+set(IU_MODULES iucore iuipp iugui iuio iuiopgm iuvideocapture iupgrcamera)
 
 ################################################################################
 #
@@ -186,6 +186,7 @@ else(IU_INCLUDE_DIRS AND IU_LIBRARY_DIR)
   ################################################################################
   # external dependencies
   set(IU_IUCORE_LIB_DEPENDENCIES "")
+  set(IU_IUIPP_LIB_DEPENDENCIES "")
   set(IU_IUGUI_LIB_DEPENDENCIES "")
   set(IU_IUIO_LIB_DEPENDENCIES "")
   set(IU_IUIOPGM_LIB_DEPENDENCIES "")
@@ -203,6 +204,18 @@ else(IU_INCLUDE_DIRS AND IU_LIBRARY_DIR)
       set(IU_IUCORE_LIB_DEPENDENCIES ${IU_IUCORE_LIB_DEPENDENCIES} ${CUDA_LIBRARIES})
     endif(CUDA_FOUND AND CUDASDK_FOUND)
   endif(IU_IUCORE_FOUND)
+
+  ## IPP module
+  if(IU_IUIPP_FOUND)
+    # IPP
+    find_package( IPP QUIET )
+    if(IPP_INCLUDE_DIR)
+      include_directories(${IPP_INCLUDE_DIRS})
+      set(IU_IUIPP_LIB_DEPENDENCIES ${IU_IUIPP_LIB_DEPENDENCIES} ${IPP_LIBRARIES})
+    endif(IPP_INCLUDE_DIR)
+
+  endif(IU_IUIPP_FOUND)
+
 
   ## GUI module
   if(IU_IUGUI_FOUND)
@@ -285,8 +298,16 @@ else(IU_INCLUDE_DIRS AND IU_LIBRARY_DIR)
 
   endif(IU_IUPGRCAMERA_FOUND)
 
-  mark_as_advanced(IU_IUCORE_LIB_DEPENDENCIES 
-    IU_IUGUI_LIB_DEPENDENCIES IU_IUIO_LIB_DEPENDENCIES IU_IUIOPGM_LIB_DEPENDENCIES IU_IUVIDEOCAPTURE_LIB_DEPENDENCIES IU_IUPGRCAMERA_LIB_DEPENDENCIES)
-  mark_as_advanced(IU_INCLUDE_DIRS IU_LIBRARY_DIR)
+  mark_as_advanced(
+    IU_IUCORE_LIB_DEPENDENCIES 
+    IU_IUIPP_LIB_DEPENDENCIES 
+    IU_IUGUI_LIB_DEPENDENCIES
+    IU_IUIO_LIB_DEPENDENCIES
+    IU_IUIOPGM_LIB_DEPENDENCIES
+    IU_IUVIDEOCAPTURE_LIB_DEPENDENCIES
+    IU_IUPGRCAMERA_LIB_DEPENDENCIES
+    IU_INCLUDE_DIRS 
+    IU_LIBRARY_DIR
+    )
 
 endif(IU_INCLUDE_DIRS AND IU_LIBRARY_DIR)

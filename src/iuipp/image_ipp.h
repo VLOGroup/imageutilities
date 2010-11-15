@@ -24,18 +24,20 @@
 #ifndef IUCORE_IMAGE_IPP_H
 #define IUCORE_IMAGE_IPP_H
 
-#include <ippdefs.h>
+#include <iudefs.h>
 #include <iucore/image.h>
+#include <ippdefs.h>
 #include "image_allocator_ipp.h"
 
 namespace iu {
 
 template<typename PixelType, unsigned int NumChannels, class Allocator>
-class ImageIpp : public Image
+class ImageIpp : public virtual Image
 {
 public:
   ImageIpp() :
-      data_(0), pitch_(0), n_channels_(NumChannels), ext_data_pointer_(false)
+    Image(),
+    data_(0), pitch_(0), ext_data_pointer_(false), n_channels_(NumChannels)
   {
   }
 
@@ -51,29 +53,29 @@ public:
   }
 
   ImageIpp(unsigned int _width, unsigned int _height) :
-      Image(_width, _height), data_(0), pitch_(0), n_channels_(NumChannels),
-      ext_data_pointer_(false)
+    Image(_width, _height), data_(0), pitch_(0),
+    n_channels_(NumChannels)
   {
     data_ = Allocator::alloc(_width, _height, &pitch_);
   }
 
   ImageIpp(const IppiSize& size) :
-      Image(size.width, size.height), data_(0), pitch_(0), n_channels_(NumChannels),
-      ext_data_pointer_(false)
+    Image(size.width, size.height), data_(0), pitch_(0),
+    n_channels_(NumChannels)
   {
     data_ = Allocator::alloc(size.width, size.height, &pitch_);
   }
 
   ImageIpp(const IuSize& size) :
-      Image(size), data_(0), pitch_(0), n_channels_(NumChannels),
-      ext_data_pointer_(false)
+    Image(size.width, size.height), data_(0), pitch_(0),
+    n_channels_(NumChannels)
   {
     data_ = Allocator::alloc(width(), height(), &pitch_);
   }
 
   ImageIpp(const ImageIpp<PixelType, NumChannels, Allocator>& from) :
-      Image(from), data_(0), pitch_(0), n_channels_(NumChannels),
-      ext_data_pointer_(false)
+    Image(from), data_(0), pitch_(0),
+    n_channels_(NumChannels)
   {
     data_ = Allocator::alloc(width(), height(), &pitch_);
     Allocator::copy(from.data(), from.pitch(), data_, pitch_, this->size());
@@ -81,8 +83,8 @@ public:
 
   ImageIpp(PixelType* _data, unsigned int _width, unsigned int _height,
            size_t _pitch, bool ext_data_pointer = false) :
-      Image(_width, _height), data_(0), pitch_(0), n_channels_(NumChannels),
-      ext_data_pointer_(ext_data_pointer)
+    Image(_width, _height), data_(0), pitch_(0),
+    ext_data_pointer_(ext_data_pointer), n_channels_(NumChannels)
   {
     if(ext_data_pointer_)
     {
@@ -96,13 +98,13 @@ public:
       Allocator::copy(_data, _pitch, data_, pitch_, this->size());
     }
   }
-      // :TODO:
+  // :TODO:
   //ImageIpp& operator= (const ImageIpp<PixelType, numChannels, Allocator>& from);
 
   /** Returns the total amount of bytes saved in the data buffer. */
   size_t bytes() const
   {
-    return width()*pitch_;
+    return height()*pitch_;
   }
 
   /** Returns the distance in bytes between starts of consecutive rows. */
@@ -115,12 +117,6 @@ public:
   size_t stride() const
   {
     return pitch_/sizeof(PixelType);
-  }
-
-  /** Returns the number of channels. */
-  virtual unsigned int nChannels() const
-  {
-    return n_channels_;
   }
 
   /** Returns the bit depth of the data pointer. */
@@ -149,6 +145,13 @@ public:
     return r;
   }
 
+  /** Returns the number of channels. */
+  unsigned int nChannels() const
+  {
+    return n_channels_;
+  }
+
+
   /** Returns a pointer to the pixel data.
    * The pointer can be offset to position \a (ox/oy).
    * @param[in] ox Horizontal offset of the pointer array.
@@ -157,20 +160,20 @@ public:
    */
   PixelType* data(int ox = 0, int oy = 0)
   {
-    return &data_[oy * stride() + ox * n_channels_];
+    return &data_[oy * stride() + ox*n_channels_];
   }
   const PixelType* data(int ox = 0, int oy = 0) const
   {
     return reinterpret_cast<const PixelType*>(
-        &data_[oy * stride() + ox * n_channels_]);
+          &data_[oy * stride() + ox]);
   }
 
 protected:
+  unsigned int n_channels_;
 
 private:
   PixelType* data_;
   size_t pitch_;
-  unsigned int n_channels_;
   bool ext_data_pointer_; /**< Flag if data pointer is handled outside the image class. */
 };
 

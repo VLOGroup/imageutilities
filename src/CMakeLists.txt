@@ -17,7 +17,7 @@
 # Author     : Manuel Werlberger
 # EMail      : werlberger@icg.tugraz.at
 
-project(ImageUtilities CXX C)
+project(imageutilities_lib CXX C)
 #set(CMAKE_BUILD_TYPE Debug)
 cmake_minimum_required(VERSION 2.8.0)
 
@@ -28,13 +28,13 @@ set(${IU_PUBLIC_HEADERS} "")
 set( CMAKE_DEBUG_POSTFIX "d" )
 
 FILE(TO_CMAKE_PATH "$ENV{CMAKE_MODULE_PATH}" OT_CMAKE_MODULE_PATH)
-FILE(TO_CMAKE_PATH "$ENV{ICG_CMAKE_MODULE_PATH}" OT_ICG_CMAKE_MODULE_PATH)
-SET(CMAKE_MODULE_PATH ${OT_CMAKE_MODULE_PATH} ${OT_ICG_CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/../cmake)
+#FILE(TO_CMAKE_PATH "$ENV{ICG_CMAKE_MODULE_PATH}" OT_ICG_CMAKE_MODULE_PATH)
+SET(CMAKE_MODULE_PATH ${OT_CMAKE_MODULE_PATH} ${OT_ICG_CMAKE_MODULE_PATH} $ENV{VMLIBRARIES_ROOT}/cmake)
 
 ##-----------------------------------------------------------------------------
 ## Current version number:
 ##-----------------------------------------------------------------------------
-set(IMAGEUTILITIES_VERSION "1.1.0")
+set(IMAGEUTILITIES_VERSION "1.2.0")
 
 string(REGEX MATCHALL "[0-9]" IMAGEUTILITIES_VERSION_PARTS "${IMAGEUTILITIES_VERSION}")
 
@@ -58,6 +58,7 @@ endif()
 ## Flags if modules are used.
 ## The modules are included per default unless dependencies not found or omitted by the user.
 ## (the core module is always included!)
+OPTION(VMLIBRARIES_IU_USE_IPP "Including IPP module." ON)
 OPTION(VMLIBRARIES_IU_USE_GUI "Including GUI module." OFF)
 OPTION(VMLIBRARIES_IU_USE_IO "Including IO module." ON)
 OPTION(VMLIBRARIES_IU_USE_IOPGM "Including IOPGM module." ON)
@@ -94,6 +95,39 @@ find_package(CUDASDK REQUIRED)
 cuda_include_directories(${CUDA_INCLUDE_DIRS} ${CUDA_CUT_INCLUDE_DIR})
 include_directories(${CUDA_INCLUDE_DIRS} ${CUDA_CUT_INCLUDE_DIR})
 set(IU_IUCORE_LIB_DEPENDENCIES ${IU_IUCORE_LIB_DEPENDENCIES} ${CUDA_LIBRARIES})
+
+##-----------------------------------------------------------------------------
+## Ipp
+find_package(IPP QUIET)
+if(VMLIBRARIES_IU_USE_IPP AND IPP_INCLUDE_DIR)
+  message("[+] ImageUtilities include IPP module")
+
+  include_directories(${IPP_INCLUDE_DIR})
+
+  set( IU_IPP_HEADERS
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuipp/copy_ipp.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuipp/image_allocator_ipp.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuipp/image_ipp.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuipp/memorydefs_ipp.h
+  )
+
+  set( IU_PUBLIC_HEADERS
+    ${IU_PUBLIC_HEADERS}
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuipp.h
+    )
+
+  set( IU_IPP_SOURCES
+#    ${CMAKE_CURRENT_SOURCE_DIR}/iuconnetor/copy_ipp.h
+  )
+
+else()
+  message("[-] ImageUtilities omitting Ipp module.")
+  set(VMLIBRARIES_IU_USE_IPP OFF CACHE PATH "IU: Omit IPP module." FORCE)
+
+  # empty libraries
+  set(IPP_LIBRARIES "")
+
+endif()
 
 ##-----------------------------------------------------------------------------
 ## Qt
@@ -326,7 +360,6 @@ SET( IU_PUBLIC_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/iumath.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iufilter.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iutransform.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/iucoreippconnector.h
   )
 
 SET( IU_PUBLIC_CORE_HEADERS
@@ -358,7 +391,6 @@ SET( IU_CORE_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/convert.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/clamp.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/iutextures.cuh
-  ${CMAKE_CURRENT_SOURCE_DIR}/iuconnector/iumatlabconnector.h
 
   )
 SET( IU_MATH_HEADERS
@@ -379,10 +411,7 @@ SET( IU_TRANSFORM_HEADERS
 
 
 SET( IU_CONNECTOR_HEADERS
-  ${CMAKE_CURRENT_SOURCE_DIR}/iuconnector/copy_ipp.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/iuconnector/image_allocator_ipp.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/iuconnector/image_ipp.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/iuconnector/memorydefs_ipp.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iuconnector/iumatlabconnector.h
   )
 
 SET( IU_HEADERS
@@ -392,6 +421,7 @@ SET( IU_HEADERS
   ${IU_MATH_HEADERS}
   ${IU_FILTER_HEADERS}
   ${IU_TRANSFORM_HEADERS}
+  ${IU_CONNECTOR_HEADERS}
   )
 
 SET( IU_SOURCES
@@ -425,6 +455,7 @@ set_source_files_properties(
 ##-----------------------------------------------------------------------------
 set( IU_ALL_FILES
   ${IU_HEADERS}
+  ${IU_IPP_HEADERS}
   ${IU_GUI_HEADERS}
   ${IU_IO_HEADERS}
   ${IU_VIDEOCAPTURE_HEADERS}
@@ -463,9 +494,27 @@ target_link_libraries( ${IU_CORE_LIB} ${CUDA_LIBRARIES})
 set(IU_LIBS ${IU_LIBS} ${IU_CORE_LIB})
 
 ##-----------------------------------------------------------------------------
+## build ipp-based part of library
+set(IU_IPP_LIB iuipp)
+if(VMLIBRARIES_IU_USE_IPP)
+  cuda_add_library( ${IU_IPP_LIB} SHARED ${IU_IPP_HEADERS} ${IU_IPP_SOURCES})
+  set_target_properties(${IU_IPP_LIB} PROPERTIES
+    DEFINE_SYMBOL IU_DLL_EXPORTS
+    VERSION ${IMAGEUTILITIES_VERSION}
+    SOVERSION ${IMAGEUTILITIES_SOVERSION}
+    )
+  target_link_libraries( ${IU_IPP_LIB}
+    ${IPP_LIBRARIES}
+    )
+  set(IU_LIBS ${IU_LIBS} ${IU_IPP_LIB})
+
+endif(VMLIBRARIES_IU_USE_IPP)
+
+
+##-----------------------------------------------------------------------------
 ## build gui library
-if(VMLIBRARIES_IU_USE_GUI)
 set(IU_GUI_LIB iugui)
+if(VMLIBRARIES_IU_USE_GUI)
   cuda_add_library( ${IU_GUI_LIB} SHARED ${IU_GUI_HEADERS} ${IU_GUI_SOURCES} ${IU_GUI_MOC_SOURCES} )
   set_target_properties(${IU_GUI_LIB} PROPERTIES
     DEFINE_SYMBOL IU_DLL_EXPORTS
@@ -629,6 +678,10 @@ install( TARGETS ${IU_LIBS}
   )
 install(FILES ${IU_PUBLIC_CORE_HEADERS}
   DESTINATION include/iu/iucore
+  COMPONENT Headers
+  )
+install(FILES ${IU_IPP_HEADERS}
+  DESTINATION include/iu/iuipp
   COMPONENT Headers
   )
 install(FILES ${IU_CONNECTOR_HEADERS}

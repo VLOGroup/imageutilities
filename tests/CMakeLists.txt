@@ -17,7 +17,7 @@
 # Author     : Manuel Werlberger
 # EMail      : werlberger@icg.tugraz.at
 
-PROJECT(ImageUtilities_Tests CXX C)
+PROJECT(imageutilities_tests CXX C)
 
 cmake_minimum_required(VERSION 2.8.0)
 if(COMMAND cmake_policy)
@@ -67,6 +67,7 @@ endif(WIN32)
 include(CTest)
 enable_testing()
 add_subdirectory(iucore_unittests)
+add_subdirectory(iuipp_unittests)
 add_subdirectory(iumath_unittests)
 #add_subdirectory(iugui_unittests)
 add_subdirectory(iuio_unittests)
