@@ -63,11 +63,16 @@ IF(WIN32)
   SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /NODEFAULTLIB:LIBCMT.lib")
 endif(WIN32)
 
+## test if ipp is available
+find_package(IPP QUIET)
+
 ## combine different tests:
 include(CTest)
 enable_testing()
 add_subdirectory(iucore_unittests)
-add_subdirectory(iuipp_unittests)
+if(IPP_INCLUDE_DIR)
+  add_subdirectory(iuipp_unittests)
+endif(IPP_INCLUDE_DIR)
 add_subdirectory(iumath_unittests)
 #add_subdirectory(iugui_unittests)
 add_subdirectory(iuio_unittests)

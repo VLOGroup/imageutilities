@@ -26,6 +26,7 @@
 #include "iudefs.h"
 #include "iuipp/memorydefs_ipp.h"
 #include "iuipp/copy_ipp.h"
+#include "iuipp/image_ipp_to_cpu_connector.h"
 
 
 #endif // IUCOREIPPCONNECTOR_H

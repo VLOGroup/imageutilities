@@ -26,6 +26,7 @@
 
 #include <iudefs.h>
 #include <iucore/image.h>
+#include <iucore/image_cpu.h>
 #include <ippdefs.h>
 #include "image_allocator_ipp.h"
 
@@ -151,7 +152,6 @@ public:
     return n_channels_;
   }
 
-
   /** Returns a pointer to the pixel data.
    * The pointer can be offset to position \a (ox/oy).
    * @param[in] ox Horizontal offset of the pointer array.
@@ -168,13 +168,11 @@ public:
           &data_[oy * stride() + ox]);
   }
 
-protected:
-  unsigned int n_channels_;
-
 private:
   PixelType* data_;
   size_t pitch_;
   bool ext_data_pointer_; /**< Flag if data pointer is handled outside the image class. */
+  unsigned int n_channels_;
 };
 
 } // namespace iuprivate

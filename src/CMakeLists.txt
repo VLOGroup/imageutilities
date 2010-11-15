@@ -105,10 +105,11 @@ if(VMLIBRARIES_IU_USE_IPP AND IPP_INCLUDE_DIR)
   include_directories(${IPP_INCLUDE_DIR})
 
   set( IU_IPP_HEADERS
-    ${CMAKE_CURRENT_SOURCE_DIR}/iuipp/copy_ipp.h
     ${CMAKE_CURRENT_SOURCE_DIR}/iuipp/image_allocator_ipp.h
     ${CMAKE_CURRENT_SOURCE_DIR}/iuipp/image_ipp.h
     ${CMAKE_CURRENT_SOURCE_DIR}/iuipp/memorydefs_ipp.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuipp/copy_ipp.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuipp/image_ipp_to_cpu_connector.h
   )
 
   set( IU_PUBLIC_HEADERS
