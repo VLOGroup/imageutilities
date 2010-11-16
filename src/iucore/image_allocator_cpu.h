@@ -37,6 +37,9 @@ class ImageAllocatorCpu
 public:
   static PixelType* alloc(unsigned int width, unsigned int height, size_t *pitch)
   {
+    // TODO: use sse malloc stuff so that pointers are aligned to 16/32-bytes!
+    // is there an optimal way to do that in windows and linux?
+
     IU_ASSERT(width * height > 0);
     // manually pitch the memory to 32-byte alignment (for better support of eg. IPP functions)
     *pitch = width * sizeof(PixelType);

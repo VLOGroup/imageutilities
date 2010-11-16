@@ -42,11 +42,11 @@
 
 
 ///// SIMPLE MIN MAX HELPERS
-template<typename Type>
-inline __host__ __device__ Type IUMIN(Type a, Type b) {return (a<b)?a:b;}
+template<typename Type1, typename Type2>
+inline __host__ __device__ Type2 IUMIN(Type1 a, Type2 b) {return (a<b)?a:b;}
 
-template<typename Type>
-inline __host__ __device__ Type IUMAX(Type a, Type b) {return (a>b)?a:b;}
+template<typename Type1, typename Type2>
+inline __host__ __device__ Type2 IUMAX(Type1 a, Type2 b) {return (a>b)?a:b;}
 
 
 
