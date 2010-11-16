@@ -128,6 +128,43 @@ IuStatus convertMatlabC3ToGpuC4(double* matlab_src_buffer, unsigned int width, u
 }
 
 //-----------------------------------------------------------------------------
+// [host] conversion from ImageCpu 4-channel to matlab 3-channel memory layout
+IuStatus convertCpuC4ToMatlabC3(iu::ImageCpu_32f_C4 *src, double* matlab_dst_buffer)
+{
+  int width = src->roi().width;
+  int height = src->roi().height;
+
+  // iterate over the smaller block of input and output
+  for (unsigned int y = src->roi().y; y<height; ++y)
+  {
+    for (unsigned int x = src->roi().x; x<width; ++x)
+    {
+      matlab_dst_buffer[y + x*height] = static_cast<double>(src->data(x,y)->x);
+      matlab_dst_buffer[y + x*height + width*height] = static_cast<double>(src->data(x,y)->y);
+      matlab_dst_buffer[y + x*height + 2*width*height] = static_cast<double>(src->data(x,y)->z);
+    }
+  }
+
+  return IU_NO_ERROR;
+}
+
+
+//-----------------------------------------------------------------------------
+// [device] conversion from ImageGpu 4-channel to matlab 3-channel memory layout
+IuStatus convertGpuC4ToMatlabC3(iu::ImageGpu_32f_C4 *src, double* matlab_dst_buffer)
+{
+  iu::ImageCpu_32f_C4 tmp_cpu(src->size());
+  tmp_cpu.roi() = src->roi();
+  iu::copy(src, &tmp_cpu);
+
+  IuStatus status = iuprivate::convertCpuC4ToMatlabC3(&tmp_cpu, matlab_dst_buffer);
+  if(status != IU_SUCCESS)
+    return status;
+
+  return IU_NO_ERROR;
+}
+
+//-----------------------------------------------------------------------------
 // [host] conversion from ImageCpu to matlab memory layout
 template<typename PixelType, class Allocator>
 IuStatus convertCpuToMatlab(iu::ImageCpu<PixelType, Allocator> *src,
