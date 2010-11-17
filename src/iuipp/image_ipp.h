@@ -158,14 +158,14 @@ public:
    * @param[in] oy Vertical offset of the pointer array.
    * @return Pointer to the pixel array.
    */
-  PixelType* data(int ox = 0, int oy = 0)
+  PixelType* data(int ox = 0, int oy = 0, int channel = 0)
   {
-    return &data_[oy * stride() + ox*n_channels_];
+    return &data_[oy * stride() + ox*n_channels_ + channel];
   }
-  const PixelType* data(int ox = 0, int oy = 0) const
+  const PixelType* data(int ox = 0, int oy = 0, int channel = 0) const
   {
     return reinterpret_cast<const PixelType*>(
-          &data_[oy * stride() + ox]);
+          &data_[oy * stride() + ox*n_channels_ + channel]);
   }
 
 private:
