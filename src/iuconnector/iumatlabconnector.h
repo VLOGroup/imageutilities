@@ -131,8 +131,8 @@ IuStatus convertMatlabC3ToGpuC4(double* matlab_src_buffer, unsigned int width, u
 // [host] conversion from ImageCpu 4-channel to matlab 3-channel memory layout
 IuStatus convertCpuC4ToMatlabC3(iu::ImageCpu_32f_C4 *src, double* matlab_dst_buffer)
 {
-  int width = src->roi().width;
-  int height = src->roi().height;
+  unsigned int width = src->roi().width;
+  unsigned int height = src->roi().height;
 
   // iterate over the smaller block of input and output
   for (unsigned int y = src->roi().y; y<height; ++y)

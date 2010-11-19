@@ -28,13 +28,13 @@ set(${IU_PUBLIC_HEADERS} "")
 set( CMAKE_DEBUG_POSTFIX "d" )
 
 FILE(TO_CMAKE_PATH "$ENV{CMAKE_MODULE_PATH}" OT_CMAKE_MODULE_PATH)
-#FILE(TO_CMAKE_PATH "$ENV{ICG_CMAKE_MODULE_PATH}" OT_ICG_CMAKE_MODULE_PATH)
-SET(CMAKE_MODULE_PATH ${OT_CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/../../cmake)
+FILE(TO_CMAKE_PATH "$ENV{VMLIBRARIES_ROOT}/cmake" OT_VMLIBRARIES_CMAKE_MODULE_PATH)
+SET(CMAKE_MODULE_PATH ${OT_CMAKE_MODULE_PATH} ${OT_VMLIBRARIES_CMAKE_MODULE_PATH})
 
 ##-----------------------------------------------------------------------------
 ## Current version number:
 ##-----------------------------------------------------------------------------
-set(IMAGEUTILITIES_VERSION "1.2.0")
+set(IMAGEUTILITIES_VERSION "1.3.0")
 
 string(REGEX MATCHALL "[0-9]" IMAGEUTILITIES_VERSION_PARTS "${IMAGEUTILITIES_VERSION}")
 
@@ -95,6 +95,22 @@ find_package(CUDASDK REQUIRED)
 cuda_include_directories(${CUDA_INCLUDE_DIRS} ${CUDA_CUT_INCLUDE_DIR})
 include_directories(${CUDA_INCLUDE_DIRS} ${CUDA_CUT_INCLUDE_DIR})
 set(IU_IUCORE_LIB_DEPENDENCIES ${IU_IUCORE_LIB_DEPENDENCIES} ${CUDA_LIBRARIES})
+
+# Checking cuda version
+# set defines due to some missing functions in cuda 3.1
+if((CUDA_VERSION_MAJOR EQUAL 3) AND (CUDA_VERSION_MINOR EQUAL 1))
+  # using CUDA 3.1
+  message(STATUS "IU: using CUDA 3.1")
+  add_definitions(-DCUDA_VERSION_31)
+endif()
+
+if((CUDA_VERSION_MAJOR EQUAL 3) AND (CUDA_VERSION_MINOR EQUAL 2))
+  # using CUDA 3.2
+  message(STATUS "IU: using CUDA 3.2")
+  add_definitions(-DCUDA_VERSION_32)
+elseif()
+  message(STATUS "unknown CUDA version. some things might not be tested.")
+endif()
 
 ##-----------------------------------------------------------------------------
 ## Ipp

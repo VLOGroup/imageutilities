@@ -10,6 +10,7 @@
 # IU_LIBRARY_DIR
 #
 # IU_EXT_DEP_LIBS is used to combine all external dependencies into a single variable....
+# IU_DEFINITIONS is used to combine all definitions for e.g. compiler switches...
 
 
 # Use FIND_PACKAGE(ImageUtilities COMPONENTS ...) to enable modules
@@ -202,6 +203,23 @@ else(IU_INCLUDE_DIRS AND IU_LIBRARY_DIR)
       cuda_include_directories(${CUDA_INCLUDE_DIRS} ${CUDA_CUT_INCLUDE_DIR})
       include_directories(${CUDA_INCLUDE_DIRS} ${CUDA_CUT_INCLUDE_DIR})
       set(IU_IUCORE_LIB_DEPENDENCIES ${IU_IUCORE_LIB_DEPENDENCIES} ${CUDA_LIBRARIES})
+
+      # Checking cuda version
+      # set defines due to some missing functions in cuda 3.1
+      if((CUDA_VERSION_MAJOR EQUAL 3) AND (CUDA_VERSION_MINOR EQUAL 1))
+        # using CUDA 3.1
+        message(STATUS "IU: using CUDA 3.1")
+        set(IU_DEFINITIONS ${IU_DEFINITIONS} -DCUDA_VERSION_31)
+      endif()
+
+      if((CUDA_VERSION_MAJOR EQUAL 3) AND (CUDA_VERSION_MINOR EQUAL 2))
+        # using CUDA 3.2
+        message(STATUS "IU: using CUDA 3.2")
+        set(IU_DEFINITIONS ${IU_DEFINITIONS} -DCUDA_VERSION_32)
+      elseif()
+        message(STATUS "unknown CUDA version. some things might not be tested.")
+      endif()
+
     endif(CUDA_FOUND AND CUDASDK_FOUND)
   endif(IU_IUCORE_FOUND)
 
@@ -308,6 +326,7 @@ else(IU_INCLUDE_DIRS AND IU_LIBRARY_DIR)
     IU_IUPGRCAMERA_LIB_DEPENDENCIES
     IU_INCLUDE_DIRS 
     IU_LIBRARY_DIR
+    IU_DEFINITIONS
     )
 
 endif(IU_INCLUDE_DIRS AND IU_LIBRARY_DIR)

@@ -34,9 +34,11 @@ foreach(module IUCORE IUIPP IUGUI IUIO IUIOPGM IUVIDEOCAPTURE IUPGRCAMERA)
       message("ImageUtilities module ${module} library not found.")
     endif (IU_${module}_FOUND)
   endif (IU_USE_${module} OR IU_USE_${module}_DEPENDS)
-  
 endforeach(module)
 
 # concat the external lib dependencies to IU_LIBRARIES
 set(IU_LIBRARIES ${IU_LIBRARIES} ${IU_LIB_DEPENDENCIES})
 mark_as_advanced(IU_LIBRARIES)
+
+# set definitions
+add_definitions(${IU_DEFINITIONS})
