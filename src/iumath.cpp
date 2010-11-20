@@ -68,6 +68,10 @@ void minMax(const ImageGpu_32f_C2* src, const IuRect& roi, float2& min, float2& 
 void minMax(const ImageGpu_32f_C4* src, const IuRect& roi, float4& min, float4& max)
 {iuprivate::minMax(src, roi, min, max);}
 
+// find max value and its coordinates; 32-bit
+void max(const iu::ImageGpu_32f_C1* src, const IuRect&roi, float& max, int& x, int& y)
+{iuprivate::max(src, roi, max, x, y);}
+
 // compute sum; device; 8-bit
 void summation(const iu::ImageGpu_8u_C1* src, const IuRect& roi, long& sum)
 {iuprivate::summation(src, roi, sum);}

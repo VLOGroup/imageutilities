@@ -132,6 +132,17 @@ void minMax(const iu::ImageGpu_32f_C4 *src, const IuRect &roi, float4& min, floa
   IU_ASSERT(status == IU_SUCCESS);
 }
 
+///////////////////////////////////////////////////////////////////////////////
+
+// [device] find max value and its coordinates of image; 32-bit; 1-channel
+void max(const iu::ImageGpu_32f_C1* src, const IuRect&roi, float& max, int& x, int& y)
+{
+  IuStatus status;
+  status = cuMax(src, roi, max, x, y);
+  IU_ASSERT(status == IU_SUCCESS);
+}
+
+
 /* ****************************************************************************
   SUM
 */

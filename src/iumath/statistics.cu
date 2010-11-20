@@ -208,6 +208,44 @@ __global__ void cuMinMaxXKernel_32f_C4(float4* min, float4* max,
   }
 }
 
+
+/*
+  KERNELS FOR MAX + MAX COORDS
+*/
+
+// kernel; find min/max; 32f_C1
+__global__ void cuMaxXKernel_32f_C1(float* max, float* max_col_idx,
+                                    int xoff, int yoff, int width, int height)
+{
+ const int x = blockIdx.x*blockDim.x + threadIdx.x;
+ const int y = blockIdx.y*blockDim.y + threadIdx.y;
+
+ float xx = x+xoff+0.5f;
+ float yy = y+yoff+0.5f;
+
+ float cur_max_col_idx = 0.0f;
+ float cur_max = tex2D(tex1_32f_C1__, xx, yy);
+
+ // find minima of columns
+ if (x<width)
+ {
+   float val;
+   for(int y = 0; y < height; ++y)
+   {
+     yy = y+yoff+0.5f;
+     val = tex2D(tex1_32f_C1__, xx, yy);
+     if(val > cur_max)
+     {
+       cur_max_col_idx = (float)y;
+       cur_max = val;
+     }
+   }
+
+   max_col_idx[x] = cur_max_col_idx;
+   max[x] = cur_max;
+ }
+}
+
 /*
   KERNELS FOR SUM
 */
@@ -600,6 +638,59 @@ IuStatus cuMinMax(const iu::ImageGpu_32f_C4 *src, const IuRect &roi, float4& min
   cudaUnbindTexture(&tex1_32f_C4__);
   IU_CHECK_AND_RETURN_CUDA_ERRORS();
   return IU_SUCCESS;
+}
+
+/*
+  WRAPPERS FOR MAX + MAX COORDINATES
+*/
+
+// wrapper: find min/max; 32f_C1
+IuStatus cuMax(const iu::ImageGpu_32f_C1 *src, const IuRect &roi,
+               float& max, int& max_x, int& max_y)
+{
+  // prepare and bind texture
+  tex1_32f_C1__.filterMode = cudaFilterModePoint;
+  tex1_32f_C1__.addressMode[0] = cudaAddressModeClamp;
+  tex1_32f_C1__.addressMode[1] = cudaAddressModeClamp;
+  tex1_32f_C1__.normalized = false;
+  cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<float1>();
+  cudaBindTexture2D(0, &tex1_32f_C1__, src->data(), &channel_desc,
+                    src->width(), src->height(), src->pitch());
+
+  // fragmentation
+  const unsigned int block_width = 512;
+  dim3 dimBlock(block_width, 1, 1);
+  dim3 dimGridX(iu::divUp(roi.width, block_width), 1);
+
+  // temporary memory for row sums on the host
+  int num_cols = roi.width;
+  iu::LinearDeviceMemory_32f_C1 col_maxs(num_cols);
+  iu::LinearDeviceMemory_32f_C1 col_max_idxs(num_cols);
+
+  cuMaxXKernel_32f_C1
+      <<< dimGridX, dimBlock >>> (col_maxs.data(), col_max_idxs.data(),
+                                  roi.x, roi.y, roi.width, roi.height);
+
+  iu::LinearHostMemory_32f_C1 h_col_max_idxs(num_cols);
+  iu::LinearHostMemory_32f_C1 h_col_maxs(num_cols);
+  iuprivate::copy(&col_max_idxs, &h_col_max_idxs);
+  iuprivate::copy(&col_maxs, &h_col_maxs);
+
+  max_y = (int)(roi.y + *h_col_max_idxs.data(0));
+  max = *h_col_maxs.data(0);
+
+  for (int i = 1; i < num_cols; ++i)
+  {
+    if(max < *h_col_maxs.data(i))
+    {
+      max = *h_col_maxs.data(i);
+      max_x = roi.x + i;
+      max_y = (int)(roi.y + *h_col_max_idxs.data(i));
+    }
+  }
+
+  cudaUnbindTexture(&tex1_32f_C1__);
+  return iu::checkCudaErrorState();
 }
 
 

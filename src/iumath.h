@@ -116,6 +116,20 @@ IU_DLLAPI void minMax(const ImageGpu_32f_C2* src, const IuRect& roi, float2& min
 IU_DLLAPI void minMax(const ImageGpu_32f_C4* src, const IuRect& roi, float4& min, float4& max);
 
 
+
+/** Finds the maximum value of an image in a certain ROI and the maximums coordinates.
+ * \param src Source image [device]
+ * \param src_roi Region of interest in the source image.
+ * \param[out] max Maximum value found in the source image.
+ * \param[out] x x-coordinate of maximum value
+ * \param[out] y y-coordinate of maximum value
+ *
+ * \note supported gpu: 32f_C1
+ */
+// find max+coords; device; 32-bit
+IU_DLLAPI void max(const iu::ImageGpu_32f_C1* src, const IuRect&roi, float& max, int& x, int& y);
+
+
 /** Computes the sum of pixels in a certain ROI of an image.
  * \param src Source image [device]
  * \param src_roi Region of interest in the source image.

@@ -47,36 +47,39 @@ void copy(const iu::ImageIpp<PixelType, NumChannels, Allocator> *src,
   Allocator::copy(src->data(), src->pitch(), dst->data(), dst->pitch(), dst->size());
 }
 
-// TODO copy: problems with channels and vector types!c
-//// 2D; copy host -> device
-//template<typename PixelType, unsigned int NumChannels, class AllocatorIpp, class AllocatorNpp>
-//void copy(const iu::ImageIpp<PixelType, NumChannels, AllocatorIpp> *src,
-//          iu::ImageGpu<PixelType, NumChannels, AllocatorNpp> *dst)
-//{
-//  cudaError_t status;
-//  unsigned int roi_width = dst->roi().width;
-//  unsigned int roi_height = dst->roi().height;
-//  status = cudaMemcpy2D(dst->data(dst->roi().x, dst->roi().y), dst->pitch(),
-//                        src->data(src->roi().x, src->roi().y), src->pitch(),
-//                        roi_width * NumChannels * sizeof(PixelType), roi_height,
-//                        cudaMemcpyHostToDevice);
-//  IU_ASSERT(status == cudaSuccess);
-//}
+// 2D; copy host -> device
+template<typename PixelTypeSrc, typename PixelTypeDst, unsigned int NumChannels,
+         class AllocatorSrc, class AllocatorDst>
+void copy(const iu::ImageIpp<PixelTypeSrc, NumChannels, AllocatorSrc> *src,
+          const iu::ImageGpu<PixelTypeDst, AllocatorDst> *dst)
+{
+  cudaError_t status;
+  IU_ASSERT(sizeof(PixelTypeSrc)*NumChannels == sizeof(PixelTypeDst));
+  unsigned int roi_width = dst->roi().width;
+  unsigned int roi_height = dst->roi().height;
+  status = cudaMemcpy2D((void*)dst->data(dst->roi().x, dst->roi().y), dst->pitch(),
+                        (void*)src->data(src->roi().x, src->roi().y), src->pitch(),
+                        roi_width * NumChannels * sizeof(PixelTypeSrc), roi_height,
+                        cudaMemcpyHostToDevice);
+  IU_ASSERT(status == cudaSuccess);
+}
 
-//// 2D; copy device -> host
-//template<typename PixelType, unsigned int NumChannels, class AllocatorNpp, class AllocatorIpp>
-//void copy(const iu::ImageGpu<PixelType, NumChannels, AllocatorNpp> *src,
-//          iu::ImageIpp<PixelType, NumChannels, AllocatorIpp> *dst)
-//{
-//  cudaError_t status;
-//  unsigned int roi_width = dst->roi().width;
-//  unsigned int roi_height = dst->roi().height;
-//  status = cudaMemcpy2D(dst->data(dst->roi().x, dst->roi().y), dst->pitch(),
-//                        src->data(src->roi().x, src->roi().y), src->pitch(),
-//                        roi_width * NumChannels * sizeof(PixelType), roi_height,
-//                        cudaMemcpyDeviceToHost);
-//  IU_ASSERT(status == cudaSuccess);
-//}
+// 2D; copy device -> host
+template<typename PixelTypeSrc, typename PixelTypeDst, unsigned int NumChannels,
+         class AllocatorSrc, class AllocatorDst>
+void copy(const iu::ImageGpu<PixelTypeDst, AllocatorDst> *src,
+          const iu::ImageIpp<PixelTypeSrc, NumChannels, AllocatorSrc> *dst)
+{
+  cudaError_t status;
+  IU_ASSERT(sizeof(PixelTypeSrc)*NumChannels == sizeof(PixelTypeDst));
+  unsigned int roi_width = dst->roi().width;
+  unsigned int roi_height = dst->roi().height;
+  status = cudaMemcpy2D((void*)dst->data(dst->roi().x, dst->roi().y), dst->pitch(),
+                        (void*)src->data(src->roi().x, src->roi().y), src->pitch(),
+                        roi_width * NumChannels * sizeof(PixelTypeDst), roi_height,
+                        cudaMemcpyDeviceToHost);
+  IU_ASSERT(status == cudaSuccess);
+}
 
 } // namespace iuprivate
 

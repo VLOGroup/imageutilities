@@ -30,7 +30,7 @@
   #define NOMINMAX
 #endif
 
-#ifdef __CUDACC__ // only include this error check in cuda files (seen by nvcc)
+#ifdef __CUDACC__ // only include this include in cuda files (seen by nvcc)
 #include <cutil_math.h>
 #endif
 
