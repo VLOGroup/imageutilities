@@ -48,6 +48,16 @@ IuStatus cuMinMax(const iu::ImageGpu_32f_C1 *src, const IuRect &roi, float& min,
 IuStatus cuMinMax(const iu::ImageGpu_32f_C2 *src, const IuRect &roi, float2& min, float2& max);
 IuStatus cuMinMax(const iu::ImageGpu_32f_C4 *src, const IuRect &roi, float4& min, float4& max);
 
+/** Cuda wrappers for finding the minimum value of an image in a certain ROI and the minimums coordinates.
+ * \param src Source image [device]
+ * \param src_roi Region of interest in the source image.
+ * \param[out] min minimum value found in the source image.
+ * \param[out] x x-coordinate of minimum value
+ * \param[out] y y-coordinate of minimum value
+ *
+ * \note supported gpu: 32f_C1
+ */
+IuStatus cuMin(const iu::ImageGpu_32f_C1 *src, const IuRect &roi, float& min, int& min_x, int& min_y);
 
 /** Cuda wrappers for finding the maximum value of an image in a certain ROI and the maximums coordinates.
  * \param src Source image [device]

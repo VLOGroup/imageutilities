@@ -156,22 +156,22 @@ int main(int argc, char** argv)
         // 8-bit
         if( *im_cpu_8u_C1.data(x,y) != set_value_8u_C1)
           return EXIT_FAILURE;
-//        if( *im_cpu_8u_C2.data(x,y) != set_value_8u_C2)
-//          return EXIT_FAILURE;
-//        if( *im_cpu_8u_C3.data(x,y) != set_value_8u_C3)
-//          return EXIT_FAILURE;
-//        if( *im_cpu_8u_C4.data(x,y) != set_value_8u_C4)
-//          return EXIT_FAILURE;
+        if( *im_cpu_8u_C2.data(x,y) != set_value_8u_C2)
+          return EXIT_FAILURE;
+        if( *im_cpu_8u_C3.data(x,y) != set_value_8u_C3)
+          return EXIT_FAILURE;
+        if( *im_cpu_8u_C4.data(x,y) != set_value_8u_C4)
+          return EXIT_FAILURE;
 
-//        // 32-bit
-//        if( *im_cpu_32f_C1.data(x,y) != set_value_32f_C1)
-//          return EXIT_FAILURE;
-//        if( *im_cpu_32f_C2.data(x,y) != set_value_32f_C2)
-//          return EXIT_FAILURE;
-//        if( *im_cpu_32f_C3.data(x,y) != set_value_32f_C3)
-//          return EXIT_FAILURE;
-//        if( *im_cpu_32f_C4.data(x,y) != set_value_32f_C4)
-//          return EXIT_FAILURE;
+        // 32-bit
+        if( *im_cpu_32f_C1.data(x,y) != set_value_32f_C1)
+          return EXIT_FAILURE;
+        if( *im_cpu_32f_C2.data(x,y) != set_value_32f_C2)
+          return EXIT_FAILURE;
+        if( *im_cpu_32f_C3.data(x,y) != set_value_32f_C3)
+          return EXIT_FAILURE;
+        if( *im_cpu_32f_C4.data(x,y) != set_value_32f_C4)
+          return EXIT_FAILURE;
       }
     }
   }

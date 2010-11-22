@@ -36,7 +36,8 @@ static inline __host__ __device__ unsigned int divUp(unsigned int a, unsigned in
   return (a % b != 0) ? (a / b + 1) : (a / b);
 }
 
-static inline __host__ __device__ float sqr(float a)
+template<typename PixelType>
+static inline __host__ __device__ PixelType sqr(PixelType a)
 {
   return a*a;
 }

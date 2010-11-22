@@ -55,6 +55,11 @@ typedef LinearHostMemory<unsigned char> LinearHostMemory_8u_C1;
 typedef LinearHostMemory<uchar2> LinearHostMemory_8u_C2;
 typedef LinearHostMemory<uchar3> LinearHostMemory_8u_C3;
 typedef LinearHostMemory<uchar4> LinearHostMemory_8u_C4;
+// 16-bit
+typedef LinearHostMemory<unsigned short> LinearHostMemory_16u_C1;
+typedef LinearHostMemory<ushort2> LinearHostMemory_16u_C2;
+typedef LinearHostMemory<ushort3> LinearHostMemory_16u_C3;
+typedef LinearHostMemory<ushort4> LinearHostMemory_16u_C4;
 // 32-bit
 typedef LinearHostMemory<float> LinearHostMemory_32f_C1;
 typedef LinearHostMemory<float2> LinearHostMemory_32f_C2;
@@ -69,6 +74,11 @@ typedef LinearDeviceMemory<unsigned char> LinearDeviceMemory_8u_C1;
 typedef LinearDeviceMemory<uchar2> LinearDeviceMemory_8u_C2;
 typedef LinearDeviceMemory<uchar3> LinearDeviceMemory_8u_C3;
 typedef LinearDeviceMemory<uchar4> LinearDeviceMemory_8u_C4;
+// 16-bit
+typedef LinearDeviceMemory<unsigned short> LinearDeviceMemory_16u_C1;
+typedef LinearDeviceMemory<ushort2> LinearDeviceMemory_16u_C2;
+typedef LinearDeviceMemory<ushort3> LinearDeviceMemory_16u_C3;
+typedef LinearDeviceMemory<ushort4> LinearDeviceMemory_16u_C4;
 // 32-bit
 typedef LinearDeviceMemory<float> LinearDeviceMemory_32f_C1;
 typedef LinearDeviceMemory<float2> LinearDeviceMemory_32f_C2;

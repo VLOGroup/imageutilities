@@ -67,13 +67,16 @@ int main(int argc, char** argv)
   iu::ImageGpu_32f_C2 im_gpu_32f_C2(sz);
   iu::ImageGpu_32f_C4 im_gpu_32f_C4(sz);
 
-  unsigned char set_value_8u_C1 = 1;
+  unsigned char min_value_8u_C1 = 1;
+  unsigned char max_value_8u_C1 = 0xff;
   uchar4 set_value_8u_C4 = make_uchar4(4);
   float set_value_32f_C1 = 1.331f;
   float2 set_value_32f_C2 = make_float2(2.331f);
   float4 set_value_32f_C4 = make_float4(4.331f);
 
-  iu::setValue(set_value_8u_C1, &im_gpu_8u_C1, im_gpu_8u_C1.roi());
+  iu::setValue(min_value_8u_C1, &im_gpu_8u_C1, im_gpu_8u_C1.roi());
+  iu::setValue(max_value_8u_C1, &im_gpu_8u_C1,
+               IuRect(sz.width-10, sz.height-10, sz.width-8, sz.height-8));
   iu::setValue(set_value_8u_C4, &im_gpu_8u_C4, im_gpu_8u_C4.roi());
   iu::setValue(set_value_32f_C1, &im_gpu_32f_C1, im_gpu_32f_C1.roi());
   iu::setValue(set_value_32f_C2, &im_gpu_32f_C2, im_gpu_32f_C2.roi());
@@ -88,22 +91,28 @@ int main(int argc, char** argv)
     float4 min_32f_C4, max_32f_C4;
 
     iu::minMax(&im_gpu_8u_C1, im_gpu_8u_C1.roi(), min_8u_C1, max_8u_C1);
-    if(min_8u_C1 != set_value_8u_C1 || max_8u_C1 != set_value_8u_C1)
+    printf("min, max 8u_C1: %d/%d (desired:%d/%d)\n",
+           min_8u_C1, max_8u_C1, min_value_8u_C1, max_value_8u_C1);
+    if(min_8u_C1 != min_value_8u_C1 || max_8u_C1 != max_value_8u_C1)
       return EXIT_FAILURE;
 
+    printf("min, max 8u_C4:\n");
     iu::minMax(&im_gpu_8u_C4, im_gpu_8u_C4.roi(), min_8u_C4, max_8u_C4);
     if(min_8u_C4 != set_value_8u_C4 || max_8u_C4 != set_value_8u_C4)
       return EXIT_FAILURE;
 
+    printf("min, max 32f_C1:\n");
     iu::minMax(&im_gpu_32f_C1, im_gpu_32f_C1.roi(), min_32f_C1, max_32f_C1);
     if( !almostEquals(min_32f_C1, set_value_32f_C1) ||
         !almostEquals(max_32f_C1, set_value_32f_C1) )
       return EXIT_FAILURE;
 
+    printf("min, max 32f_C2:\n");
     iu::minMax(&im_gpu_32f_C2, im_gpu_32f_C2.roi(), min_32f_C2, max_32f_C2);
     if(min_32f_C2 != set_value_32f_C2 || max_32f_C2 != set_value_32f_C2)
       return EXIT_FAILURE;
 
+    printf("min, max 32f_C4:\n");
     iu::minMax(&im_gpu_32f_C4, im_gpu_32f_C4.roi(), min_32f_C4, max_32f_C4);
     if(min_32f_C4 != set_value_32f_C4 || max_32f_C4 != set_value_32f_C4)
       return EXIT_FAILURE;
@@ -117,7 +126,7 @@ int main(int argc, char** argv)
     double sum_64f_C1;
 
     iu::summation(&im_gpu_8u_C1, im_gpu_8u_C1.roi(), sum_64s_C1);
-    long desired_result_64s = sz.width*sz.height*set_value_8u_C1;
+    long desired_result_64s = sz.width*sz.height*max_value_8u_C1;
     double desired_result_64f = sz.width*sz.height*set_value_32f_C1;
     if(sum_64s_C1 != desired_result_64s)
       return EXIT_FAILURE;

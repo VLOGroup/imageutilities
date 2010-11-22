@@ -58,10 +58,10 @@ __global__ void cuMinMaxXKernel_8u_C1(unsigned char* min, unsigned char* max,
  if (x<width)
  {
    unsigned char val;
-   for(int y = 0; y < height; ++y)
+   for(int y = 1; y < height; ++y)
    {
      yy = y+yoff+0.5f;
-     val = tex2D(tex1_8u_C1__, xx, yy);
+     val = 0;//tex2D(tex1_8u_C1__, xx, yy);
      if(val < cur_min) cur_min = val;
      if(val > cur_max) cur_max = val;
    }
@@ -70,6 +70,34 @@ __global__ void cuMinMaxXKernel_8u_C1(unsigned char* min, unsigned char* max,
    max[x] = cur_max;
  }
 }
+
+__global__ void cuMinMaxXKernel2_8u_C1(unsigned char* min, unsigned char* max,
+                                      int xoff, int yoff, int width, int height,
+                                      const unsigned char* img, size_t stride)
+{
+ const int x = blockIdx.x*blockDim.x + threadIdx.x;
+ const int y = blockIdx.y*blockDim.y + threadIdx.y;
+
+
+ unsigned char cur_min = img[y*stride+x];
+ unsigned char cur_max = cur_min;
+
+ // find minima of columns
+ if (x<width)
+ {
+   unsigned char val;
+   for(int y = 1; y < height; ++y)
+   {
+     val = img[y*stride+x];
+     if(val < cur_min) cur_min = val;
+     if(val > cur_max) cur_max = val;
+   }
+
+   min[x] = cur_min;
+   max[x] = cur_max;
+ }
+}
+
 
 // kernel; find min/max; 8u_C4
 __global__ void cuMinMaxXKernel_8u_C4(uchar4* min, uchar4* max,
@@ -88,7 +116,7 @@ __global__ void cuMinMaxXKernel_8u_C4(uchar4* min, uchar4* max,
   if (x<width)
   {
     uchar4 val;
-    for(int y = 0; y < height; ++y)
+    for(int y = 1; y < height; ++y)
     {
       yy = y+yoff+0.5f;
       val = tex2D(tex1_8u_C4__, xx, yy);
@@ -115,17 +143,17 @@ __global__ void cuMinMaxXKernel_32f_C1(float* min, float* max,
  const int x = blockIdx.x*blockDim.x + threadIdx.x;
  const int y = blockIdx.y*blockDim.y + threadIdx.y;
 
- float xx = x+xoff+0.5f;
- float yy = y+yoff+0.5f;
-
- float cur_min = tex2D(tex1_32f_C1__, xx, yy);
- float cur_max = tex2D(tex1_32f_C1__, xx, yy);
-
  // find minima of columns
  if (x<width)
  {
+   float xx = x+xoff+0.5f;
+   float yy = y+yoff+0.5f;
+
+   float cur_min = tex2D(tex1_32f_C1__, xx, yy);
+   float cur_max = tex2D(tex1_32f_C1__, xx, yy);
+
    float val;
-   for(int y = 0; y < height; ++y)
+   for(int y = 1; y < height; ++y)
    {
      yy = y+yoff+0.5f;
      val = tex2D(tex1_32f_C1__, xx, yy);
@@ -155,7 +183,7 @@ __global__ void cuMinMaxXKernel_32f_C2(float2* min, float2* max,
   if (x<width)
   {
     float2 val;
-    for(int y = 0; y < height; ++y)
+    for(int y = 1; y < height; ++y)
     {
       yy = y+yoff+0.5f;
       val = tex2D(tex1_32f_C2__, xx, yy);
@@ -208,12 +236,48 @@ __global__ void cuMinMaxXKernel_32f_C4(float4* min, float4* max,
   }
 }
 
+/*
+  KERNELS FOR min + min COORDS
+*/
+
+// kernel; find min + min idx; 32f_C1
+__global__ void cuMinXKernel_32f_C1(float* min, unsigned short* min_col_idx,
+                                    int xoff, int yoff, int width, int height)
+{
+  const int x = blockIdx.x*blockDim.x + threadIdx.x;
+  const int y = blockIdx.y*blockDim.y + threadIdx.y;
+
+  // find minima of columns
+  if (x<width)
+  {
+    float xx = x+xoff+0.5f;
+    float yy = y+yoff+0.5f;
+
+    unsigned short cur_min_col_idx = 0;
+    float cur_min = tex2D(tex1_32f_C1__, xx, yy);
+
+    float val;
+    for(unsigned short y = 1; y < height; ++y)
+   {
+     yy = y+yoff+0.5f;
+     val = tex2D(tex1_32f_C1__, xx, yy);
+     if(val < cur_min)
+     {
+       cur_min_col_idx = y;
+       cur_min = val;
+     }
+   }
+
+   min_col_idx[x] = cur_min_col_idx;
+   min[x] = cur_min;
+ }
+}
 
 /*
   KERNELS FOR MAX + MAX COORDS
 */
 
-// kernel; find min/max; 32f_C1
+// kernel; find max + max idx; 32f_C1
 __global__ void cuMaxXKernel_32f_C1(float* max, float* max_col_idx,
                                     int xoff, int yoff, int width, int height)
 {
@@ -398,6 +462,7 @@ IuStatus cuMinMax(const iu::ImageGpu_8u_C1 *src, const IuRect &roi,
   tex1_8u_C1__.addressMode[1] = cudaAddressModeClamp;
   tex1_8u_C1__.normalized = false;
   cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<uchar1>();
+  printf("bind texture\n");
   cudaBindTexture2D(0, &tex1_8u_C1__, src->data(), &channel_desc,
                     src->width(), src->height(), src->pitch());
 
@@ -411,11 +476,14 @@ IuStatus cuMinMax(const iu::ImageGpu_8u_C1 *src, const IuRect &roi,
   iu::LinearDeviceMemory_8u_C1 row_mins(num_row_sums);
   iu::LinearDeviceMemory_8u_C1 row_maxs(num_row_sums);
 
+#if 0
   cuMinMaxXKernel_8u_C1 <<< dimGridX, dimBlock >>> (
       row_mins.data(), row_maxs.data(), roi.x, roi.y, roi.width, roi.height);
-
-  IU_CHECK_AND_RETURN_CUDA_ERRORS();
-
+#else
+  cuMinMaxXKernel2_8u_C1  <<< dimGridX, dimBlock >>> (
+    row_mins.data(), row_maxs.data(), roi.x, roi.y, roi.width, roi.height,
+    src->data(), src->stride());
+#endif
   iu::LinearHostMemory_8u_C1 h_row_mins(num_row_sums);
   iu::LinearHostMemory_8u_C1 h_row_maxs(num_row_sums);
   iuprivate::copy(&row_mins, &h_row_mins);
@@ -424,15 +492,16 @@ IuStatus cuMinMax(const iu::ImageGpu_8u_C1 *src, const IuRect &roi,
   min_C1 = *h_row_mins.data();
   max_C1 = *h_row_maxs.data();
 
-  for (int i = 1; i < num_row_sums; ++i)
+  for (int i = 0; i < num_row_sums; ++i)
   {
+    printf("#%d: %d / %d\n", i, h_row_mins.data(i)[0], h_row_maxs.data(i)[0]);
     min_C1 = min(min_C1, *h_row_mins.data(i));
     max_C1 = max(max_C1, *h_row_maxs.data(i));
   }
 
   cudaUnbindTexture(&tex1_8u_C1__);
-  IU_CHECK_AND_RETURN_CUDA_ERRORS();
-  return IU_SUCCESS;
+  printf("min/max=%d/%d\n", min_C1, max_C1);
+  return iu::checkCudaErrorState();
 }
 
 // wrapper: find min/max; 8u_C4
@@ -461,8 +530,6 @@ IuStatus cuMinMax(const iu::ImageGpu_8u_C4 *src, const IuRect &roi, uchar4& min_
       row_mins.data(), row_maxs.data(),
       roi.x, roi.y, roi.width, roi.height);
 
-  IU_CHECK_AND_RETURN_CUDA_ERRORS();
-
   iu::LinearHostMemory_8u_C4 h_row_mins(num_row_sums);
   iu::LinearHostMemory_8u_C4 h_row_maxs(num_row_sums);
   iuprivate::copy(&row_mins, &h_row_mins);
@@ -485,8 +552,7 @@ IuStatus cuMinMax(const iu::ImageGpu_8u_C4 *src, const IuRect &roi, uchar4& min_
   }
 
   cudaUnbindTexture(&tex1_8u_C4__);
-  IU_CHECK_AND_RETURN_CUDA_ERRORS();
-  return IU_SUCCESS;
+  return iu::checkCudaErrorState();
 }
 
 // wrapper: find min/max; 32f_C1
@@ -514,8 +580,6 @@ IuStatus cuMinMax(const iu::ImageGpu_32f_C1 *src, const IuRect &roi, float& min_
   cuMinMaxXKernel_32f_C1 <<< dimGridX, dimBlock >>> (
       row_mins.data(), row_maxs.data(), roi.x, roi.y, roi.width, roi.height);
 
-  IU_CHECK_AND_RETURN_CUDA_ERRORS();
-
   iu::LinearHostMemory_32f_C1 h_row_mins(num_row_sums);
   iu::LinearHostMemory_32f_C1 h_row_maxs(num_row_sums);
   iuprivate::copy(&row_mins, &h_row_mins);
@@ -531,8 +595,7 @@ IuStatus cuMinMax(const iu::ImageGpu_32f_C1 *src, const IuRect &roi, float& min_
   }
 
   cudaUnbindTexture(&tex1_32f_C1__);
-  IU_CHECK_AND_RETURN_CUDA_ERRORS();
-  return IU_SUCCESS;
+  return iu::checkCudaErrorState();
 }
 
 
@@ -562,8 +625,6 @@ IuStatus cuMinMax(const iu::ImageGpu_32f_C2 *src, const IuRect &roi, float2& min
       row_mins.data(), row_maxs.data(),
       roi.x, roi.y, roi.width, roi.height);
 
-  IU_CHECK_AND_RETURN_CUDA_ERRORS();
-
   iu::LinearHostMemory_32f_C2 h_row_mins(num_row_sums);
   iu::LinearHostMemory_32f_C2 h_row_maxs(num_row_sums);
   iuprivate::copy(&row_mins, &h_row_mins);
@@ -582,8 +643,7 @@ IuStatus cuMinMax(const iu::ImageGpu_32f_C2 *src, const IuRect &roi, float2& min
   }
 
   cudaUnbindTexture(&tex1_32f_C2__);
-  IU_CHECK_AND_RETURN_CUDA_ERRORS();
-  return IU_SUCCESS;
+  return iu::checkCudaErrorState();
 }
 
 // wrapper: find min/max; 32f_C4
@@ -612,8 +672,6 @@ IuStatus cuMinMax(const iu::ImageGpu_32f_C4 *src, const IuRect &roi, float4& min
       row_mins.data(), row_maxs.data(),
       roi.x, roi.y, roi.width, roi.height);
 
-  IU_CHECK_AND_RETURN_CUDA_ERRORS();
-
   iu::LinearHostMemory_32f_C4 h_row_mins(num_cols);
   iu::LinearHostMemory_32f_C4 h_row_maxs(num_cols);
   iuprivate::copy(&row_mins, &h_row_mins);
@@ -636,15 +694,67 @@ IuStatus cuMinMax(const iu::ImageGpu_32f_C4 *src, const IuRect &roi, float4& min
   }
 
   cudaUnbindTexture(&tex1_32f_C4__);
-  IU_CHECK_AND_RETURN_CUDA_ERRORS();
-  return IU_SUCCESS;
+  return iu::checkCudaErrorState();
+}
+
+/*
+  WRAPPERS FOR MIN + MIN COORDINATES
+*/
+
+// wrapper: find min + min idx; 32f_C1
+IuStatus cuMin(const iu::ImageGpu_32f_C1 *src, const IuRect &roi,
+               float& min, int& min_x, int& min_y)
+{
+  // prepare and bind texture
+  tex1_32f_C1__.filterMode = cudaFilterModePoint;
+  tex1_32f_C1__.addressMode[0] = cudaAddressModeClamp;
+  tex1_32f_C1__.addressMode[1] = cudaAddressModeClamp;
+  tex1_32f_C1__.normalized = false;
+  cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<float1>();
+  cudaBindTexture2D(0, &tex1_32f_C1__, src->data(), &channel_desc,
+                    src->width(), src->height(), src->pitch());
+
+  // fragmentation
+  const unsigned int block_width = 512;
+  dim3 dimBlock(block_width, 1, 1);
+  dim3 dimGridX(iu::divUp(roi.width, block_width), 1);
+
+  // temporary memory for row sums on the host
+  int num_cols = roi.width;
+  iu::LinearDeviceMemory_32f_C1 col_mins(num_cols);
+  iu::LinearDeviceMemory_16u_C1 col_min_idxs(num_cols);
+
+  cuMinXKernel_32f_C1
+      <<< dimGridX, dimBlock >>> (col_mins.data(), col_min_idxs.data(),
+                                  roi.x, roi.y, roi.width, roi.height);
+
+  iu::LinearHostMemory_32f_C1 h_col_mins(num_cols);
+  iuprivate::copy(&col_mins, &h_col_mins);
+  iu::LinearHostMemory_16u_C1 h_col_min_idxs(num_cols);
+  iuprivate::copy(&col_min_idxs, &h_col_min_idxs);
+
+  min_y = (int)(roi.y + *h_col_min_idxs.data(0));
+  min = *h_col_mins.data(0);
+
+  for (int i = 1; i < num_cols; ++i)
+  {
+    if(min > *h_col_mins.data(i))
+    {
+      min = *h_col_mins.data(i);
+      min_x = roi.x + i;
+      min_y = (int)(roi.y + *h_col_min_idxs.data(i));
+    }
+  }
+
+  cudaUnbindTexture(&tex1_32f_C1__);
+  return iu::checkCudaErrorState();
 }
 
 /*
   WRAPPERS FOR MAX + MAX COORDINATES
 */
 
-// wrapper: find min/max; 32f_C1
+// wrapper: find max + max idx; 32f_C1
 IuStatus cuMax(const iu::ImageGpu_32f_C1 *src, const IuRect &roi,
                float& max, int& max_x, int& max_y)
 {
@@ -732,8 +842,7 @@ IuStatus cuSummation(const iu::ImageGpu_8u_C1 *src, const IuRect &roi, long& sum
   }
 
   cudaUnbindTexture(&tex1_8u_C1__);
-  IU_CHECK_AND_RETURN_CUDA_ERRORS();
-  return IU_SUCCESS;
+  return iu::checkCudaErrorState();
 }
 
 // wrapper: compute sum; 32f_C1
@@ -769,8 +878,7 @@ IuStatus cuSummation(const iu::ImageGpu_32f_C1 *src, const IuRect &roi, double& 
   }
 
   cudaUnbindTexture(&tex1_32f_C1__);
-  IU_CHECK_AND_RETURN_CUDA_ERRORS();
-  return IU_SUCCESS;
+  return iu::checkCudaErrorState();
 }
 
 /*
@@ -809,8 +917,7 @@ IuStatus cuNormDiffL1(const iu::ImageGpu_32f_C1* src1, const iu::ImageGpu_32f_C1
   iuprivate::cuSummation(&squared_deviances, roi, sum_squared);
   norm = sqrt(sum_squared);
 
-  IU_CHECK_AND_RETURN_CUDA_ERRORS();
-  return IU_SUCCESS;
+  return iu::checkCudaErrorState();
 }
 
 // wrapper: compute L1 norm; |image1-value|;
@@ -839,8 +946,7 @@ IuStatus cuNormDiffL1(const iu::ImageGpu_32f_C1* src, const float& value, const 
   iuprivate::cuSummation(&squared_deviances, roi, sum_squared);
   norm = sqrt(sum_squared);
 
-  IU_CHECK_AND_RETURN_CUDA_ERRORS();
-  return IU_SUCCESS;
+  return iu::checkCudaErrorState();
 }
 
 // wrapper: compute L2 norm; ||image1-image2||;
@@ -875,8 +981,7 @@ IuStatus cuNormDiffL2(const iu::ImageGpu_32f_C1* src1, const iu::ImageGpu_32f_C1
   iuprivate::cuSummation(&squared_deviances, roi, sum_squared);
   norm = sqrt(sum_squared);
 
-  IU_CHECK_AND_RETURN_CUDA_ERRORS();
-  return IU_SUCCESS;
+  return iu::checkCudaErrorState();
 }
 
 // wrapper: compute L2 norm; ||image1-value||;
@@ -905,8 +1010,7 @@ IuStatus cuNormDiffL2(const iu::ImageGpu_32f_C1* src, const float& value, const 
   iuprivate::cuSummation(&squared_deviances, roi, sum_squared);
   norm = sqrt(sum_squared);
 
-  IU_CHECK_AND_RETURN_CUDA_ERRORS();
-  return IU_SUCCESS;
+  return iu::checkCudaErrorState();
 }
 
 /*
@@ -961,8 +1065,7 @@ IuStatus cuMse(const iu::ImageGpu_32f_C1* src, const iu::ImageGpu_32f_C1* refere
   cuSummation(&tmp, tmp.roi(), sum);
   mse = sum/(static_cast<float>(roi.width*roi.height));
 
-  IU_CHECK_AND_RETURN_CUDA_ERRORS();
-  return IU_SUCCESS;
+  return iu::checkCudaErrorState();
 }
 
 
@@ -1057,8 +1160,7 @@ IuStatus cuSsim(const iu::ImageGpu_32f_C1* src, const iu::ImageGpu_32f_C1* refer
   cuSummation(&tmp, tmp.roi(), sum);
   ssim = ssim/(static_cast<float>(roi.width*roi.height));
 
-  IU_CHECK_AND_RETURN_CUDA_ERRORS();
-  return IU_SUCCESS;
+  return iu::checkCudaErrorState();
 }
 
 } // namespace iuprivate
