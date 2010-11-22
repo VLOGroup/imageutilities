@@ -420,7 +420,7 @@ __global__ void  cuNormDiffL2Kernel_32f_C1(float* dst, size_t stride,
 
   if(x>=0 && y>= 0 && x<width && y<height)
   {
-    dst[oc] = iu::sqr(tex2D(tex1_32f_C1__, xx, yy) - tex2D(tex2_32f_C1__, xx, yy));
+    dst[oc] = sqr(tex2D(tex1_32f_C1__, xx, yy) - tex2D(tex2_32f_C1__, xx, yy));
   }
 }
 
@@ -440,7 +440,7 @@ __global__ void  cuNormDiffValueL2Kernel_32f_C1(float value, float* dst, size_t 
 
   if(x>=0 && y>= 0 && x<width && y<height)
   {
-    dst[oc] = iu::sqr(tex2D(tex1_32f_C1__, xx, yy) - value);
+    dst[oc] = sqr(tex2D(tex1_32f_C1__, xx, yy) - value);
   }
 }
 
