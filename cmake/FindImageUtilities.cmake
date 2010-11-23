@@ -244,19 +244,19 @@ else(IU_INCLUDE_DIRS AND IU_LIBRARY_DIR)
       set(IU_IUGUI_LIB_DEPENDENCIES ${IU_IUGUI_LIB_DEPENDENCIES} ${QT_LIBRARIES})
     endif(QT4_FOUND)
 
-    ## OpenGL
-    find_package( OpenGL REQUIRED )
-    if(OPENGL_FOUND)
-      include_directories(${OPENGL_INCLUDE_DIR})
-      set(IU_IUGUI_LIB_DEPENDENCIES ${IU_IUGUI_LIB_DEPENDENCIES} ${OPENGL_LIBRARIES})
-    endif(OPENGL_FOUND)
+#    ## OpenGL
+#    find_package( OpenGL REQUIRED )
+#    if(OPENGL_FOUND)
+#      include_directories(${OPENGL_INCLUDE_DIR})
+#      set(IU_IUGUI_LIB_DEPENDENCIES ${IU_IUGUI_LIB_DEPENDENCIES} ${OPENGL_LIBRARIES})
+#    endif(OPENGL_FOUND)
 
-    ## GLEW
-    find_package( GLEW REQUIRED )
-    if(GLEW_FOUND)
-      include_directories(${GLEW_INCLUDE_DIR})
-      set(IU_IUGUI_LIB_DEPENDENCIES ${IU_IUGUI_LIB_DEPENDENCIES} ${GLEW_LIBRARIES})
-    endif(GLEW_FOUND)
+#    ## GLEW
+#    find_package( GLEW REQUIRED )
+#    if(GLEW_FOUND)
+#      include_directories(${GLEW_INCLUDE_DIR})
+#      set(IU_IUGUI_LIB_DEPENDENCIES ${IU_IUGUI_LIB_DEPENDENCIES} ${GLEW_LIBRARIES})
+#    endif(GLEW_FOUND)
 
   endif(IU_IUGUI_FOUND)
 

@@ -27,8 +27,5 @@ include(${IU_USE_FILE})
 
 message("IU_LIBRARIES=${IU_LIBRARIES}")
 
-cuda_add_executable( iugui_nppwidget_unittest iugui_nppwidget_unittest.cpp )
-TARGET_LINK_LIBRARIES(iugui_nppwidget_unittest ${IU_LIBRARIES})
-
-# run tests:
-add_test(iugio_nppwidget_unittest iugio_nppwidget_unittest)
+cuda_add_executable( image_cpu_display_test image_cpu_display_test.cpp )
+TARGET_LINK_LIBRARIES(image_cpu_display_test ${IU_LIBRARIES})

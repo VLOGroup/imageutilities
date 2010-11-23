@@ -26,8 +26,10 @@
 
 #include "iudefs.h"
 
+// forward declaration
+
 // :TODO: include namespace again if we have a cool idea how to create a public interface here
-//namespace iu {
+namespace iu {
 
 /** \defgroup Gui
  *  \brief The gui module.
@@ -36,25 +38,24 @@
  */
 
 /* ***************************************************************************
-     Device (Npp) widgets
+     Cpu Image Display
  * ***************************************************************************/
 
 //////////////////////////////////////////////////////////////////////////////
-/** @defgroup Device (Npp) widgets
+/** @defgroup ImageCpuDisplay
  *  @ingroup Gui
  *  TODO more detailed docu
  *  @{
  */
 
+#include "iugui/image_cpu_display.h"
 
-// TODO how to define public interface for a whole class?
-// :TODO: #include "gui/ippwidget.h"
-#include "iugui/nppglwidget.h"
 
-/** @} */ // end of Device (Npp) widgets
+
+/** @} */ // end of ImageCpuDisplay
 
 /** @} */ // end of Gui
 
-//} // namespace iu
+} // namespace iu
 
 #endif // IUGUI_MODULE_H

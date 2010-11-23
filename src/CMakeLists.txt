@@ -59,7 +59,7 @@ endif()
 ## The modules are included per default unless dependencies not found or omitted by the user.
 ## (the core module is always included!)
 OPTION(VMLIBRARIES_IU_USE_IPP "Including IPP module." ON)
-OPTION(VMLIBRARIES_IU_USE_GUI "Including GUI module." OFF)
+OPTION(VMLIBRARIES_IU_USE_GUI "Including GUI module." ON)
 OPTION(VMLIBRARIES_IU_USE_IO "Including IO module." ON)
 OPTION(VMLIBRARIES_IU_USE_IOPGM "Including IOPGM module." ON)
 OPTION(VMLIBRARIES_IU_USE_VIDEOCAPTURE "Including VideCapture IO module." OFF)
@@ -148,7 +148,7 @@ endif()
 
 ##-----------------------------------------------------------------------------
 ## Qt
-find_package(Qt4 COMPONENTS QtCore QtGui QtOpenGL)
+find_package(Qt4 COMPONENTS QtCore QtGui)# QtOpenGL)
 # only include if GUI module is used and qt4 found.
 if(VMLIBRARIES_IU_USE_GUI AND QT4_FOUND)
 
@@ -157,12 +157,12 @@ if(VMLIBRARIES_IU_USE_GUI AND QT4_FOUND)
 
 
   ## GLEW
-  find_package( GLEW REQUIRED )
-  include_directories(${GLEW_INCLUDE_DIR})
+  #find_package( GLEW REQUIRED )
+  #include_directories(${GLEW_INCLUDE_DIR})
 
   ## OpenGL
-  find_package( OpenGL REQUIRED )
-  include_directories(${OPENGL_INCLUDE_DIR})
+  #find_package( OpenGL REQUIRED )
+  #include_directories(${OPENGL_INCLUDE_DIR})
 
 
   set( IU_PUBLIC_HEADERS
@@ -170,22 +170,21 @@ if(VMLIBRARIES_IU_USE_GUI AND QT4_FOUND)
     ${CMAKE_CURRENT_SOURCE_DIR}/iugui.h
     )
 
-  install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/iugui/nppglwidget.h ${CMAKE_CURRENT_SOURCE_DIR}/iugui/nppglwidget_p.h
-    DESTINATION include/iu/iugui
-    COMPONENT Headers)
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/iugui/image_cpu_display.h ${CMAKE_CURRENT_SOURCE_DIR}/iugui/image_cpu_display_p.h
+  DESTINATION include/iu/iugui
+  COMPONENT Headers)
 
-  set( IU_GUI_HEADERS
-    ${CMAKE_CURRENT_SOURCE_DIR}/iugui/nppglwidget.cuh
-    )
+#  set( IU_GUI_HEADERS
+#    ${CMAKE_CURRENT_SOURCE_DIR}/iugui/nppglwidget.cuh
+#    )
 
   set( IU_GUI_SOURCES
-    ${CMAKE_CURRENT_SOURCE_DIR}/iugui/nppglwidget.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/iugui/nppglwidget.cu
+    ${CMAKE_CURRENT_SOURCE_DIR}/iugui/image_cpu_display.cpp
     )
 
   set( IU_GUI_MOC_HEADERS
-    ${CMAKE_CURRENT_SOURCE_DIR}/iugui/nppglwidget_p.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/iugui/nppglwidget.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/iugui/image_cpu_display.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/iugui/image_cpu_display_p.h
     )
 
   # compile moc headers
@@ -473,13 +472,13 @@ set_source_files_properties(
 set( IU_ALL_FILES
   ${IU_HEADERS}
   ${IU_IPP_HEADERS}
-  ${IU_GUI_HEADERS}
+  #${IU_GUI_HEADERS}
   ${IU_IO_HEADERS}
   ${IU_VIDEOCAPTURE_HEADERS}
   ${IU_PGRCAMERA_HEADERS}
   ${IU_CONNECTOR_HEADERS}
   ${IU_SOURCES}
-  ${IU_GUI_SOURCES}
+  #${IU_GUI_SOURCES}
   ${IU_GUI_MOC_SOURCES}
   ${IU_IO_SOURCES}
   ${IU_VIDEOCAPTURE_SOURCES}
@@ -540,7 +539,7 @@ if(VMLIBRARIES_IU_USE_GUI)
     )
   target_link_libraries( ${IU_GUI_LIB}
     ${CUDA_LIBRARIES}
-    ${QT_LIBRARIES}  ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES}
+    ${QT_LIBRARIES} # ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES}
     )
   set(IU_LIBS ${IU_LIBS} ${IU_GUI_LIB})
 
@@ -610,7 +609,7 @@ if(VMLIBRARIES_IU_USE_PGRCAMERA)
     )
   target_link_libraries( ${IU_PGRCAMERA_LIB}
     ${CUDA_LIBRARIES}
-    ${QT_LIBRARIES}  ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES}
+    ${QT_LIBRARIES}
     ${FLYCAPTURE2_LIBRARIES}
     )
   set(IU_LIBS ${IU_LIBS} ${IU_PGRCAMERA_LIB})
@@ -642,14 +641,14 @@ if(VMLIBRARIES_IU_BUILD_COMBINED_LIBRARY)
 
   set( IU_ALL_SHARED_LIBS
     ${CUDA_LIBRARIES}
-    ${QT_LIBRARIES}  ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES} ${OpenCV_LIBS} ${FLYCAPTURE2_LIBRARIES}
+    ${QT_LIBRARIES} ${OpenCV_LIBS} ${FLYCAPTURE2_LIBRARIES}
     )
   TARGET_LINK_LIBRARIES(iu ${IU_ALL_SHARED_LIBS} )
 
   if( NOT WIN32 )
     set( IU_ALL_STATIC_LIBS
       ${CUDA_LIBRARIES}
-      ${QT_LIBRARIES}  ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES} ${OpenCV_LIBS} ${FLYCAPTURE2_LIBRARIES}
+      ${QT_LIBRARIES}  ${OpenCV_LIBS} ${FLYCAPTURE2_LIBRARIES}
       )
     TARGET_LINK_LIBRARIES(iu_static ${IU_ALL_STATIC_LIBS} )
   endif()
