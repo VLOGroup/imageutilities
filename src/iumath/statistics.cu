@@ -733,6 +733,7 @@ IuStatus cuMin(const iu::ImageGpu_32f_C1 *src, const IuRect &roi,
   iu::LinearHostMemory_16u_C1 h_col_min_idxs(num_cols);
   iuprivate::copy(&col_min_idxs, &h_col_min_idxs);
 
+  min_x = roi.x;
   min_y = (int)(roi.y + *h_col_min_idxs.data(0));
   min = *h_col_mins.data(0);
 

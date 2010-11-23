@@ -44,12 +44,13 @@ __global__ void cuConvertC3ToC4Kernel(const float3* src, size_t src_stride, int 
 {
   const int x = blockIdx.x*blockDim.x + threadIdx.x;
   const int y = blockIdx.y*blockDim.y + threadIdx.y;
-  int src_c = y*src_stride + x*3;
-  int dst_c = y*dst_stride + x*4;
+  int src_c = y*src_stride + x;
+  int dst_c = y*dst_stride + x;
 
   if (x<src_width && y<src_height && x<dst_width && y<dst_height)
   {
-    dst[dst_c] =  make_float4(src[src_c],1.0f);
+    float3 val=src[src_c];
+    dst[dst_c] =  make_float4(val.x, val.y, val.z, 1.0f);
   }
 }
 
@@ -61,12 +62,13 @@ __global__ void cuConvertC4ToC3Kernel(const float4* src, size_t src_stride, int 
 {
   const int x = blockIdx.x*blockDim.x + threadIdx.x;
   const int y = blockIdx.y*blockDim.y + threadIdx.y;
-  int src_c = y*src_stride + x*4;
-  int dst_c = y*dst_stride + x*3;
+  int src_c = y*src_stride + x;
+  int dst_c = y*dst_stride + x;
 
   if (x<src_width && y<src_height && x<dst_width && y<dst_height)
   {
-    dst[dst_c] = make_float3(src[src_c]);
+    float4 val=src[src_c];
+    dst[dst_c] = make_float3(val.x, val.y, val.z);
   }
 }
 

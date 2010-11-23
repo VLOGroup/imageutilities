@@ -67,16 +67,22 @@ void copy(const iu::ImageIpp<PixelTypeSrc, NumChannels, AllocatorSrc> *src,
 // 2D; copy device -> host
 template<typename PixelTypeSrc, typename PixelTypeDst, unsigned int NumChannels,
          class AllocatorSrc, class AllocatorDst>
-void copy(const iu::ImageGpu<PixelTypeDst, AllocatorDst> *src,
-          const iu::ImageIpp<PixelTypeSrc, NumChannels, AllocatorSrc> *dst)
+void copy(const iu::ImageGpu<PixelTypeSrc, AllocatorSrc> *src,
+          const iu::ImageIpp<PixelTypeDst, NumChannels, AllocatorDst> *dst)
 {
   cudaError_t status;
-  IU_ASSERT(sizeof(PixelTypeSrc)*NumChannels == sizeof(PixelTypeDst));
+  if(sizeof(PixelTypeSrc) != (sizeof(PixelTypeDst)*NumChannels))
+  {
+    printf("PixelType sizes do not match. No copy possible.\n");
+    return;
+  }
+
+  printf("pitch (src/dst) = %d / %d\n", src->pitch(), dst->pitch());
   unsigned int roi_width = dst->roi().width;
   unsigned int roi_height = dst->roi().height;
   status = cudaMemcpy2D((void*)dst->data(dst->roi().x, dst->roi().y), dst->pitch(),
                         (void*)src->data(src->roi().x, src->roi().y), src->pitch(),
-                        roi_width * NumChannels * sizeof(PixelTypeDst), roi_height,
+                        roi_width * sizeof(PixelTypeSrc), roi_height,
                         cudaMemcpyDeviceToHost);
   IU_ASSERT(status == cudaSuccess);
 }

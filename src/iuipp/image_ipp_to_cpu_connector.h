@@ -68,6 +68,18 @@ inline iu::ImageCpu_32f_C3* convertToCpu_32f_C3(iu::ImageIpp_32f_C3* src)
  * @returns ImageCpu type of the corresponding memory. No data owned from this instance.
  * @attention The returned image structured only holds a pointer to the original data structure.
  */
+inline iu::ImageCpu_32f_C4* convertToCpu_32f_C4(iu::ImageIpp_32f_C4* src)
+{
+  iu::ImageCpu_32f_C4* img = new iu::ImageCpu_32f_C4((float4*)src->data(), src->width(), src->height(),
+                                                     src->pitch()/4, true);
+  return img;
+}
+
+/** Converts the ImageIPP structure to an ImageCPU type. The data keeps owned with the src image.
+ * @param[in] src Source image which still owns the data buffer after the conversion.
+ * @returns ImageCpu type of the corresponding memory. No data owned from this instance.
+ * @attention The returned image structured only holds a pointer to the original data structure.
+ */
 inline iu::ImageCpu_8u_C1* convertToCpu_8u_C1(iu::ImageIpp_8u_C1* src)
 {
   iu::ImageCpu_8u_C1* img = new iu::ImageCpu_8u_C1(src->data(), src->width(), src->height(),
@@ -83,6 +95,18 @@ inline iu::ImageCpu_8u_C1* convertToCpu_8u_C1(iu::ImageIpp_8u_C1* src)
 inline iu::ImageCpu_8u_C3* convertToCpu_8u_C3(iu::ImageIpp_8u_C3* src)
 {
   iu::ImageCpu_8u_C3* img = new iu::ImageCpu_8u_C3((uchar3*)src->data(), src->width(), src->height(),
+                                                   src->pitch(), true);
+  return img;
+}
+
+/** Converts the ImageIPP structure to an ImageCPU type. The data keeps owned with the src image.
+ * @param[in] src Source image which still owns the data buffer after the conversion.
+ * @returns ImageCpu type of the corresponding memory. No data owned from this instance.
+ * @attention The returned image structured only holds a pointer to the original data structure.
+ */
+inline iu::ImageCpu_8u_C4* convertToCpu_8u_C4(iu::ImageIpp_8u_C4* src)
+{
+  iu::ImageCpu_8u_C4* img = new iu::ImageCpu_8u_C4((uchar4*)src->data(), src->width(), src->height(),
                                                    src->pitch(), true);
   return img;
 }
@@ -119,6 +143,18 @@ inline iu::ImageIpp_32f_C3* convertToIpp_32f_C3(iu::ImageCpu_32f_C3* src)
  * @returns ImageCpu type of the corresponding memory. No data owned from this instance.
  * @attention The returned image structured only holds a pointer to the original data structure.
  */
+inline iu::ImageIpp_32f_C4* convertToIpp_32f_C4(iu::ImageCpu_32f_C4* src)
+{
+  iu::ImageIpp_32f_C4* img = new iu::ImageIpp_32f_C4((Ipp32f*)src->data(), src->width(), src->height(),
+                                                     src->pitch(), true);
+  return img;
+}
+
+/** Converts the ImageCPU structure to an ImageIPP type. The data keeps owned with the src image.
+ * @param[in] src Source image which still owns the data buffer after the conversion.
+ * @returns ImageCpu type of the corresponding memory. No data owned from this instance.
+ * @attention The returned image structured only holds a pointer to the original data structure.
+ */
 inline iu::ImageIpp_8u_C1* convertToIpp_8u_C1(iu::ImageCpu_8u_C1* src)
 {
   iu::ImageIpp_8u_C1* img = new iu::ImageIpp_8u_C1((Ipp8u*)src->data(), src->width(), src->height(),
@@ -138,6 +174,17 @@ inline iu::ImageIpp_8u_C3* convertToIpp_8u_C3(iu::ImageCpu_8u_C3* src)
   return img;
 }
 
+/** Converts the ImageCPU structure to an ImageIPP type. The data keeps owned with the src image.
+ * @param[in] src Source image which still owns the data buffer after the conversion.
+ * @returns ImageCpu type of the corresponding memory. No data owned from this instance.
+ * @attention The returned image structured only holds a pointer to the original data structure.
+ */
+inline iu::ImageIpp_8u_C4* convertToIpp_8u_C4(iu::ImageCpu_8u_C4* src)
+{
+  iu::ImageIpp_8u_C4* img = new iu::ImageIpp_8u_C4((Ipp8u*)src->data(), src->width(), src->height(),
+                                                   src->pitch(), true);
+  return img;
+}
 
 
 } // namespace iuprivate
