@@ -1,22 +1,28 @@
-#ifndef IMAGE_CPU_DISPLAY_H
-#define IMAGE_CPU_DISPLAY_H
+/*
+ * Copyright (c) ICG. All rights reserved.
+ *
+ * Institute for Computer Graphics and Vision
+ * Graz University of Technology / Austria
+ *
+ *
+ * This software is distributed WITHOUT ANY WARRANTY; without even
+ * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ * PURPOSE.  See the above copyright notices for more information.
+ *
+ *
+ * Project     : ImageUtilities
+ * Module      : GUI
+ * Class       : QImageCpuDisplay
+ * Language    : C++
+ * Description : Definition of an image display for ImageCpu
+ *
+ * Author     : Manuel Werlberger
+ * EMail      : werlberger@icg.tugraz.at
+ *
+ */
 
-#include <QObject>
-#include <QScrollArea>
-#include <QLabel>
-#include <QString>
-#include <QPixmap>
-#include <QImage>
-#include <QRgb>
-#include <QMouseEvent>
-#include <QMenu>
-#include <QSignalMapper>
-#include <QList>
-#include <QCheckBox>
-#include <QWidgetAction>
-#include <QSlider>
-#include <QSpinBox>
-#include "iudefs.h"
+#ifndef IU_IMAGE_CPU_DISPLAY_H
+#define IU_IMAGE_CPU_DISPLAY_H
 
 #include "image_cpu_display_p.h"
 
@@ -40,23 +46,6 @@ public:
                    float minval=0.0f, float maxval=1.0f);
 
   virtual ~QImageCpuDisplay();
-
-  void init();
-
-  // adds a color overlay with the same dimensions as the input and 4 planes (rgba)
-  void addOverlay(const std::string& title, const float* data);
-  // adds a color overlay with the same dimensions as the input and 3 planes (rgb)
-  void addOverlay(const std::string& title, const float* data, float alpha);
-  void deleteOverlays();
-
-  // copies the current buffer to the data pointer passed. width, height need
-  // to be the same size as the input, depth has to be 3
-  void copyCurrentImage(float* data, size_t width, size_t height, size_t depth);
-
-signals:
-  void mouseMoved(int from_x, int from_y, int to_x, int to_y);
-  void mousePressed(int x, int y);
-  void mouseReleased(int x, int y);
 
 };
 
@@ -105,6 +94,6 @@ signals:
 //  QMultiImageDisplay32f();
 //};
 
-} // namespace iuprivate
+} // namespace iu
 
-#endif // IMAGE_CPU_DISPLAY_H
+#endif // IU_IMAGE_CPU_DISPLAY_H

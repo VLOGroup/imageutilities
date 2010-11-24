@@ -69,13 +69,25 @@ find_package(IPP QUIET)
 ## combine different tests:
 include(CTest)
 enable_testing()
+
+message(STATUS "iucore unittests:")
 add_subdirectory(iucore_unittests)
+
 if(IPP_INCLUDE_DIR)
+  message(STATUS "iuipp unittests:")
   add_subdirectory(iuipp_unittests)
 endif(IPP_INCLUDE_DIR)
+
+message(STATUS "iumath unittests:")
 add_subdirectory(iumath_unittests)
-#add_subdirectory(iugui_unittests)
+
+message(STATUS "iugui unittests:")
+add_subdirectory(iugui_unittests)
+
+message(STATUS "iuio unittests:")
 add_subdirectory(iuio_unittests)
+
+message(STATUS "iutransform unittests:")
 add_subdirectory(iutransform_unittests)
 
 ## install the tests into the bin directory if you want to

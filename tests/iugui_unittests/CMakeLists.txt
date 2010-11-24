@@ -27,5 +27,13 @@ include(${IU_USE_FILE})
 
 message("IU_LIBRARIES=${IU_LIBRARIES}")
 
-cuda_add_executable( image_cpu_display_test image_cpu_display_test.cpp )
-TARGET_LINK_LIBRARIES(image_cpu_display_test ${IU_LIBRARIES})
+set(IU_UNITTEST_TARGETS "")
+
+cuda_add_executable( iu_image_cpu_display_test image_cpu_display_test.cpp )
+TARGET_LINK_LIBRARIES(iu_image_cpu_display_test ${IU_LIBRARIES})
+
+set(IU_UNITTEST_TARGETS ${IU_UNITTEST_TARGETS} iu_image_cpu_display_test)
+
+# install targets
+message(STATUS "install targets=${IU_UNITTEST_TARGETS}")
+install(TARGETS ${IU_UNITTEST_TARGETS} RUNTIME DESTINATION bin)

@@ -7,13 +7,97 @@ namespace iuprivate {
 
 //-----------------------------------------------------------------------------
 /* 8-bit; 1-channel */
-QImageCpuDisplay::QImageCpuDisplay(iu::ImageCpu_8u_C1* image,
-                                   const std::string& title,
+QImageCpuDisplay::QImageCpuDisplay(iu::ImageCpu_8u_C1* image, const std::string& title,
                                    unsigned char minval, unsigned char maxval) :
-  minval_(minval), maxval_(maxval), size_(image->size())
+  base_image_(0), final_image_(0),
+  minval_(minval), maxval_(maxval), size_(image->size()),
+  context_menu_(0), overlay_signal_mapper_(0)
 {
-  // create base image
+  // create internal images
   base_image_ = new QImage(size_.width, size_.height, QImage::Format_RGB888);
+  final_image_ = new QImage(size_.width, size_.height, QImage::Format_RGB888);
+
+  this->updateImage(image, minval, maxval);
+
+  setWindowTitle(QString::fromStdString(title));
+
+  this->init();
+}
+
+//-----------------------------------------------------------------------------
+/* 8-bit; 4-channel */
+QImageCpuDisplay::QImageCpuDisplay(iu::ImageCpu_8u_C4* image, const std::string& title,
+                                   unsigned char minval, unsigned char maxval) :
+  base_image_(0), final_image_(0),
+  minval_(minval), maxval_(maxval), size_(image->size()),
+  context_menu_(0), overlay_signal_mapper_(0)
+{
+  // create internal images
+  base_image_ = new QImage(size_.width, size_.height, QImage::Format_RGB888);
+  final_image_ = new QImage(size_.width, size_.height, QImage::Format_RGB888);
+
+  this->updateImage(image, minval, maxval);
+
+  setWindowTitle(QString::fromStdString(title));
+
+  this->init();
+}
+
+//-----------------------------------------------------------------------------
+/* 32-bit; 1-channel */
+QImageCpuDisplay::QImageCpuDisplay(iu::ImageCpu_32f_C1* image, const std::string& title,
+                                   float minval, float maxval) :
+  base_image_(0), final_image_(0),
+  minval_(minval), maxval_(maxval), size_(image->size()),
+  context_menu_(0), overlay_signal_mapper_(0)
+{
+  // create internal images
+  base_image_ = new QImage(size_.width, size_.height, QImage::Format_RGB888);
+  final_image_ = new QImage(size_.width, size_.height, QImage::Format_RGB888);
+
+  this->updateImage(image, minval, maxval);
+
+  setWindowTitle(QString::fromStdString(title));
+
+  this->init();
+}
+
+//-----------------------------------------------------------------------------
+/* 32-bit; 4-channel */
+QImageCpuDisplay::QImageCpuDisplay(iu::ImageCpu_32f_C4* image, const std::string& title,
+                                   float minval, float maxval) :
+  base_image_(0), final_image_(0),
+  minval_(minval), maxval_(maxval), size_(image->size()),
+  context_menu_(0), overlay_signal_mapper_(0)
+{
+  // create internal images
+  base_image_ = new QImage(size_.width, size_.height, QImage::Format_RGB888);
+  final_image_ = new QImage(size_.width, size_.height, QImage::Format_RGB888);
+
+  this->updateImage(image, minval, maxval);
+
+  setWindowTitle(QString::fromStdString(title));
+  this->init();
+}
+
+
+//-----------------------------------------------------------------------------
+/* 8-bit; 1-channel */
+void QImageCpuDisplay::updateImage(iu::ImageCpu_8u_C1* image,
+                                   unsigned char minval, unsigned char maxval)
+{
+  minval_ = minval;
+  maxval_ = maxval;
+
+  if(size_ != image->size())
+  {
+    delete base_image_;
+    delete final_image_;
+    size_ = image->size();
+    base_image_ = new QImage(size_.width, size_.height, QImage::Format_RGB888);
+    final_image_ = new QImage(size_.width, size_.height, QImage::Format_RGB888);
+  }
+
   register int r = 0;
   register unsigned int ry, rx;
   for (ry = 0; ry < size_.height; ry++)
@@ -25,20 +109,27 @@ QImageCpuDisplay::QImageCpuDisplay(iu::ImageCpu_8u_C1* image,
     }
   }
 
-  setWindowTitle(QString::fromStdString(title));
-
-  this->init();
+  composeAndShow();
+  adjustSize();
 }
 
 //-----------------------------------------------------------------------------
 /* 8-bit; 4-channel */
-QImageCpuDisplay::QImageCpuDisplay(iu::ImageCpu_8u_C4* image,
-                                   const std::string& title,
-                                   unsigned char minval, unsigned char maxval) :
-  minval_(minval), maxval_(maxval), size_(image->size())
+void QImageCpuDisplay::updateImage(iu::ImageCpu_8u_C4* image,
+                                   unsigned char minval, unsigned char maxval)
 {
-  // create base image
-  base_image_ = new QImage(size_.width, size_.height, QImage::Format_RGB888);
+  minval_ = minval;
+  maxval_ = maxval;
+
+  if(size_ != image->size())
+  {
+    delete base_image_;
+    delete final_image_;
+    size_ = image->size();
+    base_image_ = new QImage(size_.width, size_.height, QImage::Format_RGB888);
+    final_image_ = new QImage(size_.width, size_.height, QImage::Format_RGB888);
+  }
+
   register int r = 0, g = 0, b = 0;
   register unsigned int ry, rx;
   for (ry = 0; ry < size_.height; ry++)
@@ -52,20 +143,27 @@ QImageCpuDisplay::QImageCpuDisplay(iu::ImageCpu_8u_C4* image,
     }
   }
 
-  setWindowTitle(QString::fromStdString(title));
-
-  this->init();
+  composeAndShow();
+  adjustSize();
 }
 
 //-----------------------------------------------------------------------------
 /* 32-bit; 1-channel */
-QImageCpuDisplay::QImageCpuDisplay(iu::ImageCpu_32f_C1* image,
-                                   const std::string& title,
-                                   float minval, float maxval) :
-  minval_(minval), maxval_(maxval), size_(image->size())
+void QImageCpuDisplay::updateImage(iu::ImageCpu_32f_C1* image,
+                              float minval, float maxval)
 {
-  // create base image
-  base_image_ = new QImage(size_.width, size_.height, QImage::Format_RGB888);
+  minval_ = minval;
+  maxval_ = maxval;
+
+  if(size_ != image->size())
+  {
+    delete base_image_;
+    delete final_image_;
+    size_ = image->size();
+    base_image_ = new QImage(size_.width, size_.height, QImage::Format_RGB888);
+    final_image_ = new QImage(size_.width, size_.height, QImage::Format_RGB888);
+  }
+
   register int r = 0;
   register unsigned int ry, rx;
   for (ry = 0; ry < size_.height; ry++)
@@ -77,20 +175,27 @@ QImageCpuDisplay::QImageCpuDisplay(iu::ImageCpu_32f_C1* image,
     }
   }
 
-  setWindowTitle(QString::fromStdString(title));
-
-  this->init();
+  composeAndShow();
+  adjustSize();
 }
 
 //-----------------------------------------------------------------------------
 /* 32-bit; 4-channel */
-QImageCpuDisplay::QImageCpuDisplay(iu::ImageCpu_32f_C4* image,
-                                   const std::string& title,
-                                   float minval, float maxval) :
-  minval_(minval), maxval_(maxval), size_(image->size())
+void QImageCpuDisplay::updateImage(iu::ImageCpu_32f_C4* image,
+                                   float minval, float maxval)
 {
-  // create base image
-  base_image_ = new QImage(size_.width, size_.height, QImage::Format_RGB888);
+  minval_ = minval;
+  maxval_ = maxval;
+
+  if(size_ != image->size())
+  {
+    delete base_image_;
+    delete final_image_;
+    size_ = image->size();
+    base_image_ = new QImage(size_.width, size_.height, QImage::Format_RGB888);
+    final_image_ = new QImage(size_.width, size_.height, QImage::Format_RGB888);
+  }
+
   register int r = 0, g = 0, b = 0;
   register unsigned int ry, rx;
   for (ry = 0; ry < size_.height; ry++)
@@ -104,9 +209,8 @@ QImageCpuDisplay::QImageCpuDisplay(iu::ImageCpu_32f_C4* image,
     }
   }
 
-  setWindowTitle(QString::fromStdString(title));
-
-  this->init();
+  composeAndShow();
+  adjustSize();
 }
 
 //-----------------------------------------------------------------------------
@@ -114,19 +218,16 @@ QImageCpuDisplay::~QImageCpuDisplay()
 {
   deleteOverlays();
   delete base_image_;
+  base_image_ = 0;
   delete final_image_;
+  final_image_ = 0;
 }
 
 //-----------------------------------------------------------------------------
 void QImageCpuDisplay::init()
 {
   setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-
   setScaledContents(true);
-
-  final_image_ = new QImage(size_.width, size_.height, QImage::Format_RGB888);
-  composeAndShow();
-  adjustSize();
 
   context_menu_ = new QMenu("Layers", this);
 
@@ -139,43 +240,43 @@ void QImageCpuDisplay::init()
 //-----------------------------------------------------------------------------
 void QImageCpuDisplay::addOverlay(const std::string& title, const float* data)
 {
-//  Overlay my_overlay;
-//  my_overlay.title = QString::fromStdString(title);
-//  my_overlay.show = true;
-//  my_overlay.image = new QImage(size_.width, size_.height, QImage::Format_ARGB32);
-//  for (size_t py = 0; py < size_.height; py++){
-//    for (size_t px = 0; px < size_.width; px++){
-//      int r = (int) (data[0 * stride_ + py * pitch_ + px] * 255.0f);
-//      int g = (int) (data[1 * stride_ + py * pitch_ + px] * 255.0f);
-//      int b = (int) (data[2 * stride_ + py * pitch_ + px] * 255.0f);
-//      int a = (int) (data[3 * stride_ + py * pitch_ + px] * 255.0f);
-//      my_overlay.image->setPixel(px, py, qRgba(r,g,b,a));
-//    }
-//  }
-//  overlays_.push_back(my_overlay);
-//  addContextMenuEntry(my_overlay.title);
-//  composeAndShow();
+  //  Overlay my_overlay;
+  //  my_overlay.title = QString::fromStdString(title);
+  //  my_overlay.show = true;
+  //  my_overlay.image = new QImage(size_.width, size_.height, QImage::Format_ARGB32);
+  //  for (size_t py = 0; py < size_.height; py++){
+  //    for (size_t px = 0; px < size_.width; px++){
+  //      int r = (int) (data[0 * stride_ + py * pitch_ + px] * 255.0f);
+  //      int g = (int) (data[1 * stride_ + py * pitch_ + px] * 255.0f);
+  //      int b = (int) (data[2 * stride_ + py * pitch_ + px] * 255.0f);
+  //      int a = (int) (data[3 * stride_ + py * pitch_ + px] * 255.0f);
+  //      my_overlay.image->setPixel(px, py, qRgba(r,g,b,a));
+  //    }
+  //  }
+  //  overlays_.push_back(my_overlay);
+  //  addContextMenuEntry(my_overlay.title);
+  //  composeAndShow();
 }
 
 //-----------------------------------------------------------------------------
 void QImageCpuDisplay::addOverlay(const std::string& title, const float* data, float alpha)
 {
-//  Overlay my_overlay;
-//  my_overlay.title = QString::fromStdString(title);
-//  my_overlay.show = true;
-//  my_overlay.image = new QImage(size_.width, size_.height, QImage::Format_ARGB32);
-//  int a = (int) alpha * 255.0f;
-//  for (size_t py = 0; py < size_.height; py++){
-//    for (size_t px = 0; px < size_.width; px++){
-//      int r = (int) (data[0 * stride_ + py * pitch_ + px] * 255.0f);
-//      int g = (int) (data[1 * stride_ + py * pitch_ + px] * 255.0f);
-//      int b = (int) (data[2 * stride_ + py * pitch_ + px] * 255.0f);
-//      my_overlay.image->setPixel(px, py, qRgba(r,g,b,a));
-//    }
-//  }
-//  overlays_.push_back(my_overlay);
-//  addContextMenuEntry(my_overlay.title);
-//  composeAndShow();
+  //  Overlay my_overlay;
+  //  my_overlay.title = QString::fromStdString(title);
+  //  my_overlay.show = true;
+  //  my_overlay.image = new QImage(size_.width, size_.height, QImage::Format_ARGB32);
+  //  int a = (int) alpha * 255.0f;
+  //  for (size_t py = 0; py < size_.height; py++){
+  //    for (size_t px = 0; px < size_.width; px++){
+  //      int r = (int) (data[0 * stride_ + py * pitch_ + px] * 255.0f);
+  //      int g = (int) (data[1 * stride_ + py * pitch_ + px] * 255.0f);
+  //      int b = (int) (data[2 * stride_ + py * pitch_ + px] * 255.0f);
+  //      my_overlay.image->setPixel(px, py, qRgba(r,g,b,a));
+  //    }
+  //  }
+  //  overlays_.push_back(my_overlay);
+  //  addContextMenuEntry(my_overlay.title);
+  //  composeAndShow();
 }
 
 //-----------------------------------------------------------------------------
@@ -201,9 +302,11 @@ void QImageCpuDisplay::copyCurrentImage(float *data, size_t width, size_t height
       }
     }
   }
-  else {
+  else
+  {
     memset(data, 0, width * height * depth * sizeof(float));
-    throw(std::runtime_error(std::string("dimensions do not fit")));
+    //throw(std::runtime_error(std::string("dimensions do not fit")));
+    fprintf(stderr, "QImageCpuDisplay::copyCurrentImage: dimensions do not fit\n");
   }
 }
 
@@ -380,6 +483,7 @@ void QImageCpuDisplay::addContextMenuEntry(const QString& title)
 //  my_label_->setPixmap(QPixmap::fromImage(*images_[plane]));
 //}
 
+
 } // namespace iuprivate
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -412,3 +516,4 @@ QImageCpuDisplay::~QImageCpuDisplay()
 { /* */ }
 
 } // namespace iu
+

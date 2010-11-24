@@ -240,7 +240,7 @@ else(IU_INCLUDE_DIRS AND IU_LIBRARY_DIR)
     # Qt4
     find_package(Qt4 COMPONENTS QtCore QtGui QtOpenGL)
     if(QT4_FOUND)
-      include(${QT_USE_FILE})
+      #include(${QT_USE_FILE})
       set(IU_IUGUI_LIB_DEPENDENCIES ${IU_IUGUI_LIB_DEPENDENCIES} ${QT_LIBRARIES})
     endif(QT4_FOUND)
 

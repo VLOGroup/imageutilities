@@ -24,16 +24,24 @@ include_directories(${VMLIBRARIES_COMMON_INCLUDE_DIR})
 cuda_include_directories(${VMLIBRARIES_COMMON_INCLUDE_DIR})
 
 # IU modules
-foreach(module IUCORE IUIPP IUGUI IUIO IUIOPGM IUVIDEOCAPTURE IUPGRCAMERA)
+foreach (module IUCORE IUIPP IUGUI IUIO IUIOPGM IUVIDEOCAPTURE IUPGRCAMERA)
   if (IU_USE_${module} OR IU_USE_${module}_DEPENDS)
+
     if (IU_${module}_FOUND)
       set(IU_LIBRARIES ${IU_LIBRARIES} ${IU_${module}_LIBRARY})
-      # message("Use IU: IU_${module}_LIBRARY=${IU_${module}_LIBRARY})")
       set(IU_LIB_DEPENDENCIES ${IU_LIB_DEPENDENCIES} ${IU_${module}_LIB_DEPENDENCIES})
+      if (module MATCHES IUGUI)
+        message(STATUS "QT_USE_FILE=${QT_USE_FILE}")
+        # for the gui module we have to read the QT_USE_FILE
+        include(${QT_USE_FILE})
+      endif (module MATCHES IUGUI)
+
     else (IU_${module}_FOUND)
       message("ImageUtilities module ${module} library not found.")
     endif (IU_${module}_FOUND)
+
   endif (IU_USE_${module} OR IU_USE_${module}_DEPENDS)
+
 endforeach(module)
 
 # concat the external lib dependencies to IU_LIBRARIES

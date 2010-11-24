@@ -48,7 +48,6 @@ namespace iu {
  *  @{
  */
 
-#include "iugui/image_cpu_display.h"
 
 
 
@@ -57,5 +56,8 @@ namespace iu {
 /** @} */ // end of Gui
 
 } // namespace iu
+
+#include "iugui/image_cpu_display.h"
+
 
 #endif // IUGUI_MODULE_H

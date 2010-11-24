@@ -1,3 +1,12 @@
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the IU API.  It exists purely as an
+// implementation detail.  This header file may change from version to
+// version without notice, or even be removed.
+//
+
 #ifndef IUPRIVATE_IMAGE_CPU_DISPLAY_H
 #define IUPRIVATE_IMAGE_CPU_DISPLAY_H
 
@@ -47,14 +56,29 @@ public:
 
   void init();
 
-  // adds a color overlay with the same dimensions as the input and 4 planes (rgba)
+  //! Updates the current image
+  void updateImage(iu::ImageCpu_8u_C1* image,
+                   unsigned char minval=0x00, unsigned char maxval=0xff);
+
+  //! Updates the current image
+  void updateImage(iu::ImageCpu_8u_C4* image,
+                   unsigned char minval=0x00, unsigned char maxval=0xff);
+
+  //! Updates the current image
+  void updateImage(iu::ImageCpu_32f_C1* image,
+                   float minval=0.0f, float maxval=1.0f);
+
+  //! Updates the current image
+  void updateImage(iu::ImageCpu_32f_C4* image,
+                   float minval=0.0f, float maxval=1.0f);
+
+  //! adds a color overlay with the same dimensions as the input and 4 planes (rgba)
   void addOverlay(const std::string& title, const float* data);
-  // adds a color overlay with the same dimensions as the input and 3 planes (rgb)
+  //! adds a color overlay with the same dimensions as the input and 3 planes (rgb)
   void addOverlay(const std::string& title, const float* data, float alpha);
   void deleteOverlays();
 
-  // copies the current buffer to the data pointer passed. width, height need
-  // to be the same size as the input, depth has to be 3
+  //! Copies the current buffer to the data pointer passed.
   void copyCurrentImage(float* data, size_t width, size_t height, size_t depth);
 
 signals:

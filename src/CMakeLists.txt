@@ -187,6 +187,11 @@ install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/iugui/image_cpu_display.h ${CMAKE_CURR
     ${CMAKE_CURRENT_SOURCE_DIR}/iugui/image_cpu_display_p.h
     )
 
+# denote moc header files as header only so that they can be added to the target
+#set_source_files_properties(
+#  PROPERTIES HEADER_FILE_ONLY yes
+#  )
+
   # compile moc headers
   QT4_WRAP_CPP (IU_GUI_MOC_SOURCES ${IU_GUI_MOC_HEADERS})
 
@@ -472,13 +477,13 @@ set_source_files_properties(
 set( IU_ALL_FILES
   ${IU_HEADERS}
   ${IU_IPP_HEADERS}
-  #${IU_GUI_HEADERS}
   ${IU_IO_HEADERS}
   ${IU_VIDEOCAPTURE_HEADERS}
   ${IU_PGRCAMERA_HEADERS}
   ${IU_CONNECTOR_HEADERS}
   ${IU_SOURCES}
-  #${IU_GUI_SOURCES}
+  #${IU_GUI_MOC_HEADERS}
+  ${IU_GUI_SOURCES}
   ${IU_GUI_MOC_SOURCES}
   ${IU_IO_SOURCES}
   ${IU_VIDEOCAPTURE_SOURCES}
