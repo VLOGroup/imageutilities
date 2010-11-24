@@ -31,7 +31,6 @@ foreach (module IUCORE IUIPP IUGUI IUIO IUIOPGM IUVIDEOCAPTURE IUPGRCAMERA)
       set(IU_LIBRARIES ${IU_LIBRARIES} ${IU_${module}_LIBRARY})
       set(IU_LIB_DEPENDENCIES ${IU_LIB_DEPENDENCIES} ${IU_${module}_LIB_DEPENDENCIES})
       if (module MATCHES IUGUI)
-        message(STATUS "QT_USE_FILE=${QT_USE_FILE}")
         # for the gui module we have to read the QT_USE_FILE
         include(${QT_USE_FILE})
       endif (module MATCHES IUGUI)
