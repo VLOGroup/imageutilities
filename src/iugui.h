@@ -28,9 +28,6 @@
 
 // forward declaration
 
-// :TODO: include namespace again if we have a cool idea how to create a public interface here
-namespace iu {
-
 /** \defgroup Gui
  *  \brief The gui module.
  *  TODO more detailed docu
@@ -47,6 +44,15 @@ namespace iu {
  *  TODO more detailed docu
  *  @{
  */
+#include "iugui/image_cpu_display.h"
+
+//////////////////////////////////////////////////////////////////////////////
+/** @defgroup QGLImageGpuWidget
+ *  @ingroup Gui
+ *  TODO more detailed docu
+ *  @{
+ */
+#include "iugui/qgl_image_gpu_widget.h"
 
 
 
@@ -55,9 +61,7 @@ namespace iu {
 
 /** @} */ // end of Gui
 
-} // namespace iu
 
-#include "iugui/image_cpu_display.h"
 
 
 #endif // IUGUI_MODULE_H

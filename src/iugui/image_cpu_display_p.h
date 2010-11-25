@@ -72,6 +72,9 @@ public:
   void updateImage(iu::ImageCpu_32f_C4* image,
                    float minval=0.0f, float maxval=1.0f);
 
+  //! adds a grayscale overlay with the given color values when the 8bit value is greater 128
+  void addOverlay(iu::ImageCpu_8u_C1* image, const std::string& title);
+
   //! adds a color overlay with the same dimensions as the input and 4 planes (rgba)
   void addOverlay(const std::string& title, const float* data);
   //! adds a color overlay with the same dimensions as the input and 3 planes (rgb)

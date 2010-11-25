@@ -148,7 +148,7 @@ endif()
 
 ##-----------------------------------------------------------------------------
 ## Qt
-find_package(Qt4 COMPONENTS QtCore QtGui)# QtOpenGL)
+find_package(Qt4 COMPONENTS QtCore QtGui QtOpenGL)
 # only include if GUI module is used and qt4 found.
 if(VMLIBRARIES_IU_USE_GUI AND QT4_FOUND)
 
@@ -157,12 +157,12 @@ if(VMLIBRARIES_IU_USE_GUI AND QT4_FOUND)
 
 
   ## GLEW
-  #find_package( GLEW REQUIRED )
-  #include_directories(${GLEW_INCLUDE_DIR})
+  find_package( GLEW REQUIRED )
+  include_directories(${GLEW_INCLUDE_DIR})
 
   ## OpenGL
-  #find_package( OpenGL REQUIRED )
-  #include_directories(${OPENGL_INCLUDE_DIR})
+  find_package( OpenGL REQUIRED )
+  include_directories(${OPENGL_INCLUDE_DIR})
 
 
   set( IU_PUBLIC_HEADERS
@@ -170,16 +170,15 @@ if(VMLIBRARIES_IU_USE_GUI AND QT4_FOUND)
     ${CMAKE_CURRENT_SOURCE_DIR}/iugui.h
     )
 
-install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/iugui/image_cpu_display.h ${CMAKE_CURRENT_SOURCE_DIR}/iugui/image_cpu_display_p.h
-  DESTINATION include/iu/iugui
-  COMPONENT Headers)
-
-#  set( IU_GUI_HEADERS
-#    ${CMAKE_CURRENT_SOURCE_DIR}/iugui/nppglwidget.cuh
-#    )
+  set( IU_GUI_HEADERS
+    ${CMAKE_CURRENT_SOURCE_DIR}/iugui/qgl_image_gpu_widget.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/iugui/qgl_image_gpu_widget_p.h
+    )
 
   set( IU_GUI_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/iugui/image_cpu_display.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/iugui/qgl_image_gpu_widget.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/iugui/qgl_image_gpu_widget.cu
     )
 
   set( IU_GUI_MOC_HEADERS
@@ -187,10 +186,11 @@ install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/iugui/image_cpu_display.h ${CMAKE_CURR
     ${CMAKE_CURRENT_SOURCE_DIR}/iugui/image_cpu_display_p.h
     )
 
-# denote moc header files as header only so that they can be added to the target
-#set_source_files_properties(
-#  PROPERTIES HEADER_FILE_ONLY yes
-#  )
+install(FILES ${IU_GUI_MOC_HEADERS} ${IU_GUI_HEADERS}
+  DESTINATION include/iu/iugui
+  COMPONENT Headers)
+
+
 
   # compile moc headers
   QT4_WRAP_CPP (IU_GUI_MOC_SOURCES ${IU_GUI_MOC_HEADERS})
@@ -483,6 +483,7 @@ set( IU_ALL_FILES
   ${IU_CONNECTOR_HEADERS}
   ${IU_SOURCES}
   #${IU_GUI_MOC_HEADERS}
+  ${IU_GUI_HEADERS}
   ${IU_GUI_SOURCES}
   ${IU_GUI_MOC_SOURCES}
   ${IU_IO_SOURCES}
@@ -544,7 +545,7 @@ if(VMLIBRARIES_IU_USE_GUI)
     )
   target_link_libraries( ${IU_GUI_LIB}
     ${CUDA_LIBRARIES}
-    ${QT_LIBRARIES} # ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES}
+    ${QT_LIBRARIES} ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES}
     )
   set(IU_LIBS ${IU_LIBS} ${IU_GUI_LIB})
 

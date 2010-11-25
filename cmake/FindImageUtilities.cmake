@@ -238,10 +238,18 @@ else(IU_INCLUDE_DIRS AND IU_LIBRARY_DIR)
   ## GUI module
   if(IU_IUGUI_FOUND)
     # Qt4
-    find_package(Qt4 COMPONENTS QtCore QtGui)
+    find_package(Qt4 COMPONENTS QtCore QtGui QtOpenGL)
     if(QT4_FOUND)
       include(${QT_USE_FILE})
-      set(IU_IUGUI_LIB_DEPENDENCIES ${IU_IUGUI_LIB_DEPENDENCIES} ${QT_LIBRARIES})
+
+       ## GLEW
+       find_package( GLEW REQUIRED )
+       include_directories(${GLEW_INCLUDE_DIR})
+       ## OpenGL
+       find_package( OpenGL REQUIRED )
+       include_directories(${OPENGL_INCLUDE_DIR})
+
+      set(IU_IUGUI_LIB_DEPENDENCIES ${IU_IUGUI_LIB_DEPENDENCIES} ${QT_LIBRARIES} ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES})
     endif(QT4_FOUND)
   endif(IU_IUGUI_FOUND)
 
