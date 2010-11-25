@@ -73,7 +73,8 @@ __global__ void cuCopyImageToPboKernel_8u_C4(uchar4* dst, int width, int height)
 
 
 /** Kernel to copy image data into OpenGL PBO. */
-__global__ void cuCopyImageToPboKernel_32f_C1(uchar4* dst, int width, int height)
+__global__ void cuCopyImageToPboKernel_32f_C1(uchar4* dst, int width, int height,
+                                              float min=0.0f, float max=1.0f)
 {
   const int x = blockDim.x * blockIdx.x + threadIdx.x;
   const int y = blockDim.y * blockIdx.y + threadIdx.y;
@@ -84,7 +85,10 @@ __global__ void cuCopyImageToPboKernel_32f_C1(uchar4* dst, int width, int height
 
   if(x<width && y<height)
   {
-    float val = tex2D(tex_qgl_image_32f_C1, xx, yy)*255.0f;
+    float val = tex2D(tex_qgl_image_32f_C1, xx, yy);
+    //-min/(max-min)
+    //val = val * 255.0f;
+    val = 255.0f / (max-min) * (val-min);
     dst[c] = make_uchar4(val, val, val, 1.0f);
 
   }
@@ -108,7 +112,8 @@ __global__ void cuCopyImageToPboKernel_32f_C4(uchar4* dst, int width, int height
 }
 
 IuStatus cuCopyImageToPbo(iu::Image* image, unsigned int num_channels,
-                          unsigned int bit_depth, uchar4 *dst)
+                          unsigned int bit_depth, uchar4 *dst,
+                          float min=0.0f, float max=1.0f)
 {
   // device fragmentation
   const unsigned int block_size = 16;
@@ -145,7 +150,7 @@ IuStatus cuCopyImageToPbo(iu::Image* image, unsigned int num_channels,
       cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<float>();
       cudaBindTexture2D(0, &tex_qgl_image_32f_C1, img->data(), &channel_desc,
                         img->width(), img->height(), img->pitch());
-      cuCopyImageToPboKernel_32f_C1 <<< dimGrid, dimBlock >>> (dst, img->width(), img->height());
+      cuCopyImageToPboKernel_32f_C1 <<< dimGrid, dimBlock >>> (dst, img->width(), img->height(), min, max);
       cudaUnbindTexture(tex_qgl_image_32f_C1);
     }
     else

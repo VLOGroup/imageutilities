@@ -42,7 +42,7 @@ public:
   QGLImageGpuWidget(QWidget *parent);
   virtual ~QGLImageGpuWidget();
   void setImage(iu::ImageGpu_8u_C1* image);
-  void setImage(iu::ImageGpu_32f_C1* image);
+  void setImage(iu::ImageGpu_32f_C1* image, float min=0.0f, float max=1.f);
   void setImage(iu::ImageGpu_8u_C4* image);
   void setImage(iu::ImageGpu_32f_C4* image);
 
@@ -65,6 +65,8 @@ protected:
   iu::Image* image_; /**< image that will be displayed. Currently 1-channel and 4-channel images are supported. */
   unsigned int num_channels_;
   unsigned int bit_depth_;
+  float min_;
+  float max_;
   bool init_ok_;
   float zoom_;
 };

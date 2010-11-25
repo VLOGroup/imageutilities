@@ -30,7 +30,8 @@ namespace iuprivate {
 
 extern IuStatus cuCopyImageToPbo(iu::Image* image,
                                  unsigned int num_channels, unsigned int bit_depth,
-                                 uchar4 *dst);
+                                 uchar4 *dst,
+                                 float min=0.0f, float max=1.0f);
 
 //-----------------------------------------------------------------------------
 QGLImageGpuWidget::QGLImageGpuWidget(QWidget *parent) :
@@ -150,7 +151,7 @@ void QGLImageGpuWidget::setImage(iu::ImageGpu_8u_C4 *image)
 }
 
 //-----------------------------------------------------------------------------
-void QGLImageGpuWidget::setImage(iu::ImageGpu_32f_C1 *image)
+void QGLImageGpuWidget::setImage(iu::ImageGpu_32f_C1 *image, float min, float max)
 {
    printf("QGLImageGpuWidget::setImage(ImageGpu_32f_C1*)\n");
 
@@ -168,6 +169,8 @@ void QGLImageGpuWidget::setImage(iu::ImageGpu_32f_C1 *image)
      {
        printf("set new image with same sizings\n");
        image_ = image;
+       min_ = min;
+       max_ = max;
        return;
      }
      else
@@ -179,6 +182,8 @@ void QGLImageGpuWidget::setImage(iu::ImageGpu_32f_C1 *image)
   image_ = image;
   num_channels_ = 1;
   bit_depth_ = 32;
+  min_ = min;
+  max_ = max;
   if (!this->init())
   {
     fprintf(stderr, "Failed to initialize OpenGL buffers.\n");
@@ -388,7 +393,7 @@ void QGLImageGpuWidget::paintGL()
   cudaGraphicsResourceGetMappedPointer((void**)&d_dst, &start, cuda_pbo_resource_);
 
   // get image data
-  cuCopyImageToPbo(image_, num_channels_, bit_depth_, d_dst);
+  cuCopyImageToPbo(image_, num_channels_, bit_depth_, d_dst, min_, max_);
   cudaThreadSynchronize();
 
   // unmap GL <-> CUDA resource
