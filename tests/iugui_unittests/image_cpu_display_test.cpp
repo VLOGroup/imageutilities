@@ -15,7 +15,7 @@
 
 int main(int argc, char **argv)
 {
-  cudaGLSetGLDevice(0);
+  //cudaGLSetGLDevice(1);
 
   if(argc < 2)
   {
@@ -70,29 +70,29 @@ int main(int argc, char **argv)
   iu::ImageGpu_8u_C4* image2_cu8u_C4 = iu::imread_cu8u_C4(in_file2);
   iu::ImageGpu_32f_C4* image_cu32f_C4 = iu::imread_cu32f_C4(in_file);
 
-  iu::QGLImageGpuWidget widget_8u_C1(0);
-  widget_8u_C1.setImage(image_cu8u_C1);
-  widget_8u_C1.show();
-  widget_8u_C1.setWindowTitle("8u_C1");
+//  iu::QGLImageGpuWidget widget_8u_C1(0);
+//  widget_8u_C1.setImage(image_cu8u_C1);
+//  widget_8u_C1.show();
+//  widget_8u_C1.setWindowTitle("8u_C1");
 
-  iu::QGLImageGpuWidget widget_8u_C4(0);
-  widget_8u_C4.setImage(image_cu8u_C4);
-  widget_8u_C4.show();
-//  widget_8u_C4.setWindowTitle("QGLImageGpuWidget: 8u_C4");
+//  iu::QGLImageGpuWidget widget_8u_C4(0);
 //  widget_8u_C4.setImage(image_cu8u_C4);
-  widget_8u_C4.setWindowTitle("8u_C4");
+//  widget_8u_C4.show();
+////  widget_8u_C4.setWindowTitle("QGLImageGpuWidget: 8u_C4");
+////  widget_8u_C4.setImage(image_cu8u_C4);
+//  widget_8u_C4.setWindowTitle("8u_C4");
 
 
-  iu::QGLImageGpuWidget widget_32f_C1(0);
-  widget_32f_C1.setImage(image_cu32f_C1);
-  widget_32f_C1.show();
-  widget_32f_C1.setWindowTitle("32f_C1");
+//  iu::QGLImageGpuWidget widget_32f_C1(0);
+//  widget_32f_C1.setImage(image_cu32f_C1);
+//  widget_32f_C1.show();
+//  widget_32f_C1.setWindowTitle("32f_C1");
 
 
-  iu::QGLImageGpuWidget widget_32f_C4(0);
-  widget_32f_C4.setImage(image_cu32f_C4);
-  widget_32f_C4.show();
-  widget_32f_C4.setWindowTitle("32f_C4");
+//  iu::QGLImageGpuWidget widget_32f_C4(0);
+//  widget_32f_C4.setImage(image_cu32f_C4);
+//  widget_32f_C4.show();
+//  widget_32f_C4.setWindowTitle("32f_C4");
 
   app.exec();
 

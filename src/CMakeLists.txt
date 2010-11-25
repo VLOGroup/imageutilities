@@ -190,8 +190,6 @@ install(FILES ${IU_GUI_MOC_HEADERS} ${IU_GUI_HEADERS}
   DESTINATION include/iu/iugui
   COMPONENT Headers)
 
-
-
   # compile moc headers
   QT4_WRAP_CPP (IU_GUI_MOC_SOURCES ${IU_GUI_MOC_HEADERS})
 
