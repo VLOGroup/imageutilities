@@ -46,6 +46,9 @@ public:
   void setImage(iu::ImageGpu_8u_C4* image);
   void setImage(iu::ImageGpu_32f_C4* image);
 
+  void setMinMax(float min, float max);
+  void autoMinMax();
+
 protected:
 
   void initializeGL();
