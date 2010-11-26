@@ -66,6 +66,14 @@ void mulC(const iu::ImageGpu_32f_C1* src, const float& factor, iu::ImageGpu_32f_
   IU_ASSERT(status == IU_SUCCESS);
 }
 
+// [gpu] multiplication with factor; Not-in-place; 32-bit; 2-channel
+void mulC(const iu::ImageGpu_32f_C2* src, const float2& factor, iu::ImageGpu_32f_C2* dst, const IuRect& roi)
+{
+  IuStatus status;
+  status = cuMulC(src, factor, dst, roi);
+  IU_ASSERT(status == IU_SUCCESS);
+}
+
 // [gpu] multiplication with factor; Not-in-place; 32-bit; 4-channel
 void mulC(const iu::ImageGpu_32f_C4* src, const float4& factor, iu::ImageGpu_32f_C4* dst, const IuRect& roi)
 {

@@ -74,6 +74,7 @@ IU_DLLAPI void mulC(const iu::ImageGpu_8u_C4* src, const uchar4& factor, iu::Ima
 
 // [gpu] multiplication with factor; Not-in-place; 32-bit;
 IU_DLLAPI void mulC(const iu::ImageGpu_32f_C1* src, const float& factor, iu::ImageGpu_32f_C1* dst, const IuRect& roi);
+IU_DLLAPI void mulC(const iu::ImageGpu_32f_C2* src, const float2& factor, iu::ImageGpu_32f_C2* dst, const IuRect& roi);
 IU_DLLAPI void mulC(const iu::ImageGpu_32f_C4* src, const float4& factor, iu::ImageGpu_32f_C4* dst, const IuRect& roi);
 
 /** In-place multiplication of every pixel with a constant factor.

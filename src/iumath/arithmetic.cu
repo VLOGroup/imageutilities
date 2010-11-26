@@ -231,6 +231,55 @@ IuStatus cuMulC(const iu::ImageGpu_32f_C1* src, const float& factor, iu::ImageGp
   return IU_SUCCESS;
 }
 
+// kernel: multiplication with factor; 32-bit; 2-channel
+__global__ void  cuMulCKernel(const float2 factor, float2* dst, const size_t stride,
+                              const int xoff, const int yoff,
+                              const int width, const int height)
+{
+  int x = blockIdx.x*blockDim.x + threadIdx.x;
+  int y = blockIdx.y*blockDim.y + threadIdx.y;
+  const unsigned int oc = y*stride+x;
+
+  x += xoff;
+  y += yoff;
+
+  float xx = x+0.5f;
+  float yy = y+0.5f;
+
+  if(x>=0 && y>= 0 && x<width && y<height)
+  {
+    float2 val = tex2D(tex1_32f_C2__, xx, yy);
+    dst[oc] = val * factor;
+  }
+}
+
+// wrapper: multiplication with factor; 32-bit; 4-channel
+IuStatus cuMulC(const iu::ImageGpu_32f_C2* src, const float2& factor, iu::ImageGpu_32f_C2* dst, const IuRect& roi)
+{
+  // bind textures
+  cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<float2>();
+  cudaBindTexture2D(0, &tex1_32f_C2__, src->data(), &channel_desc, src->width(), src->height(), src->pitch());
+
+  // fragmentation
+  unsigned int block_size = 16;
+  dim3 dimBlock(block_size, block_size);
+  dim3 dimGrid(iu::divUp(dst->width(), dimBlock.x),
+               iu::divUp(dst->height(), dimBlock.y));
+
+  cuMulCKernel <<< dimGrid, dimBlock >>> (
+    factor, dst->data(roi.x, roi.y), dst->stride(),
+    roi.x, roi.y, roi.width, roi.height);
+
+
+  // unbind textures
+  cudaUnbindTexture(&tex1_32f_C2__);
+
+  // error check
+  IU_CHECK_AND_RETURN_CUDA_ERRORS();
+  return IU_SUCCESS;
+}
+
+
 // kernel: multiplication with factor; 32-bit; 1-channel
 __global__ void  cuMulCKernel(const float4 factor, float4* dst, const size_t stride,
                               const int xoff, const int yoff,
