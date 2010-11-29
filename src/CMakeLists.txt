@@ -549,7 +549,7 @@ if(VMLIBRARIES_IU_USE_GUI)
     SOVERSION ${IMAGEUTILITIES_SOVERSION}
     )
   target_link_libraries( ${IU_GUI_LIB}
-    ${CUDA_LIBRARIES}
+    ${IU_CORE_LIB} ${CUDA_LIBRARIES}
     ${QT_LIBRARIES} ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES}
     )
   set(IU_LIBS ${IU_LIBS} ${IU_GUI_LIB})
@@ -707,7 +707,7 @@ install(FILES ${IU_PUBLIC_CORE_HEADERS}
   DESTINATION include/iu/iucore
   COMPONENT Headers
   )
-  
+
 install(FILES ${IU_IPP_INSTALL_HEADERS}
   DESTINATION include/iu/iuipp
   COMPONENT Headers
