@@ -120,12 +120,17 @@ if(VMLIBRARIES_IU_USE_IPP AND IPP_INCLUDE_DIR)
 
   include_directories(${IPP_INCLUDE_DIR})
 
-  set( IU_IPP_HEADERS
+  set( IU_IPP_INSTALL_HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/iuipp/image_allocator_ipp.h
     ${CMAKE_CURRENT_SOURCE_DIR}/iuipp/image_ipp.h
     ${CMAKE_CURRENT_SOURCE_DIR}/iuipp/memorydefs_ipp.h
     ${CMAKE_CURRENT_SOURCE_DIR}/iuipp/copy_ipp.h
+  )
+
+  set( IU_IPP_HEADERS
+    ${IU_IPP_INSTALL_HEADERS}
     ${CMAKE_CURRENT_SOURCE_DIR}/iuipp/image_ipp_to_cpu_connector.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuipp/image_cpu_to_ipp_connector.h
   )
 
   set( IU_PUBLIC_HEADERS
@@ -134,7 +139,9 @@ if(VMLIBRARIES_IU_USE_IPP AND IPP_INCLUDE_DIR)
     )
 
   set( IU_IPP_SOURCES
-#    ${CMAKE_CURRENT_SOURCE_DIR}/iuconnetor/copy_ipp.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuipp.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuipp/image_ipp_to_cpu_connector.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuipp/image_cpu_to_ipp_connector.cpp
   )
 
 else()
@@ -700,7 +707,8 @@ install(FILES ${IU_PUBLIC_CORE_HEADERS}
   DESTINATION include/iu/iucore
   COMPONENT Headers
   )
-install(FILES ${IU_IPP_HEADERS}
+  
+install(FILES ${IU_IPP_INSTALL_HEADERS}
   DESTINATION include/iu/iuipp
   COMPONENT Headers
   )

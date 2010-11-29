@@ -24,6 +24,7 @@
 #ifndef IU_COREDEFS_H
 #define IU_COREDEFS_H
 
+#include <stdio.h>
 #include <assert.h>
 
 /** Basic assert macro
@@ -39,7 +40,7 @@
   { \
     assert(C); \
     fprintf(stderr, "\n\n ImageUtilities assertion faild: \n "); \
-      fprintf(stderr,"  file:       %s\n",__FILE__); \
+    fprintf(stderr,"  file:       %s\n",__FILE__); \
     fprintf(stderr,"  function:   %s\n",__FUNCTION__); \
     fprintf(stderr,"  line:       %d\n\n",__LINE__); \
   } \
