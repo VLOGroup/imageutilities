@@ -71,7 +71,7 @@ inline iu::ImageCpu_32f_C3* convertToCpu_32f_C3(iu::ImageIpp_32f_C3* src)
 inline iu::ImageCpu_32f_C4* convertToCpu_32f_C4(iu::ImageIpp_32f_C4* src)
 {
   iu::ImageCpu_32f_C4* img = new iu::ImageCpu_32f_C4((float4*)src->data(), src->width(), src->height(),
-                                                     src->pitch()/4, true);
+                                                     src->pitch(), true);
   return img;
 }
 
