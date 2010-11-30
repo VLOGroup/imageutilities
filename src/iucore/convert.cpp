@@ -34,6 +34,12 @@ extern IuStatus cuConvert(const iu::ImageGpu_32f_C3* src, const IuRect& src_roi,
                           iu::ImageGpu_32f_C4* dst, const IuRect& dst_roi);
 extern IuStatus cuConvert(const iu::ImageGpu_32f_C4* src, const IuRect& src_roi,
                           iu::ImageGpu_32f_C3* dst, const IuRect& dst_roi);
+extern IuStatus cuConvert_8u_32f(const iu::ImageGpu_8u_C1* src, const IuRect& src_roi,
+                   iu::ImageGpu_32f_C1* dst, const IuRect& dst_roi, float mul_constant,
+									 float add_constant);
+extern IuStatus cuConvert_32f_8u(const iu::ImageGpu_32f_C1* src, const IuRect& src_roi,
+                   iu::ImageGpu_8u_C1* dst, const IuRect& dst_roi, float mul_constant,
+									 unsigned char add_constant);
 /* ***************************************************************************/
 
 
@@ -71,6 +77,28 @@ void convert_16u32f_C1(const iu::ImageCpu_16u_C1* src, iu::ImageCpu_32f_C1 *dst,
     }
   }
 }
+
+//-----------------------------------------------------------------------------
+// [device] conversion 32f_C1 -> 8u_C1
+void convert_32f8u_C1(const iu::ImageGpu_32f_C1* src, const IuRect& src_roi, iu::ImageGpu_8u_C1 *dst, const IuRect& dst_roi,
+                      float mul_constant, unsigned char add_constant)
+{
+  IuStatus status;
+  status = cuConvert_32f_8u(src, src_roi, dst, dst_roi, mul_constant, add_constant);
+  IU_ASSERT(status == IU_SUCCESS);
+}
+
+
+//-----------------------------------------------------------------------------
+// [device] conversion 8u_C1 -> 32f_C1
+void convert_8u32f_C1(const iu::ImageGpu_8u_C1* src, const IuRect& src_roi, iu::ImageGpu_32f_C1 *dst, const IuRect& dst_roi,
+                      float mul_constant, float add_constant)
+{
+  IuStatus status;
+  status = cuConvert_8u_32f(src, src_roi, dst, dst_roi, mul_constant, add_constant);
+  IU_ASSERT(status == IU_SUCCESS);
+}
+
 
 //-----------------------------------------------------------------------------
 // [device] conversion 32f_C3 -> 32f_C4

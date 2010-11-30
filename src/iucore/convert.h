@@ -47,6 +47,15 @@ void convert_32f8u_C1(const iu::ImageCpu_32f_C1* src, iu::ImageCpu_8u_C1 *dst,
 void convert_16u32f_C1(const iu::ImageCpu_16u_C1* src, iu::ImageCpu_32f_C1 *dst,
                        float mul_constant, float add_constant);
 
+ // [device] 2D bit depth conversion; 32f_C1 -> 8u_C1;
+void convert_32f8u_C1(const iu::ImageGpu_32f_C1* src, const IuRect& src_roi, iu::ImageGpu_8u_C1 *dst, const IuRect& dst_roi,
+                      float mul_constant=255.0f, unsigned char add_constant=0);
+
+// [device] 2D bit depth conversion; 8u_C1 -> 32f_C1;
+void convert_8u32f_C1(const iu::ImageGpu_8u_C1* src, const IuRect& src_roi, iu::ImageGpu_32f_C1 *dst, const IuRect& dst_roi,
+                       float mul_constant=1/255.0f, float add_constant=0.0f);
+
+
 // 2D conversion; device; 32-bit 3-channel -> 32-bit 4-channel
 void convert(const iu::ImageGpu_32f_C3* src, const IuRect& src_roi, iu::ImageGpu_32f_C4* dst, const IuRect& dst_roi);
 
