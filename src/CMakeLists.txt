@@ -28,8 +28,8 @@ set(${IU_PUBLIC_HEADERS} "")
 set( CMAKE_DEBUG_POSTFIX "d" )
 
 FILE(TO_CMAKE_PATH "$ENV{CMAKE_MODULE_PATH}" OT_CMAKE_MODULE_PATH)
-FILE(TO_CMAKE_PATH "$ENV{VMLIBRARIES_ROOT}/cmake" OT_VMLIBRARIES_CMAKE_MODULE_PATH)
-SET(CMAKE_MODULE_PATH ${OT_CMAKE_MODULE_PATH} ${OT_VMLIBRARIES_CMAKE_MODULE_PATH})
+FILE(TO_CMAKE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../cmake" OT_IU_CMAKE_MODULE_PATH)
+SET(CMAKE_MODULE_PATH ${OT_CMAKE_MODULE_PATH} ${OT_IU_CMAKE_MODULE_PATH})
 
 ##-----------------------------------------------------------------------------
 ## Current version number:
@@ -692,6 +692,10 @@ endif(NOT VMLIBRARIES_IU_INSTALL_LOCAL OR NOT CMAKE_INSTALL_PREFIX)
 
 # set the cmake-files that should be installed with the package
 set( IU_CMAKE_FILES
+  ${CMAKE_CURRENT_SOURCE_DIR}/../cmake/FindCUDASDK.cmake
+  ${CMAKE_CURRENT_SOURCE_DIR}/../cmake/FindIPP.cmake
+  ${CMAKE_CURRENT_SOURCE_DIR}/../cmake/FindMatlab_ICG.cmake
+  ${CMAKE_CURRENT_SOURCE_DIR}/../cmake/FindGLEW.cmake
   ${CMAKE_CURRENT_SOURCE_DIR}/../cmake/FindImageUtilities.cmake
   ${CMAKE_CURRENT_SOURCE_DIR}/../cmake/UseImageUtilities.cmake
   )
