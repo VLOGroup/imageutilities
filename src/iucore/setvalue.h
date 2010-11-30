@@ -135,23 +135,6 @@ void setValue(const PixelType &value, iu::VolumeGpu<PixelType, Allocator> *srcds
   IU_ASSERT(status == IU_SUCCESS);
 }
 
-// 2D clamping. clamps every pixel; device;
-void clamp(const float& min, const float& max,
-           iu::ImageGpu_32f_C1 *srcdst, const IuRect &roi);
-
-// 2D conversion; device; 32-bit 3-channel -> 32-bit 4-channel
-void convert(const iu::ImageGpu_32f_C3* src, const IuRect& src_roi, iu::ImageGpu_32f_C4* dst, const IuRect& dst_roi);
-
-// 2D conversion; device; 32-bit 4-channel -> 32-bit 3-channel
-void convert(const iu::ImageGpu_32f_C4* src, const IuRect& src_roi, iu::ImageGpu_32f_C3* dst, const IuRect& dst_roi);
-
-// [host] 2D bit depth conversion; 32f_C1 -> 8u_C1;
-void convert_32f8u_C1(const iu::ImageCpu_32f_C1* src, iu::ImageCpu_8u_C1 *dst,
-                      float mul_constant=255.0f, float add_constant=0.0f);
-
-// [host] 2D bit depth conversion; 16u_C1 -> 32f_C1;
-void convert_16u32f_C1(const iu::ImageCpu_16u_C1* src, iu::ImageCpu_32f_C1 *dst,
-                       float mul_constant, float add_constant);
 
 } // namespace iuprivate
 

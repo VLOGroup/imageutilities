@@ -25,6 +25,7 @@
 #include <iucore/copy.h>
 #include <iucore/setvalue.h>
 #include <iucore/clamp.h>
+#include <iucore/convert.h>
 #include <iuconnector/iumatlabconnector.h>
 
 namespace iu {
