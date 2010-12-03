@@ -59,7 +59,7 @@ int main(int argc, char** argv)
   std::cout << "Starting iu_image_gpu_unittest ..." << std::endl;
 
   // test image size
-  IuSize sz(79,63);
+  IuSize sz(922,307);
 
   iu::ImageGpu_8u_C1 im_gpu_8u_C1(sz);
   iu::ImageGpu_8u_C4 im_gpu_8u_C4(sz);

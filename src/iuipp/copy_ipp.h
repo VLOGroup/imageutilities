@@ -77,7 +77,6 @@ void copy(const iu::ImageGpu<PixelTypeSrc, AllocatorSrc> *src,
     return;
   }
 
-  printf("pitch (src/dst) = %d / %d\n", src->pitch(), dst->pitch());
   unsigned int roi_width = dst->roi().width;
   unsigned int roi_height = dst->roi().height;
   status = cudaMemcpy2D((void*)dst->data(dst->roi().x, dst->roi().y), dst->pitch(),
