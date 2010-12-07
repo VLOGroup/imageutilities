@@ -36,7 +36,7 @@
 
 namespace iuprivate {
 
-// textures only used within this file
+// textures only used within this file1
 texture<float, 2, cudaReadModeElementType> tex_u_32f_C1__;
 texture<float, 2, cudaReadModeElementType> tex_v_32f_C1__;
 texture<float2, 2, cudaReadModeElementType> tex_p_32f_C2__;
@@ -360,8 +360,8 @@ __global__ void cuFilterRofPrimalKernel_32f_C1(
     u = u + tau_p*divergence;
     u = (u + tau_p*lambda*f)/(1.0f+tau_p*lambda);
 
-    dst[oc] = u;
-    dst_v[oc] = 2*u-v;
+    dst[oc] = 0.0f; //u;
+    dst_v[oc] = 0.0f; // 2*u-v;
   }
 }
 
@@ -494,6 +494,8 @@ IuStatus cuFilterRof(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
   float2 p_init = make_float2(0.0f,0.0f);
   iuprivate::setValue(p_init, &p, p.roi());
 
+  
+
   // init output und splitting var with input image.
   iuprivate::copy(src, dst);
   iuprivate::copy(src, &v);
@@ -522,7 +524,7 @@ IuStatus cuFilterRof(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
     IU_CHECK_AND_RETURN_CUDA_ERRORS();
 
     cuFilterRofDualKernel_32f_C1 <<< dimGrid, dimBlock >>>
-        (p.data(), p.stride()/2,
+        (p.data(), p.stride(),
          roi.x, roi.y, p.width(), p.height(), tau_d);
     IU_CHECK_AND_RETURN_CUDA_ERRORS();
   }

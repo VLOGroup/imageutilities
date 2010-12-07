@@ -25,6 +25,7 @@
 #include <iucore/copy.h>
 #include <iufilter/filter.h>
 #include "reduce.h"
+#include <iostream>
 
 namespace iuprivate {
 
@@ -50,17 +51,20 @@ IuStatus reduce(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
 
   // temporary variable if there is some pre-filtering
   iu::ImageGpu_32f_C1* filtered = const_cast<iu::ImageGpu_32f_C1*>(src);
+  
+  std::cout << "TEST123" << std::endl;
 
   // gauss pre-filter
   if(gauss_prefilter)
   {
     filtered = new iu::ImageGpu_32f_C1(src->size());
-
+  
+       
     // x_/y_factor < 0
     float x_factor = (float)dst->width() / (float)src->width();
     float y_factor = (float)dst->height() / (float)src->height();
 
-    float sigma = /*0.5774f*/ 0.35f * sqrt(0.5f*(x_factor+y_factor));
+    float sigma =/*0.5774f*/0.35f * sqrt(0.5f*(x_factor+y_factor));
     unsigned int kernel_size = 5;
 
     iuprivate::filterGauss(src, filtered, src->roi(), sigma, kernel_size);
