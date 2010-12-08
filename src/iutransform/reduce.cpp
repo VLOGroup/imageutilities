@@ -51,15 +51,13 @@ IuStatus reduce(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
 
   // temporary variable if there is some pre-filtering
   iu::ImageGpu_32f_C1* filtered = const_cast<iu::ImageGpu_32f_C1*>(src);
-  
-  std::cout << "TEST123" << std::endl;
 
   // gauss pre-filter
   if(gauss_prefilter)
   {
     filtered = new iu::ImageGpu_32f_C1(src->size());
-  
-       
+
+
     // x_/y_factor < 0
     float x_factor = (float)dst->width() / (float)src->width();
     float y_factor = (float)dst->height() / (float)src->height();
@@ -80,7 +78,6 @@ IuStatus reduce(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
   }
 
   status = cuReduce(filtered, dst, interpolation);
-
 
   // cleanup
   if(gauss_prefilter || bicubic_bspline_prefilter)
