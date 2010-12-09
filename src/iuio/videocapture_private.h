@@ -74,6 +74,15 @@ public:
   /** Returns the size of the available images. */
   IuSize size();
 
+  /** Returns the framerate of the videostream */
+  int getFPS();
+  
+  /** Returns the total number of frames in the videostream. Useful for video files, 
+    * don't know what this returns on a live camerastream... */
+  int totalFrameCount();
+  
+  /** Returns the frame index of the next frame (0-based) */
+  int frameIdx();
 protected:
   cv::Mat frame_; /**< Current frame. Used to read internally. */
 

@@ -77,11 +77,11 @@ IuStatus VideoCapture::retrieve(iu::ImageCpu_8u_C1 *image)
     return IU_ERROR;
   }
 
-//  if (!this->grab())
-//  {
-//    printf("VideoCapture: No more frames available.\n");
-//    return IU_ERROR;
-//  }
+ /*if (!this->grab())
+ {
+   printf("VideoCapture: No more frames available.\n");
+   return IU_ERROR;
+ }*/
 
   if (!this->retrieve(frame_))
   {
@@ -190,6 +190,39 @@ IuSize VideoCapture::size()
   return sz;
 }
 
+int VideoCapture::getFPS()
+{
+  if (!this->isOpened())
+  {
+    printf("VideoCapture: Capture device not ready.\n");
+    return 0;
+  }
+  
+  return this->get(CV_CAP_PROP_FPS);
+}
+
+int VideoCapture::totalFrameCount()
+{
+  if (!this->isOpened())
+  {
+    printf("VideoCapture: Capture device not ready.\n");
+    return 0;
+  }
+  
+  return this->get(CV_CAP_PROP_FRAME_COUNT);
+}
+
+
+int VideoCapture::frameIdx()
+{
+  if (!this->isOpened())
+  {
+    printf("VideoCapture: Capture device not ready.\n");
+    return 0;
+  }
+  
+  return this->get(CV_CAP_PROP_POS_FRAMES);
+}
 
 } // namespace iuprivate
 
@@ -214,5 +247,8 @@ IuStatus VideoCapture::retrieve(iu::ImageCpu_32f_C1 *image) { return vidcap_->re
 IuStatus VideoCapture::retrieve(iu::ImageGpu_32f_C1 *image) { return vidcap_->retrieve(image); }
 
 IuSize VideoCapture::size() { return vidcap_->size(); }
+int VideoCapture::getFPS() { return vidcap_->getFPS(); }
+int VideoCapture::totalFrameCount() { return vidcap_->totalFrameCount(); }
+int VideoCapture::frameIdx() { return vidcap_->frameIdx(); }
 
 } // namespace iu

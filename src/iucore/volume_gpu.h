@@ -155,6 +155,16 @@ public:
     return reinterpret_cast<const PixelType*>(
         &data_[oz*stride()*height() + oy*stride() + ox]);
   }
+  
+  /** Returns a volume slice given by a z-offset as ImageGpu
+    * @param[in] oz z-offset into the volume
+    * @return volume slice at depth z as ImageGpu. Note, the ImageGpu merely holds a pointer to the volume data at depth z,
+    * i.e. it does not manage its own data -> changes to the Image are transparent to the volume and vice versa.
+    */
+  ImageGpu<PixelType, iuprivate::ImageAllocatorGpu<PixelType> > getSlice(int oz)
+  {
+    return ImageGpu<PixelType, iuprivate::ImageAllocatorGpu<PixelType> >(&data_[oz*stride()*height()], width(), height(), pitch_, true);
+  }
 
 protected:
 

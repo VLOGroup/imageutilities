@@ -43,14 +43,14 @@ public:
     IU_ASSERT(width * height > 0);
     // manually pitch the memory to 32-byte alignment (for better support of eg. IPP functions)
     *pitch = width * sizeof(PixelType);
-		
+
     unsigned int elements_to_pitch = (32-(*pitch % 32))/sizeof(PixelType);
-		
-		// n*32 % 32 = 0 -> elements_to_pitch according to above formula would be (unnecessarily) 32 in that case
-		// alternative formula: elements_to_pitch = ( 31 - ( ((*pitch) - 1) % 32) ) / sizeof(PixelType);
-		if(*pitch % 32 == 0)
-			elements_to_pitch = 0;
-		
+
+    // n*32 % 32 = 0 -> elements_to_pitch according to above formula would be (unnecessarily) 32 in that case
+    // alternative formula: elements_to_pitch = ( 31 - ( ((*pitch) - 1) % 32) ) / sizeof(PixelType);
+    if(*pitch % 32 == 0)
+      elements_to_pitch = 0;
+
     width += elements_to_pitch;
     PixelType *buffer = new PixelType[width * height];
     IU_ASSERT(buffer != 0);
