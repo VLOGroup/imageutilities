@@ -65,69 +65,69 @@ iu::ImageGpu_32f_C4* imread_cu32f_C4(const std::string& filename)
      write 2d image
  * ***************************************************************************/
 
-bool imsave(iu::ImageCpu_8u_C1* image, const std::string& filename)
+bool imsave(iu::ImageCpu_8u_C1* image, const std::string& filename, const bool& normalize)
 { return iuprivate::imsave(image, filename); }
 
-bool imsave(iu::ImageCpu_8u_C3* image, const std::string& filename)
+bool imsave(iu::ImageCpu_8u_C3* image, const std::string& filename, const bool& normalize)
 { return iuprivate::imsave(image, filename); }
 
-bool imsave(iu::ImageCpu_8u_C4* image, const std::string& filename)
+bool imsave(iu::ImageCpu_8u_C4* image, const std::string& filename, const bool& normalize)
 { return iuprivate::imsave(image, filename); }
 
-bool imsave(iu::ImageCpu_32f_C1* image, const std::string& filename)
+bool imsave(iu::ImageCpu_32f_C1* image, const std::string& filename, const bool& normalize)
 { return iuprivate::imsave(image, filename); }
 
-bool imsave(iu::ImageCpu_32f_C3* image, const std::string& filename)
+bool imsave(iu::ImageCpu_32f_C3* image, const std::string& filename, const bool& normalize)
 { return iuprivate::imsave(image, filename); }
 
-bool imsave(iu::ImageCpu_32f_C4* image, const std::string& filename)
+bool imsave(iu::ImageCpu_32f_C4* image, const std::string& filename, const bool& normalize)
 { return iuprivate::imsave(image, filename); }
 
-bool imsave(iu::ImageGpu_8u_C1* image, const std::string& filename)
+bool imsave(iu::ImageGpu_8u_C1* image, const std::string& filename, const bool& normalize)
 { return iuprivate::imsave(image, filename); }
 
-bool imsave(iu::ImageGpu_8u_C4* image, const std::string& filename)
+bool imsave(iu::ImageGpu_8u_C4* image, const std::string& filename, const bool& normalize)
 { return iuprivate::imsave(image, filename); }
 
-bool imsave(iu::ImageGpu_32f_C1* image, const std::string& filename)
+bool imsave(iu::ImageGpu_32f_C1* image, const std::string& filename, const bool& normalize)
 { return iuprivate::imsave(image, filename); }
 
-bool imsave(iu::ImageGpu_32f_C4* image, const std::string& filename)
+bool imsave(iu::ImageGpu_32f_C4* image, const std::string& filename, const bool& normalize)
 { return iuprivate::imsave(image, filename); }
 
 /* ***************************************************************************
      show 2d image
  * ***************************************************************************/
 
-void imshow(iu::ImageCpu_8u_C1* image, const std::string& winname)
-{ iuprivate::imshow(image, winname); }
+void imshow(iu::ImageCpu_8u_C1* image, const std::string& winname, const bool& normalize)
+{ iuprivate::imshow(image, winname, normalize); }
 
-void imshow(iu::ImageCpu_8u_C3* image, const std::string& winname)
-{ iuprivate::imshow(image, winname); }
+void imshow(iu::ImageCpu_8u_C3* image, const std::string& winname, const bool& normalize)
+{ iuprivate::imshow(image, winname, normalize); }
 
-void imshow(iu::ImageCpu_8u_C4* image, const std::string& winname)
-{ iuprivate::imshow(image, winname); }
+void imshow(iu::ImageCpu_8u_C4* image, const std::string& winname, const bool& normalize)
+{ iuprivate::imshow(image, winname, normalize); }
 
-void imshow(iu::ImageCpu_32f_C1* image, const std::string& winname)
-{ iuprivate::imshow(image, winname); }
+void imshow(iu::ImageCpu_32f_C1* image, const std::string& winname, const bool& normalize)
+{ iuprivate::imshow(image, winname, normalize); }
 
-void imshow(iu::ImageCpu_32f_C3* image, const std::string& winname)
-{ iuprivate::imshow(image, winname); }
+void imshow(iu::ImageCpu_32f_C3* image, const std::string& winname, const bool& normalize)
+{ iuprivate::imshow(image, winname, normalize); }
 
-void imshow(iu::ImageCpu_32f_C4* image, const std::string& winname)
-{ iuprivate::imshow(image, winname); }
+void imshow(iu::ImageCpu_32f_C4* image, const std::string& winname, const bool& normalize)
+{ iuprivate::imshow(image, winname, normalize); }
 
-void imshow(iu::ImageGpu_8u_C1* image, const std::string& winname)
-{ iuprivate::imshow(image, winname); }
+void imshow(iu::ImageGpu_8u_C1* image, const std::string& winname, const bool& normalize)
+{ iuprivate::imshow(image, winname, normalize); }
 
-void imshow(iu::ImageGpu_8u_C4* image, const std::string& winname)
-{ iuprivate::imshow(image, winname); }
+void imshow(iu::ImageGpu_8u_C4* image, const std::string& winname, const bool& normalize)
+{ iuprivate::imshow(image, winname, normalize); }
 
-void imshow(iu::ImageGpu_32f_C1* image, const std::string& winname)
-{ iuprivate::imshow(image, winname); }
+void imshow(iu::ImageGpu_32f_C1* image, const std::string& winname, const bool& normalize)
+{ iuprivate::imshow(image, winname, normalize); }
 
-void imshow(iu::ImageGpu_32f_C4* image, const std::string& winname)
-{ iuprivate::imshow(image, winname); }
+void imshow(iu::ImageGpu_32f_C4* image, const std::string& winname, const bool& normalize)
+{ iuprivate::imshow(image, winname, normalize); }
 
 
 } // namespace iu
