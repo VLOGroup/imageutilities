@@ -58,8 +58,8 @@ __global__ void cuAddWeightedKernel_32f_C1(
 
 // wrapper: weighted add; 32-bit;
 IuStatus cuAddWeighted(const iu::ImageGpu_32f_C1* src1, const float& weight1,
-                        const iu::ImageGpu_32f_C1* src2, const float& weight2,
-                        iu::ImageGpu_32f_C1* dst, const IuRect& roi)
+                       const iu::ImageGpu_32f_C1* src2, const float& weight2,
+                       iu::ImageGpu_32f_C1* dst, const IuRect& roi)
 {
   // bind textures
   cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<float>();
