@@ -32,7 +32,7 @@ namespace iuprivate {
 // device; 32-bit; 1-channel
 IuStatus reduce(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
             IuInterpolationType interpolation = IU_INTERPOLATE_LINEAR,
-            bool gauss_prefilter = false, bool bicubic_bspline_prefilter = false);
+            bool gauss_prefilter = true, bool bicubic_bspline_prefilter = false);
 
 } // namespace iuprivate
 
