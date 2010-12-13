@@ -24,91 +24,26 @@
 #include <iudefs.h>
 #include <iucutil.h>
 #include <iucore/iutextures.cuh>
+#include "transform.cu"
+
+#ifndef IUTRANSFORM_REDUCE_CU
+#define IUTRANSFORM_REDUCE_CU
+
 
 namespace iuprivate {
 
-/* ***************************************************************************
- *  CUDA KERNELS
- * ***************************************************************************/
-
-//-----------------------------------------------------------------------------
-/** Reduces src image (bound to texture) by the scale_factor rate using bicubic spline interpolation.
- * @param dst Reduced (output) image.
- * @param dst_stride Pith for output image in bytes.
- * @param dst_width Width of output image.
- * @param dst_height Height of output image.
- * @param rate Scale factor for x AND y direction. (val>1 for multiplication in kernel)
- */
-__global__ void cuReduceCubicSplineKernel(float* dst,
-                                          size_t dst_stride, int dst_width, int dst_height,
-                                          float x_factor, float y_factor)
-{
-  const int x = blockIdx.x*blockDim.x + threadIdx.x;
-  const int y = blockIdx.y*blockDim.y + threadIdx.y;
-
-  if (x<dst_width && y<dst_height)
-  {
-    // texture coordinates
-    const float xx = (x + 0.5f) * x_factor;
-    const float yy = (y + 0.5f) * y_factor;
-
-    // bilinear reduction
-    dst[y*dst_stride + x] = iu::cubicTex2D(tex1_32f_C1__, xx, yy);
-  }
-}
-
-//-----------------------------------------------------------------------------
-/** Reduces src image (bound to texture) by the scale_factor rate using (full) bicubic interpolation.
- * @param dst Reduced (output) image.
- * @param dst_stride Pith for output image in bytes.
- * @param dst_width Width of output image.
- * @param dst_height Height of output image.
- * @param rate Scale factor for x AND y direction. (val>1 for multiplication in kernel)
- */
-__global__ void cuReduceCubicKernel(float* dst,
-                                    size_t dst_stride, int dst_width, int dst_height,
-                                    float x_factor, float y_factor)
-{
-  const int x = blockIdx.x*blockDim.x + threadIdx.x;
-  const int y = blockIdx.y*blockDim.y + threadIdx.y;
-
-  if (x<dst_width && y<dst_height)
-  {
-    // texture coordinates
-    const float xx = (x + 0.5f) * x_factor;
-    const float yy = (y + 0.5f) * y_factor;
-
-    // bilinear reduction
-    dst[y*dst_stride + x] = iu::cubicTex2DSimple(tex1_32f_C1__, xx, yy);
-  }
-}
-
-//-----------------------------------------------------------------------------
-/** Reduces src image (bound to texture) by the scale_factor rate using linear or nearest neighbour interpolation.
- * @param dst Reduced (output) image.
- * @param dst_stride Pith for output image in bytes.
- * @param dst_width Width of output image.
- * @param dst_height Height of output image.
- * @param rate Scale factor for x AND y direction. (val>1 for multiplication in kernel)
- */
-__global__ void cuReduceKernel(float* dst,
-                               size_t dst_stride, int dst_width, int dst_height,
-                               float x_factor, float y_factor)
-{
-  const int x = blockIdx.x*blockDim.x + threadIdx.x;
-  const int y = blockIdx.y*blockDim.y + threadIdx.y;
-
-  if (x<dst_width && y<dst_height)
-  {
-    // texture coordinates
-    const float xx = (x + 0.5f) * x_factor;
-    const float yy = (y + 0.5f) * y_factor;
-
-    // bilinear reduction
-    dst[y*dst_stride + x] = tex2D(tex1_32f_C1__, xx, yy);
-  }
-}
-
+///* ***************************************************************************
+// *  (extern) CUDA KERNELS
+// * ***************************************************************************/
+//extern "C" __global__ void cuTransformCubicSplineKernel_32f_C1(float* dst,
+//                                                               size_t dst_stride, int dst_width, int dst_height,
+//                                                               float x_factor, float y_factor);
+//extern "C" __global__ void cuTransformCubicKernel_32f_C1(float* dst,
+//                                                         size_t dst_stride, int dst_width, int dst_height,
+//                                                         float x_factor, float y_factor);
+//extern "C" __global__ void cuTransformKernel_32f_C1(float* dst,
+//                                                    size_t dst_stride, int dst_width, int dst_height,
+//                                                    float x_factor, float y_factor);
 
 
 /* ***************************************************************************
@@ -119,9 +54,14 @@ __global__ void cuReduceKernel(float* dst,
 IuStatus cuReduce(iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
                   IuInterpolationType interpolation)
 {
+  IuSize src_roi = src->size();
+  IuSize dst_roi = dst->size();
+
   // x_/y_factor > 0 (for multiplication with dst coords in the kernel!)
-  float x_factor = (float)src->width() / (float)dst->width();
-  float y_factor = (float)src->height() / (float)dst->height();
+  float x_factor = static_cast<float>(src_roi.width) /
+      static_cast<float>(dst_roi.width);
+  float y_factor = static_cast<float>(src_roi.height) /
+      static_cast<float>(dst_roi.height);
 
   tex1_32f_C1__.addressMode[0] = cudaAddressModeClamp;
   tex1_32f_C1__.addressMode[1] = cudaAddressModeClamp;
@@ -153,16 +93,19 @@ IuStatus cuReduce(iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
   {
   case IU_INTERPOLATE_NEAREST:
   case IU_INTERPOLATE_LINEAR: // fallthrough intended
-    cuReduceKernel <<< dimGridOut, dimBlock >>> (
-        dst->data(), dst->stride(), dst->width(), dst->height(), x_factor, y_factor);
+    cuTransformKernel_32f_C1
+        <<< dimGridOut, dimBlock >>> (dst->data(), dst->stride(), dst->width(), dst->height(),
+                                      x_factor, y_factor);
     break;
   case IU_INTERPOLATE_CUBIC:
-    cuReduceCubicKernel <<< dimGridOut, dimBlock >>> (
-        dst->data(), dst->stride(), dst->width(), dst->height(), x_factor, y_factor);
+    cuTransformCubicKernel_32f_C1
+        <<< dimGridOut, dimBlock >>> (dst->data(), dst->stride(), dst->width(), dst->height(),
+                                      x_factor, y_factor);
     break;
   case IU_INTERPOLATE_CUBIC_SPLINE:
-    cuReduceCubicSplineKernel <<< dimGridOut, dimBlock >>> (
-        dst->data(), dst->stride(), dst->width(), dst->height(), x_factor, y_factor);
+    cuTransformCubicSplineKernel_32f_C1
+        <<< dimGridOut, dimBlock >>> (dst->data(), dst->stride(), dst->width(), dst->height(),
+                                      x_factor, y_factor);
     break;
   }
 
@@ -172,3 +115,5 @@ IuStatus cuReduce(iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
 }
 
 } // namespace iuprivate
+
+#endif // IUTRANSFORM_REDUCE_CU

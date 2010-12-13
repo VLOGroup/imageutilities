@@ -24,15 +24,36 @@
 
 #include "iutransform.h"
 #include "iutransform/reduce.h"
+#include "iutransform/prolongate.h"
 
 namespace iu {
 
 /* ***************************************************************************
      Geometric Transformation
  * ***************************************************************************/
+
+/*
+  image reduction
+ */
 void reduce(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
             IuInterpolationType interpolation,
             bool gauss_prefilter, bool bicubic_bspline_prefilter)
 {iuprivate::reduce(src, dst, interpolation, gauss_prefilter, bicubic_bspline_prefilter);}
+
+
+/*
+  image prolongation
+ */
+void prolongate(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
+                IuInterpolationType interpolation)
+{iuprivate::prolongate(src, dst, interpolation);}
+
+void prolongate(const iu::ImageGpu_32f_C2* src, iu::ImageGpu_32f_C2* dst,
+                IuInterpolationType interpolation)
+{iuprivate::prolongate(src, dst, interpolation);}
+
+void prolongate(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst,
+                IuInterpolationType interpolation)
+{iuprivate::prolongate(src, dst, interpolation);}
 
 } // namespace iu

@@ -433,6 +433,7 @@ SET( IU_FILTER_HEADERS
 
 SET( IU_TRANSFORM_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/reduce.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/prolongate.h
   )
 
 
@@ -468,12 +469,16 @@ SET( IU_SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/iufilter/filter.cu
   ${CMAKE_CURRENT_SOURCE_DIR}/iufilter/filterbspline_kernels.cu
   ${CMAKE_CURRENT_SOURCE_DIR}/iutransform.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/transform.cu
   ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/reduce.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/reduce.cu
+  ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/prolongate.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/prolongate.cu
   )
 
 # denote kernel files as header only to not confuse the compiler
 set_source_files_properties(
+  ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/transform.cu
   ${CMAKE_CURRENT_SOURCE_DIR}/iufilter/filterbspline_kernels.cu
   PROPERTIES HEADER_FILE_ONLY yes
   )
