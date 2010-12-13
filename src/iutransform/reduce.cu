@@ -32,7 +32,33 @@ namespace iuprivate {
  * ***************************************************************************/
 
 //-----------------------------------------------------------------------------
-/** Reduces src image (bound to texture) by the scale_factor rate using bicubic interpolation.
+/** Reduces src image (bound to texture) by the scale_factor rate using bicubic spline interpolation.
+ * @param dst Reduced (output) image.
+ * @param dst_stride Pith for output image in bytes.
+ * @param dst_width Width of output image.
+ * @param dst_height Height of output image.
+ * @param rate Scale factor for x AND y direction. (val>1 for multiplication in kernel)
+ */
+__global__ void cuReduceCubicSplineKernel(float* dst,
+                                          size_t dst_stride, int dst_width, int dst_height,
+                                          float x_factor, float y_factor)
+{
+  const int x = blockIdx.x*blockDim.x + threadIdx.x;
+  const int y = blockIdx.y*blockDim.y + threadIdx.y;
+
+  if (x<dst_width && y<dst_height)
+  {
+    // texture coordinates
+    const float xx = (x + 0.5f) * x_factor;
+    const float yy = (y + 0.5f) * y_factor;
+
+    // bilinear reduction
+    dst[y*dst_stride + x] = iu::cubicTex2D(tex1_32f_C1__, xx, yy);
+  }
+}
+
+//-----------------------------------------------------------------------------
+/** Reduces src image (bound to texture) by the scale_factor rate using (full) bicubic interpolation.
  * @param dst Reduced (output) image.
  * @param dst_stride Pith for output image in bytes.
  * @param dst_width Width of output image.
@@ -53,7 +79,7 @@ __global__ void cuReduceCubicKernel(float* dst,
     const float yy = (y + 0.5f) * y_factor;
 
     // bilinear reduction
-    dst[y*dst_stride + x] = iu::cubicTex2D(tex1_32f_C1__, xx, yy);
+    dst[y*dst_stride + x] = iu::cubicTex2DSimple(tex1_32f_C1__, xx, yy);
   }
 }
 
@@ -132,6 +158,10 @@ IuStatus cuReduce(iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
     break;
   case IU_INTERPOLATE_CUBIC:
     cuReduceCubicKernel <<< dimGridOut, dimBlock >>> (
+        dst->data(), dst->stride(), dst->width(), dst->height(), x_factor, y_factor);
+    break;
+  case IU_INTERPOLATE_CUBIC_SPLINE:
+    cuReduceCubicSplineKernel <<< dimGridOut, dimBlock >>> (
         dst->data(), dst->stride(), dst->width(), dst->height(), x_factor, y_factor);
     break;
   }

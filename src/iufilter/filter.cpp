@@ -43,34 +43,6 @@ void filterMedian3x3(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst, c
 }
 
 // device; 32-bit; 1-channel
-void filterRof(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
-               const IuRect& roi, float lambda, int iterations)
-{
-  IuStatus status = cuFilterRof(src, dst, roi, lambda, iterations);
-  IU_ASSERT(status == IU_SUCCESS);
-}
-
-// device; 32-bit; 1-channel
-void decomposeStructureTextureGauss(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
-                                    const IuRect& roi, float weight, float sigma, int kernel_size)
-{
-  iu::ImageGpu_32f_C1 tmp(dst->size());
-  tmp.setRoi(roi);
-  iuprivate::filterGauss(src, &tmp, roi, sigma, kernel_size);
-  iuprivate::addWeighted(src, 1.0f, &tmp, -weight, dst, roi);
-}
-
-// device; device; 32-bit; 1-channel
-void decomposeStructureTextureRof(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
-                                  const IuRect& roi, float weight, float lambda, int iterations)
-{
-  iu::ImageGpu_32f_C1 tmp(dst->size());
-  tmp.setRoi(dst->roi());
-  iuprivate::filterRof(src, &tmp, roi, lambda, iterations);
-  iuprivate::addWeighted(src, 1.0f, &tmp, -weight, dst, roi);
-}
-
-// device; 32-bit; 1-channel
 void cubicBSplinePrefilter(iu::ImageGpu_32f_C1* srcdst)
 {
   IuStatus status = cuCubicBSplinePrefilter_32f_C1I(srcdst);

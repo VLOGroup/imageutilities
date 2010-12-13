@@ -73,8 +73,9 @@ typedef enum
 typedef enum
 {
   IU_INTERPOLATE_NEAREST, /**< nearest neighbour interpolation. */
-  IU_INTERPOLATE_LINEAR, /**< nearest linear interpolation. */
-  IU_INTERPOLATE_CUBIC /**< nearest cubic interpolation. */
+  IU_INTERPOLATE_LINEAR, /**< linear interpolation. */
+  IU_INTERPOLATE_CUBIC, /**< cubic interpolation. */
+  IU_INTERPOLATE_CUBIC_SPLINE /**< cubic spline interpolation. */
 } IuInterpolationType;
 
 /** 2D Size

@@ -21,11 +21,11 @@
  *
  */
 
+//#include <iostream>
 #include <math.h>
 #include <iucore/copy.h>
 #include <iufilter/filter.h>
 #include "reduce.h"
-#include <iostream>
 
 namespace iuprivate {
 
