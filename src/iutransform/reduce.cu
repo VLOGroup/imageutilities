@@ -32,20 +32,6 @@
 
 namespace iuprivate {
 
-///* ***************************************************************************
-// *  (extern) CUDA KERNELS
-// * ***************************************************************************/
-//extern "C" __global__ void cuTransformCubicSplineKernel_32f_C1(float* dst,
-//                                                               size_t dst_stride, int dst_width, int dst_height,
-//                                                               float x_factor, float y_factor);
-//extern "C" __global__ void cuTransformCubicKernel_32f_C1(float* dst,
-//                                                         size_t dst_stride, int dst_width, int dst_height,
-//                                                         float x_factor, float y_factor);
-//extern "C" __global__ void cuTransformKernel_32f_C1(float* dst,
-//                                                    size_t dst_stride, int dst_width, int dst_height,
-//                                                    float x_factor, float y_factor);
-
-
 /* ***************************************************************************
  *  CUDA WRAPPERS
  * ***************************************************************************/
