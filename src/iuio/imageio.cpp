@@ -208,9 +208,9 @@ bool imsave(iu::ImageCpu_32f_C1* image, const std::string& filename, const bool&
   IuSize sz = image->size();
   cv::Mat mat_8u(sz.height, sz.width, CV_8UC1);
   cv::Mat mat_32f(sz.height, sz.width, CV_32FC1, image->data(), image->pitch());
-  if(normalize)
-    cv::normalize(mat_32f, mat_32f, 0.0, 1.0, cv::NORM_MINMAX);
   mat_32f.convertTo(mat_8u, mat_8u.type(), 255, 0);
+  if(normalize)
+    cv::normalize(mat_8u, mat_8u, 0, 255, cv::NORM_MINMAX);
   return cv::imwrite(filename, mat_8u);
 }
 
@@ -220,11 +220,11 @@ bool imsave(iu::ImageCpu_32f_C3* image, const std::string& filename, const bool&
   IuSize sz = image->size();
   cv::Mat mat_8u(sz.height, sz.width, CV_8UC3);
   cv::Mat mat_32f(sz.height, sz.width, CV_32FC3, image->data(), image->pitch());
-  if(normalize)
-    cv::normalize(mat_32f, mat_32f, 0.0, 1.0, cv::NORM_MINMAX);
   mat_32f.convertTo(mat_8u, mat_8u.type(), 255, 0);
   cv::Mat bgr(sz.height, sz.width, CV_8UC3);
   cv::cvtColor(mat_8u, bgr, CV_RGBA2BGR);
+  if(normalize)
+    cv::normalize(mat_8u, mat_8u, 0, 255, cv::NORM_MINMAX);
   return cv::imwrite(filename, bgr);
 }
 
@@ -234,11 +234,11 @@ bool imsave(iu::ImageCpu_32f_C4* image, const std::string& filename, const bool&
   IuSize sz = image->size();
   cv::Mat mat_8u(sz.height, sz.width, CV_8UC4);
   cv::Mat mat_32f(sz.height, sz.width, CV_32FC4, image->data(), image->pitch());
-  if(normalize)
-    cv::normalize(mat_32f, mat_32f, 0.0, 1.0, cv::NORM_MINMAX);
   mat_32f.convertTo(mat_8u, mat_8u.type(), 255, 0);
   cv::Mat bgr(sz.height, sz.width, CV_8UC3);
   cv::cvtColor(mat_8u, bgr, CV_RGBA2BGR);
+  if(normalize)
+    cv::normalize(mat_8u, mat_8u, 0, 255, cv::NORM_MINMAX);
   return cv::imwrite(filename, bgr);
 }
 
