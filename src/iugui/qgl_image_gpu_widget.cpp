@@ -492,6 +492,7 @@ void QGLImageGpuWidget::paintGL()
     glEnd ();
 #endif
   }
+  glPopMatrix();
 
 //  printf("QGLImageGpuWidget::paintGL() done\n");
 
