@@ -115,7 +115,7 @@ IuStatus cuProlongate(iu::ImageGpu_32f_C2* src, iu::ImageGpu_32f_C2* dst,
   tex1_32f_C2__.normalized = false;
 
   // bind src image to texture and use as input for reduction
-  cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<float>();
+  cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<float2>();
   cudaBindTexture2D(0, &tex1_32f_C2__, src->data(), &channel_desc,
                     src->width(), src->height(), src->pitch());
 
@@ -178,7 +178,7 @@ IuStatus cuProlongate(iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst,
   tex1_32f_C4__.normalized = false;
 
   // bind src image to texture and use as input for reduction
-  cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<float>();
+  cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<float4>();
   cudaBindTexture2D(0, &tex1_32f_C4__, src->data(), &channel_desc,
                     src->width(), src->height(), src->pitch());
 

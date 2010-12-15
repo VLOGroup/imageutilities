@@ -37,6 +37,7 @@ IuStatus prolongate(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst,
                     IuInterpolationType interpolation = IU_INTERPOLATE_NEAREST);
 
 
+
 }  // namespace iuprivate
 
 #endif // IUPRIVATE_PROLONGATE_H

@@ -133,6 +133,7 @@ static inline __host__ __device__ uchar4 operator*(uchar4 a, uchar4 b)
     return make_uchar4(a.x * b.x, a.y * b.y, a.z * b.z,  a.w * b.w);
 }
 
+
 /* ****************************************************************************
  *  float functions
  * ****************************************************************************/
@@ -160,12 +161,10 @@ static inline __host__ __device__ bool operator==(float2& a, float2& b)
 }
 
 // float-float2
-#ifndef CUDA_VERSION_32
 static inline __host__ __device__ float2 operator-(float a, float2 b)
 {
   return make_float2(a - b.x, a - b.y);
 }
-#endif
 
 inline __device__ __host__ float2 sqr(float2 a)
 {
