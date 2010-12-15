@@ -34,7 +34,7 @@ class QGLImageGpuWidget : public iuprivate::QGLImageGpuWidget
   //Q_OBJECT        // must include this if you use Qt signals/slots
 
 public:
-  QGLImageGpuWidget(QWidget *parent);
+  QGLImageGpuWidget(QWidget *parent=0);
   virtual ~QGLImageGpuWidget();
 //  void setImage(iu::ImageGpu_8u_C4* image);
 

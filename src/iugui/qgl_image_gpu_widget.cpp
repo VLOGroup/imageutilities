@@ -43,6 +43,9 @@ QGLImageGpuWidget::QGLImageGpuWidget(QWidget *parent) :
   image_(0),
   num_channels_(0),
   bit_depth_(0),
+  normalize_(false),
+  min_(0.0f),
+  max_(1.0f),
   init_ok_(false),
   zoom_(1.0f)
 {
@@ -68,7 +71,7 @@ QGLImageGpuWidget::~QGLImageGpuWidget()
 
 
 //-----------------------------------------------------------------------------
-void QGLImageGpuWidget::setImage(iu::ImageGpu_8u_C1 *image)
+void QGLImageGpuWidget::setImage(iu::ImageGpu_8u_C1 *image, bool normalize)
 {
    printf("QGLImageGpuWidget::setImage(ImageGpu_8u_C1*)\n");
 
@@ -110,7 +113,7 @@ void QGLImageGpuWidget::setImage(iu::ImageGpu_8u_C1 *image)
 }
 
 //-----------------------------------------------------------------------------
-void QGLImageGpuWidget::setImage(iu::ImageGpu_8u_C4 *image)
+void QGLImageGpuWidget::setImage(iu::ImageGpu_8u_C4 *image, bool normalize)
 {
    printf("QGLImageGpuWidget::setImage(ImageGpu_8u_C4*)\n");
 
@@ -152,7 +155,7 @@ void QGLImageGpuWidget::setImage(iu::ImageGpu_8u_C4 *image)
 }
 
 //-----------------------------------------------------------------------------
-void QGLImageGpuWidget::setImage(iu::ImageGpu_32f_C1 *image, float min, float max)
+void QGLImageGpuWidget::setImage(iu::ImageGpu_32f_C1 *image, bool normalize)
 {
    printf("QGLImageGpuWidget::setImage(ImageGpu_32f_C1*)\n");
 
@@ -170,8 +173,7 @@ void QGLImageGpuWidget::setImage(iu::ImageGpu_32f_C1 *image, float min, float ma
      {
        printf("set new image with same sizings\n");
        image_ = image;
-       min_ = min;
-       max_ = max;
+       normalize_ = normalize;
        return;
      }
      else
@@ -183,8 +185,7 @@ void QGLImageGpuWidget::setImage(iu::ImageGpu_32f_C1 *image, float min, float ma
   image_ = image;
   num_channels_ = 1;
   bit_depth_ = 32;
-  min_ = min;
-  max_ = max;
+  normalize_ = normalize;
   if (!this->init())
   {
     fprintf(stderr, "Failed to initialize OpenGL buffers.\n");
@@ -198,7 +199,7 @@ void QGLImageGpuWidget::setImage(iu::ImageGpu_32f_C1 *image, float min, float ma
 }
 
 //-----------------------------------------------------------------------------
-void QGLImageGpuWidget::setImage(iu::ImageGpu_32f_C4 *image)
+void QGLImageGpuWidget::setImage(iu::ImageGpu_32f_C4 *image, bool normalize)
 {
    printf("QGLImageGpuWidget::setImage(ImageGpu_32f_C4*)\n");
 
@@ -257,7 +258,8 @@ void QGLImageGpuWidget::autoMinMax()
   {
     if(num_channels_ == 1)
     {
-      iu::ImageGpu_8u_C1* img = reinterpret_cast<iu::ImageGpu_8u_C1*>(img);
+      iu::ImageGpu_8u_C1* img = reinterpret_cast<iu::ImageGpu_8u_C1*>(image_);
+      if(img == 0) return;
       unsigned char cur_min, cur_max;
       iuprivate::minMax(img, img->roi(), cur_min, cur_max);
       min_ = static_cast<float>(cur_min);
@@ -265,7 +267,8 @@ void QGLImageGpuWidget::autoMinMax()
     }
     else
     {
-      iu::ImageGpu_8u_C4* img = reinterpret_cast<iu::ImageGpu_8u_C4*>(img);
+      iu::ImageGpu_8u_C4* img = reinterpret_cast<iu::ImageGpu_8u_C4*>(image_);
+      if(img == 0) return;
       uchar4 cur_min, cur_max;
       iuprivate::minMax(img, img->roi(), cur_min, cur_max);
       min_ = static_cast<float>(IUMIN(IUMIN(cur_min.x, cur_min.y), cur_min.z));
@@ -276,15 +279,22 @@ void QGLImageGpuWidget::autoMinMax()
   {
     if(num_channels_ == 1)
     {
-      iu::ImageGpu_32f_C1* img = reinterpret_cast<iu::ImageGpu_32f_C1*>(img);
+      iu::ImageGpu_32f_C1* img = reinterpret_cast<iu::ImageGpu_32f_C1*>(image_);
+      if(img == 0) return;
       iuprivate::minMax(img, img->roi(), min_, max_);
     }
     else
     {
-      iu::ImageGpu_32f_C4* img = reinterpret_cast<iu::ImageGpu_32f_C4*>(img);
-
+      iu::ImageGpu_32f_C4* img = reinterpret_cast<iu::ImageGpu_32f_C4*>(image_);
+      if(img == 0) return;
     }
   }
+}
+
+//-----------------------------------------------------------------------------
+void QGLImageGpuWidget::setAutoNormalize(bool flag)
+{
+  normalize_ = flag;
 }
 
 
@@ -441,6 +451,10 @@ void QGLImageGpuWidget::paintGL()
   size_t start;
   cudaGraphicsMapResources(1, &cuda_pbo_resource_, 0);
   cudaGraphicsResourceGetMappedPointer((void**)&d_dst, &start, cuda_pbo_resource_);
+
+  // check for min/max values if normalization is activated
+  if(normalize_)
+    this->autoMinMax();
 
   // get image data
   cuCopyImageToPbo(image_, num_channels_, bit_depth_, d_dst, min_, max_);

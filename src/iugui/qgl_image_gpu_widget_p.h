@@ -39,15 +39,16 @@ class QGLImageGpuWidget : public QGLWidget
   //Q_OBJECT        // must include this if you use Qt signals/slots
 
 public:
-  QGLImageGpuWidget(QWidget *parent);
+  QGLImageGpuWidget(QWidget *parent=0);
   virtual ~QGLImageGpuWidget();
-  void setImage(iu::ImageGpu_8u_C1* image);
-  void setImage(iu::ImageGpu_32f_C1* image, float min=0.0f, float max=1.f);
-  void setImage(iu::ImageGpu_8u_C4* image);
-  void setImage(iu::ImageGpu_32f_C4* image);
+  void setImage(iu::ImageGpu_8u_C1* image, bool normalize = false);
+  void setImage(iu::ImageGpu_32f_C1* image, bool normalize = false);
+  void setImage(iu::ImageGpu_8u_C4* image, bool normalize = false);
+  void setImage(iu::ImageGpu_32f_C4* image, bool normalize = false);
 
   void setMinMax(float min, float max);
   void autoMinMax();
+  void setAutoNormalize(bool flag);
 
 protected:
 
@@ -68,6 +69,7 @@ protected:
   iu::Image* image_; /**< image that will be displayed. Currently 1-channel and 4-channel images are supported. */
   unsigned int num_channels_;
   unsigned int bit_depth_;
+  bool normalize_;
   float min_;
   float max_;
   bool init_ok_;
