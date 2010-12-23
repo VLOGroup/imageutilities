@@ -61,7 +61,7 @@ __global__ void cuMinMaxXKernel_8u_C1(unsigned char* min, unsigned char* max,
    for(int y = 1; y < height; ++y)
    {
      yy = y+yoff+0.5f;
-     val = 0;//tex2D(tex1_8u_C1__, xx, yy);
+     val = tex2D(tex1_8u_C1__, xx, yy);
      if(val < cur_min) cur_min = val;
      if(val > cur_max) cur_max = val;
    }
@@ -326,7 +326,7 @@ __global__ void cuSumColKernel_8u_C1(unsigned char* sum, int xoff, int yoff, int
  float cur_sum = 0.0f;
 
  // compute sum of each column
- if ((x+xoff)<width)
+ if (xx<width+0.5f)
  {
    for(int y = yoff; y < height; ++y)
    {
@@ -476,7 +476,7 @@ IuStatus cuMinMax(const iu::ImageGpu_8u_C1 *src, const IuRect &roi,
   iu::LinearDeviceMemory_8u_C1 row_mins(num_row_sums);
   iu::LinearDeviceMemory_8u_C1 row_maxs(num_row_sums);
 
-#if 0
+#if 1
   cuMinMaxXKernel_8u_C1 <<< dimGridX, dimBlock >>> (
       row_mins.data(), row_maxs.data(), roi.x, roi.y, roi.width, roi.height);
 #else
