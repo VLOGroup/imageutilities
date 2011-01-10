@@ -34,11 +34,11 @@
 #include <cutil_math.h>
 //#endif
 
-#include <iucore/coredefs.h>
+#include "iucore/coredefs.h"
 
 // including some common device functions
-#include <iucore/vectormath_kernels.cuh>
-#include <iucore/bsplinetexture_kernels.cuh>
+#include "iucore/vectormath_kernels.cuh"
+#include "iucore/bsplinetexture_kernels.cuh"
 
 
 ///// SIMPLE MIN MAX HELPERS
