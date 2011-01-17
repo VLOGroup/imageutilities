@@ -38,6 +38,8 @@
 #include <iudefs.h>
 #include <iucutil.h>
 #include <iucore/memorydefs.h>
+#include <iucore/copy.h>
+#include <mex.h>
 
 namespace iuprivate {
 
@@ -79,7 +81,7 @@ IuStatus convertMatlabToGpu(double* matlab_src_buffer, unsigned int width, unsig
   if(status != IU_SUCCESS)
     return status;
 
-  iu::copy(&tmp_cpu, dst);
+  iuprivate::copy(&tmp_cpu, dst);
   return IU_NO_ERROR;
 }
 
@@ -123,7 +125,7 @@ IuStatus convertMatlabC3ToGpuC4(double* matlab_src_buffer, unsigned int width, u
   if(status != IU_SUCCESS)
     return status;
 
-  iu::copy(&tmp_cpu, dst);
+  iuprivate::copy(&tmp_cpu, dst);
   return IU_NO_ERROR;
 }
 
@@ -155,7 +157,7 @@ IuStatus convertGpuC4ToMatlabC3(iu::ImageGpu_32f_C4 *src, double* matlab_dst_buf
 {
   iu::ImageCpu_32f_C4 tmp_cpu(src->size());
   tmp_cpu.roi() = src->roi();
-  iu::copy(src, &tmp_cpu);
+  iuprivate::copy(src, &tmp_cpu);
 
   IuStatus status = iuprivate::convertCpuC4ToMatlabC3(&tmp_cpu, matlab_dst_buffer);
   if(status != IU_SUCCESS)
@@ -194,9 +196,11 @@ template<typename PixelType, class Allocator>
 IuStatus convertGpuToMatlab(iu::ImageGpu<PixelType, Allocator> *src,
                             double* matlab_dst_buffer, unsigned int width, unsigned int height)
 {
+  // BUG? ... should this be 32f_C1 ???
+  // We want a double as output!!
   iu::ImageCpu_32f_C1 tmp_cpu(src->size());
   tmp_cpu.roi() = src->roi();
-  iu::copy(src, &tmp_cpu);
+  iuprivate::copy(src, &tmp_cpu);
 
   IuStatus status = iuprivate::convertCpuToMatlab(&tmp_cpu, matlab_dst_buffer, width, height);
   if(status != IU_SUCCESS)
@@ -206,6 +210,5 @@ IuStatus convertGpuToMatlab(iu::ImageGpu<PixelType, Allocator> *src,
 }
 
 } // namespace iuprivate
-
 
 #endif // IUPRIVATE_IUMATLABCONNECTOR_H

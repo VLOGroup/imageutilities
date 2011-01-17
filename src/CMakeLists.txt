@@ -62,6 +62,9 @@ OPTION(VMLIBRARIES_IU_USE_IPP "Including IPP module." ON)
 OPTION(VMLIBRARIES_IU_USE_GUI "Including GUI module." ON)
 OPTION(VMLIBRARIES_IU_USE_IO "Including IO module." ON)
 OPTION(VMLIBRARIES_IU_USE_IOPGM "Including IOPGM module." ON)
+OPTION(VMLIBRARIES_IU_USE_MATLABCONNECTOR "Including Matlab connector module." ON)
+OPTION(VMLIBRARIES_IU_USE_SPARSE "Including Sparse Matrix module." ON)
+OPTION(VMLIBRARIES_IU_USE_MATLABSPARSECONNECTOR "Including Matlab Sparse Matrix connector module." ON)
 OPTION(VMLIBRARIES_IU_USE_VIDEOCAPTURE "Including VideCapture IO module." OFF)
 OPTION(VMLIBRARIES_IU_USE_PGRCAMERA "Including PointGray IO module." OFF)
 OPTION(VMLIBRARIES_IU_BUILD_COMBINED_LIBRARY "Building a complete library package. This is just for compatibility reasons." OFF)
@@ -89,7 +92,7 @@ IF(WIN32)
 endif(WIN32)
 
 ##-----------------------------------------------------------------------------
-# CUDA
+# CUDA + SDK + Sparse
 find_package(CUDA 3.1 REQUIRED)
 find_package(CUDASDK REQUIRED)
 cuda_include_directories(${CUDA_INCLUDE_DIRS} ${CUDA_CUT_INCLUDE_DIR})
@@ -111,6 +114,14 @@ if((CUDA_VERSION_MAJOR EQUAL 3) AND (CUDA_VERSION_MINOR EQUAL 2))
 elseif()
   message(STATUS "unknown CUDA version. some things might not be tested.")
 endif()
+
+##-----------------------------------------------------------------------------
+## Matlab
+FIND_PACKAGE(Matlab_ICG)
+INCLUDE_DIRECTORIES(${MATLAB_INCLUDE_DIR})
+if(NOT MATLAB_FOUND)
+  set(MATLAB_LIBRARIES "")
+endif(NOT MATLAB_FOUND)
 
 ##-----------------------------------------------------------------------------
 ## Ipp
@@ -272,6 +283,89 @@ else()
 
 endif()
 
+
+##-----------------------------------------------------------------------------
+## SPARSE MODULE: Sparse Matrix operations using CUDA sparse library
+## (currently included in iucore lib)
+find_package(CUDASparse)
+if(VMLIBRARIES_IU_USE_SPARSE AND CUDASparse_FOUND)
+
+  message("[+] ImageUtilities include SPARSE module")
+
+  set( IU_PUBLIC_HEADERS
+    ${IU_PUBLIC_HEADERS}
+    ${CMAKE_CURRENT_SOURCE_DIR}/iusparse.h
+    )
+
+  SET( IU_PUBLIC_SPARSE_HEADERS
+    ${CMAKE_CURRENT_SOURCE_DIR}/iusparse/sparsematrixdefs.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/iusparse/sparsematrix_cpu.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/iusparse/sparsematrix_gpu.h
+  )
+
+  #SET( IU_PUBLIC_SPARSE_SOURCES
+  #  ${CMAKE_CURRENT_SOURCE_DIR}/iusparse.cpp
+  #)
+
+else()
+  message("[-] ImageUtilities omitting SPARSE module")
+  set(VMLIBRARIES_IU_USE_SPARSE OFF CACHE PATH "IU: Omit SPARSE module." FORCE)
+  set(CUDA_SPARSE_LIBRARY "")
+endif()
+
+
+##-----------------------------------------------------------------------------
+## MATLAB CONNECTOR MODULE: Matlab connector module for dense matrix
+## (currently included in iucore lib)
+if(VMLIBRARIES_IU_USE_MATLABCONNECTOR AND MATLAB_FOUND)
+
+  message("[+] ImageUtilities include MATLABCONNECTOR module")
+
+  set( IU_PUBLIC_HEADERS
+    ${IU_PUBLIC_HEADERS}
+    ${CMAKE_CURRENT_SOURCE_DIR}/iumatlabconnector.h
+    )
+
+  SET( IU_PUBLIC_MATLABCONNECTOR_HEADERS
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuconnector/matlabconnector.h
+  )
+
+  SET( IU_PUBLIC_MATLABCONNECTOR_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/iumatlabconnector.cpp
+  )
+
+else()
+  message("[-] ImageUtilities omitting MATLABCONNECTOR module")
+  set(VMLIBRARIES_IU_USE_MATLABCONNECTOR OFF CACHE PATH "IU: Omit MATLABCONNECTOR module." FORCE)
+endif()
+
+##-----------------------------------------------------------------------------
+## MATLAB SPARSE MATRIX CONNECTOR MODULE: Matlab connector module for dense matrix
+## (currently included in iucore lib)
+if(VMLIBRARIES_IU_USE_MATLABSPARSECONNECTOR AND MATLAB_FOUND AND CUDASparse_FOUND)
+
+  message("[+] ImageUtilities include MATLABSPARSECONNECTOR module")
+
+  set( IU_PUBLIC_HEADERS
+    ${IU_PUBLIC_HEADERS}
+    ${CMAKE_CURRENT_SOURCE_DIR}/iumatlabsparseconnector.h
+    )
+
+  SET( IU_PUBLIC_MATLABSPARSECONNECTOR_HEADERS
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuconnector/matlabsparseconnector.h
+  )
+
+  SET( IU_PUBLIC_MATLABSPARSECONNECTOR_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/iumatlabsparseconnector.cpp
+  )
+
+else()
+  message("[-] ImageUtilities omitting MATLABSPARSECONNECTOR module")
+  set(VMLIBRARIES_IU_USE_MATLABSPARSECONNECTOR OFF CACHE PATH "IU: Omit MATLABSPARSECONNECTOR module." FORCE)
+endif()
+
+
+
 ##-----------------------------------------------------------------------------
 ## CAMERA/Video IO MODULE: OpenCV IO with Qt threading
 # NOTE: we need qt4 for that (threading, ...)
@@ -364,6 +458,7 @@ else()
 
 endif()
 
+
 ##-----------------------------------------------------------------------------
 ## local settings, headers and sources
 include_directories(
@@ -436,11 +531,6 @@ SET( IU_TRANSFORM_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/prolongate.h
   )
 
-
-SET( IU_CONNECTOR_HEADERS
-  ${CMAKE_CURRENT_SOURCE_DIR}/iuconnector/iumatlabconnector.h
-  )
-
 SET( IU_HEADERS
   ${IU_PUBLIC_HEADERS}
   ${IU_PUBLIC_CORE_HEADERS}
@@ -449,6 +539,9 @@ SET( IU_HEADERS
   ${IU_FILTER_HEADERS}
   ${IU_TRANSFORM_HEADERS}
   ${IU_CONNECTOR_HEADERS}
+  ${IU_PUBLIC_SPARSE_HEADERS}
+  ${IU_PUBLIC_MATLABCONNECTOR_HEADERS}
+  ${IU_PUBLIC_MATLABSPARSECONNECTOR_HEADERS}
   )
 
 SET( IU_SOURCES
@@ -474,7 +567,12 @@ SET( IU_SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/reduce.cu
   ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/prolongate.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/prolongate.cu
+  #${IU_PUBLIC_SPARSE_SOURCES}
+  ${IU_PUBLIC_MATLABCONNECTOR_SOURCES}
+  ${IU_PUBLIC_MATLABSPARSECONNECTOR_SOURCES}
   )
+
+message(STATUS "IU_SOURCES=${IU_SOURCES}")
 
 # denote kernel files as header only to not confuse the compiler
 set_source_files_properties(
@@ -522,7 +620,7 @@ set_target_properties(${IU_CORE_LIB} PROPERTIES
   SOVERSION ${IMAGEUTILITIES_SOVERSION}
   PUBLIC_HEADER "${IU_PUBLIC_HEADERS}"
   )
-target_link_libraries( ${IU_CORE_LIB} ${CUDA_LIBRARIES})
+target_link_libraries( ${IU_CORE_LIB} ${CUDA_LIBRARIES} ${CUDA_SPARSE_LIBRARY} ${MATLAB_LIBRARIES})
 set(IU_LIBS ${IU_LIBS} ${IU_CORE_LIB})
 
 ##-----------------------------------------------------------------------------
@@ -698,6 +796,7 @@ endif(NOT VMLIBRARIES_IU_INSTALL_LOCAL OR NOT CMAKE_INSTALL_PREFIX)
 # set the cmake-files that should be installed with the package
 set( IU_CMAKE_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/../cmake/FindCUDASDK.cmake
+  ${CMAKE_CURRENT_SOURCE_DIR}/../cmake/FindCUDASparse.cmake
   ${CMAKE_CURRENT_SOURCE_DIR}/../cmake/FindIPP.cmake
   ${CMAKE_CURRENT_SOURCE_DIR}/../cmake/FindMatlab_ICG.cmake
   ${CMAKE_CURRENT_SOURCE_DIR}/../cmake/FindGLEW.cmake
@@ -729,6 +828,14 @@ install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videocapture.h
   DESTINATION include/iu/iuio
   COMPONENT Headers
 )
+install(FILES ${IU_PUBLIC_SPARSE_HEADERS}
+  DESTINATION include/iu/iusparse
+  COMPONENT Headers
+  )
+install(FILES ${IU_PUBLIC_MATLABCONNECTOR_HEADERS} ${IU_PUBLIC_MATLABSPARSECONNECTOR_HEADERS}
+  DESTINATION include/iu/iuconnector
+  COMPONENT Headers
+  )
 install(FILES ${IU_CMAKE_FILES}
   DESTINATION cmake
   )

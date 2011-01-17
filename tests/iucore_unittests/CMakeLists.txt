@@ -25,6 +25,8 @@ cmake_minimum_required(VERSION 2.8)
 find_package(ImageUtilities REQUIRED COMPONENTS iucore)
 include(${IU_USE_FILE})
 
+message(IU_LIBRARIES=${IU_LIBRARIES})
+
 set(IU_UNITTEST_TARGETS "")
 
 cuda_add_executable( iu_linearbuffer_unittest iu_linearbuffer_unittest.cpp )

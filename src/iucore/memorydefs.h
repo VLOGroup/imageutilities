@@ -66,6 +66,11 @@ typedef LinearHostMemory<float2> LinearHostMemory_32f_C2;
 typedef LinearHostMemory<float3> LinearHostMemory_32f_C3;
 typedef LinearHostMemory<float4> LinearHostMemory_32f_C4;
 
+typedef LinearHostMemory<int> LinearHostMemory_32s_C1;
+typedef LinearHostMemory<int2> LinearHostMemory_32s_C2;
+typedef LinearHostMemory<int3> LinearHostMemory_32s_C3;
+typedef LinearHostMemory<int4> LinearHostMemory_32s_C4;
+
 /*
   Device
 */
@@ -84,6 +89,11 @@ typedef LinearDeviceMemory<float> LinearDeviceMemory_32f_C1;
 typedef LinearDeviceMemory<float2> LinearDeviceMemory_32f_C2;
 typedef LinearDeviceMemory<float3> LinearDeviceMemory_32f_C3;
 typedef LinearDeviceMemory<float4> LinearDeviceMemory_32f_C4;
+
+typedef LinearDeviceMemory<int> LinearDeviceMemory_32s_C1;
+typedef LinearDeviceMemory<int2> LinearDeviceMemory_32s_C2;
+typedef LinearDeviceMemory<int3> LinearDeviceMemory_32s_C3;
+typedef LinearDeviceMemory<int4> LinearDeviceMemory_32s_C4;
 
 
 /* ****************************************************************************
@@ -167,7 +177,6 @@ typedef VolumeGpu<uchar4, iuprivate::VolumeAllocatorGpu<uchar4> > VolumeGpu_8u_C
 typedef VolumeGpu<float, iuprivate::VolumeAllocatorGpu<float> > VolumeGpu_32f_C1;
 typedef VolumeGpu<float2, iuprivate::VolumeAllocatorGpu<float2> > VolumeGpu_32f_C2;
 typedef VolumeGpu<float4, iuprivate::VolumeAllocatorGpu<float4> > VolumeGpu_32f_C4;
-
 
 /* ****************************************************************************
  *  Image Pyramid
