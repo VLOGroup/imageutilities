@@ -301,6 +301,7 @@ if(VMLIBRARIES_IU_USE_SPARSE AND CUDASparse_FOUND)
     ${CMAKE_CURRENT_SOURCE_DIR}/iusparse/sparsematrixdefs.h
     ${CMAKE_CURRENT_SOURCE_DIR}/iusparse/sparsematrix_cpu.h
     ${CMAKE_CURRENT_SOURCE_DIR}/iusparse/sparsematrix_gpu.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/iusparse/sparsemultiplication.h
   )
 
   #SET( IU_PUBLIC_SPARSE_SOURCES

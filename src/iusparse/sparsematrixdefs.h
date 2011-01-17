@@ -4,7 +4,7 @@
 #include "iudefs.h"
 #include "sparsematrix_cpu.h"
 #include "sparsematrix_gpu.h"
-
+#include "sparsemultiplication.h"
 
 namespace iu {
 
