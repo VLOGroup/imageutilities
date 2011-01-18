@@ -118,10 +118,12 @@ endif()
 ##-----------------------------------------------------------------------------
 ## Matlab
 FIND_PACKAGE(Matlab_ICG)
-INCLUDE_DIRECTORIES(${MATLAB_INCLUDE_DIR})
-if(NOT MATLAB_FOUND)
+
+if(MATLAB_FOUND)
+  include_directories(${MATLAB_INCLUDE_DIR})
+else(MATLAB_FOUND)
   set(MATLAB_LIBRARIES "")
-endif(NOT MATLAB_FOUND)
+endif(MATLAB_FOUND)
 
 ##-----------------------------------------------------------------------------
 ## Ipp
@@ -572,8 +574,6 @@ SET( IU_SOURCES
   ${IU_PUBLIC_MATLABCONNECTOR_SOURCES}
   ${IU_PUBLIC_MATLABSPARSECONNECTOR_SOURCES}
   )
-
-message(STATUS "IU_SOURCES=${IU_SOURCES}")
 
 # denote kernel files as header only to not confuse the compiler
 set_source_files_properties(
