@@ -213,6 +213,8 @@ template<typename PixelType>
     int n_col() { return n_col_; }
     cusparseMatDescr_t mat_descriptor() { return A_; }
 
+    cusparseHandle_t* handle() { return handle_; }
+
     int isCSC()
     {
       if (col_ == 0)
