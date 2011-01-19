@@ -1,5 +1,5 @@
 #include "iumatlabconnector.h"
-#include <iuconnector/matlabconnector.h>
+#include <iumatlab/matlabconnector.h>
 
 namespace iu {
 

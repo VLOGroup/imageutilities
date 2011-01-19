@@ -39,7 +39,7 @@ endif(NOT VMLIBRARIES_DIR)
 set(IU_USE_FILE ${VMLIBRARIES_CMAKE_ROOT}/UseImageUtilities.cmake CACHE FILEPATH "USE file for including the correct headers and libs.")
 
 # set a variable for all possible modules
-set(IU_MODULES iucore iuipp iugui iuio iuiopgm iuvideocapture iupgrcamera)
+set(IU_MODULES iucore iuipp iumatlab iugui iuio iuiopgm iuvideocapture iupgrcamera)
 
 ################################################################################
 #
@@ -188,6 +188,7 @@ else(IU_INCLUDE_DIRS AND IU_LIBRARY_DIR)
   # external dependencies
   set(IU_IUCORE_LIB_DEPENDENCIES "")
   set(IU_IUIPP_LIB_DEPENDENCIES "")
+  set(IU_IUMATLAB_LIB_DEPENDENCIES "")
   set(IU_IUGUI_LIB_DEPENDENCIES "")
   set(IU_IUIO_LIB_DEPENDENCIES "")
   set(IU_IUIOPGM_LIB_DEPENDENCIES "")
@@ -250,6 +251,18 @@ else(IU_INCLUDE_DIRS AND IU_LIBRARY_DIR)
     endif(IPP_INCLUDE_DIR)
 
   endif(IU_IUIPP_FOUND)
+
+  ## MATLAB module
+  if(IU_IUMATLAB_FOUND)
+    # MATLAB
+    FIND_PACKAGE(Matlab_ICG)
+
+    if(MATLAB_FOUND)
+      include_directories(${MATLAB_INCLUDE_DIRS})
+      set(IU_IUMATLAB_LIB_DEPENDENCIES ${IU_IUMATLAB_LIB_DEPENDENCIES} ${MATLAB_LIBRARIES})
+    endif(MATLAB_INCLUDE_DIR)
+
+  endif(IU_IUMATLAB_FOUND)
 
 
   ## GUI module
@@ -329,6 +342,7 @@ else(IU_INCLUDE_DIRS AND IU_LIBRARY_DIR)
   mark_as_advanced(
     IU_IUCORE_LIB_DEPENDENCIES 
     IU_IUIPP_LIB_DEPENDENCIES 
+    IU_IUMATLAB_LIB_DEPENDENCIES 
     IU_IUGUI_LIB_DEPENDENCIES
     IU_IUIO_LIB_DEPENDENCIES
     IU_IUIOPGM_LIB_DEPENDENCIES

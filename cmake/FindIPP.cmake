@@ -75,9 +75,6 @@ IF( NOT IPP_FOUND )
     PATHS ${IPP_PATH} 
     PATH_SUFFIXES ${IPP_POSSIBLE_INCLUDE_DIRS})
 
-  message("IPP_INCLUDE_DIR=${IPP_INCLUDE_DIR}")
-
-
   FILE(GLOB IPP_LIBRARY_PATHS_0 "$ENV{ProgramFiles}/Intel/IPP/*.*")
   FILE(GLOB IPP_LIBRARY_PATHS_1 "/opt/intel/ipp/*.*")
   FILE(GLOB IPP_LIBRARY_PATHS_2 "/usr/local/intel/ipp/*.*")

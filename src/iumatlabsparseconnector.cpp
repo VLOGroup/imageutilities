@@ -1,6 +1,6 @@
 #include "iumatlabsparseconnector.h"
 #include <iusparse/sparsematrixdefs.h>
-#include <iuconnector/matlabsparseconnector.h>
+#include <iumatlab/matlabsparseconnector.h>
 
 namespace iu {
 
