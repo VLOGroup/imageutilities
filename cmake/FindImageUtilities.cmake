@@ -229,15 +229,6 @@ else(IU_INCLUDE_DIRS AND IU_LIBRARY_DIR)
         set(IU_IUCORE_LIB_DEPENDENCIES ${IU_IUCORE_LIB_DEPENDENCIES} ${CUDA_SPARSE_LIBRARY})
       endif(CUDASparse_FOUND)
 
-      # Matlab
-      find_package(Matlab_ICG QUIET)
-      if(MATLAB_FOUND)
-        message("Matlab lib found")
-        include_directories(${MATLAB_INCLUDE_DIR})
-        cuda_include_directories(${MATLAB_INCLUDE_DIR})
-        set(IU_IUCORE_LIB_DEPENDENCIES ${IU_IUCORE_LIB_DEPENDENCIES} ${MATLAB_LIBRARIES})
-      endif(MATLAB_FOUND)
-
     endif(CUDA_FOUND AND CUDASDK_FOUND)
   endif(IU_IUCORE_FOUND)
 
