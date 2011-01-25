@@ -854,11 +854,6 @@ install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videocapture.h
 install(FILES ${IU_CMAKE_FILES}
   DESTINATION cmake
   )
-#install common directory
-install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../../common
-  DESTINATION .
-  PATTERN ".svn" EXCLUDE
-  )
 
 
 ##-----------------------------------------------------------------------------
