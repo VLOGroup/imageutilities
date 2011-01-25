@@ -40,8 +40,8 @@ template<typename PixelType>
   public:
     // Empty constructor
     SparseMatrixGpu(cusparseHandle_t* handle) :
-        handle_(handle), value_(0), row_(0), col_(0), n_row_(0),
-        n_col_(0), n_elements_(0), ext_data_pointer_(false)
+        handle_(handle), n_row_(0), n_col_(0), n_elements_(0),
+        value_(0), row_(0), col_(0), ext_data_pointer_(false)
     {
       createMatDescriptor();
     }
@@ -70,8 +70,8 @@ template<typename PixelType>
 
     // Constructor that takes host matrix as input
     SparseMatrixGpu(cusparseHandle_t* handle, SparseMatrixCpu<PixelType>* input) :
-        handle_(handle), value_(0), row_(0), col_(0), n_row_(0),
-        n_col_(0), n_elements_(0), ext_data_pointer_(false)
+        handle_(handle), n_row_(0), n_col_(0), n_elements_(0),
+        value_(0), row_(0), col_(0), ext_data_pointer_(false)
     {
       if (input == 0)
         return;
@@ -132,8 +132,8 @@ template<typename PixelType>
     // Copy constructor
     SparseMatrixGpu(cusparseHandle_t* handle, SparseMatrixGpu<PixelType>* input,
                     bool transpose = false) :
-        handle_(handle), value_(0), row_(0), col_(0), n_row_(0),
-        n_col_(0), n_elements_(0), ext_data_pointer_(false)
+        handle_(handle), n_row_(0), n_col_(0), n_elements_(0),
+        value_(0), row_(0), col_(0), ext_data_pointer_(false)
     {
       if (input == 0)
         return;

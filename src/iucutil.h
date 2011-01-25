@@ -37,8 +37,9 @@
 #include "iucore/coredefs.h"
 
 // including some common device functions
-#include "iucore/vectormath_kernels.cuh"
-#include "iucore/bsplinetexture_kernels.cuh"
+#include "common/vectormath_kernels.cuh"
+#include "common/derivative_kernels.cuh"
+#include "common/bsplinetexture_kernels.cuh"
 
 
 ///// SIMPLE MIN MAX HELPERS

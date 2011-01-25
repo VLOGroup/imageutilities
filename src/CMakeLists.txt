@@ -482,7 +482,8 @@ cuda_include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/..
   )
 
-# SPLITTING ALL THE HEADERS FOR THE INSTALL DIRECTORY!
+# SPLITTING ALL THE HEADERS FOR THE INSTALL DIRECTORIES (PUBLIC) AND HEADERS
+# THAT ARE NOT INSTALLED (public not as keyword)!
 SET( IU_PUBLIC_HEADERS
   ${IU_PUBLIC_HEADERS}
   ${CMAKE_CURRENT_SOURCE_DIR}/iudefs.h
@@ -510,9 +511,6 @@ SET( IU_PUBLIC_CORE_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/volume_allocator_gpu.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/volume_gpu.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/imagepyramid.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/vectormath_kernels.cuh
-  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/bsplinetexture_kernels.cuh
-  ${CMAKE_CURRENT_SOURCE_DIR}/../../common/include/derivatives.h
   )
 
 # all the additional headers follow here below (we split that two for better overview and the seperated libs)
@@ -522,8 +520,15 @@ SET( IU_CORE_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/convert.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/clamp.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/iutextures.cuh
-
   )
+
+SET( IU_PUBLIC_COMMON_HEADERS
+  ${CMAKE_CURRENT_SOURCE_DIR}/common/vectormath_kernels.cuh
+  ${CMAKE_CURRENT_SOURCE_DIR}/common/derivative_kernels.cuh
+  ${CMAKE_CURRENT_SOURCE_DIR}/common/bsplinetexture_kernels.cuh
+  )
+
+
 SET( IU_MATH_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/iumath/arithmetic.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iumath/arithmetic.cuh
@@ -544,6 +549,7 @@ SET( IU_TRANSFORM_HEADERS
 SET( IU_HEADERS
   ${IU_PUBLIC_HEADERS}
   ${IU_PUBLIC_CORE_HEADERS}
+  ${IU_PUBLIC_COMMON_HEADERS}
   ${IU_CORE_HEADERS}
   ${IU_MATH_HEADERS}
   ${IU_FILTER_HEADERS}
@@ -828,11 +834,15 @@ install( TARGETS ${IU_LIBS}
   LIBRARY         DESTINATION   lib
   PUBLIC_HEADER   DESTINATION   include/iu
   )
+# install header files
 install(FILES ${IU_PUBLIC_CORE_HEADERS}
   DESTINATION include/iu/iucore
   COMPONENT Headers
   )
-
+install(FILES ${IU_PUBLIC_COMMON_HEADERS}
+  DESTINATION include/iu/common
+  COMPONENT Headers
+  )
 install(FILES ${IU_IPP_INSTALL_HEADERS}
   DESTINATION include/iu/iuipp
   COMPONENT Headers

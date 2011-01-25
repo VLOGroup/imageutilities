@@ -37,8 +37,8 @@ class SparseMatrixCpu
 {
 public:
   SparseMatrixCpu() :
-      value_(0), row_(0), col_(0), n_row_(0), n_col_(0),
-      n_elements_(0), ext_data_pointer_(false)
+      n_row_(0), n_col_(0), n_elements_(0),
+      value_(0), row_(0), col_(0), ext_data_pointer_(false)
   {
   }
 
@@ -64,8 +64,8 @@ public:
   SparseMatrixCpu(LinearHostMemory<PixelType>* value, LinearHostMemory<int>* row,
                   LinearHostMemory<int>* col, int n_row, int n_col,
                   bool ext_data_pointer = false) :
-     value_(0), row_(0), col_(0), n_row_(n_row), n_col_(n_col),
-     n_elements_(0), ext_data_pointer_(ext_data_pointer)
+     n_row_(n_row), n_col_(n_col), n_elements_(0),
+     value_(0), row_(0), col_(0), ext_data_pointer_(ext_data_pointer)
   {
     if(ext_data_pointer_)
     {

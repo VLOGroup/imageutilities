@@ -25,12 +25,12 @@
 #include <cutil_math.h>
 #include "vectormath_kernels.cuh"
 
-#ifndef IU_BSPLINETEXTURE_KERNELS_CU
-#define IU_BSPLINETEXTURE_KERNELS_CU
+#ifndef IU_BSPLINETEXTURE_KERNELS_CUH
+#define IU_BSPLINETEXTURE_KERNELS_CUH
 
 namespace iu {
 
-#ifdef __CUDACC__ // only include this error check in cuda files (seen by nvcc)
+#ifdef __CUDACC__ // only include this in cuda files (seen by nvcc)
 
 // Cubic B-spline function
 // The 3rd order Maximal Order and Minimum Support function, that it is maximally differentiable.
