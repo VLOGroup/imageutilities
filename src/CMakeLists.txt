@@ -173,6 +173,7 @@ if(VMLIBRARIES_IU_USE_IPP AND IPP_INCLUDE_DIR)
 
   set( IU_PUBLIC_HEADERS
     ${IU_PUBLIC_HEADERS}
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuippdefs.h
     ${CMAKE_CURRENT_SOURCE_DIR}/iuipp.h
     )
 
@@ -254,7 +255,7 @@ else(VMLIBRARIES_IU_USE_MATLAB AND MATLAB_FOUND)
 
 endif(VMLIBRARIES_IU_USE_MATLAB AND MATLAB_FOUND)
 
- 
+
 ##-----------------------------------------------------------------------------
 ## Qt
 find_package(Qt4 COMPONENTS QtCore QtGui QtOpenGL)

@@ -23,8 +23,6 @@
 #ifndef IU_IPP_H
 #define IU_IPP_H
 
-#include "iudefs.h"
-#include "iuipp/memorydefs_ipp.h"
 #include "iuipp/copy_ipp.h"
 
 namespace iu {
