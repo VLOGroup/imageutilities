@@ -50,7 +50,7 @@ public:
   ImagePyramid(unsigned int& max_num_levels, const IuSize& size, const float& scale_factor,
                unsigned int size_bound=1)
   {
-    // TODO calculate the maximum number of levels
+    // calculate the maximum number of levels
     if(size_bound == 0) size_bound = 1;
     unsigned int shorter_side = (size.width<size.height) ? size.width : size.height;
     float ratio = static_cast<float>(shorter_side) / static_cast<float>(size_bound);
