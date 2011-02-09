@@ -100,13 +100,11 @@ set(IU_IUCORE_LIB_DEPENDENCIES ${IU_IUCORE_LIB_DEPENDENCIES} ${CUDA_LIBRARIES})
 
 # Checking cuda version
 # set defines due to some missing functions in cuda 3.1
-if((CUDA_VERSION_MAJOR EQUAL 3) AND (CUDA_VERSION_MINOR EQUAL 1))
+if(CUDA_VERSION_STRING STREQUAL "3.1")
   # using CUDA 3.1
   message(STATUS "IU: using CUDA 3.1")
   add_definitions(-DCUDA_VERSION_31)
-endif()
-
-if((CUDA_VERSION_MAJOR EQUAL 3) AND (CUDA_VERSION_MINOR EQUAL 2))
+elseif(CUDA_VERSION_STRING STREQUAL "3.2")
   # using CUDA 3.2
   message(STATUS "IU: using CUDA 3.2")
   add_definitions(-DCUDA_VERSION_32)
