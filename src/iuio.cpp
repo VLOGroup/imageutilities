@@ -66,34 +66,34 @@ iu::ImageGpu_32f_C4* imread_cu32f_C4(const std::string& filename)
  * ***************************************************************************/
 
 bool imsave(iu::ImageCpu_8u_C1* image, const std::string& filename, const bool& normalize)
-{ return iuprivate::imsave(image, filename); }
+{ return iuprivate::imsave(image, filename, normalize); }
 
 bool imsave(iu::ImageCpu_8u_C3* image, const std::string& filename, const bool& normalize)
-{ return iuprivate::imsave(image, filename); }
+{ return iuprivate::imsave(image, filename, normalize); }
 
 bool imsave(iu::ImageCpu_8u_C4* image, const std::string& filename, const bool& normalize)
-{ return iuprivate::imsave(image, filename); }
+{ return iuprivate::imsave(image, filename, normalize); }
 
 bool imsave(iu::ImageCpu_32f_C1* image, const std::string& filename, const bool& normalize)
-{ return iuprivate::imsave(image, filename); }
+{ return iuprivate::imsave(image, filename, normalize); }
 
 bool imsave(iu::ImageCpu_32f_C3* image, const std::string& filename, const bool& normalize)
-{ return iuprivate::imsave(image, filename); }
+{ return iuprivate::imsave(image, filename, normalize); }
 
 bool imsave(iu::ImageCpu_32f_C4* image, const std::string& filename, const bool& normalize)
-{ return iuprivate::imsave(image, filename); }
+{ return iuprivate::imsave(image, filename, normalize); }
 
 bool imsave(iu::ImageGpu_8u_C1* image, const std::string& filename, const bool& normalize)
-{ return iuprivate::imsave(image, filename); }
+{ return iuprivate::imsave(image, filename, normalize); }
 
 bool imsave(iu::ImageGpu_8u_C4* image, const std::string& filename, const bool& normalize)
-{ return iuprivate::imsave(image, filename); }
+{ return iuprivate::imsave(image, filename, normalize); }
 
 bool imsave(iu::ImageGpu_32f_C1* image, const std::string& filename, const bool& normalize)
-{ return iuprivate::imsave(image, filename); }
+{ return iuprivate::imsave(image, filename, normalize); }
 
 bool imsave(iu::ImageGpu_32f_C4* image, const std::string& filename, const bool& normalize)
-{ return iuprivate::imsave(image, filename); }
+{ return iuprivate::imsave(image, filename, normalize); }
 
 /* ***************************************************************************
      show 2d image
