@@ -24,6 +24,21 @@ namespace iu {
 
     return IU_NO_ERROR;
   }
+
+  inline IuStatus sparseMultiplication(cusparseHandle_t* handle,
+                                       iu::SparseMatrixGpu<float>* A,
+                                       iu::VolumeGpu_32f_C1* src,
+                                       iu::VolumeGpu_32f_C1* dst)
+  {
+    CUSPARSE_SAFE_CALL_IUSTATUS(cusparseScsrmv(*handle, CUSPARSE_OPERATION_NON_TRANSPOSE,
+                                      A->n_row(), A->n_col(), 1.0f,
+                                      A->mat_descriptor(), A->value()->data(),
+                                      A->row()->data(), A->col()->data(),
+                                      src->data(), 0.0f, dst->data()));
+
+    return IU_NO_ERROR;
+  }
+
 } // namespace iuprivate
 
 #endif // SPARSEMULTIPLICATION_H
