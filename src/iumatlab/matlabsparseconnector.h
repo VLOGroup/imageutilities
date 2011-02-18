@@ -24,9 +24,15 @@ namespace iuprivate {
   //template<typename PixelType>
   inline IuStatus convertSparseMatrixToCpu_32f(const mxArray* src, iu::SparseMatrixCpu_32f** dst)
   {
+//      fprintf( stderr, "convertSparseMatrixToCpu_32f:\n");
+
     int n_row = mxGetM(src);
     int n_col = mxGetN(src);
-    int n_elements = mxGetNzmax(src);
+    int n_elements = *(mxGetJc(src) + n_col);
+
+//    fprintf( stderr, "n_row =  %d\n", n_row);
+//    fprintf( stderr, "n_col =  %d\n", n_col);
+//    fprintf( stderr, "n_elements =  %d\n", n_elements);
 
     double* val = mxGetPr(src);
     mwIndex* row = mxGetIr(src);
@@ -36,12 +42,29 @@ namespace iuprivate {
     iu::LinearHostMemory<int> h_row(n_elements);
     iu::LinearHostMemory<int> h_col(n_col+1);
 
-    for(int i=0; i<n_elements; i++)
+
+//    int count = 0;
+//    for (int c=1; c<=n_col; c++)
+//    {
+//      for (int r=0; r<(col[c]-col[c-1]); r++)
+//      {
+//        *h_val.data(count) = (float)val[count];
+//        *h_row.data(count) = (int)row[count];
+//        *h_col.data(count) = c-1;
+//        count++;
+//      }
+//    }
+
+    for (int i=0; i<n_elements; i++)
     {
       *h_val.data(i) = (float)val[i];
       *h_row.data(i) = (int)row[i];
-      if (i<=n_col)
-        *h_col.data(i) = (int)col[i];
+//       fprintf( stderr, "ADD: i=%d, val=%f, row=%d\n", i, (float)val[i], (int)row[i]);
+    }
+    for (int i=0; i<n_col+1; i++)
+    {
+      *h_col.data(i) = (int)col[i];
+//      fprintf( stderr, "ADD: i=%d, col=%d\n", i, (int)col[i]);
     }
 
     *dst = new iu::SparseMatrixCpu_32f(&h_val, &h_row, &h_col, n_row, n_col);
