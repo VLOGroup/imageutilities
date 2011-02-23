@@ -543,6 +543,7 @@ SET( IU_FILTER_HEADERS
 SET( IU_TRANSFORM_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/reduce.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/prolongate.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/remap.h
   )
 
 SET( IU_HEADERS
@@ -579,6 +580,8 @@ SET( IU_SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/reduce.cu
   ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/prolongate.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/prolongate.cu
+  ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/remap.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/remap.cu
   #${IU_PUBLIC_SPARSE_SOURCES}
   )
 

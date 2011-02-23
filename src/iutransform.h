@@ -42,7 +42,7 @@ namespace iu {
 /* ***************************************************************************
      Image resize
  * ***************************************************************************/
-/** @defgroup Image Resize
+/** @defgroup Image Transformations
  *  @ingroup Geometric Transformation
  *  TODO more detailed docu
  *  @{
@@ -67,7 +67,7 @@ IU_DLLAPI void reduce(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
  * \param[in] src Source image [device]
  * \param[out] dst Destination image [device]
  * \param[in] interpolation The type of interpolation used for scaling up the image.
- * \param[in] bicubic_bspline_prefilter Only reasonable for cubic (spline) interpolation.
+ * :TODO: \param[in] bicubic_bspline_prefilter Only reasonable for cubic (spline) interpolation.
  *
  * \note The bcubic_bspline_prefilter yields sharper results when switched on. Note that this only works nicely with a scale_factor=0.5f.
  */
@@ -78,8 +78,32 @@ IU_DLLAPI void prolongate(const iu::ImageGpu_32f_C2* src, iu::ImageGpu_32f_C2* d
 IU_DLLAPI void prolongate(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst,
                           IuInterpolationType interpolation = IU_INTERPOLATE_NEAREST);
 
+/** Image remapping (warping).
+ * \brief Remapping the image \a src with the given disparity fields dx, dy.
+ * \param[in] src Source image [device]
+ * \param[in] dx_map Disparities (dense) in x direction [device]
+ * \param[in] dy_map Disparities (dense) in y direction [device]
+ * \param[out] dst Destination image [device]
+ * \param[in] interpolation The type of interpolation used for scaling up the image.
+ * :TODO: \param[in] bicubic_bspline_prefilter Only reasonable for cubic (spline) interpolation.
+ *
+ * \note The bcubic_bspline_prefilter yields sharper results when switched on. Note that this only works nicely with a scale_factor=0.5f.
+ */
+IU_DLLAPI IuStatus remap(iu::ImageGpu_32f_C1* src,
+                     iu::ImageGpu_32f_C1* dx_map, iu::ImageGpu_32f_C1* dy_map,
+                     iu::ImageGpu_32f_C1* dst,
+                     IuInterpolationType interpolation = IU_INTERPOLATE_LINEAR);
+//IU_DLLAPI IuStatus remap(iu::ImageGpu_32f_C2* src,
+//                     iu::ImageGpu_32f_C1* dx_map, iu::ImageGpu_32f_C1* dy_map,
+//                     iu::ImageGpu_32f_C2* dst,
+//                     IuInterpolationType interpolation = IU_INTERPOLATE_LINEAR);
+//IU_DLLAPI IuStatus remap(iu::ImageGpu_32f_C4* src,
+//                     iu::ImageGpu_32f_C1* dx_map, iu::ImageGpu_32f_C1* dy_map,
+//                     iu::ImageGpu_32f_C4* dst,
+//                     IuInterpolationType interpolation = IU_INTERPOLATE_LINEAR);
 
-/** @} */ // end of Image Resize
+
+/** @} */ // end of Image Transformations
 
 
 } // namespace iu

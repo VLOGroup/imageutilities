@@ -25,6 +25,7 @@
 #include "iutransform.h"
 #include "iutransform/reduce.h"
 #include "iutransform/prolongate.h"
+#include "iutransform/remap.h"
 
 namespace iu {
 
@@ -55,5 +56,23 @@ void prolongate(const iu::ImageGpu_32f_C2* src, iu::ImageGpu_32f_C2* dst,
 void prolongate(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst,
                 IuInterpolationType interpolation)
 {iuprivate::prolongate(src, dst, interpolation);}
+
+/*
+  image remapping (warping)
+ */
+IuStatus remap(iu::ImageGpu_32f_C1* src,
+           iu::ImageGpu_32f_C1* dx_map, iu::ImageGpu_32f_C1* dy_map,
+           iu::ImageGpu_32f_C1* dst, IuInterpolationType interpolation)
+{return iuprivate::remap(src, dx_map, dy_map, dst, interpolation);}
+
+//IuStatus remap(iu::ImageGpu_32f_C2* src,
+//           iu::ImageGpu_32f_C1* dx_map, iu::ImageGpu_32f_C1* dy_map,
+//           iu::ImageGpu_32f_C2* dst, IuInterpolationType interpolation)
+//{return iuprivate::remap(src, dx_map, dy_map, dst, interpolation);}
+
+//IuStatus remap(iu::ImageGpu_32f_C4* src,
+//           iu::ImageGpu_32f_C1* dx_map, iu::ImageGpu_32f_C1* dy_map,
+//           iu::ImageGpu_32f_C4* dst, IuInterpolationType interpolation)
+//{return iuprivate::remap(src, dx_map, dy_map, dst, interpolation);}
 
 } // namespace iu

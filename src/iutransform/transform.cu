@@ -49,8 +49,8 @@ namespace iuprivate {
 
 //-----------------------------------------------------------------------------
 static __global__ void cuTransformCubicSplineKernel_32f_C1(float* dst,
-                                                    size_t dst_stride, int dst_width, int dst_height,
-                                                    float x_factor, float y_factor)
+                                                           size_t dst_stride, int dst_width, int dst_height,
+                                                           float x_factor, float y_factor)
 {
   const int x = blockIdx.x*blockDim.x + threadIdx.x;
   const int y = blockIdx.y*blockDim.y + threadIdx.y;
@@ -68,8 +68,8 @@ static __global__ void cuTransformCubicSplineKernel_32f_C1(float* dst,
 
 //-----------------------------------------------------------------------------
 static __global__ void cuTransformCubicKernel_32f_C1(float* dst,
-                                              size_t dst_stride, int dst_width, int dst_height,
-                                              float x_factor, float y_factor)
+                                                     size_t dst_stride, int dst_width, int dst_height,
+                                                     float x_factor, float y_factor)
 {
   const int x = blockIdx.x*blockDim.x + threadIdx.x;
   const int y = blockIdx.y*blockDim.y + threadIdx.y;
@@ -87,8 +87,8 @@ static __global__ void cuTransformCubicKernel_32f_C1(float* dst,
 
 //-----------------------------------------------------------------------------
 static __global__ void cuTransformKernel_32f_C1(float* dst,
-                                         size_t dst_stride, int dst_width, int dst_height,
-                                         float x_factor, float y_factor)
+                                                size_t dst_stride, int dst_width, int dst_height,
+                                                float x_factor, float y_factor)
 {
   const int x = blockIdx.x*blockDim.x + threadIdx.x;
   const int y = blockIdx.y*blockDim.y + threadIdx.y;
@@ -148,8 +148,8 @@ static __global__ void cuTransformKernel_32f_C1(float* dst,
 
 //-----------------------------------------------------------------------------
 static __global__ void cuTransformKernel_32f_C2(float2* dst,
-                                         size_t dst_stride, int dst_width, int dst_height,
-                                         float x_factor, float y_factor)
+                                                size_t dst_stride, int dst_width, int dst_height,
+                                                float x_factor, float y_factor)
 {
   const int x = blockIdx.x*blockDim.x + threadIdx.x;
   const int y = blockIdx.y*blockDim.y + threadIdx.y;
@@ -210,8 +210,8 @@ static __global__ void cuTransformKernel_32f_C2(float2* dst,
 
 //-----------------------------------------------------------------------------
 static __global__ void cuTransformKernel_32f_C4(float4* dst,
-                                         size_t dst_stride, int dst_width, int dst_height,
-                                         float x_factor, float y_factor)
+                                                size_t dst_stride, int dst_width, int dst_height,
+                                                float x_factor, float y_factor)
 {
   const int x = blockIdx.x*blockDim.x + threadIdx.x;
   const int y = blockIdx.y*blockDim.y + threadIdx.y;
