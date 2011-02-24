@@ -36,10 +36,7 @@
 
 namespace iuprivate {
 
-/******************************************************************************
-    CUDA KERNELS
-*******************************************************************************/
-
+// ----------------------------------------------------------------------------
 // kernel: median filter; 32-bit; 1-channel
 __global__ void  cuFilterMedian3x3Kernel_32f_C1(float* dst, const size_t stride,
                                                 const int xoff, const int yoff,
@@ -233,6 +230,37 @@ __global__ void  cuFilterMedian3x3Kernel_32f_C1(float* dst, const size_t stride,
   }
 }
 
+// ----------------------------------------------------------------------------
+// wrapper: median filter; 32-bit; 1-channel
+IuStatus cuFilterMedian3x3(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst, const IuRect& roi)
+{
+  // bind textures
+  cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<float>();
+  tex1_32f_C1__.filterMode = cudaFilterModeLinear;
+  tex1_32f_C1__.addressMode[0] = cudaAddressModeClamp;
+  tex1_32f_C1__.addressMode[1] = cudaAddressModeClamp;
+  tex1_32f_C1__.normalized = false;
+  cudaBindTexture2D(0, &tex1_32f_C1__, src->data(), &channel_desc, src->width(), src->height(), src->pitch());
+
+  // fragmentation
+  unsigned int block_size = 16;
+  dim3 dimBlock(block_size, block_size);
+  dim3 dimGrid(iu::divUp(roi.width, dimBlock.x), iu::divUp(roi.height, dimBlock.y));
+
+  size_t shared_size = (block_size+2)*(block_size+2)*sizeof(float);
+
+  cuFilterMedian3x3Kernel_32f_C1 <<< dimGrid, dimBlock, shared_size >>> (
+    dst->data(roi.x, roi.y), dst->stride(), roi.x, roi.y, roi.width, roi.height);
+
+  // unbind textures
+  cudaUnbindTexture(&tex1_32f_C1__);
+
+  // error check
+  return iu::checkCudaErrorState();
+}
+
+// ----------------------------------------------------------------------------
+// kernel: Gaussian filter; 32-bit; 1-channel
 /** Perform a convolution with an gaussian smoothing kernel
  * @param dst          pointer to output image (linear memory)
  * @param stride       length of image row [pixels]
@@ -306,35 +334,7 @@ __global__ void cuFilterGaussKernel_32f_C1(float* dst, const size_t stride,
   }
 }
 
-
-/******************************************************************************
-  CUDA INTERFACES
-*******************************************************************************/
-
-// wrapper: median filter; 32-bit; 1-channel
-IuStatus cuFilterMedian3x3(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst, const IuRect& roi)
-{
-  // bind textures
-  cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<float>();
-  cudaBindTexture2D(0, &tex1_32f_C1__, src->data(), &channel_desc, src->width(), src->height(), src->pitch());
-
-  // fragmentation
-  unsigned int block_size = 16;
-  dim3 dimBlock(block_size, block_size);
-  dim3 dimGrid(iu::divUp(roi.width, dimBlock.x), iu::divUp(roi.height, dimBlock.y));
-
-  size_t shared_size = (block_size+2)*(block_size+2)*sizeof(float);
-
-  cuFilterMedian3x3Kernel_32f_C1 <<< dimGrid, dimBlock, shared_size >>> (
-    dst->data(roi.x, roi.y), dst->stride(), roi.x, roi.y, roi.width, roi.height);
-
-  // unbind textures
-  cudaUnbindTexture(&tex1_32f_C1__);
-
-  // error check
-  return iu::checkCudaErrorState();
-}
-
+// ----------------------------------------------------------------------------
 // wrapper: Gaussian filter; 32-bit; 1-channel
 IuStatus cuFilterGauss(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst, const IuRect& roi, float sigma, int kernel_size)
 {
@@ -346,8 +346,12 @@ IuStatus cuFilterGauss(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
   // temporary variable for filtering (separabed kernel!)
   iu::ImageGpu_32f_C1 tmp(src->size());
 
-  // bind textures
+  // textures
   cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<float>();
+  tex1_32f_C1__.filterMode = cudaFilterModeLinear;
+  tex1_32f_C1__.addressMode[0] = cudaAddressModeClamp;
+  tex1_32f_C1__.addressMode[1] = cudaAddressModeClamp;
+  tex1_32f_C1__.normalized = false;
 
   // fragmentation
   unsigned int block_size = 16;
