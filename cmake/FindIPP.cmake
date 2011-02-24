@@ -62,10 +62,10 @@ IF( NOT IPP_FOUND )
   FILE(GLOB IPP_PATH_2 "/usr/local/intel/ipp/*.*")
 
   SET( IPP_PATH
+	  $ENV{IPPROOT}/..
 	  ${IPP_PATH_0}
 	  ${IPP_PATH_1}
 	  ${IPP_PATH_2}
-	  $ENV{IPPROOT}
 	  $ENV{IPP_ROOT}
 	  )
 

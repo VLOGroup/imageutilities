@@ -162,10 +162,10 @@ static inline __host__ __device__ bool operator==(float2& a, float2& b)
 
 // float-float2
 #ifndef CUDA_VERSION_32
-//static inline __host__ __device__ float2 operator-(float a, float2 b)
-//{
-//  return make_float2(a - b.x, a - b.y);
-//}
+static inline __host__ __device__ float2 operator-(float a, float2 b)
+{
+  return make_float2(a - b.x, a - b.y);
+}
 #endif
 
 inline __device__ __host__ float2 sqr(float2 a)
@@ -191,10 +191,10 @@ static inline __host__ __device__ bool operator==(float3& a, float3& b)
 
 // float-float3
 #ifndef CUDA_VERSION_32
-//static inline __host__ __device__ float3 operator-(float a, float3 b)
-//{
-//  return make_float3(a - b.x, a - b.y, a - b.z);
-//}
+static inline __host__ __device__ float3 operator-(float a, float3 b)
+{
+  return make_float3(a - b.x, a - b.y, a - b.z);
+}
 #endif
 
 inline __device__ __host__ float3 sqr(float3 a)
@@ -220,10 +220,10 @@ static inline __host__ __device__ bool operator==(float4& a, float4& b)
 
 // elementwise multiply
 #ifndef CUDA_VERSION_32
-//static inline __host__ __device__ float4 operator*(float4 a, float4 b)
-//{
-//    return make_float4(a.x * b.x, a.y * b.y, a.z * b.z,  a.w * b.w);
-//}
+static inline __host__ __device__ float4 operator*(float4 a, float4 b)
+{
+    return make_float4(a.x * b.x, a.y * b.y, a.z * b.z,  a.w * b.w);
+}
 #endif
 
 inline __device__ __host__ float4 sqr(float4 a)
