@@ -108,6 +108,10 @@ elseif(CUDA_VERSION_STRING STREQUAL "3.2")
   # using CUDA 3.2
   message(STATUS "IU: using CUDA 3.2")
   add_definitions(-DCUDA_VERSION_32)
+elseif(CUDA_VERSION_STRING STREQUAL "4.0")
+  # using CUDA 3.2
+  message(STATUS "IU: using CUDA 4.0")
+  add_definitions(-DCUDA_VERSION_40)
 elseif()
   message(STATUS "unknown CUDA version. some things might not be tested.")
 endif()
