@@ -349,7 +349,7 @@ IuStatus convertCpuToMatlab(iu::ImageCpu<PixelType, Allocator> *src,
 {
   if(width > src->width() || height > src->height())
   {
-    std::cerr << "Error in convertMatlabToCpu: memory dimensions mismatch!" << std::endl;
+    std::cerr << "Error in convertCpuToMatlab: memory dimensions mismatch!" << std::endl;
     return IU_MEM_COPY_ERROR;
   }
 
