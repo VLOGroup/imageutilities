@@ -40,7 +40,7 @@
 #include "common/vectormath_kernels.cuh"
 #include "common/derivative_kernels.cuh"
 #include "common/bsplinetexture_kernels.cuh"
-
+//#include "common/bind_textures.cuh"
 
 ///// SIMPLE MIN MAX HELPERS
 template<typename Type1, typename Type2>

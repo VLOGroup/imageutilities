@@ -529,6 +529,7 @@ SET( IU_PUBLIC_COMMON_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/common/vectormath_kernels.cuh
   ${CMAKE_CURRENT_SOURCE_DIR}/common/derivative_kernels.cuh
   ${CMAKE_CURRENT_SOURCE_DIR}/common/bsplinetexture_kernels.cuh
+  ${CMAKE_CURRENT_SOURCE_DIR}/common/bind_textures.cuh
   )
 
 
@@ -591,7 +592,10 @@ SET( IU_SOURCES
 
 # denote kernel files as header only to not confuse the compiler
 set_source_files_properties(
-  ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/transform.cu
+  # ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/transform.cu
+  # ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/remap.cu
+  # ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/prolongate.cu
+  # ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/reduce.cu
   ${CMAKE_CURRENT_SOURCE_DIR}/iufilter/filterbspline_kernels.cu
   PROPERTIES HEADER_FILE_ONLY yes
   )
