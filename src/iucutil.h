@@ -72,7 +72,7 @@ static inline IuStatus checkCudaErrorState(bool print_error = true)
   cudaThreadSynchronize();
   if (cudaError_t err = cudaGetLastError())
   {
-    fprintf(stderr,"\n\n ImageUtilities: CUDA Error: %s\n",cudaGetErrorString(err));
+    fprintf(stderr,"\n\n CUDA Error: %s\n",cudaGetErrorString(err));
     fprintf(stderr,"  file:       %s\n",__FILE__);
     fprintf(stderr,"  function:   %s\n",__FUNCTION__);
     fprintf(stderr,"  line:       %d\n\n",__LINE__);
@@ -99,10 +99,35 @@ static inline IuStatus checkCudaErrorState(bool print_error = true)
 /** CUDA ERROR HANDLING (CHECK FOR CUDA ERRORS)
  */
 #define IU_CHECK_AND_RETURN_CUDA_ERRORS() \
-  if( iu::checkCudaErrorState(true) != IU_NO_ERROR ) return IU_CUDA_ERROR; \
+  cudaThreadSynchronize(); \
+  if (cudaError_t err = cudaGetLastError()) \
+  { \
+    fprintf(stderr,"\n\n CUDA Error: %s\n",cudaGetErrorString(err)); \
+    fprintf(stderr,"  file:       %s\n",__FILE__); \
+    fprintf(stderr,"  function:   %s\n",__FUNCTION__); \
+    fprintf(stderr,"  line:       %d\n\n",__LINE__); \
+    return IU_CUDA_ERROR; \
+  } \
+  else \
+  { \
+    return IU_NO_ERROR; \
+  }
+
+/** CUDA ERROR HANDLING (CHECK FOR CUDA ERRORS)
+ */
+#define IU_CHECK_CUDA_ERRORS() \
+  cudaThreadSynchronize(); \
+  if (cudaError_t err = cudaGetLastError()) \
+  { \
+    fprintf(stderr,"\n\n CUDA Error: %s\n",cudaGetErrorString(err)); \
+    fprintf(stderr,"  file:       %s\n",__FILE__); \
+    fprintf(stderr,"  function:   %s\n",__FUNCTION__); \
+    fprintf(stderr,"  line:       %d\n\n",__LINE__); \
+  }
 
 #else // __IU_CHECK_FOR_CUDA_ERRORS_ENABLED__
-#define IU_CHECK_FOR_CUDA_ERRORS() {}
+#define IU_CHECK_AND_RETURN_CUDA_ERRORS() {}
+#define IU_CHECK_CUDA_ERRORS() {}
 #define IU_PRINT_CUDA_ERRORS() {}
 #endif // __IU_CHECK_FOR_CUDA_ERRORS_ENABLED__
 

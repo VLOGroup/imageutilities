@@ -37,10 +37,14 @@ using namespace std;
 #include <cuda.h>
 #include <iucore.h>
 
-void mexFunction(int nlhs, mxArray *plhs[],int nrhs, const mxArray *prhs[]) 
+void mexFunction(int nlhs, mxArray *plhs[],int nrhs, const mxArray *prhs[])
 {
-  if(nrhs > 2)
-    mexErrMsgTxt("Too many input arguments");
+  if(nrhs != 2)
+  {
+    mexErrMsgTxt("Uncorrect number of many input arguments");
+    return;
+  }
+
 
   if(mxGetNumberOfElements(prhs[1]) != 1)
     mexErrMsgTxt("number of channels must be a scalar value");
@@ -142,7 +146,7 @@ void mexFunction(int nlhs, mxArray *plhs[],int nrhs, const mxArray *prhs[])
       break;
       case 3:
       {
-        printf("3-channel volume not supported!\n");
+        mexErrMsgTxt("3-channel volume not supported!\n");
         return;
       }
       break;
@@ -158,8 +162,8 @@ void mexFunction(int nlhs, mxArray *plhs[],int nrhs, const mxArray *prhs[])
   }
   else
   {
-    printf("%d dimensions are not supported!\n", dimension);
+    mexErrMsgTxt("given number of dimensions are not supported!\n");
     return;
   }
 
-}         
+}
