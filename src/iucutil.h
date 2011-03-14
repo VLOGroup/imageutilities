@@ -125,13 +125,11 @@ static inline IuStatus checkCudaErrorState(bool print_error = true)
     fprintf(stderr,"  line:       %d\n\n",__LINE__); \
   }
 
-#else // __IU_CHECK_FOR_CUDA_ERRORS_ENABLED__
-#define IU_CHECK_AND_RETURN_CUDA_ERRORS() {}
-#define IU_CHECK_CUDA_ERRORS() {}
-#define IU_PRINT_CUDA_ERRORS() {}
+//#else // __IU_CHECK_FOR_CUDA_ERRORS_ENABLED__
+//#define IU_CHECK_AND_RETURN_CUDA_ERRORS() {}
+//#define IU_CHECK_CUDA_ERRORS() {}
+//#define IU_PRINT_CUDA_ERRORS() {}
 #endif // __IU_CHECK_FOR_CUDA_ERRORS_ENABLED__
-
-
 
 #endif // __CUDACC__
 
