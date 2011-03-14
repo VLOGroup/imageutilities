@@ -209,8 +209,8 @@ inline static __device__ float dp_ad_edges(const texture<float2, 2> tex,
 
   float gx =   tex2D(tex_gx, xx,     yy);
   float gx_w = tex2D(tex_gx, xx-1.f, yy);
-  float gy =   tex2D(tex_gx, xx,     yy);
-  float gy_n = tex2D(tex_gx, xx,     yy-1.f);
+  float gy =   tex2D(tex_gy, xx,     yy);
+  float gy_n = tex2D(tex_gy, xx,     yy-1.f);
 
   if (x == 0)
     w.x = 0.0f;
@@ -222,6 +222,67 @@ inline static __device__ float dp_ad_edges(const texture<float2, 2> tex,
     c.y = 0.0f;
 
   return (c.x*gx - w.x*gx_w + c.y*gy - n.y*gy_n);
+}
+
+//-----------------------------------------------------------------------------
+/** Calculates gradient with forward differences including zero border handling and edge weighting
+ * @param tex  2D texture
+ * @param tex_gx 2D x-gradient texture
+ * @param tex_gy 2D y-gradient texture
+ * @param x  x-coordinate
+ * @param y  y-coordinate
+ * @return y derivative calculated with forward differences.
+ */
+inline static __device__ float2 dp_edges(const texture<float, 2> tex,
+                                         const texture<float2, 2> tex_g,
+                                         const int x, const int y)
+{
+  const float xx = x+0.5f;
+  const float yy = y+0.5f;
+  float2 grad = make_float2(0.0f, 0.0f);
+  float cval = tex2D(tex, xx, yy);
+  float2 g = tex2D(tex_g, xx, yy);
+
+  // border handling is done via texture
+
+  grad.x = g.x*(tex2D(tex, xx+1.f, yy) - cval);
+  grad.y = g.y*(tex2D(tex, xx, yy+1.f) - cval);
+
+  return grad;
+}
+
+//-----------------------------------------------------------------------------
+/** Calculates the divergence with backward differences including zero border handling
+ * @param p  2D texture of p
+ * @param x  x-coordinate
+ * @param y  y-coordinate
+ * @return divergence calculated with backward differences.
+ */
+inline static __device__ float dp_ad_edges(const texture<float2, 2> tex,
+                                           const texture<float2, 2> tex_g,
+                                           const int x, const int y,
+                                           const int width, const int height)
+{
+  const float xx = x+0.5f;
+  const float yy = y+0.5f;
+  float2 c = tex2D(tex, xx,     yy);
+  float2 w = tex2D(tex, xx-1.f, yy);
+  float2 n = tex2D(tex, xx,     yy-1.f);
+
+  float2 g   = tex2D(tex_g, xx,     yy);
+  float2 g_w = tex2D(tex_g, xx-1.f, yy);
+  float2 g_n = tex2D(tex_g, xx,     yy-1.f);
+
+  if (x == 0)
+    w.x = 0.0f;
+  else if (x >= width-1)
+    c.x = 0.0f;
+  if (y == 0)
+    n.y = 0.0f;
+  else if (y >= height-1)
+    c.y = 0.0f;
+
+  return (c.x*g.x - w.x*g_w.x + c.y*g.y - n.y*g_n.y);
 }
 
 
