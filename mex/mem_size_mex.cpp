@@ -64,29 +64,29 @@ void mexFunction(int nlhs, mxArray *plhs[],int nrhs, const mxArray *prhs[])
   {
     switch(channels)
     {
-      case 1:
-      {
-        iu::LinearDeviceMemory_32f_C1 temp(input_size[0]);
-        output_size[0] = temp.length();
-      }
+    case 1:
+    {
+      iu::LinearDeviceMemory_32f_C1 temp(input_size[0]);
+      output_size[0] = temp.length();
+    }
       break;
-      case 2:
-      {
-        iu::LinearDeviceMemory_32f_C2 temp(input_size[0]);
-        output_size[0] = temp.length();
-      }
+    case 2:
+    {
+      iu::LinearDeviceMemory_32f_C2 temp(input_size[0]);
+      output_size[0] = temp.length();
+    }
       break;
-      case 3:
-      {
-        iu::LinearDeviceMemory_32f_C3 temp(input_size[0]);
-        output_size[0] = temp.length();
-      }
+    case 3:
+    {
+      iu::LinearDeviceMemory_32f_C3 temp(input_size[0]);
+      output_size[0] = temp.length();
+    }
       break;
-      case 4:
-      {
-        iu::LinearDeviceMemory_32f_C4 temp(input_size[0]);
-        output_size[0] = temp.length();
-      }
+    case 4:
+    {
+      iu::LinearDeviceMemory_32f_C4 temp(input_size[0]);
+      output_size[0] = temp.length();
+    }
       break;
     }
   }
@@ -94,33 +94,33 @@ void mexFunction(int nlhs, mxArray *plhs[],int nrhs, const mxArray *prhs[])
   {
     switch(channels)
     {
-      case 1:
-      {
-        iu::ImageGpu_32f_C1 temp(input_size[1], input_size[0]);
-        output_size[0] = temp.height();
-        output_size[1] = temp.stride();
-      }
+    case 1:
+    {
+      iu::ImageGpu_32f_C1 temp(input_size[1], input_size[0]);
+      output_size[0] = temp.height();
+      output_size[1] = temp.stride();
+    }
       break;
-      case 2:
-      {
-        iu::ImageGpu_32f_C2 temp(input_size[1], input_size[0]);
-        output_size[0] = temp.height();
-        output_size[1] = temp.stride();
-      }
+    case 2:
+    {
+      iu::ImageGpu_32f_C2 temp(input_size[1], input_size[0]);
+      output_size[0] = temp.height();
+      output_size[1] = temp.stride();
+    }
       break;
-      case 3:
-      {
-        iu::ImageGpu_32f_C3 temp(input_size[1], input_size[0]);
-        output_size[0] = temp.height();
-        output_size[1] = temp.stride();
-      }
+    case 3:
+    {
+      iu::ImageGpu_32f_C3 temp(input_size[1], input_size[0]);
+      output_size[0] = temp.height();
+      output_size[1] = temp.stride();
+    }
       break;
-      case 4:
-      {
-        iu::ImageGpu_32f_C4 temp(input_size[1], input_size[0]);
-        output_size[0] = temp.height();
-        output_size[1] = temp.stride();
-      }
+    case 4:
+    {
+      iu::ImageGpu_32f_C4 temp(input_size[1], input_size[0]);
+      output_size[0] = temp.height();
+      output_size[1] = temp.stride();
+    }
       break;
     }
   }
@@ -128,35 +128,35 @@ void mexFunction(int nlhs, mxArray *plhs[],int nrhs, const mxArray *prhs[])
   {
     switch(channels)
     {
-      case 1:
-      {
-        iu::VolumeGpu_32f_C1 temp(input_size[1], input_size[0], input_size[2]);
-        output_size[0] = temp.slice_stride()/temp.stride();
-        output_size[1] = temp.stride();
-        output_size[2] = temp.depth();
-      }
+    case 1:
+    {
+      iu::VolumeGpu_32f_C1 temp(input_size[1], input_size[0], input_size[2]);
+      output_size[0] = temp.slice_stride()/temp.stride();
+      output_size[1] = temp.stride();
+      output_size[2] = temp.depth();
+    }
       break;
-      case 2:
-      {
-        iu::VolumeGpu_32f_C2 temp(input_size[1], input_size[0], input_size[2]);
-        output_size[0] = temp.slice_stride()/temp.stride();
-        output_size[1] = temp.stride();
-        output_size[2] = temp.depth();
-      }
+    case 2:
+    {
+      iu::VolumeGpu_32f_C2 temp(input_size[1], input_size[0], input_size[2]);
+      output_size[0] = temp.slice_stride()/temp.stride();
+      output_size[1] = temp.stride();
+      output_size[2] = temp.depth();
+    }
       break;
-      case 3:
-      {
-        mexErrMsgTxt("3-channel volume not supported!\n");
-        return;
-      }
+    case 3:
+    {
+      mexErrMsgTxt("3-channel volume not supported!\n");
+      return;
+    }
       break;
-      case 4:
-      {
-        iu::VolumeGpu_32f_C4 temp(input_size[1], input_size[0], input_size[2]);
-        output_size[0] = temp.slice_stride()/temp.stride();
-        output_size[1] = temp.stride();
-        output_size[2] = temp.depth();
-      }
+    case 4:
+    {
+      iu::VolumeGpu_32f_C4 temp(input_size[1], input_size[0], input_size[2]);
+      output_size[0] = temp.slice_stride()/temp.stride();
+      output_size[1] = temp.stride();
+      output_size[2] = temp.depth();
+    }
       break;
     }
   }
