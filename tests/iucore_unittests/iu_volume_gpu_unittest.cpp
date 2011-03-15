@@ -30,8 +30,13 @@
 
 int main(int argc, char** argv)
 {
-  std::cout << "Starting iu_image_gpu_unittest ..." << std::endl;
+  cudaSetDevice(1);
 
+  int cur_device = -1;
+  cudaGetDevice(&cur_device);
+  std::cout << "cur_device=" << cur_device << std::endl;
+  std::cout << "Starting iu_image_gpu_unittest ..." << std::endl;
+#if 0
   // test image size
   IuSize sz(79,63,33);
 
@@ -213,6 +218,14 @@ int main(int argc, char** argv)
     }
 
   }
+#else
+ iu::VolumeGpu_32f_C1* tmp = new iu::VolumeGpu_32f_C1(584, 388, 3);
+
+ std::cout << "padding = " << tmp->slice_stride()/tmp->stride() << "/" << tmp->stride() << "/"
+           << tmp->depth() << std::endl;
+ cudaGetDevice(&cur_device);
+ std::cout << "cur_device=" << cur_device << std::endl;
+#endif
 
   std::cout << std::endl;
   std::cout << "**************************************************************************" << std::endl;

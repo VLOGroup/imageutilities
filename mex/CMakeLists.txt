@@ -55,43 +55,43 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR})
 
 ##-----------------------------------------------------------------------------
 ## Source files
-SET(MEX_FILES    ${CMAKE_CURRENT_SOURCE_DIR}/mem_size_mex.cpp )
+SET(MEX_FILES    ${CMAKE_CURRENT_SOURCE_DIR}/gpu_memsize_mex.cpp )
 
 ##-----------------------------------------------------------------------------
 ## Create Library
 message(STATUS "MATLAB_LIBRARIES=${MATLAB_LIBRARIES}")
 message(STATUS "IU_LIBRARIES=${IU_LIBRARIES}")
 message(STATUS "IMAGEUTILITIES_LIBRARIES=${IMAGEUTILITIES_LIBRARIES}")
-CUDA_ADD_LIBRARY(mem_size_mex SHARED ${MEX_FILES} )
-TARGET_LINK_LIBRARIES(mem_size_mex ${MATLAB_LIBRARIES} ${IU_LIBRARIES} ${IMAGEUTILITIES_LIBRARIES})
-SET_TARGET_PROPERTIES(mem_size_mex PROPERTIES PREFIX "" LINKER_LANGUAGE CXX)
+CUDA_ADD_LIBRARY(gpu_memsize_mex SHARED ${MEX_FILES} )
+TARGET_LINK_LIBRARIES(gpu_memsize_mex ${MATLAB_LIBRARIES} ${IU_LIBRARIES} ${IMAGEUTILITIES_LIBRARIES})
+SET_TARGET_PROPERTIES(gpu_memsize_mex PROPERTIES PREFIX "" LINKER_LANGUAGE CXX)
 
 ##-----------------------------------------------------------------------------
 ## Change naming for the correct matlab wrapper
 if(WIN32)
   if (CMAKE_CL_64)
       MESSAGE("Win 64")
-      SET_TARGET_PROPERTIES(mem_size_mex PROPERTIES SUFFIX .mexw64 LINK_FLAGS /export:mexFunction)
+      SET_TARGET_PROPERTIES(gpu_memsize_mex PROPERTIES SUFFIX .mexw64 LINK_FLAGS /export:mexFunction)
   else()
       MESSAGE("Win 32")
-      SET_TARGET_PROPERTIES(mem_size_mex PROPERTIES SUFFIX .mexw32 LINK_FLAGS /export:mexFunction)
+      SET_TARGET_PROPERTIES(gpu_memsize_mex PROPERTIES SUFFIX .mexw32 LINK_FLAGS /export:mexFunction)
   endif()
 else(WIN32)
   if(APPLE)
     if (CMAKE_SIZEOF_VOID_P MATCHES "8")
       MESSAGE("Mac 64")
-      SET_TARGET_PROPERTIES(mem_size_mex PROPERTIES SUFFIX .mexmaci64)
+      SET_TARGET_PROPERTIES(gpu_memsize_mex PROPERTIES SUFFIX .mexmaci64)
     else()
       MESSAGE("Mac 32")
-      SET_TARGET_PROPERTIES(mem_size_mex PROPERTIES SUFFIX .mexmaci32)
+      SET_TARGET_PROPERTIES(gpu_memsize_mex PROPERTIES SUFFIX .mexmaci32)
     endif (CMAKE_SIZEOF_VOID_P MATCHES "8")
   else(APPLE)
     if (CMAKE_SIZEOF_VOID_P MATCHES "8")
       MESSAGE("Linux 64")
-      SET_TARGET_PROPERTIES(mem_size_mex PROPERTIES SUFFIX .mexa64)
+      SET_TARGET_PROPERTIES(gpu_memsize_mex PROPERTIES SUFFIX .mexa64)
     else()
       MESSAGE("Linux 32")
-      SET_TARGET_PROPERTIES(mem_size_mex PROPERTIES SUFFIX .mexglx)
+      SET_TARGET_PROPERTIES(gpu_memsize_mex PROPERTIES SUFFIX .mexglx)
     endif (CMAKE_SIZEOF_VOID_P MATCHES "8")
   endif(APPLE)
 endif(WIN32)
@@ -99,7 +99,7 @@ endif(WIN32)
 
 # targets to be installed
 set(IMAGEUTILITIES_MATLAB_TARGETS "")
-set(IMAGEUTILITIES_MATLAB_TARGETS ${IMAGEUTILITIES_MATLAB_TARGETS} mem_size_mex) 
+set(IMAGEUTILITIES_MATLAB_TARGETS ${IMAGEUTILITIES_MATLAB_TARGETS} gpu_memsize_mex)
 
 ##-----------------------------------------------------------------------------
 # install settings
@@ -125,6 +125,6 @@ install( TARGETS ${IMAGEUTILITIES_MATLAB_TARGETS}
   LIBRARY         DESTINATION   mex
   )
 set(IMAGEUTILITIES_MATLAB_INSTALL_FILES
-  mem_size_mex.m
+  gpu_memsize_mex.m
   )
 install(FILES ${IMAGEUTILITIES_MATLAB_INSTALL_FILES} DESTINATION mex)

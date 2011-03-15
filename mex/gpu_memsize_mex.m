@@ -1,5 +1,5 @@
-[mem_size] = mem_size_mex(size, channels)
-% [stride] = mem_size_mex(size, color_flag)
+[mem_size] = gpu_memsize_mex(size, channels)
+% [stride] = gpu_memsize_mex(size, color_flag)
 %
 % Mex wrapper to get the memory layout of allocated gpu memory.
 %
