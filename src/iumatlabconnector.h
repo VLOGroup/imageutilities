@@ -29,6 +29,15 @@ IU_DLLAPI IuStatus convertMatlabToCpu(double* matlab_src_buffer, unsigned int wi
 IU_DLLAPI IuStatus convertMatlabToCpu(float* matlab_src_buffer, unsigned int width, unsigned int height,
                                       iu::ImageCpu_32f_C1 *dst);
 
+/** Converts matlab memory layout to an ImageCpu memory layout - int version
+ * \param matlab_src_buffer Matlab image buffer.
+ * \param width Width of the matlab image.
+ * \param height Height of the matlab image.
+ * \param dst Destination image on the host.
+ */
+IU_DLLAPI IuStatus convertMatlabToCpu(int* matlab_src_buffer, unsigned int width, unsigned int height,
+                                      iu::ImageCpu_32s_C1 *dst);
+
 /** Converts matlab memory layout to an ImageGpu memory layout.
  * \param matlab_src_buffer Matlab image buffer.
  * \param width Width of the matlab image.
@@ -37,6 +46,16 @@ IU_DLLAPI IuStatus convertMatlabToCpu(float* matlab_src_buffer, unsigned int wid
  */
 IU_DLLAPI IuStatus convertMatlabToGpu(double* matlab_src_buffer, unsigned int width, unsigned int height,
                                       iu::ImageGpu_32f_C1 *dst);
+
+/** Converts matlab memory layout to an ImageGpu memory layout.
+ * \param matlab_src_buffer Matlab image buffer.
+ * \param width Width of the matlab image.
+ * \param height Height of the matlab image.
+ * \param dst Destination image on the device.
+ */
+IU_DLLAPI IuStatus convertMatlabToGpu(int* matlab_src_buffer, unsigned int width, unsigned int height,
+                                      iu::ImageGpu_32s_C1 *dst);
+
 
 /** Converts 3-channel matlab memory layout to an 4-channel ImageCpu memory layout.
  * \param matlab_src_buffer Matlab image buffer.
@@ -146,6 +165,15 @@ IU_DLLAPI IuStatus convertGpuC4ToMatlabC4(iu::ImageGpu_32f_C4 *src, double* matl
 IU_DLLAPI IuStatus convertCpuToMatlab(ImageCpu_32f_C1 *src,
                                       double* matlab_dst_buffer, unsigned int width, unsigned int height);
 
+/** Converts matlab memory layout to an ImageCpu memory layout.
+ * \param matlab_src_buffer Matlab image buffer.
+ * \param width Width of the matlab image.
+ * \param height Height of the matlab image.
+ * \param dst Destination image on the host.
+ */
+IU_DLLAPI IuStatus convertCpuToMatlab(ImageCpu_8u_C1 *src,
+                                      unsigned char* matlab_dst_buffer, unsigned int width, unsigned int height);
+
 /** Converts matlab memory layout to an ImageGpu memory layout.
  * \param matlab_src_buffer Matlab image buffer.
  * \param width Width of the matlab image.
@@ -154,6 +182,15 @@ IU_DLLAPI IuStatus convertCpuToMatlab(ImageCpu_32f_C1 *src,
  */
 IU_DLLAPI IuStatus convertGpuToMatlab(ImageGpu_32f_C1 *src,
                                       double* matlab_dst_buffer, unsigned int width, unsigned int height);
+
+/** Converts matlab memory layout to an ImageGpu memory layout.
+ * \param matlab_src_buffer Matlab image buffer.
+ * \param width Width of the matlab image.
+ * \param height Height of the matlab image.
+ * \param dst Destination image on the device.
+ */
+IU_DLLAPI IuStatus convertGpuToMatlab(ImageGpu_8u_C1 *src,
+                                      unsigned char* matlab_dst_buffer, unsigned int width, unsigned int height);
 
 
 

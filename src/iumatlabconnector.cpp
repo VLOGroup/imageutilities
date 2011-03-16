@@ -18,10 +18,20 @@ IuStatus convertMatlabToCpu(float* matlab_src_buffer, unsigned int width, unsign
                             iu::ImageCpu_32f_C1 *dst)
 { return iuprivate::convertMatlabToCpu(matlab_src_buffer, width, height, dst); }
 
+// matlab(int) -> cpu: 32-bit; 1-channel
+IuStatus convertMatlabToCpu(int* matlab_src_buffer, unsigned int width, unsigned int height,
+                            iu::ImageCpu_32s_C1 *dst)
+{ return iuprivate::convertMatlabToCpu(matlab_src_buffer, width, height, dst); }
+
 
 // matlab -> gpu: 32-bit; 1-channel
 IuStatus convertMatlabToGpu(double* matlab_src_buffer, unsigned int width, unsigned int height,
                             iu::ImageGpu_32f_C1 *dst)
+{ return iuprivate::convertMatlabToGpu(matlab_src_buffer, width, height, dst); }
+
+// matlab -> gpu: 32-bit; 1-channel
+IuStatus convertMatlabToGpu(int* matlab_src_buffer, unsigned int width, unsigned int height,
+                            iu::ImageGpu_32s_C1 *dst)
 { return iuprivate::convertMatlabToGpu(matlab_src_buffer, width, height, dst); }
 
 // matlab -> cpu: 32-bit; 3-channel -> 4-channel
@@ -89,9 +99,19 @@ IuStatus convertCpuToMatlab(iu::ImageCpu_32f_C1 *src,
                             double* matlab_dst_buffer, unsigned int width, unsigned int height)
 { return iuprivate::convertCpuToMatlab(src, matlab_dst_buffer, width, height); }
 
+// cpu -> matlab: 8-bit; 1-channel
+IuStatus convertCpuToMatlab(iu::ImageCpu_8u_C1 *src,
+                            unsigned char* matlab_dst_buffer, unsigned int width, unsigned int height)
+{ return iuprivate::convertCpuToMatlab(src, matlab_dst_buffer, width, height); }
+
 // gpu -> matlab: 32-bit; 1-channel
 IuStatus convertGpuToMatlab(iu::ImageGpu_32f_C1 *src,
                             double* matlab_dst_buffer, unsigned int width, unsigned int height)
+{ return iuprivate::convertGpuToMatlab(src, matlab_dst_buffer, width, height); }
+
+// gpu -> matlab: 8-bit; 1-channel
+IuStatus convertGpuToMatlab(iu::ImageGpu_8u_C1 *src,
+                            unsigned char* matlab_dst_buffer, unsigned int width, unsigned int height)
 { return iuprivate::convertGpuToMatlab(src, matlab_dst_buffer, width, height); }
 
 } // namespace iu
