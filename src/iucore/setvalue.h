@@ -49,6 +49,7 @@ extern IuStatus cuSetValue(const unsigned char& value, iu::ImageGpu_8u_C1 *dst, 
 extern IuStatus cuSetValue(const uchar2& value, iu::ImageGpu_8u_C2 *dst, const IuRect &roi);
 extern IuStatus cuSetValue(const uchar3& value, iu::ImageGpu_8u_C3 *dst, const IuRect &roi);
 extern IuStatus cuSetValue(const uchar4& value, iu::ImageGpu_8u_C4 *dst, const IuRect &roi);
+extern IuStatus cuSetValue(const int& value, iu::ImageGpu_32s_C1 *dst, const IuRect &roi);
 extern IuStatus cuSetValue(const float& value, iu::ImageGpu_32f_C1 *dst, const IuRect &roi);
 extern IuStatus cuSetValue(const float2& value, iu::ImageGpu_32f_C2 *dst, const IuRect &roi);
 extern IuStatus cuSetValue(const float3& value, iu::ImageGpu_32f_C3 *dst, const IuRect &roi);

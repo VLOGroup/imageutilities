@@ -144,6 +144,9 @@ IuStatus cuSetValue(const uchar3& value, iu::ImageGpu_8u_C3 *dst, const IuRect &
 IuStatus cuSetValue(const uchar4& value, iu::ImageGpu_8u_C4 *dst, const IuRect &roi)
 { return cuSetValueTemplate(value, dst, roi); }
 // wrapper: set values (single value); 2D; 32-bit;
+IuStatus cuSetValue(const int& value, iu::ImageGpu_32s_C1 *dst, const IuRect &roi)
+{ return cuSetValueTemplate(value, dst, roi); }
+// wrapper: set values (single value); 2D; 32-bit;
 IuStatus cuSetValue(const float& value, iu::ImageGpu_32f_C1 *dst, const IuRect &roi)
 { return cuSetValueTemplate(value, dst, roi); }
 IuStatus cuSetValue(const float2& value, iu::ImageGpu_32f_C2 *dst, const IuRect &roi)
