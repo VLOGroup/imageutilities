@@ -47,35 +47,6 @@
   } while(false)
 
 
-#ifdef __CUDACC__ // only include this error check in cuda files (seen by nvcc)
-
-
-//-----------------------------------------------------------------------------
-#define __IU_CHECK_FOR_CUDA_ERRORS_ENABLED__ // enables checking for cuda errors
-
-/** CUDA ERROR HANDLING (CHECK FOR CUDA ERRORS)
- */
-#ifdef __IU_CHECK_FOR_CUDA_ERRORS_ENABLED__
-#define IU_CHECK_CUDA_ERRORS() \
-{ \
-  cudaThreadSynchronize(); \
-  if (cudaError_t err = cudaGetLastError()) \
-  { \
-    fprintf(stderr,"\n\nCUDA Error: %s\n",cudaGetErrorString(err)); \
-    fprintf(stderr,"  file:       %s\n",__FILE__); \
-    fprintf(stderr,"  function:   %s\n",__FUNCTION__); \
-    fprintf(stderr,"  line:       %d\n\n",__LINE__); \
-    return IU_ERROR; \
-  } \
-}
-#else // __IU_CHECK_FOR_CUDA_ERRORS_ENABLED__
-#define IU_CHECK_CUDA_ERRORS() {}
-#endif // __IU_CHECK_FOR_CUDA_ERRORS_ENABLED__
-
-#endif // __CUDACC__
-
-
-
 /** Error status codes.
  * Negative error codes represent an error.
  * Zero means that everything is ok.
