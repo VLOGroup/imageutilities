@@ -88,6 +88,10 @@ void summation(const iu::ImageGpu_32f_C1* src, const IuRect& roi, double& sum)
 {iuprivate::summation(src, roi, sum);}
 //void summation(iu::ImageGpu_32f_C4* src, const IuRect& roi, double sum[4]);
 
+// compute sum; device; 3D; 32-bit
+void summation(iu::VolumeGpu_32f_C1* src, const IuCube& roi, double& sum)
+{iuprivate::summation(src, roi, sum);}
+
 
 // |src1-src2|
 void normDiffL1(const iu::ImageGpu_32f_C1* src1, const iu::ImageGpu_32f_C1* src2, const IuRect& roi, double& norm)

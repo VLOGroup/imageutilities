@@ -242,6 +242,21 @@ void summation(const iu::ImageGpu_32f_C1 *src, const IuRect &roi, double &sum)
   IU_ASSERT(status == IU_SUCCESS);
 }
 
+// [device] compute sum of volume; 32-bit; 1-channel
+void summation(iu::VolumeGpu_32f_C1 *src, const IuCube &roi, double &sum)
+{
+  IuStatus status;
+  sum = 0.0;
+  double slice_sum = 0.0;
+  for (unsigned int oz=0; oz<roi.depth; ++oz)
+  {
+    iu::ImageGpu_32f_C1 cur_slice = src->getSlice(oz);
+    status = cuSummation(&cur_slice, cur_slice.roi(), slice_sum);
+    sum += slice_sum;
+  }
+  IU_ASSERT(status == IU_SUCCESS);
+}
+
 //// [device] compute sum of image; 32-bit; 4-channel
 //void summation(const iu::ImageGpu_32f_C4 *src, const IuRect &roi, float sum[4])
 //{

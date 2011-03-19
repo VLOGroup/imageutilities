@@ -155,6 +155,7 @@ IU_DLLAPI void summation(const ImageGpu_8u_C1* src, const IuRect& roi, long& sum
 
 // compute sum; device; 32-bit
 IU_DLLAPI void summation(const ImageGpu_32f_C1* src, const IuRect& roi, double& sum);
+IU_DLLAPI void summation(VolumeGpu_32f_C1* src, const IuCube& roi, double& sum);
 //IU_DLLAPI void summation(const ImageGpu_32f_C4* src, const IuRect& roi, double sum[4]);
 
 

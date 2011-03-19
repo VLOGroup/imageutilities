@@ -107,6 +107,9 @@ void summation(const iu::ImageGpu_8u_C1* src, const IuRect& roi, long& sum);
 void summation(const iu::ImageGpu_32f_C1* src, const IuRect& roi, double& sum);
 //void summation(iu::ImageGpu_32f_C4* src, const IuRect& roi, float sum[4]);
 
+// compute sum; device; 3D; 32-bit
+void summation(iu::VolumeGpu_32f_C1* src, const IuCube& roi, double& sum);
+
 
 /** Computes the L1 norm of differences between pixel values of two images. |src1-src2|
  * \param src1 Pointer to the first source image.
