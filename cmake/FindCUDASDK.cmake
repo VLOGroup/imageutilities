@@ -88,7 +88,10 @@ set(CUDA_SDK_SEARCH_PATH
   "$ENV{HOME}/NVIDIA_GPU_Computing_SDK" 
   "/Developer/CUDA"
   "/opt/cuda/sdk"
+  "$ENV{CUDA_SDK_ROOT_DIR}"      
   )
+
+
 
 # Find include file from the CUDA_SDK_SEARCH_PATH
 
