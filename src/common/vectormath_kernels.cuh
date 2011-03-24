@@ -202,6 +202,12 @@ inline __device__ __host__ float3 sqr(float3 a)
   return a*a;
 }
 
+inline __device__ __host__ float IUMAX(float3 a)
+{
+  float tmp = (a.x>a.y) ? a.x : a.y;
+  return (a.z>tmp) ? a.z : tmp;
+}
+
 /* ****************************************************************************
  *  float4 functions
  * ****************************************************************************/
