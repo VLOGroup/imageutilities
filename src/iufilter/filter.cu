@@ -286,6 +286,7 @@ __global__ void cuFilterGaussKernel_32f_C1(float* dst, const size_t stride,
 
   float xx = x+0.5f;
   float yy = y+0.5f;
+
   if(x>=0 && y>= 0 && x<width && y<height)
   {
     float sum = 0.0f;
@@ -303,9 +304,9 @@ __global__ void cuFilterGaussKernel_32f_C1(float* dst, const size_t stride,
       {
         g0 *= g1;
         g1 *= g2;
-        int cur_xx = max(0, min(width - 1, (int) x + (int) i));
+        float cur_xx = IUMAX(0.5f, IUMIN(width-0.5f, xx + i));
         sum += g0 * tex2D(tex1_32f_C1__, cur_xx, yy);
-        cur_xx = max(0, min(width - 1, (int) x - (int) i));
+        cur_xx = IUMAX(0.5f, IUMIN(width-0.5f, xx-i));
         sum += g0 * tex2D(tex1_32f_C1__, cur_xx, yy);
         sum_coeff += 2.0f*g0;
       }
@@ -323,9 +324,9 @@ __global__ void cuFilterGaussKernel_32f_C1(float* dst, const size_t stride,
       {
         g0 *= g1;
         g1 *= g2;
-        int cur_yy = max(0, min(height - 1, (int) y + (int) j));
+        float cur_yy = IUMAX(0.5f, IUMIN(height-0.5f, yy+j));
         sum += g0 * tex2D(tex1_32f_C1__, xx, cur_yy);
-        cur_yy = max(0, min(height - 1, (int) y - (int) j));
+        cur_yy = IUMAX(0.5f, IUMIN(height-0.5f, yy-j));
         sum += g0 *  tex2D(tex1_32f_C1__, xx, cur_yy);
         sum_coeff += 2.0f*g0;
       }
