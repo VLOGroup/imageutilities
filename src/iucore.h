@@ -65,6 +65,10 @@ IU_DLLAPI void copy(const LinearDeviceMemory_16u_C1* src, LinearDeviceMemory_16u
 IU_DLLAPI void copy(const LinearDeviceMemory_16u_C2* src, LinearDeviceMemory_16u_C2* dst);
 IU_DLLAPI void copy(const LinearDeviceMemory_16u_C3* src, LinearDeviceMemory_16u_C3* dst);
 IU_DLLAPI void copy(const LinearDeviceMemory_16u_C4* src, LinearDeviceMemory_16u_C4* dst);
+IU_DLLAPI void copy(const LinearDeviceMemory_32s_C1* src, LinearDeviceMemory_32s_C1* dst);
+IU_DLLAPI void copy(const LinearDeviceMemory_32s_C2* src, LinearDeviceMemory_32s_C2* dst);
+IU_DLLAPI void copy(const LinearDeviceMemory_32s_C3* src, LinearDeviceMemory_32s_C3* dst);
+IU_DLLAPI void copy(const LinearDeviceMemory_32s_C4* src, LinearDeviceMemory_32s_C4* dst);
 IU_DLLAPI void copy(const LinearDeviceMemory_32f_C1* src, LinearDeviceMemory_32f_C1* dst);
 IU_DLLAPI void copy(const LinearDeviceMemory_32f_C2* src, LinearDeviceMemory_32f_C2* dst);
 IU_DLLAPI void copy(const LinearDeviceMemory_32f_C3* src, LinearDeviceMemory_32f_C3* dst);
@@ -83,6 +87,10 @@ IU_DLLAPI void copy(const LinearHostMemory_16u_C1* src, LinearDeviceMemory_16u_C
 IU_DLLAPI void copy(const LinearHostMemory_16u_C2* src, LinearDeviceMemory_16u_C2* dst);
 IU_DLLAPI void copy(const LinearHostMemory_16u_C3* src, LinearDeviceMemory_16u_C3* dst);
 IU_DLLAPI void copy(const LinearHostMemory_16u_C4* src, LinearDeviceMemory_16u_C4* dst);
+IU_DLLAPI void copy(const LinearHostMemory_32s_C1* src, LinearDeviceMemory_32s_C1* dst);
+IU_DLLAPI void copy(const LinearHostMemory_32s_C2* src, LinearDeviceMemory_32s_C2* dst);
+IU_DLLAPI void copy(const LinearHostMemory_32s_C3* src, LinearDeviceMemory_32s_C3* dst);
+IU_DLLAPI void copy(const LinearHostMemory_32s_C4* src, LinearDeviceMemory_32s_C4* dst);
 IU_DLLAPI void copy(const LinearHostMemory_32f_C1* src, LinearDeviceMemory_32f_C1* dst);
 IU_DLLAPI void copy(const LinearHostMemory_32f_C2* src, LinearDeviceMemory_32f_C2* dst);
 IU_DLLAPI void copy(const LinearHostMemory_32f_C3* src, LinearDeviceMemory_32f_C3* dst);
@@ -101,6 +109,10 @@ IU_DLLAPI void copy(const LinearDeviceMemory_16u_C1* src, LinearHostMemory_16u_C
 IU_DLLAPI void copy(const LinearDeviceMemory_16u_C2* src, LinearHostMemory_16u_C2* dst);
 IU_DLLAPI void copy(const LinearDeviceMemory_16u_C3* src, LinearHostMemory_16u_C3* dst);
 IU_DLLAPI void copy(const LinearDeviceMemory_16u_C4* src, LinearHostMemory_16u_C4* dst);
+IU_DLLAPI void copy(const LinearDeviceMemory_32s_C1* src, LinearHostMemory_32s_C1* dst);
+IU_DLLAPI void copy(const LinearDeviceMemory_32s_C2* src, LinearHostMemory_32s_C2* dst);
+IU_DLLAPI void copy(const LinearDeviceMemory_32s_C3* src, LinearHostMemory_32s_C3* dst);
+IU_DLLAPI void copy(const LinearDeviceMemory_32s_C4* src, LinearHostMemory_32s_C4* dst);
 IU_DLLAPI void copy(const LinearDeviceMemory_32f_C1* src, LinearHostMemory_32f_C1* dst);
 IU_DLLAPI void copy(const LinearDeviceMemory_32f_C2* src, LinearHostMemory_32f_C2* dst);
 IU_DLLAPI void copy(const LinearDeviceMemory_32f_C3* src, LinearHostMemory_32f_C3* dst);
