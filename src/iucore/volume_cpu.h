@@ -155,6 +155,16 @@ public:
     return reinterpret_cast<const PixelType*>(
         &data_[oz*slice_stride() + oy*stride() + ox]);
   }
+  
+  /** Returns a volume slice given by a z-offset as ImageCpu
+    * @param[in] oz z-offset into the volume
+    * @return volume slice at depth z as ImageCpu. Note, the ImageCpu merely holds a pointer to the volume data at depth z,
+    * i.e. it does not manage its own data -> changes to the Image are transparent to the volume and vice versa.
+    */
+  ImageCpu<PixelType, iuprivate::ImageAllocatorCpu<PixelType> > getSlice(int oz)
+  {
+    return ImageCpu<PixelType, iuprivate::ImageAllocatorCpu<PixelType> >(&data_[oz*stride()*height()], width(), height(), pitch_, true);
+  }
 
 protected:
 
