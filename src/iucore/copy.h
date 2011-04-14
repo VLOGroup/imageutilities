@@ -55,21 +55,27 @@ void copy(const iu::LinearHostMemory<PixelType> *src, iu::LinearHostMemory<Pixel
 template <typename PixelType>
 void copy(const iu::LinearDeviceMemory<PixelType> *src, iu::LinearDeviceMemory<PixelType> *dst)
 {
-  cudaMemcpy(dst->data(), src->data(), dst->length() * sizeof(PixelType), cudaMemcpyDeviceToDevice);
+  cudaError_t status;
+  status = cudaMemcpy(dst->data(), src->data(), dst->length() * sizeof(PixelType), cudaMemcpyDeviceToDevice);
+  IU_ASSERT(status == cudaSuccess);
 }
 
 // 1D; copy host -> device
 template <typename PixelType>
 void copy(const iu::LinearHostMemory<PixelType> *src, iu::LinearDeviceMemory<PixelType> *dst)
 {
-  cudaMemcpy(dst->data(), src->data(), dst->length() * sizeof(PixelType), cudaMemcpyHostToDevice);
+  cudaError_t status;
+  status = cudaMemcpy(dst->data(), src->data(), dst->length() * sizeof(PixelType), cudaMemcpyHostToDevice);
+  IU_ASSERT(status == cudaSuccess);
 }
 
 // 1D; copy device -> host
 template <typename PixelType>
 void copy(const iu::LinearDeviceMemory<PixelType> *src, iu::LinearHostMemory<PixelType> *dst)
 {
-  cudaMemcpy(dst->data(), src->data(), dst->length() * sizeof(PixelType), cudaMemcpyDeviceToHost);
+  cudaError_t status;
+  status = cudaMemcpy(dst->data(), src->data(), dst->length() * sizeof(PixelType), cudaMemcpyDeviceToHost);
+  IU_ASSERT(status == cudaSuccess);
 }
 
 /* ****************************************************************************
