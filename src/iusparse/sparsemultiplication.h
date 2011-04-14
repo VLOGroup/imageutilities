@@ -13,14 +13,29 @@ namespace iu {
 
   inline IuStatus sparseMultiplication(cusparseHandle_t* handle,
                                        iu::SparseMatrixGpu<float>* A,
-                                       iu::ImageGpu_32f_C1* src,
-                                       iu::ImageGpu_32f_C1* dst)
+                                       iu::LinearDeviceMemory<float>* src,
+                                       iu::LinearDeviceMemory<float>* dst,
+                                       cusparseOperation_t transpose=CUSPARSE_OPERATION_NON_TRANSPOSE)
   {
-    CUSPARSE_SAFE_CALL_IUSTATUS(cusparseScsrmv(*handle, CUSPARSE_OPERATION_NON_TRANSPOSE,
-                                      A->n_row(), A->n_col(), 1.0f,
-                                      A->mat_descriptor(), A->value()->data(),
-                                      A->row()->data(), A->col()->data(),
-                                      src->data(), 0.0f, dst->data()));
+    CUSPARSE_SAFE_CALL_IUSTATUS(cusparseScsrmv(*handle, transpose,
+                                               A->n_row(), A->n_col(), 1.0f,
+                                               A->mat_descriptor(), A->value()->data(),
+                                               A->row()->data(), A->col()->data(),
+                                               src->data(), 0.0f, dst->data()));
+    return IU_NO_ERROR;
+  }
+
+  inline IuStatus sparseMultiplication(cusparseHandle_t* handle,
+                                       iu::SparseMatrixGpu<float>* A,
+                                       iu::ImageGpu_32f_C1* src,
+                                       iu::ImageGpu_32f_C1* dst,
+                                       cusparseOperation_t transpose=CUSPARSE_OPERATION_NON_TRANSPOSE)
+  {
+    CUSPARSE_SAFE_CALL_IUSTATUS(cusparseScsrmv(*handle, transpose,
+                                               A->n_row(), A->n_col(), 1.0f,
+                                               A->mat_descriptor(), A->value()->data(),
+                                               A->row()->data(), A->col()->data(),
+                                               src->data(), 0.0f, dst->data()));
 
     return IU_NO_ERROR;
   }
@@ -28,13 +43,14 @@ namespace iu {
   inline IuStatus sparseMultiplication(cusparseHandle_t* handle,
                                        iu::SparseMatrixGpu<float>* A,
                                        iu::VolumeGpu_32f_C1* src,
-                                       iu::VolumeGpu_32f_C1* dst)
+                                       iu::VolumeGpu_32f_C1* dst,
+                                       cusparseOperation_t transpose=CUSPARSE_OPERATION_NON_TRANSPOSE)
   {
-    CUSPARSE_SAFE_CALL_IUSTATUS(cusparseScsrmv(*handle, CUSPARSE_OPERATION_NON_TRANSPOSE,
-                                      A->n_row(), A->n_col(), 1.0f,
-                                      A->mat_descriptor(), A->value()->data(),
-                                      A->row()->data(), A->col()->data(),
-                                      src->data(), 0.0f, dst->data()));
+    CUSPARSE_SAFE_CALL_IUSTATUS(cusparseScsrmv(*handle, transpose,
+                                               A->n_row(), A->n_col(), 1.0f,
+                                               A->mat_descriptor(), A->value()->data(),
+                                               A->row()->data(), A->col()->data(),
+                                               src->data(), 0.0f, dst->data()));
 
     return IU_NO_ERROR;
   }

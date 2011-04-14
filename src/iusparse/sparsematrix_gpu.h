@@ -128,6 +128,24 @@ template<typename PixelType>
       createMatDescriptor();
     }
 
+    // Constructor based on preallocated non-compressed format
+    // Creates internal copies of all input data!
+    SparseMatrixGpu(cusparseHandle_t *handle, LinearDeviceMemory<PixelType>* value,
+                    LinearDeviceMemory<int>* row, int n_row,
+                    LinearDeviceMemory<int>* col, int n_col) :
+        handle_(handle), value_(0), row_(0), col_(0), n_row_(n_row),
+        n_col_(n_col), n_elements_(value->length()), ext_data_pointer_(false)
+    {
+      value_ = new LinearDeviceMemory<PixelType>(*value);
+      col_ = new LinearDeviceMemory<int>(*col);
+      row_ = new LinearDeviceMemory<int>(n_row_+1);
+
+      CUSPARSE_SAFE_CALL(cusparseXcoo2csr(*handle_, row->data(), n_elements_,
+                                          n_row_, row_->data(), CUSPARSE_INDEX_BASE_ZERO));
+      createMatDescriptor();
+    }
+
+
 
     // Copy constructor
     SparseMatrixGpu(cusparseHandle_t* handle, SparseMatrixGpu<PixelType>* input,
