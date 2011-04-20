@@ -109,7 +109,7 @@ elseif(CUDA_VERSION_STRING STREQUAL "3.2")
   message(STATUS "IU: using CUDA 3.2")
   add_definitions(-DCUDA_VERSION_32)
 elseif(CUDA_VERSION_STRING STREQUAL "4.0")
-  # using CUDA 3.2
+  # using CUDA 4.0
   message(STATUS "IU: using CUDA 4.0")
   add_definitions(-DCUDA_VERSION_40)
 elseif()
@@ -868,7 +868,7 @@ install(FILES ${IU_CMAKE_FILES}
 
 ##-----------------------------------------------------------------------------
 ## CPACK configuration
-INCLUDE(InstallRequiredSystemLibraries)
+#INCLUDE(InstallRequiredSystemLibraries)
 
 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "ImageUtilities - Connecting the world of CPU and GPU.")
 SET(CPACK_PACKAGE_VENDOR "Manuel Werlberger <werlberger@icg.tugraz.at>")

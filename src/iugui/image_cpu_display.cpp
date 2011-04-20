@@ -340,7 +340,7 @@ void QImageCpuDisplay::composeAndShow()
 void QImageCpuDisplay::mousePressEvent(QMouseEvent* event)
 {
   if (event->button() == Qt::LeftButton) {
-    int offset_y = std::max((int)((int)(this->height()) - size_.height), 0);
+    int offset_y = IUMAX((int)((int)(this->height()) - size_.height), 0);
     mouse_x_old_ = (int)(event->x());
     mouse_y_old_ = (int)(event->y()) - offset_y;
     emit mousePressed(mouse_x_old_, mouse_y_old_);
@@ -351,7 +351,7 @@ void QImageCpuDisplay::mousePressEvent(QMouseEvent* event)
 void QImageCpuDisplay::mouseReleaseEvent(QMouseEvent* event)
 {
   if (event->button() == Qt::LeftButton) {
-    int offset_y = std::max((int)((int)(this->height()) - size_.height), 0);
+    int offset_y = IUMAX((int)((int)(this->height()) - size_.height), 0);
     emit  mouseReleased((int)(event->x()), (int)(event->y()) - offset_y);
   }
 }
@@ -359,7 +359,7 @@ void QImageCpuDisplay::mouseReleaseEvent(QMouseEvent* event)
 //-----------------------------------------------------------------------------
 void QImageCpuDisplay::mouseMoveEvent(QMouseEvent* event)
 {
-  int offset_y = std::max((int)((int)(this->height()) - size_.height), 0);
+  int offset_y = IUMAX((int)((int)(this->height()) - size_.height), 0);
   mouse_x_ = (int)(event->x());
   mouse_y_ = (int)(event->y()) - offset_y;
   emit mouseMoved(mouse_x_old_, mouse_y_old_, mouse_x_, mouse_y_);

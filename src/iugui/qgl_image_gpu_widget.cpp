@@ -23,7 +23,7 @@
 
 #include <GL/glew.h>
 #include <cuda_runtime.h>
-#include <iumath/statistics.h>
+#include <iu/iumath.h>
 #include "qgl_image_gpu_widget_p.h"
 #include "qgl_image_gpu_widget.h"
 
@@ -261,7 +261,7 @@ void QGLImageGpuWidget::autoMinMax()
       iu::ImageGpu_8u_C1* img = reinterpret_cast<iu::ImageGpu_8u_C1*>(image_);
       if(img == 0) return;
       unsigned char cur_min, cur_max;
-      iuprivate::minMax(img, img->roi(), cur_min, cur_max);
+      iu::minMax(img, img->roi(), cur_min, cur_max);
       min_ = static_cast<float>(cur_min);
       max_ = static_cast<float>(cur_max);
     }
@@ -270,7 +270,7 @@ void QGLImageGpuWidget::autoMinMax()
       iu::ImageGpu_8u_C4* img = reinterpret_cast<iu::ImageGpu_8u_C4*>(image_);
       if(img == 0) return;
       uchar4 cur_min, cur_max;
-      iuprivate::minMax(img, img->roi(), cur_min, cur_max);
+      iu::minMax(img, img->roi(), cur_min, cur_max);
       min_ = static_cast<float>(IUMIN(IUMIN(cur_min.x, cur_min.y), cur_min.z));
       max_ = static_cast<float>(IUMAX(IUMAX(cur_max.x, cur_max.y), cur_max.z));
     }
@@ -281,7 +281,7 @@ void QGLImageGpuWidget::autoMinMax()
     {
       iu::ImageGpu_32f_C1* img = reinterpret_cast<iu::ImageGpu_32f_C1*>(image_);
       if(img == 0) return;
-      iuprivate::minMax(img, img->roi(), min_, max_);
+      iu::minMax(img, img->roi(), min_, max_);
     }
     else
     {

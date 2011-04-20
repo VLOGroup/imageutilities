@@ -34,7 +34,7 @@
 
 namespace iuprivate {
 
-class IU_DLLAPI QGLImageGpuWidget : public QGLWidget
+class QGLImageGpuWidget : public QGLWidget
 {
   //Q_OBJECT        // must include this if you use Qt signals/slots
 
