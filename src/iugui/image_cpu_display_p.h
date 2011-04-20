@@ -38,7 +38,7 @@ struct Overlay{
 //-----------------------------------------------------------------------------
 // QImageDisplay32f
 //-----------------------------------------------------------------------------
-class QImageCpuDisplay : public QLabel
+class IU_DLLAPI QImageCpuDisplay : public QLabel
 {
   Q_OBJECT
 
