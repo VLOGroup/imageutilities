@@ -23,7 +23,7 @@
 
 #include <GL/glew.h>
 #include <cuda_runtime.h>
-#include <iu/iumath.h>
+#include <iumath.h>
 #include "qgl_image_gpu_widget_p.h"
 #include "qgl_image_gpu_widget.h"
 
