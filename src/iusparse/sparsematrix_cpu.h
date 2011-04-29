@@ -38,7 +38,7 @@ class SparseMatrixCpu
 public:
   SparseMatrixCpu() :
       n_row_(0), n_col_(0), n_elements_(0),
-      value_(0), row_(0), col_(0), ext_data_pointer_(false)
+      value_(0), row_(0), col_(0), sformat_(CSR), ext_data_pointer_(false)
   {
   }
 
@@ -63,9 +63,9 @@ public:
 
   SparseMatrixCpu(LinearHostMemory<PixelType>* value, LinearHostMemory<int>* row,
                   LinearHostMemory<int>* col, int n_row, int n_col,
-                  bool ext_data_pointer = false) :
+                  IuSparseFormat sformat, bool ext_data_pointer = false) :
      n_row_(n_row), n_col_(n_col), n_elements_(0),
-     value_(0), row_(0), col_(0), ext_data_pointer_(ext_data_pointer)
+     value_(0), row_(0), col_(0), sformat_(sformat), ext_data_pointer_(ext_data_pointer)
   {
     if(ext_data_pointer_)
     {
@@ -118,6 +118,11 @@ public:
     return n_col_;
   }
 
+  IuSparseFormat sparseFormat()
+  {
+    return sformat_;
+  }
+
 protected:
 
 private:
@@ -128,6 +133,8 @@ private:
   LinearHostMemory<PixelType>* value_;
   LinearHostMemory<int>* row_;
   LinearHostMemory<int>* col_;
+
+  IuSparseFormat sformat_;
 
   bool ext_data_pointer_; /**< Flag if data pointer is handled outside the image class. */
 

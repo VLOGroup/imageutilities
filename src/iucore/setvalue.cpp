@@ -35,6 +35,20 @@ void setValue(const unsigned char& value, iu::LinearHostMemory_8u_C1* srcdst)
 
 //-----------------------------------------------------------------------------
 // [1D; host] set values; 32-bit
+void setValue(const int& value, iu::LinearHostMemory_32s_C1* srcdst)
+{
+  // we are using for loops because memset is only safe on integer type arrays
+
+  int* buffer = srcdst->data();
+  for(unsigned int i=0; i<srcdst->length(); ++i)
+  {
+    buffer[i] = value;
+  }
+}
+
+
+//-----------------------------------------------------------------------------
+// [1D; host] set values; 32-bit
 void setValue(const float& value, iu::LinearHostMemory_32f_C1* srcdst)
 {
   // we are using for loops because memset is only safe on integer type arrays
@@ -55,7 +69,15 @@ void setValue(const unsigned char& value, iu::LinearDeviceMemory_8u_C1* srcdst)
   IU_ASSERT(status == IU_SUCCESS);
 }
 
-// [1D; host] set values; 32-bit
+// [1D; device] set values; 32-bit
+void setValue(const int& value, iu::LinearDeviceMemory_32s_C1* srcdst)
+{
+  // cudaMemset is slow so we are firing up a kernel
+  IuStatus status = cuSetValue(value, srcdst);
+  IU_ASSERT(status == IU_SUCCESS);
+}
+
+// [1D; device] set values; 32-bit
 void setValue(const float& value, iu::LinearDeviceMemory_32f_C1* srcdst)
 {
   // cudaMemset is slow so we are firing up a kernel

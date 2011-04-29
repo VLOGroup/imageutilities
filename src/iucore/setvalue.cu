@@ -65,7 +65,25 @@ IuStatus cuSetValue(const unsigned char& value, iu::LinearDeviceMemory_8u_C1* ds
       value, dst->data(), dst->length());
 
   IU_CHECK_AND_RETURN_CUDA_ERRORS();
-  return IU_SUCCESS;
+}
+
+//-----------------------------------------------------------------------------
+// wrapper: set values; 1D; 32-bit
+/** Sets values of 1D linear gpu memory.
+ * \param value The pixel value to be set.
+ * \param buffer Pointer to the buffer
+ */
+IuStatus cuSetValue(const int& value, iu::LinearDeviceMemory_32s_C1* dst)
+{
+  // fragmentation
+  const unsigned int block_width = 512;
+  dim3 dimBlock(block_width, 1, 1);
+  dim3 dimGrid(iu::divUp(dst->length(), dimBlock.x), 1);
+
+  cuSetValueKernel <<< dimGrid, dimBlock >>> (
+      value, dst->data(), dst->length());
+
+  IU_CHECK_AND_RETURN_CUDA_ERRORS();
 }
 
 //-----------------------------------------------------------------------------
@@ -85,7 +103,6 @@ IuStatus cuSetValue(const float& value, iu::LinearDeviceMemory_32f_C1* dst)
       value, dst->data(), dst->length());
 
   IU_CHECK_AND_RETURN_CUDA_ERRORS();
-  return IU_SUCCESS;
 }
 
 
@@ -130,7 +147,6 @@ IuStatus cuSetValueTemplate(const PixelType &value,
       roi.x, roi.y, roi.width, roi.height);
 
   IU_CHECK_AND_RETURN_CUDA_ERRORS();
-  return IU_SUCCESS;
 }
 
 //-----------------------------------------------------------------------------
@@ -199,7 +215,6 @@ IuStatus cuSetValueTemplate(const PixelType &value,
       roi.x, roi.y, roi.z, roi.width, roi.height, roi.depth);
 
   IU_CHECK_AND_RETURN_CUDA_ERRORS();
-  return IU_SUCCESS;
 }
 
 //-----------------------------------------------------------------------------

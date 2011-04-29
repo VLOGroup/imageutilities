@@ -27,21 +27,22 @@
 #include <cusparse.h>
 
 #include <cuda_runtime_api.h>
-#include <iucore/lineardevicememory.h>
+//#include <iucore/lineardevicememory.h>
 #include "sparsematrix_cpu.h"
+#include <iucore.h>
 
 namespace iu {
 
 #define CUSPARSE_SAFE_CALL(x)   if ((x) != CUSPARSE_STATUS_SUCCESS) {fprintf( stderr, "CUSPARSE ERROR\n" ); return; }
 
-template<typename PixelType>
+  template<typename PixelType>
   class SparseMatrixGpu
   {
   public:
     // Empty constructor
     SparseMatrixGpu(cusparseHandle_t* handle) :
         handle_(handle), n_row_(0), n_col_(0), n_elements_(0),
-        value_(0), row_(0), col_(0), ext_data_pointer_(false)
+        value_(0), row_(0), col_(0), sformat_(CSR), ext_data_pointer_(false)
     {
       createMatDescriptor();
     }
@@ -71,7 +72,7 @@ template<typename PixelType>
     // Constructor that takes host matrix as input
     SparseMatrixGpu(cusparseHandle_t* handle, SparseMatrixCpu<PixelType>* input) :
         handle_(handle), n_row_(0), n_col_(0), n_elements_(0),
-        value_(0), row_(0), col_(0), ext_data_pointer_(false)
+        value_(0), row_(0), col_(0), sformat_(COO), ext_data_pointer_(false)
     {
       if (input == 0)
         return;
@@ -80,6 +81,9 @@ template<typename PixelType>
       n_elements_ = input->n_elements();
       n_row_ = input->n_row();
       n_col_ = input->n_col();
+
+      // store format
+      sformat_ = input->sparseFormat();
 
       // allocate device memory
       value_ = new LinearDeviceMemory<PixelType>(input->value()->length());
@@ -100,10 +104,12 @@ template<typename PixelType>
     // Constructor based on preallocated memory
     SparseMatrixGpu(cusparseHandle_t* handle, LinearDeviceMemory<PixelType>* value,
                     LinearDeviceMemory<int>* row,
-                    LinearDeviceMemory<int>* col, int n_row, int n_col,
+                    LinearDeviceMemory<int>* col,
+                    int n_row, int n_col,
+                    IuSparseFormat sformat,
                     bool ext_data_pointer = false) :
-       handle_(handle), value_(0), row_(0), col_(0), n_row_(n_row),
-       n_col_(n_col), n_elements_(0), ext_data_pointer_(ext_data_pointer)
+    handle_(handle), value_(0), row_(0), col_(0), n_row_(n_row),
+    n_col_(n_col), n_elements_(0), sformat_(sformat), ext_data_pointer_(ext_data_pointer)
     {
       if(ext_data_pointer_)
       {
@@ -130,11 +136,12 @@ template<typename PixelType>
 
     // Constructor based on preallocated non-compressed format
     // Creates internal copies of all input data!
+    // Output matrix will be in CSR format
     SparseMatrixGpu(cusparseHandle_t *handle, LinearDeviceMemory<PixelType>* value,
                     LinearDeviceMemory<int>* row, int n_row,
                     LinearDeviceMemory<int>* col, int n_col) :
-        handle_(handle), value_(0), row_(0), col_(0), n_row_(n_row),
-        n_col_(n_col), n_elements_(value->length()), ext_data_pointer_(false)
+    handle_(handle), value_(0), row_(0), col_(0), n_row_(n_row),
+    n_col_(n_col), n_elements_(value->length()), ext_data_pointer_(false)
     {
       value_ = new LinearDeviceMemory<PixelType>(*value);
       col_ = new LinearDeviceMemory<int>(*col);
@@ -143,13 +150,11 @@ template<typename PixelType>
       CUSPARSE_SAFE_CALL(cusparseXcoo2csr(*handle_, row->data(), n_elements_,
                                           n_row_, row_->data(), CUSPARSE_INDEX_BASE_ZERO));
       createMatDescriptor();
+      sformat_ = CSR;
     }
 
-
-
     // Copy constructor
-    SparseMatrixGpu(cusparseHandle_t* handle, SparseMatrixGpu<PixelType>* input,
-                    bool transpose = false) :
+    SparseMatrixGpu(cusparseHandle_t* handle, SparseMatrixGpu<PixelType>* input) :
         handle_(handle), n_row_(0), n_col_(0), n_elements_(0),
         value_(0), row_(0), col_(0), ext_data_pointer_(false)
     {
@@ -161,51 +166,20 @@ template<typename PixelType>
       n_row_ = input->n_row();
       n_col_ = input->n_col();
 
-      if (transpose)
-      {
-        if (input->isCSC())
-        {
-          // allocate device memory
-          value_ = new LinearDeviceMemory<PixelType>(n_elements_);
-          row_ = new LinearDeviceMemory<int>(n_row_+1);
-          col_ = new LinearDeviceMemory<int>(n_elements_);
+      sformat_ = input->sparseFormat();
 
-          // Converts matrix in CSC format into matrix in CSR format
-          CUSPARSE_SAFE_CALL(cusparseScsr2csc(*handle_, n_col_, n_row_, input->value()->data(),
-                                              input->col()->data(), input->row()->data(),
-                                              value_->data(), col_->data(), row_->data(), 1,
-                                              CUSPARSE_INDEX_BASE_ZERO));
-        }
-        else if (input->isCSR())
-        {
-          printf("WARNING: DOES NOT WORK!!!\n");
-          // allocate device memory
-//          value_ = new LinearDeviceMemory<PixelType>(n_elements_);
-//          row_ = new LinearDeviceMemory<int>(n_elements_);
-//          col_ = new LinearDeviceMemory<int>(n_col_+1);
+      // allocate device memory
+      value_ = new LinearDeviceMemory<PixelType>(input->value()->length());
+      row_ = new LinearDeviceMemory<int>(input->row()->length());
+      col_ = new LinearDeviceMemory<int>(input->col()->length());
 
-//          // Converts matrix in CSR format into matrix in CSC format
-//          CUSPARSE_SAFE_CALL(cusparseScsr2csc(*handle_, n_col_, n_row_, input->value()->data(),
-//                                              input->row()->data(), input->col()->data(),
-//                                              value_->data(), row_->data(), col_->data(), 1,
-//                                              CUSPARSE_INDEX_BASE_ZERO));
-        }
-      }
-      else
-      {
-        // allocate device memory
-        value_ = new LinearDeviceMemory<PixelType>(input->value()->length());
-        row_ = new LinearDeviceMemory<int>(input->row()->length());
-        col_ = new LinearDeviceMemory<int>(input->col()->length());
-
-        // copy form input to this
-        cudaMemcpy(value_->data(), input->value()->data(),
-                   input->value()->length()*sizeof(PixelType), cudaMemcpyDeviceToDevice);
-        cudaMemcpy(row_->data(), input->row()->data(),
-                   input->row()->length()*sizeof(int), cudaMemcpyDeviceToDevice);
-        cudaMemcpy(col_->data(), input->col()->data(),
-                   input->col()->length()*sizeof(int), cudaMemcpyDeviceToDevice);
-      }
+      // copy form input to this
+      cudaMemcpy(value_->data(), input->value()->data(),
+                 input->value()->length()*sizeof(PixelType), cudaMemcpyDeviceToDevice);
+      cudaMemcpy(row_->data(), input->row()->data(),
+                 input->row()->length()*sizeof(int), cudaMemcpyDeviceToDevice);
+      cudaMemcpy(col_->data(), input->col()->data(),
+                 input->col()->length()*sizeof(int), cudaMemcpyDeviceToDevice);
 
       createMatDescriptor();
     }
@@ -233,18 +207,69 @@ template<typename PixelType>
 
     cusparseHandle_t* handle() { return handle_; }
 
-    int isCSC()
-    {
-      if (col_ == 0)
-        return false;
-      return (n_col_ != col_->length());
-    }
+    IuSparseFormat sparseFormat() { return sformat_; }
 
-    int isCSR()
+    void changeSparseFormat(IuSparseFormat sformat)
     {
-      if (row_ == 0)
-        return false;
-      return (n_row_ != row_->length());
+      if (sformat_ == CSC && sformat == CSR)
+      {
+        printf("Convert CSC -> CSR\n");
+        LinearDeviceMemory<PixelType>* old_value = value_;
+        LinearDeviceMemory<int>* old_row = row_;
+        LinearDeviceMemory<int>* old_col = col_;
+
+        ext_data_pointer_ = false;
+
+        // allocate device memory
+        value_ = new LinearDeviceMemory<PixelType>(n_elements_);
+        setValue(0.0f, value_);
+        row_ = new LinearDeviceMemory<int>(n_row_+1);
+        setValue(0, row_);
+        col_ = new LinearDeviceMemory<int>(n_elements_);
+        setValue(0, col_);
+
+        // Converts matrix in CSC format into matrix in CSR format
+        CUSPARSE_SAFE_CALL(cusparseScsr2csc(*handle_, n_col_, n_row_, old_value->data(),
+                                            old_col->data(), old_row->data(),
+                                            value_->data(), col_->data(), row_->data(), 1,
+                                            CUSPARSE_INDEX_BASE_ZERO));
+
+        delete old_value;
+        delete old_row;
+        delete old_col;
+
+        sformat_ = CSR;
+      }
+      else if (sformat_ == CSR && sformat == CSC)
+      {
+        printf("Convert CSR -> CSC\n");
+
+        LinearDeviceMemory<PixelType>* old_value = value_;
+        LinearDeviceMemory<int>* old_row = row_;
+        LinearDeviceMemory<int>* old_col = col_;
+
+        ext_data_pointer_ = false;
+
+        // allocate device memory
+        value_ = new LinearDeviceMemory<PixelType>(n_elements_);
+        setValue(0.0f, value_);
+        row_ = new LinearDeviceMemory<int>(n_elements_);
+        setValue(0, row_);
+        col_ = new LinearDeviceMemory<int>(n_col_+1);
+        setValue(0, col_);
+
+        // Converts matrix in CSR format into matrix in CSC format
+        CUSPARSE_SAFE_CALL(cusparseScsr2csc(*handle_, n_row_, n_col_, old_value->data(),
+                                            old_row->data(), old_col->data(),
+                                            value_->data(), row_->data(), col_->data(), 1,
+                                            CUSPARSE_INDEX_BASE_ZERO));
+
+        delete old_value;
+        delete old_row;
+        delete old_col;
+
+        sformat_ = CSC;
+      }
     }
 
   protected:
@@ -269,6 +294,8 @@ template<typename PixelType>
     LinearDeviceMemory<int>* col_;
 
     cusparseMatDescr_t A_;
+
+    IuSparseFormat sformat_;
 
     bool ext_data_pointer_; /**< Flag if data pointer is handled outside the image class. */
 

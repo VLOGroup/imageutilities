@@ -67,7 +67,7 @@ namespace iuprivate {
 //      fprintf( stderr, "ADD: i=%d, col=%d\n", i, (int)col[i]);
     }
 
-    *dst = new iu::SparseMatrixCpu_32f(&h_val, &h_row, &h_col, n_row, n_col);
+    *dst = new iu::SparseMatrixCpu_32f(&h_val, &h_row, &h_col, n_row, n_col, CSC);
 
     return IU_NO_ERROR;
   }

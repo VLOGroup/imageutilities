@@ -255,8 +255,10 @@ IU_DLLAPI void copy(const VolumeGpu_32f_C4* src, VolumeCpu_32f_C4* dst);
  * \param buffer Pointer to the buffer
  */
 IU_DLLAPI void setValue(const unsigned char& value, LinearHostMemory_8u_C1* srcdst);
+IU_DLLAPI void setValue(const int& value, LinearHostMemory_32s_C1* srcdst);
 IU_DLLAPI void setValue(const float& value, LinearHostMemory_32f_C1* srcdst);
 IU_DLLAPI void setValue(const unsigned char& value, LinearDeviceMemory_8u_C1* srcdst);
+IU_DLLAPI void setValue(const int& value, LinearDeviceMemory_32s_C1* srcdst);
 IU_DLLAPI void setValue(const float& value, LinearDeviceMemory_32f_C1* srcdst);
 
 /** \} */ // end of Set1D

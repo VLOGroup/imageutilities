@@ -70,6 +70,15 @@ typedef enum
 
 } IuStatus;
 
+
+
+typedef enum
+{
+  COO = 0, // uncompressed sparse format
+  CSR = 1, // compressed rows
+  CSC = 2  // compressed columns
+} IuSparseFormat;
+
 /** Interpolation types. */
 typedef enum
 {

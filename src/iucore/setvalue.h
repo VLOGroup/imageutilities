@@ -44,6 +44,7 @@ namespace iuprivate {
  *  Declaration of CUDA WRAPPERS
  * ***************************************************************************/
 extern IuStatus cuSetValue(const unsigned char& value, iu::LinearDeviceMemory_8u_C1* dst);
+extern IuStatus cuSetValue(const int& value, iu::LinearDeviceMemory_32s_C1* dst);
 extern IuStatus cuSetValue(const float& value, iu::LinearDeviceMemory_32f_C1* dst);
 extern IuStatus cuSetValue(const unsigned char& value, iu::ImageGpu_8u_C1 *dst, const IuRect &roi);
 extern IuStatus cuSetValue(const uchar2& value, iu::ImageGpu_8u_C2 *dst, const IuRect &roi);
@@ -69,7 +70,13 @@ void setValue(const uchar2& value, iu::LinearHostMemory_8u_C2* srcdst);
 void setValue(const uchar3& value, iu::LinearHostMemory_8u_C3* srcdst);
 void setValue(const uchar4& value, iu::LinearHostMemory_8u_C4* srcdst);
 
-// 1D set value; host; 32-bit
+// 1D set value; host; 32-bit int
+void setValue(const int& value, iu::LinearHostMemory_32s_C1* srcdst);
+void setValue(const int2& value, iu::LinearHostMemory_32s_C2* srcdst);
+void setValue(const int3& value, iu::LinearHostMemory_32s_C3* srcdst);
+void setValue(const int4& value, iu::LinearHostMemory_32s_C4* srcdst);
+
+// 1D set value; host; 32-bit float
 void setValue(const float& value, iu::LinearHostMemory_32f_C1* srcdst);
 void setValue(const float2& value, iu::LinearHostMemory_32f_C2* srcdst);
 void setValue(const float3& value, iu::LinearHostMemory_32f_C3* srcdst);
@@ -81,7 +88,13 @@ void setValue(const uchar2& value, iu::LinearDeviceMemory_8u_C2* srcdst);
 void setValue(const uchar3& value, iu::LinearDeviceMemory_8u_C3* srcdst);
 void setValue(const uchar4& value, iu::LinearDeviceMemory_8u_C4* srcdst);
 
-// 1D set value; device; 32-bit
+// 1D set value; device; 32-bit int
+void setValue(const int& value, iu::LinearDeviceMemory_32s_C1* srcdst);
+void setValue(const int2& value, iu::LinearDeviceMemory_32s_C2* srcdst);
+void setValue(const int3& value, iu::LinearDeviceMemory_32s_C3* srcdst);
+void setValue(const int4& value, iu::LinearDeviceMemory_32s_C4* srcdst);
+
+// 1D set value; device; 32-bit float
 void setValue(const float& value, iu::LinearDeviceMemory_32f_C1* srcdst);
 void setValue(const float2& value, iu::LinearDeviceMemory_32f_C2* srcdst);
 void setValue(const float3& value, iu::LinearDeviceMemory_32f_C3* srcdst);
