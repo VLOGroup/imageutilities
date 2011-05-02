@@ -70,7 +70,13 @@ typedef enum
 
 } IuStatus;
 
-
+typedef enum
+{
+  IU_NO  = 0, // no function
+  IU_ABS = 1, // abs(x)
+  IU_SQR = 2, // x*x
+  IU_CNT = 3  // 1 if neq 0
+} IuSparseSum;
 
 typedef enum
 {

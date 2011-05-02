@@ -6,4 +6,18 @@
 #include <iusparse/sparsematrixdefs.h>
 
 
+namespace iu {
+
+/** Sums up rows of a sparse matrix
+ */
+IU_DLLAPI IuStatus sumSparseRow(iu::SparseMatrixGpu<float>* A, iu::LinearDeviceMemory_32f_C1* dst, IuSparseSum function=IU_NO);
+IU_DLLAPI IuStatus sumSparseRow(iu::SparseMatrixGpu<float>* A, iu::ImageGpu_32f_C1* dst, IuSparseSum function=IU_NO);
+
+/** Sums up columns of a sparse matrix
+ */
+IU_DLLAPI IuStatus sumSparseCol(iu::SparseMatrixGpu<float>* A, iu::LinearDeviceMemory_32f_C1* dst, IuSparseSum function=IU_NO);
+IU_DLLAPI IuStatus sumSparseCol(iu::SparseMatrixGpu<float>* A, iu::ImageGpu_32f_C1* dst, IuSparseSum function=IU_NO);
+
+} // namespace iu
+
 #endif // IUSPARSE_H

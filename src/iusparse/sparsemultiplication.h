@@ -30,7 +30,7 @@ namespace iu {
       if (transpose == CUSPARSE_OPERATION_NON_TRANSPOSE)
         transpose = CUSPARSE_OPERATION_TRANSPOSE;
       else
-        transpose = transpose=CUSPARSE_OPERATION_NON_TRANSPOSE;
+        transpose = CUSPARSE_OPERATION_NON_TRANSPOSE;
       CUSPARSE_SAFE_CALL_IUSTATUS(cusparseScsrmv(*handle, transpose,
                                                  A->n_col(), A->n_row(), 1.0f,
                                                  A->mat_descriptor(), A->value()->data(),

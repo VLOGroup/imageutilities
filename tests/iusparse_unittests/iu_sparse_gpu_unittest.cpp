@@ -282,7 +282,6 @@ int main(int argc, char *argv[])
 //  G_d.changeSparseFormat(CSC);
 //  printSparseMatrixElements(&G_d, "G_CSC");
 
-
   // CALCULATIONS /////////////////////////////////////////////////
   cout << "== Sparse Multiplications == " << endl;
   iu::sparseMultiplication(&handle, &B_d, &vecA_d, &vecC_d);
@@ -293,6 +292,15 @@ int main(int argc, char *argv[])
   printImage(&O_d, "O=I*G");
   iu::sparseMultiplication(&handle, &G2_d, &I_d, &O2_d);
   printImage(&O2_d, "O2=I*G2");
+
+  // SUM TESTS /////////////////////////////////////////////////
+  cout << "== Sum up along axis == " << endl;
+  iu::LinearDeviceMemory_32f_C1 e1(20);
+  iu::LinearDeviceMemory_32f_C1 e2(10);
+  iu::sumSparseRow(&C_d, &e1);
+  printVector(&e1, "e1=sumRow(C)");
+  iu::sumSparseCol(&C_d, &e2);
+  printVector(&e2, "e2=sumCol(C)");
 
   // Clean up
   cusparseDestroy(handle);

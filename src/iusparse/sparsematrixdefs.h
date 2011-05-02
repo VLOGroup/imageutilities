@@ -5,6 +5,7 @@
 #include "sparsematrix_cpu.h"
 #include "sparsematrix_gpu.h"
 #include "sparsemultiplication.h"
+#include "sparsesum.h"
 
 namespace iu {
 

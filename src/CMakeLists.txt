@@ -124,6 +124,16 @@ if(VMLIBRARIES_IU_USE_SPARSE AND CUDASparse_FOUND)
 
   message("[+] ImageUtilities include SPARSE module")
 
+  set( IU_SPARSE_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/iusparse/sparsesum.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/iusparse/sparsesum.cu
+    ${CMAKE_CURRENT_SOURCE_DIR}/iusparse.cpp
+    )
+
+  SET( IU_SPARSE_HEADERS
+    ${CMAKE_CURRENT_SOURCE_DIR}/iusparse/sparsesum.cuh
+  )
+
   set( IU_PUBLIC_HEADERS
     ${IU_PUBLIC_HEADERS}
     ${CMAKE_CURRENT_SOURCE_DIR}/iusparse.h
@@ -133,12 +143,9 @@ if(VMLIBRARIES_IU_USE_SPARSE AND CUDASparse_FOUND)
     ${CMAKE_CURRENT_SOURCE_DIR}/iusparse/sparsematrixdefs.h
     ${CMAKE_CURRENT_SOURCE_DIR}/iusparse/sparsematrix_cpu.h
     ${CMAKE_CURRENT_SOURCE_DIR}/iusparse/sparsematrix_gpu.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/iusparse/sparsesum.h
     ${CMAKE_CURRENT_SOURCE_DIR}/iusparse/sparsemultiplication.h
   )
-
-  #SET( IU_PUBLIC_SPARSE_SOURCES
-  #  ${CMAKE_CURRENT_SOURCE_DIR}/iusparse.cpp
-  #)
 
   # install specialized headers
   install(FILES ${IU_PUBLIC_SPARSE_HEADERS}
@@ -150,6 +157,8 @@ else()
   message("[-] ImageUtilities omitting SPARSE module")
   set(VMLIBRARIES_IU_USE_SPARSE OFF CACHE PATH "IU: Omit SPARSE module." FORCE)
   set(CUDA_SPARSE_LIBRARY "")
+  set(IU_SPARSE_SOURCES "")
+  set(IU_SPARSE_HEADERS "")
 endif()
 
 ##-----------------------------------------------------------------------------
@@ -559,6 +568,7 @@ SET( IU_HEADERS
   ${IU_MATH_HEADERS}
   ${IU_FILTER_HEADERS}
   ${IU_TRANSFORM_HEADERS}
+  ${IU_SPARSE_HEADERS}
   ${IU_PUBLIC_SPARSE_HEADERS}
   )
 
@@ -587,7 +597,7 @@ SET( IU_SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/prolongate.cu
   ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/remap.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/remap.cu
-  #${IU_PUBLIC_SPARSE_SOURCES}
+  ${IU_SPARSE_SOURCES}
   )
 
 # denote kernel files as header only to not confuse the compiler
@@ -605,6 +615,8 @@ set( IU_ALL_FILES
   ${IU_HEADERS}
   ${IU_SOURCES}
   ${IU_IPP_HEADERS}
+  ${IU_SPARSE_SOURCES}
+  ${IU_SPARSE_HEADERS}
   ${IU_MATLAB_HEADERS}
   ${IU_MATLAB_SOURCES}
   #${IU_GUI_MOC_HEADERS}
