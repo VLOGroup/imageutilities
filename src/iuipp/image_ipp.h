@@ -54,21 +54,21 @@ public:
   }
 
   ImageIpp(unsigned int _width, unsigned int _height) :
-    Image(_width, _height), data_(0), pitch_(0),
+    Image(_width, _height), data_(0), pitch_(0), ext_data_pointer_(false),
     n_channels_(NumChannels)
   {
     data_ = Allocator::alloc(_width, _height, &pitch_);
   }
 
   ImageIpp(const IppiSize& size) :
-    Image(size.width, size.height), data_(0), pitch_(0),
+    Image(size.width, size.height), data_(0), pitch_(0), ext_data_pointer_(false),
     n_channels_(NumChannels)
   {
     data_ = Allocator::alloc(size.width, size.height, &pitch_);
   }
 
   ImageIpp(const IuSize& size) :
-    Image(size.width, size.height), data_(0), pitch_(0),
+    Image(size.width, size.height), data_(0), pitch_(0), ext_data_pointer_(false),
     n_channels_(NumChannels)
   {
     data_ = Allocator::alloc(width(), height(), &pitch_);
