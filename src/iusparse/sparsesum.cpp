@@ -26,14 +26,21 @@
 
 namespace iuprivate {
 
-  ///////////////////////////////////////////////////////////////////////////////
+// ROW ///////////////////////////////////////////////////////////////////
 
   // sum up sparse matrix in row direction
   IuStatus sumSparseRow(iu::SparseMatrixGpu<float>* A, iu::LinearDeviceMemory_32f_C1* dst, IuSparseSum function)
   {
     IuStatus status;
-    // TODO: Check if dst is big enough
+
+    if (A->n_row() != dst->length())
+    {
+      printf("ERROR in sumSparseRow: number of rows does not match output size!\n");
+      return IU_ERROR;
+    }
+
     A->changeSparseFormat(CSR);
+
     status = cuSumRow(A, dst->data(), function);
     IU_ASSERT(status == IU_SUCCESS);
     return IU_NO_ERROR;
@@ -42,8 +49,15 @@ namespace iuprivate {
   IuStatus sumSparseRow(iu::SparseMatrixGpu<float>* A, iu::ImageGpu_32f_C1* dst, IuSparseSum function)
   {
     IuStatus status;
-    // TODO: Check if dst is big enough
+
+    if (A->n_row() != dst->stride()*dst->height())
+    {
+      printf("ERROR in sumSparseRow: number of rows does not match output size!\n");
+      return IU_ERROR;
+    }
+
     A->changeSparseFormat(CSR);
+
     status = cuSumRow(A, dst->data(), function);
     IU_ASSERT(status == IU_SUCCESS);
     return IU_NO_ERROR;
@@ -51,12 +65,19 @@ namespace iuprivate {
 
 
 
+// COLUMN ///////////////////////////////////////////////////////////////
 
   // sum up sparse matrix in column direction
   IuStatus sumSparseCol(iu::SparseMatrixGpu<float>* A, iu::LinearDeviceMemory_32f_C1* dst, IuSparseSum function)
   {
     IuStatus status;
-    // TODO: Check if dst is big enough
+
+    if (A->n_col() != dst->length())
+    {
+      printf("ERROR in sumSparseCol: number of columns does not match output size!\n");
+      return IU_ERROR;
+    }
+
     A->changeSparseFormat(CSC);
     status = cuSumCol(A, dst->data(), function);
     IU_ASSERT(status == IU_SUCCESS);
@@ -67,7 +88,13 @@ namespace iuprivate {
   IuStatus sumSparseCol(iu::SparseMatrixGpu<float>* A, iu::ImageGpu_32f_C1* dst, IuSparseSum function)
   {
     IuStatus status;
-    // TODO: Check if dst is big enough
+
+    if (A->n_col() != dst->stride()*dst->height())
+    {
+      printf("ERROR in sumSparseCol: number of columns does not match output size!\n");
+      return IU_ERROR;
+    }
+
     A->changeSparseFormat(CSC);
     status = cuSumCol(A, dst->data(), function);
     IU_ASSERT(status == IU_SUCCESS);
