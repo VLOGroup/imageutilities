@@ -266,7 +266,7 @@ int main(int argc, char *argv[])
   iu::copy(&colG2, &colG2_d);
   iu::LinearDeviceMemory<float> valG2_d(cind);
   iu::copy(&valG2, &valG2_d);
-  iu::SparseMatrixGpu_32f G2_d(&handle, &valG2_d, &rowG2_d, I_d.stride()*I_d.height()*2, &colG2_d, I_d.stride()*I_d.height());
+  iu::SparseMatrixGpu_32f G2_d(&handle, &valG2_d, &rowG2_d, O2_d.stride()*O2_d.height()*2, &colG2_d, I_d.stride()*I_d.height());
 
   cout << "Matrix G2 is a simple gradient operator that maps to float2" << endl << endl;
 //  printSparseMatrixElements(&G2_d, "G2");

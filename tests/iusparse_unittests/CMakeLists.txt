@@ -22,7 +22,7 @@ project(ImageUtilitiesTests CXX C)
 cmake_minimum_required(VERSION 2.8)
 
 ## find iu and set the according libs
-find_package(ImageUtilities COMPONENTS iucore)
+find_package(ImageUtilities COMPONENTS iucore iuio)
 include(${IU_USE_FILE})
 
 message("IU_LIBRARIES=${IU_LIBRARIES}")
@@ -33,6 +33,12 @@ cuda_add_executable( iu_sparse_gpu_unittest iu_sparse_gpu_unittest.cpp )
 TARGET_LINK_LIBRARIES(iu_sparse_gpu_unittest ${IU_LIBRARIES})
 add_test(iu_sparse_gpu_unittest iu_sparse_gpu_unittest)
 set(IU_UNITTEST_TARGETS iu_sparse_gpu_unittest)
+
+
+cuda_add_executable( iu_sparse_compare iu_sparse_compare.cpp iu_sparse_compare.cu)
+TARGET_LINK_LIBRARIES(iu_sparse_compare ${IU_LIBRARIES})
+add_test(iu_sparse_compare iu_sparse_compare)
+set(IU_UNITTEST_TARGETS iu_sparse_compare)
 
 # install targets
 message(STATUS "install targets=${IU_UNITTEST_TARGETS}")
