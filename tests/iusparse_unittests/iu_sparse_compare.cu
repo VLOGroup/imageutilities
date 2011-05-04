@@ -205,7 +205,7 @@ void rof_primal_dual(iu::ImageGpu_32f_C1* device_f, iu::ImageGpu_32f_C1* device_
   for (int k = 0; k <= max_iter; ++k)
   {
     update_dual <<< dimGrid, dimBlock >>> (device_p->data(), sigma,
-                                                width, height, device_p->stride());
+                                           width, height, device_p->stride());
 
     if (sigma < 1000.0f)
       theta = 1/sqrt(1.0f+0.7f*lambda*tau);
@@ -213,8 +213,8 @@ void rof_primal_dual(iu::ImageGpu_32f_C1* device_f, iu::ImageGpu_32f_C1* device_
       theta = 1.0f;
 
     update_primal <<< dimGrid, dimBlock >>> (device_u->data(), device_u_->data(),
-                                                  tau, theta, lambda, width, height,
-                                                  device_u->stride());
+                                             tau, theta, lambda, width, height,
+                                             device_u->stride());
     sigma /= theta;
     tau *= theta;
   }
@@ -228,8 +228,8 @@ void rof_primal_dual(iu::ImageGpu_32f_C1* device_f, iu::ImageGpu_32f_C1* device_
 
 ////////////////////////////////////////////////////////////////////////////////
 __global__ void update_primal_sparse(float* device_u, float* device_u_,
-                              float tau, float theta, float lambda,
-                              int width, int height, int xstride)
+                                     float tau, float theta, float lambda,
+                                     int width, int height, int xstride)
 {
   int x = blockIdx.x*blockDim.x + threadIdx.x;
   int y = blockIdx.y*blockDim.y + threadIdx.y;
@@ -251,7 +251,7 @@ __global__ void update_primal_sparse(float* device_u, float* device_u_,
 
 ////////////////////////////////////////////////////////////////////////////////
 __global__ void update_dual_sparse(float2* device_p, float sigma,
-                            int width, int height, int stride)
+                                   int width, int height, int stride)
 {
   int x = blockIdx.x*blockDim.x + threadIdx.x;
   int y = blockIdx.y*blockDim.y + threadIdx.y;
@@ -266,9 +266,9 @@ __global__ void update_dual_sparse(float2* device_p, float sigma,
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 void rof_primal_dual_sparse(iu::SparseMatrixGpu_32f* G,
-                     iu::ImageGpu_32f_C1* device_f, iu::ImageGpu_32f_C1* device_u,
-                     iu::ImageGpu_32f_C1* device_u_, iu::ImageGpu_32f_C2* device_p,
-                     float lambda, int max_iter)
+                            iu::ImageGpu_32f_C1* device_f, iu::ImageGpu_32f_C1* device_u,
+                            iu::ImageGpu_32f_C1* device_u_, iu::ImageGpu_32f_C2* device_p,
+                            float lambda, int max_iter)
 {
   int width = device_f->width();
   int height = device_f->height();
@@ -284,7 +284,7 @@ void rof_primal_dual_sparse(iu::SparseMatrixGpu_32f* G,
 
   bindTexture(rof_tex_f, device_f);
   bindTexture(rof_tex_u, device_u);
-//  bindTexture(rof_tex_u_, device_u_);
+  //  bindTexture(rof_tex_u_, device_u_);
   bindTexture(rof_tex_p, device_p);
 
   bindTexture(rof_tex_gradient, &gradient);

@@ -62,8 +62,8 @@ void calcROFSparse(iu::ImageGpu_32f_C1* f, iu::ImageGpu_32f_C1* u,
   iu::ImageGpu_32f_C2 p(u->size());
   iu::setValue(make_float2(0.0f, 0.0f), &p, p.roi());
 
-  std::cout << "u: " << u->width() << "x" << u->height() << "  Stride=" << u->stride() << std::endl;
-  std::cout << "p: " << p.width() << "x" << p.height() << "  Stride=" << p.stride() << std::endl;
+//  std::cout << "u: " << u->width() << "x" << u->height() << "  Stride=" << u->stride() << std::endl;
+//  std::cout << "p: " << p.width() << "x" << p.height() << "  Stride=" << p.stride() << std::endl;
 
   // Generate Matrix G
   iu::LinearHostMemory<int> rowG(u->stride()*u->height()*4);
@@ -149,7 +149,7 @@ int main(int argc, char *argv[])
   iu::copy(&input_256, &output_256_sparse);
 
   float lambda    = 1.0f;
-  int   max_iter  = 10;
+  int   max_iter  = 5000;
 
   double init[NSIZES][NALG];
   double alg[NSIZES][NALG];
