@@ -24,12 +24,18 @@
 #include <iucore/copy.h>
 #include <iumath/arithmetic.h>
 #include "filter.h"
-#include "filter.cuh"
 
 namespace iuprivate {
 
 // device; 32-bit; 1-channel
 void filterGauss(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst, const IuRect& roi, float sigma, int kernel_size)
+{
+  IuStatus status = cuFilterGauss(src, dst, roi, sigma, kernel_size);
+  IU_ASSERT(status == IU_SUCCESS);
+}
+
+// device; 32-bit; 4-channel
+void filterGauss(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst, const IuRect& roi, float sigma, int kernel_size)
 {
   IuStatus status = cuFilterGauss(src, dst, roi, sigma, kernel_size);
   IU_ASSERT(status == IU_SUCCESS);

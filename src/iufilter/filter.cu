@@ -336,6 +336,83 @@ __global__ void cuFilterGaussKernel_32f_C1(float* dst, const size_t stride,
 }
 
 // ----------------------------------------------------------------------------
+// kernel: Gaussian filter; 32-bit; 4-channel
+/** Perform a convolution with an gaussian smoothing kernel
+ * @param dst          pointer to output image (linear memory)
+ * @param stride       length of image row [pixels]
+ * @param xoff         x-coordinate offset where to start the region [pixels]
+ * @param yoff         y-coordinate offset where to start the region [pixels]
+ * @param width        width of region [pixels]
+ * @param height       height of region [pixels]
+ * @param sigma        sigma of the smoothing kernel
+ * @param kernel_size  lenght of the smoothing kernel [pixels]
+ * @param horizontal   defines the direction of convolution
+ */
+__global__ void cuFilterGaussKernel_32f_C4(float4* dst, const size_t stride,
+                                           const int xoff, const int yoff,
+                                           const int width, const int height,
+                                           float sigma, int kernel_size, bool horizontal=true)
+{
+  int x = blockIdx.x*blockDim.x + threadIdx.x;
+  int y = blockIdx.y*blockDim.y + threadIdx.y;
+  const unsigned int oc = y*stride+x;
+
+  x += xoff;
+  y += yoff;
+
+  float xx = x+0.5f;
+  float yy = y+0.5f;
+
+  if(x>=0 && y>= 0 && x<width && y<height)
+  {
+    float4 sum = make_float4(0.0f, 0.0f, 0.0f, 0.0f);
+    int half_kernel_elements = (kernel_size - 1) / 2;
+
+    if (horizontal)
+    {
+      // convolve horizontally
+      float g0 = 1.0f / (sqrt(2.0f * 3.141592653589793f) * sigma);
+      float g1 = exp(-0.5f / (sigma * sigma));
+      float g2 = g1 * g1;
+      sum = g0 * tex2D(tex1_32f_C4__, xx, yy);
+      float sum_coeff = g0;
+      for (int i = 1; i <= half_kernel_elements; i++)
+      {
+        g0 *= g1;
+        g1 *= g2;
+        float cur_xx = IUMAX(0.5f, IUMIN(width-0.5f, xx + i));
+        sum += g0 * tex2D(tex1_32f_C4__, cur_xx, yy);
+        cur_xx = IUMAX(0.5f, IUMIN(width-0.5f, xx-i));
+        sum += g0 * tex2D(tex1_32f_C4__, cur_xx, yy);
+        sum_coeff += 2.0f*g0;
+      }
+      dst[oc] = sum/sum_coeff;
+    }
+    else
+    {
+      // convolve vertically
+      float g0 = 1.0f / (sqrt(2.0f * 3.141592653589793f) * sigma);
+      float g1 = exp(-0.5f / (sigma * sigma));
+      float g2 = g1 * g1;
+      sum = g0 * tex2D(tex1_32f_C4__, xx, yy);
+      float sum_coeff = g0;
+      for (int j = 1; j <= half_kernel_elements; j++)
+      {
+        g0 *= g1;
+        g1 *= g2;
+        float cur_yy = IUMAX(0.5f, IUMIN(height-0.5f, yy+j));
+        sum += g0 * tex2D(tex1_32f_C4__, xx, cur_yy);
+        cur_yy = IUMAX(0.5f, IUMIN(height-0.5f, yy-j));
+        sum += g0 *  tex2D(tex1_32f_C4__, xx, cur_yy);
+        sum_coeff += 2.0f*g0;
+      }
+      dst[oc] = sum/sum_coeff;
+    }
+  }
+}
+
+
+// ----------------------------------------------------------------------------
 // wrapper: Gaussian filter; 32-bit; 1-channel
 IuStatus cuFilterGauss(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst, const IuRect& roi, float sigma, int kernel_size)
 {
@@ -373,6 +450,48 @@ IuStatus cuFilterGauss(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
 
   // unbind textures
   cudaUnbindTexture(&tex1_32f_C1__);
+
+  // error check
+  return iu::checkCudaErrorState();
+}
+
+// ----------------------------------------------------------------------------
+// wrapper: Gaussian filter; 32-bit; 4-channel
+IuStatus cuFilterGauss(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst, const IuRect& roi, float sigma, int kernel_size)
+{
+  if (kernel_size == 0)
+    kernel_size = max(5, (unsigned int)ceil(sigma*  3)*  2 + 1);
+  if (kernel_size%2 == 0)
+    ++kernel_size;
+
+  // temporary variable for filtering (separabed kernel!)
+  iu::ImageGpu_32f_C4 tmp(src->size());
+
+  // textures
+  cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<float4>();
+  tex1_32f_C4__.filterMode = cudaFilterModeLinear;
+  tex1_32f_C4__.addressMode[0] = cudaAddressModeClamp;
+  tex1_32f_C4__.addressMode[1] = cudaAddressModeClamp;
+  tex1_32f_C4__.normalized = false;
+
+  // fragmentation
+  unsigned int block_size = 16;
+  dim3 dimBlock(block_size, block_size);
+  dim3 dimGrid(iu::divUp(roi.width, dimBlock.x), iu::divUp(roi.height, dimBlock.y));
+
+  // Convolve horizontally
+  cudaBindTexture2D(0, &tex1_32f_C4__, src->data(), &channel_desc, src->width(), src->height(), src->pitch());
+  cuFilterGaussKernel_32f_C4 <<< dimGrid, dimBlock >>> (tmp.data(roi.x, roi.y), tmp.stride(),
+                                                        roi.x, roi.y, tmp.width(), tmp.height(),
+                                                        sigma, kernel_size, false);
+  cudaUnbindTexture(tex1_32f_C4__);
+
+  // Convolve vertically
+  cudaBindTexture2D(0, &tex1_32f_C4__, tmp.data(), &channel_desc, tmp.width(), tmp.height(), tmp.pitch());
+  cuFilterGaussKernel_32f_C4 <<< dimGrid, dimBlock >>> (dst->data(roi.x, roi.y), dst->stride(),
+                                                        roi.x, roi.y, dst->width(), dst->height(),
+                                                        sigma, kernel_size, true);
+  cudaUnbindTexture(&tex1_32f_C4__);
 
   // error check
   return iu::checkCudaErrorState();

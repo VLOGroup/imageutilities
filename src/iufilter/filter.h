@@ -29,13 +29,28 @@
 
 namespace iuprivate {
 
+/* ***************************************************************************
+ *  Declaration of CUDA WRAPPERS
+ * ***************************************************************************/
+extern IuStatus cuFilterMedian3x3(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst, const IuRect& roi);
+extern IuStatus cuFilterGauss(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst, const IuRect& roi, float sigma, int kernel_size);
+extern IuStatus cuFilterGauss(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst, const IuRect& roi, float sigma, int kernel_size);
+extern IuStatus cuCubicBSplinePrefilter_32f_C1I(iu::ImageGpu_32f_C1 *input);
+/* ***************************************************************************/
+
 // Median filter; device; 32-bit; 1-channel;
 void filterMedian3x3(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
                      const IuRect& roi);
 
-// Gaussian convolution; device; 32-bit; 1-channel
+// Gaussian convolution
+
+// 32-bit; 1-channel
 void filterGauss(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
                  const IuRect& roi, float sigma, int kernel_size);
+// 32-bit; 4-channel
+void filterGauss(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst,
+                 const IuRect& roi, float sigma, int kernel_size);
+
 
 // Cubic B-Spline coefficients prefilter
 void cubicBSplinePrefilter(iu::ImageGpu_32f_C1* srcdst);

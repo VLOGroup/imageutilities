@@ -205,7 +205,6 @@ bool imsave(iu::ImageCpu_8u_C4* image, const std::string& filename, const bool& 
 //-----------------------------------------------------------------------------
 bool imsave(iu::ImageCpu_32f_C1* image, const std::string& filename, const bool& normalize)
 {
-  printf("BLAAAAA\n");
   IuSize sz = image->size();
   cv::Mat mat_32f(sz.height, sz.width, CV_32FC1, image->data(), image->pitch());
   if(normalize)
@@ -234,8 +233,8 @@ bool imsave(iu::ImageCpu_32f_C4* image, const std::string& filename, const bool&
 {
   IuSize sz = image->size();
   cv::Mat mat_32f(sz.height, sz.width, CV_32FC4, image->data(), image->pitch());
-  if(normalize)
-    cv::normalize(mat_32f, mat_32f, 0.0, 1.0, cv::NORM_MINMAX);
+//  if(normalize)
+//    cv::normalize(mat_32f, mat_32f, 0.0, 1.0, cv::NORM_MINMAX);
   cv::Mat mat_8u(sz.height, sz.width, CV_8UC4);
   mat_32f.convertTo(mat_8u, mat_8u.type(), 255, 0);
   cv::Mat bgr(sz.height, sz.width, CV_8UC3);
