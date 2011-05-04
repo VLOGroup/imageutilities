@@ -205,12 +205,13 @@ bool imsave(iu::ImageCpu_8u_C4* image, const std::string& filename, const bool& 
 //-----------------------------------------------------------------------------
 bool imsave(iu::ImageCpu_32f_C1* image, const std::string& filename, const bool& normalize)
 {
+  printf("BLAAAAA\n");
   IuSize sz = image->size();
-  cv::Mat mat_8u(sz.height, sz.width, CV_8UC1);
   cv::Mat mat_32f(sz.height, sz.width, CV_32FC1, image->data(), image->pitch());
-  mat_32f.convertTo(mat_8u, mat_8u.type(), 255, 0);
   if(normalize)
-    cv::normalize(mat_8u, mat_8u, 0, 255, cv::NORM_MINMAX);
+    cv::normalize(mat_32f, mat_32f, 0.0, 1.0, cv::NORM_MINMAX);
+  cv::Mat mat_8u(sz.height, sz.width, CV_8UC1);
+  mat_32f.convertTo(mat_8u, mat_8u.type(), 255, 0);
   return cv::imwrite(filename, mat_8u);
 }
 
@@ -218,13 +219,13 @@ bool imsave(iu::ImageCpu_32f_C1* image, const std::string& filename, const bool&
 bool imsave(iu::ImageCpu_32f_C3* image, const std::string& filename, const bool& normalize)
 {
   IuSize sz = image->size();
-  cv::Mat mat_8u(sz.height, sz.width, CV_8UC3);
   cv::Mat mat_32f(sz.height, sz.width, CV_32FC3, image->data(), image->pitch());
+  if(normalize)
+    cv::normalize(mat_32f, mat_32f, 0.0, 1.0, cv::NORM_MINMAX);
+  cv::Mat mat_8u(sz.height, sz.width, CV_8UC3);
   mat_32f.convertTo(mat_8u, mat_8u.type(), 255, 0);
   cv::Mat bgr(sz.height, sz.width, CV_8UC3);
-  cv::cvtColor(mat_8u, bgr, CV_RGBA2BGR);
-  if(normalize)
-    cv::normalize(mat_8u, mat_8u, 0, 255, cv::NORM_MINMAX);
+  cv::cvtColor(mat_8u, bgr, CV_RGB2BGR);
   return cv::imwrite(filename, bgr);
 }
 
@@ -232,13 +233,13 @@ bool imsave(iu::ImageCpu_32f_C3* image, const std::string& filename, const bool&
 bool imsave(iu::ImageCpu_32f_C4* image, const std::string& filename, const bool& normalize)
 {
   IuSize sz = image->size();
-  cv::Mat mat_8u(sz.height, sz.width, CV_8UC4);
   cv::Mat mat_32f(sz.height, sz.width, CV_32FC4, image->data(), image->pitch());
+  if(normalize)
+    cv::normalize(mat_32f, mat_32f, 0.0, 1.0, cv::NORM_MINMAX);
+  cv::Mat mat_8u(sz.height, sz.width, CV_8UC4);
   mat_32f.convertTo(mat_8u, mat_8u.type(), 255, 0);
   cv::Mat bgr(sz.height, sz.width, CV_8UC3);
   cv::cvtColor(mat_8u, bgr, CV_RGBA2BGR);
-  if(normalize)
-    cv::normalize(mat_8u, mat_8u, 0, 255, cv::NORM_MINMAX);
   return cv::imwrite(filename, bgr);
 }
 
@@ -247,7 +248,7 @@ bool imsave(iu::ImageGpu_8u_C1* image, const std::string& filename, const bool& 
 {
   iu::ImageCpu_8u_C1 cpu_image(image->size());
   iuprivate::copy(image, &cpu_image);
-  return iuprivate::imsave(&cpu_image, filename);
+  return iuprivate::imsave(&cpu_image, filename, normalize);
 }
 
 //-----------------------------------------------------------------------------
@@ -255,7 +256,7 @@ bool imsave(iu::ImageGpu_8u_C4* image, const std::string& filename, const bool& 
 {
   iu::ImageCpu_8u_C4 cpu_image(image->size());
   iuprivate::copy(image, &cpu_image);
-  return iuprivate::imsave(&cpu_image, filename);
+  return iuprivate::imsave(&cpu_image, filename, normalize);
 }
 
 //-----------------------------------------------------------------------------
@@ -263,7 +264,7 @@ bool imsave(iu::ImageGpu_32f_C1* image, const std::string& filename, const bool&
 {
   iu::ImageCpu_32f_C1 cpu_image(image->size());
   iuprivate::copy(image, &cpu_image);
-  return iuprivate::imsave(&cpu_image, filename);
+  return iuprivate::imsave(&cpu_image, filename, normalize);
 }
 
 //-----------------------------------------------------------------------------
@@ -271,7 +272,7 @@ bool imsave(iu::ImageGpu_32f_C4* image, const std::string& filename, const bool&
 {
   iu::ImageCpu_32f_C4 cpu_image(image->size());
   iuprivate::copy(image, &cpu_image);
-  return iuprivate::imsave(&cpu_image, filename);
+  return iuprivate::imsave(&cpu_image, filename, normalize);
 }
 
 
@@ -281,6 +282,12 @@ bool imsave(iu::ImageGpu_32f_C4* image, const std::string& filename, const bool&
 
  */
 
+void imshow(const std::string& winname, const cv::Mat& mat)
+{
+  cv::namedWindow(winname, CV_WINDOW_NORMAL || CV_WINDOW_KEEPRATIO);
+  cv::imshow(winname, mat);
+}
+
 //-----------------------------------------------------------------------------
 void imshow(iu::ImageCpu_8u_C1* image, const std::string& winname, const bool& normalize)
 {
@@ -288,7 +295,8 @@ void imshow(iu::ImageCpu_8u_C1* image, const std::string& winname, const bool& n
   cv::Mat mat_8u(sz.height, sz.width, CV_8UC1, image->data(), image->pitch());
   if(normalize)
     cv::normalize(mat_8u, mat_8u, 0, 255, cv::NORM_MINMAX);
-  cv::imshow(winname, mat_8u);
+
+  iuprivate::imshow(winname, mat_8u);
 }
 
 //-----------------------------------------------------------------------------
@@ -300,7 +308,8 @@ void imshow(iu::ImageCpu_8u_C3* image, const std::string& winname, const bool& n
     cv::normalize(mat_8u, mat_8u, 0, 255, cv::NORM_MINMAX);
   cv::Mat bgr(sz.height, sz.width, CV_8UC3);
   cv::cvtColor(mat_8u, bgr, CV_RGB2BGR);
-  cv::imshow(winname, bgr);
+
+  iuprivate::imshow(winname, bgr);
 }
 
 //-----------------------------------------------------------------------------
@@ -312,7 +321,8 @@ void imshow(iu::ImageCpu_8u_C4* image, const std::string& winname, const bool& n
     cv::normalize(mat_8u, mat_8u, 0, 255, cv::NORM_MINMAX);
   cv::Mat bgr(sz.height, sz.width, CV_8UC3);
   cv::cvtColor(mat_8u, bgr, CV_RGBA2BGR);
-  cv::imshow(winname, bgr);
+
+  iuprivate::imshow(winname, bgr);
 }
 
 //-----------------------------------------------------------------------------
@@ -322,7 +332,8 @@ void imshow(iu::ImageCpu_32f_C1* image, const std::string& winname, const bool& 
   cv::Mat mat_32f(sz.height, sz.width, CV_32FC1, image->data(), image->pitch());
   if(normalize)
     cv::normalize(mat_32f, mat_32f, 0.0, 1.0, cv::NORM_MINMAX);
-  cv::imshow(winname, mat_32f);
+
+  iuprivate::imshow(winname, mat_32f);
 }
 
 //-----------------------------------------------------------------------------
@@ -334,7 +345,8 @@ void imshow(iu::ImageCpu_32f_C3* image, const std::string& winname, const bool& 
     cv::normalize(mat_32f, mat_32f, 0.0, 1.0, cv::NORM_MINMAX);
   cv::Mat bgr;
   cv::cvtColor(mat_32f, bgr, CV_RGB2BGR);
-  cv::imshow(winname, bgr);
+
+  iuprivate::imshow(winname, bgr);
 }
 
 //-----------------------------------------------------------------------------
@@ -344,7 +356,8 @@ void imshow(iu::ImageCpu_32f_C4* image, const std::string& winname, const bool& 
   cv::Mat mat_32f(sz.height, sz.width, CV_32FC4, (float*)image->data(), image->pitch());
   cv::Mat bgr;
   cv::cvtColor(mat_32f, bgr, CV_RGBA2BGR);
-  cv::imshow(winname, bgr);
+
+  iuprivate::imshow(winname, bgr);
 }
 
 //-----------------------------------------------------------------------------
@@ -352,6 +365,7 @@ void imshow(iu::ImageGpu_8u_C1* image, const std::string& winname, const bool& n
 {
   iu::ImageCpu_8u_C1 cpu_image(image->size());
   iuprivate::copy(image, &cpu_image);
+
   iuprivate::imshow(&cpu_image, winname, normalize);
 }
 
@@ -360,6 +374,7 @@ void imshow(iu::ImageGpu_8u_C4* image, const std::string& winname, const bool& n
 {
   iu::ImageCpu_8u_C4 cpu_image(image->size());
   iuprivate::copy(image, &cpu_image);
+
   iuprivate::imshow(&cpu_image, winname, normalize);
 }
 
@@ -368,6 +383,7 @@ void imshow(iu::ImageGpu_32f_C1* image, const std::string& winname, const bool& 
 {
   iu::ImageCpu_32f_C1 cpu_image(image->size());
   iuprivate::copy(image, &cpu_image);
+
   iuprivate::imshow(&cpu_image, winname, normalize);
 }
 
@@ -376,6 +392,7 @@ void imshow(iu::ImageGpu_32f_C4* image, const std::string& winname, const bool& 
 {
   iu::ImageCpu_32f_C4 cpu_image(image->size());
   iuprivate::copy(image, &cpu_image);
+
   iuprivate::imshow(&cpu_image, winname, normalize);
 }
 
