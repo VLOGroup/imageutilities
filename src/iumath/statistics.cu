@@ -495,8 +495,8 @@ IuStatus cuMinMax(const iu::ImageGpu_8u_C1 *src, const IuRect &roi,
   for (int i = 0; i < num_row_sums; ++i)
   {
     printf("#%d: %d / %d\n", i, h_row_mins.data(i)[0], h_row_maxs.data(i)[0]);
-    min_C1 = min(min_C1, *h_row_mins.data(i));
-    max_C1 = max(max_C1, *h_row_maxs.data(i));
+    min_C1 = IUMIN(min_C1, *h_row_mins.data(i));
+    max_C1 = IUMAX(max_C1, *h_row_maxs.data(i));
   }
 
   cudaUnbindTexture(&tex1_8u_C1__);
@@ -540,15 +540,15 @@ IuStatus cuMinMax(const iu::ImageGpu_8u_C4 *src, const IuRect &roi, uchar4& min_
 
   for (int i = 1; i < num_row_sums; ++i)
   {
-    min_C4.x = min(min_C4.x, h_row_mins.data(i)->x);
-    min_C4.y = min(min_C4.y, h_row_mins.data(i)->y);
-    min_C4.z = min(min_C4.z, h_row_mins.data(i)->z);
-    min_C4.w = min(min_C4.w, h_row_mins.data(i)->w);
+    min_C4.x = IUMIN(min_C4.x, h_row_mins.data(i)->x);
+    min_C4.y = IUMIN(min_C4.y, h_row_mins.data(i)->y);
+    min_C4.z = IUMIN(min_C4.z, h_row_mins.data(i)->z);
+    min_C4.w = IUMIN(min_C4.w, h_row_mins.data(i)->w);
 
-    max_C4.x = max(max_C4.x, h_row_maxs.data(i)->x);
-    max_C4.y = max(max_C4.y, h_row_maxs.data(i)->y);
-    max_C4.z = max(max_C4.z, h_row_maxs.data(i)->z);
-    max_C4.w = max(max_C4.w, h_row_maxs.data(i)->w);
+    max_C4.x = IUMAX(max_C4.x, h_row_maxs.data(i)->x);
+    max_C4.y = IUMAX(max_C4.y, h_row_maxs.data(i)->y);
+    max_C4.z = IUMAX(max_C4.z, h_row_maxs.data(i)->z);
+    max_C4.w = IUMAX(max_C4.w, h_row_maxs.data(i)->w);
   }
 
   cudaUnbindTexture(&tex1_8u_C4__);
@@ -590,8 +590,8 @@ IuStatus cuMinMax(const iu::ImageGpu_32f_C1 *src, const IuRect &roi, float& min_
 
   for (int i = 1; i < num_row_sums; ++i)
   {
-    min_C1 = min(min_C1, *h_row_mins.data(i));
-    max_C1 = max(max_C1, *h_row_maxs.data(i));
+    min_C1 = IUMIN(min_C1, *h_row_mins.data(i));
+    max_C1 = IUMAX(max_C1, *h_row_maxs.data(i));
   }
 
   cudaUnbindTexture(&tex1_32f_C1__);
@@ -635,11 +635,11 @@ IuStatus cuMinMax(const iu::ImageGpu_32f_C2 *src, const IuRect &roi, float2& min
 
   for (int i = 1; i < num_row_sums; ++i)
   {
-    min_C2.x = min(min_C2.x, h_row_mins.data(i)->x);
-    min_C2.y = min(min_C2.y, h_row_mins.data(i)->y);
+    min_C2.x = IUMIN(min_C2.x, h_row_mins.data(i)->x);
+    min_C2.y = IUMIN(min_C2.y, h_row_mins.data(i)->y);
 
-    max_C2.x = max(max_C2.x, h_row_maxs.data(i)->x);
-    max_C2.y = max(max_C2.y, h_row_maxs.data(i)->y);
+    max_C2.x = IUMAX(max_C2.x, h_row_maxs.data(i)->x);
+    max_C2.y = IUMAX(max_C2.y, h_row_maxs.data(i)->y);
   }
 
   cudaUnbindTexture(&tex1_32f_C2__);
@@ -682,15 +682,15 @@ IuStatus cuMinMax(const iu::ImageGpu_32f_C4 *src, const IuRect &roi, float4& min
 
   for (int i = 1; i < num_cols; ++i)
   {
-    min_C4.x = min(min_C4.x, h_row_mins.data(i)->x);
-    min_C4.y = min(min_C4.y, h_row_mins.data(i)->y);
-    min_C4.z = min(min_C4.z, h_row_mins.data(i)->z);
-    min_C4.w = min(min_C4.w, h_row_mins.data(i)->w);
+    min_C4.x = IUMIN(min_C4.x, h_row_mins.data(i)->x);
+    min_C4.y = IUMIN(min_C4.y, h_row_mins.data(i)->y);
+    min_C4.z = IUMIN(min_C4.z, h_row_mins.data(i)->z);
+    min_C4.w = IUMIN(min_C4.w, h_row_mins.data(i)->w);
 
-    max_C4.x = max(max_C4.x, h_row_maxs.data(i)->x);
-    max_C4.y = max(max_C4.y, h_row_maxs.data(i)->y);
-    max_C4.z = max(max_C4.z, h_row_maxs.data(i)->z);
-    max_C4.w = max(max_C4.w, h_row_maxs.data(i)->w);
+    max_C4.x = IUMAX(max_C4.x, h_row_maxs.data(i)->x);
+    max_C4.y = IUMAX(max_C4.y, h_row_maxs.data(i)->y);
+    max_C4.z = IUMAX(max_C4.z, h_row_maxs.data(i)->z);
+    max_C4.w = IUMAX(max_C4.w, h_row_maxs.data(i)->w);
   }
 
   cudaUnbindTexture(&tex1_32f_C4__);
