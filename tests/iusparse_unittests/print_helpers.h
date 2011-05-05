@@ -24,7 +24,7 @@ void printImage(iu::ImageGpu_32f_C1* img_d, string title)
   iu::copy(img_d, &img);
 
   cout << "Image " << title << ": (size=" << img_d->width() << "x" << img_d->height()
-      << ", stride=" << img_d->stride() << ")"  <<  setprecision(1) << fixed << endl;
+      << ", stride=" << img_d->stride() << ")"  <<  setprecision(2) << fixed << endl;
   for (int y=0; y<img.height(); y++)
   {
     for (int x=0; x<img.width(); x++)
@@ -42,7 +42,7 @@ void printImage(iu::ImageGpu_32f_C2* img_d, string title)
   iu::copy(img_d, &img);
 
   cout << "Image " << title << ": (size=" << img_d->width() << "x" << img_d->height()
-      << ", stride=" << img_d->stride() << ")"  <<  setprecision(1) << fixed << endl;
+      << ", stride=" << img_d->stride() << ")"  <<  setprecision(2) << fixed << endl;
   for (int y=0; y<img.height(); y++)
   {
     for (int x=0; x<img.width(); x++)

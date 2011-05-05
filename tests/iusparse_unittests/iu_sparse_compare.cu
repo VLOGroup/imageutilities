@@ -202,7 +202,7 @@ void rof_primal_dual(iu::ImageGpu_32f_C1* device_f, iu::ImageGpu_32f_C1* device_
   float sigma = 1/L;
   float theta;
 
-  for (int k = 0; k <= max_iter; ++k)
+  for (int k = 0; k < max_iter; ++k)
   {
     update_dual <<< dimGrid, dimBlock >>> (device_p->data(), sigma,
                                            width, height, device_p->stride());
@@ -242,7 +242,7 @@ __global__ void update_primal_sparse(float* device_u, float* device_u_,
     float u_ = u;
 
     // update primal variable
-    u = (u + tau*(tex2D(rof_tex_divergence, x+0.5f, y+0.5f) + lambda*tex2D(rof_tex_f, x+0.5f, y+0.5f)))/(1.0f+tau*lambda);
+    u = (u + tau*(-tex2D(rof_tex_divergence, x+0.5f, y+0.5f) + lambda*tex2D(rof_tex_f, x+0.5f, y+0.5f)))/(1.0f+tau*lambda);
 
     device_u[c] = u;
     device_u_[c] = u + theta*(u-u_);
@@ -250,7 +250,7 @@ __global__ void update_primal_sparse(float* device_u, float* device_u_,
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-__global__ void update_dual_sparse(float2* device_p, float sigma,
+__global__ void update_dual_sparse(float2* device_p,  float sigma,
                                    int width, int height, int stride)
 {
   int x = blockIdx.x*blockDim.x + threadIdx.x;
@@ -282,34 +282,24 @@ void rof_primal_dual_sparse(iu::SparseMatrixGpu_32f* G,
   iu::ImageGpu_32f_C2 gradient(width, height);
   iu::ImageGpu_32f_C1 divergence(width, height);
 
-  bindTexture(rof_tex_f, device_f);
-  bindTexture(rof_tex_u, device_u);
-  //  bindTexture(rof_tex_u_, device_u_);
-  bindTexture(rof_tex_p, device_p);
-
-  bindTexture(rof_tex_gradient, &gradient);
-  bindTexture(rof_tex_divergence, &divergence);
-
   float L = sqrt(8.0f);
   float tau = 1/L;
   float sigma = 1/L;
   float theta;
 
-  for (int k = 0; k <= max_iter; ++k)
+  for (int k = 0; k < max_iter; ++k)
   {
     // Gradient
     iu::sparseMultiplication(G->handle(), G, device_u_, &gradient);
-    cudaThreadSynchronize();
 
     // Dual update
     bindTexture(rof_tex_p, device_p);
     bindTexture(rof_tex_gradient, &gradient);
-    cudaThreadSynchronize();
     update_dual_sparse<<< dimGrid, dimBlock >>>(device_p->data(), sigma,
                                                 width, height, device_p->stride());
     cudaUnbindTexture(&rof_tex_p);
     cudaUnbindTexture(&rof_tex_gradient);
-    cudaThreadSynchronize();
+
 
     // Update Timesteps
     if (sigma < 1000.0f)
@@ -319,20 +309,17 @@ void rof_primal_dual_sparse(iu::SparseMatrixGpu_32f* G,
 
     // Divergence
     iu::sparseMultiplication(G->handle(), G, device_p, &divergence, CUSPARSE_OPERATION_TRANSPOSE);
-    cudaThreadSynchronize();
 
     // Primal update
     bindTexture(rof_tex_f, device_f);
     bindTexture(rof_tex_u, device_u);
     bindTexture(rof_tex_divergence, &divergence);
-    cudaThreadSynchronize();
     update_primal_sparse<<< dimGrid, dimBlock >>>(device_u->data(), device_u_->data(),
                                                   tau, theta, lambda, width, height,
                                                   device_u->stride());
     cudaUnbindTexture(&rof_tex_f);
     cudaUnbindTexture(&rof_tex_u);
     cudaUnbindTexture(&rof_tex_divergence);
-    cudaThreadSynchronize();
 
     // Update Timesteps
     sigma /= theta;

@@ -9,10 +9,13 @@
 #include <iuio.h>
 #include <iutransform.h>
 
+#include "print_helpers.h"
+
+
 #define NSIZES 2
 #define NALG   2
 
-cusparseHandle_t handle = 0;
+//cusparseHandle_t handle = 0;
 
 
 // Forward declarations
@@ -54,6 +57,10 @@ void calcROF(iu::ImageGpu_32f_C1* f, iu::ImageGpu_32f_C1* u,
 void calcROFSparse(iu::ImageGpu_32f_C1* f, iu::ImageGpu_32f_C1* u,
                    float lambda, int max_iter, double* init, double* alg, double* complete)
 {
+  // Sparse matrix
+  cusparseHandle_t handle = 0;
+  cusparseCreate(&handle);
+
   cudaThreadSynchronize();
   double start = iu::getTime();
 
@@ -109,7 +116,6 @@ void calcROFSparse(iu::ImageGpu_32f_C1* f, iu::ImageGpu_32f_C1* u,
   iu::copy(&valG, &valG_d);
   iu::SparseMatrixGpu_32f G_d(&handle, &valG_d, &rowG_d, p.stride()*2*p.height(), &colG_d, u->stride()*u->height());
 
-
   cudaThreadSynchronize();
   double interm = iu::getTime();
   *init = interm - start;
@@ -120,6 +126,8 @@ void calcROFSparse(iu::ImageGpu_32f_C1* f, iu::ImageGpu_32f_C1* u,
   *alg = iu::getTime() - interm;
   *complete = iu::getTime() - start;
 
+    cusparseDestroy(handle);
+
   return;
 }
 
@@ -129,16 +137,11 @@ void calcROFSparse(iu::ImageGpu_32f_C1* f, iu::ImageGpu_32f_C1* u,
 //////////////////////////////////////////////////////////////////
 int main(int argc, char *argv[])
 {
-  // Sparse matrix
-  cusparseCreate(&handle);
+//  // Sparse matrix
+//  cusparseCreate(&handle);
 
   // full
   iu::ImageGpu_32f_C1* input_full = iu::imread_cu32f_C1("../../Data/test/cat.pgm");
-
-  iu::ImageGpu_32f_C1 output_full(input_full->size());
-  iu::ImageGpu_32f_C1 output_full_sparse(input_full->size());
-  iu::copy(input_full, &output_full);
-  iu::copy(input_full, &output_full_sparse);
 
   iu::ImageGpu_32f_C1 input_256(256, 256*input_full->height()/input_full->width());
   iu::reduce(input_full, &input_256);
@@ -148,8 +151,16 @@ int main(int argc, char *argv[])
   iu::copy(&input_256, &output_256);
   iu::copy(&input_256, &output_256_sparse);
 
+  iu::ImageGpu_32f_C1 input_1024(1024, 1024*input_full->height()/input_full->width());
+  iu::reduce(input_full, &input_1024);
+
+  iu::ImageGpu_32f_C1 output_1024(input_1024.size());
+  iu::ImageGpu_32f_C1 output_1024_sparse(input_1024.size());
+  iu::copy(&input_1024, &output_1024);
+  iu::copy(&input_1024, &output_1024_sparse);
+
   float lambda    = 1.0f;
-  int   max_iter  = 5000;
+  int   max_iter  = 1000;
 
   double init[NSIZES][NALG];
   double alg[NSIZES][NALG];
@@ -159,13 +170,13 @@ int main(int argc, char *argv[])
 
   // Co calculations of standard ROF model
   calcROF(&input_256, &output_256,  lambda, max_iter, &init[0][0], &alg[0][0], &complete[0][0]);
-//  calcROF(input_full, &output_full, lambda, max_iter, &init[1][0], &alg[1][0], &complete[1][0]);
+  calcROF(&input_1024, &output_1024, lambda, max_iter, &init[1][0], &alg[1][0], &complete[1][0]);
 
   // Co calculations of sparse ROF model
   calcROFSparse(&input_256, &output_256_sparse,  lambda, max_iter, &init[0][1], &alg[0][1], &complete[0][1]);
-//  calcROFSparse(input_full, &output_full_sparse, lambda, max_iter, &init[1][1], &alg[1][1], &complete[1][1]);
+  calcROFSparse(&input_1024, &output_1024_sparse, lambda, max_iter, &init[1][1], &alg[1][1], &complete[1][1]);
 
-  std::cout << "          256             full" << std::endl;
+  std::cout << "          256              1024" << std::endl;
   for (int a=0; a<NALG; a++)
   {
     std::cout << name[a];
@@ -177,16 +188,17 @@ int main(int argc, char *argv[])
   }
   std::cout << std::endl;
 
-  iu::imsave(input_full, "full_input.png");
-  iu::imsave(&output_full, "full_output.png");
-  iu::imsave(&output_full_sparse, "full_sparse_output.png");
   iu::imsave(&input_256, "256_input.png");
   iu::imsave(&output_256, "256_output.png");
   iu::imsave(&output_256_sparse, "256_sparse_output.png");
 
+  iu::imsave(&input_1024, "1024_input.png");
+  iu::imsave(&output_1024, "1024_output.png");
+  iu::imsave(&output_1024_sparse, "1024_sparse_output.png");
+
 
   // Clean up
-  cusparseDestroy(handle);
+//  cusparseDestroy(handle);
   delete input_full;
 
   return 0;
