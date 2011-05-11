@@ -201,6 +201,17 @@ int VideoCapture::getFPS()
   return this->get(CV_CAP_PROP_FPS);
 }
 
+int VideoCapture::setFPS(int fps)
+{
+  if (!this->isOpened())
+  {
+    printf("VideoCapture: Capture device not ready.\n");
+    return 0;
+  }
+  
+  return this->set(CV_CAP_PROP_FPS, fps);
+}
+
 int VideoCapture::totalFrameCount()
 {
   if (!this->isOpened())
@@ -247,6 +258,7 @@ IuStatus VideoCapture::retrieve(iu::ImageCpu_32f_C1 *image) { return vidcap_->re
 IuStatus VideoCapture::retrieve(iu::ImageGpu_32f_C1 *image) { return vidcap_->retrieve(image); }
 
 IuSize VideoCapture::size() { return vidcap_->size(); }
+int VideoCapture::setFPS(int fps) { return vidcap_->setFPS(fps); }
 int VideoCapture::getFPS() { return vidcap_->getFPS(); }
 int VideoCapture::totalFrameCount() { return vidcap_->totalFrameCount(); }
 int VideoCapture::frameIdx() { return vidcap_->frameIdx(); }

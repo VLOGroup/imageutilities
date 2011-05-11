@@ -66,7 +66,10 @@ public:
 
   /** Returns the framerate of the videostream */
   int getFPS();
-  
+ 
+  /** Set the framerate of the videostream */
+  int setFPS(int fps);
+
   /** Returns the total number of frames in the videostream. Useful for video files, 
     * don't know what this returns on a live camerastream... */
   int totalFrameCount();
