@@ -24,6 +24,7 @@
 #include <iucore/copy.h>
 #include "videocapture_private.h"
 #include "videocapture.h"
+#include <iostream>
 
 /* ****************************************************************************
  *
@@ -152,6 +153,7 @@ IuSize VideoCapture::size()
   int height = static_cast<int>(this->get(CV_CAP_PROP_FRAME_HEIGHT));
 
   // crappy driver (or opencv?) returns 0 in linux with usb cameras
+  // with 2.2 it works in linux!!!
 
   // first try to get width/height from the frame member
   if(width == 0 || height == 0)
@@ -190,6 +192,7 @@ IuSize VideoCapture::size()
   return sz;
 }
 
+//-----------------------------------------------------------------------------
 int VideoCapture::getFPS()
 {
   if (!this->isOpened())
@@ -197,10 +200,11 @@ int VideoCapture::getFPS()
     printf("VideoCapture: Capture device not ready.\n");
     return 0;
   }
-  
+
   return this->get(CV_CAP_PROP_FPS);
 }
 
+//-----------------------------------------------------------------------------
 int VideoCapture::setFPS(int fps)
 {
   if (!this->isOpened())
@@ -208,10 +212,59 @@ int VideoCapture::setFPS(int fps)
     printf("VideoCapture: Capture device not ready.\n");
     return 0;
   }
-  
+
   return this->set(CV_CAP_PROP_FPS, fps);
 }
 
+//-----------------------------------------------------------------------------
+int VideoCapture::getFrameWidth()
+{
+  if (!this->isOpened())
+  {
+    printf("VideoCapture: Capture device not ready.\n");
+    return 0;
+  }
+
+  return this->get(CV_CAP_PROP_FRAME_WIDTH);
+}
+
+//-----------------------------------------------------------------------------
+int VideoCapture::setFrameWidth(int width)
+{
+  if (!this->isOpened())
+  {
+    printf("VideoCapture: Capture device not ready.\n");
+    return 0;
+  }
+
+  return this->set(CV_CAP_PROP_FRAME_WIDTH, width);
+}
+
+//-----------------------------------------------------------------------------
+int VideoCapture::getFrameHeight()
+{
+  if (!this->isOpened())
+  {
+    printf("VideoCapture: Capture device not ready.\n");
+    return 0;
+  }
+
+  return this->get(CV_CAP_PROP_FRAME_HEIGHT);
+}
+
+//-----------------------------------------------------------------------------
+int VideoCapture::setFrameHeight(int height)
+{
+  if (!this->isOpened())
+  {
+    printf("VideoCapture: Capture device not ready.\n");
+    return 0;
+  }
+
+  return this->set(CV_CAP_PROP_FRAME_HEIGHT, height);
+}
+
+//-----------------------------------------------------------------------------
 int VideoCapture::totalFrameCount()
 {
   if (!this->isOpened())
@@ -219,11 +272,11 @@ int VideoCapture::totalFrameCount()
     printf("VideoCapture: Capture device not ready.\n");
     return 0;
   }
-  
+
   return this->get(CV_CAP_PROP_FRAME_COUNT);
 }
 
-
+//-----------------------------------------------------------------------------
 int VideoCapture::frameIdx()
 {
   if (!this->isOpened())
@@ -231,7 +284,7 @@ int VideoCapture::frameIdx()
     printf("VideoCapture: Capture device not ready.\n");
     return 0;
   }
-  
+
   return this->get(CV_CAP_PROP_POS_FRAMES);
 }
 
@@ -258,9 +311,12 @@ IuStatus VideoCapture::retrieve(iu::ImageCpu_32f_C1 *image) { return vidcap_->re
 IuStatus VideoCapture::retrieve(iu::ImageGpu_32f_C1 *image) { return vidcap_->retrieve(image); }
 
 IuSize VideoCapture::size() { return vidcap_->size(); }
-int VideoCapture::setFPS(int fps) { return vidcap_->setFPS(fps); }
 int VideoCapture::getFPS() { return vidcap_->getFPS(); }
-int VideoCapture::totalFrameCount() { return vidcap_->totalFrameCount(); }
+int VideoCapture::setFPS(int fps) { return vidcap_->setFPS(fps); }
+int VideoCapture::getFrameWidth() { return vidcap_->getFrameWidth(); }
+int VideoCapture::setFrameWidth(int width) { return vidcap_->setFrameWidth(width); }
+int VideoCapture::getFrameHeight() { return vidcap_->getFrameHeight(); }int VideoCapture::totalFrameCount() { return vidcap_->totalFrameCount(); }
+int VideoCapture::setFrameHeight(int height) { return vidcap_->setFrameHeight(height); }
 int VideoCapture::frameIdx() { return vidcap_->frameIdx(); }
 
 } // namespace iu
