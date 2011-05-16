@@ -509,10 +509,10 @@ __global__ void update_primal_shared(float* device_u, float* device_u_,
     if (y >= height-1)
       p[threadIdx.x+1][threadIdx.y+1].y = 0.0f;
 
-//        syncthreads();
+    //        syncthreads();
 
     float divergence = p[threadIdx.x+1][threadIdx.y+1].x - p[threadIdx.x][threadIdx.y+1].x +
-                       p[threadIdx.x+1][threadIdx.y+1].y - p[threadIdx.x+1][threadIdx.y].y;
+        p[threadIdx.x+1][threadIdx.y+1].y - p[threadIdx.x+1][threadIdx.y].y;
 
     // update primal variable
     u = (u + tau*(divergence + lambda*f))/(1.0f+tau*lambda);
@@ -541,7 +541,7 @@ __global__ void update_dual_shared(float2* device_p, float sigma,
     if (threadIdx.y==BSY-1)
       u_[threadIdx.x][threadIdx.y+1] = tex2D(rof_tex_u_, x+0.5f, y+1.5f);
 
-//    syncthreads();
+    //    syncthreads();
 
     float2 grad_u = make_float2(u_[threadIdx.x+1][threadIdx.y] - u_[threadIdx.x][threadIdx.y],
                                 u_[threadIdx.x][threadIdx.y+1] - u_[threadIdx.x][threadIdx.y] );
@@ -613,7 +613,7 @@ void rof_primal_dual_shared(iu::ImageGpu_32f_C1* device_f, iu::ImageGpu_32f_C1* 
 ////////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////////////////
-__global__ void update_shared_single(float* device_u, float* device_u_, float2* device_p,
+__global__ void update_shared_single(float* device_u, float2* device_p,
                                      float tau, float theta, float sigma, float lambda,
                                      int width, int height, int stride1, int stride2)
 {
@@ -624,13 +624,37 @@ __global__ void update_shared_single(float* device_u, float* device_u_, float2* 
 
   if(x<width && y<height)
   {
-    // Load p
     __shared__ float2 p[BSX][BSY];
     p[threadIdx.x][threadIdx.y] = tex2D(rof_tex_p, x+0.5f, y+0.5f);
 
-    // Load u_
+    if (x<=0)
+      p[threadIdx.x][threadIdx.y].x = 0.0f;
+    if (y<=0)
+      p[threadIdx.x][threadIdx.y].y = 0.0f;
+
+    if (x >= width-1)
+      p[threadIdx.x][threadIdx.y].x = 0.0f;
+    if (y >= height-1)
+      p[threadIdx.x][threadIdx.y].y = 0.0f;
+
     __shared__ float u_[BSX][BSY];
-    u_[threadIdx.x][threadIdx.y] = tex2D(rof_tex_u_, x+0.5f, y+0.5f);
+
+    float f = tex2D(rof_tex_f, x+0.5f, y+0.5f);
+    float u = tex2D(rof_tex_u, x+0.5f, y+0.5f);
+    u_[threadIdx.x][threadIdx.y] = u;
+
+    syncthreads();
+
+    // Primal update
+    if ( (threadIdx.x > 0) && (threadIdx.y > 0) )
+    {
+      float divergence = p[threadIdx.x][threadIdx.y].x - p[threadIdx.x-1][threadIdx.y].x +
+                         p[threadIdx.x][threadIdx.y].y - p[threadIdx.x][threadIdx.y-1].y;
+
+      // update primal variable
+      u = (u + tau*(divergence + lambda*f))/(1.0f+tau*lambda);
+      u_[threadIdx.x][threadIdx.y] = u + theta*(u-u_[threadIdx.x][threadIdx.y]);
+    }
 
     syncthreads();
 
@@ -643,43 +667,11 @@ __global__ void update_shared_single(float* device_u, float* device_u_, float2* 
       p[threadIdx.x][threadIdx.y] = p[threadIdx.x][threadIdx.y] + sigma*grad_u;
       p[threadIdx.x][threadIdx.y] = p[threadIdx.x][threadIdx.y]/max(1.0f, length(p[threadIdx.x][threadIdx.y]));
 
-      if (x<=0)
-        p[threadIdx.x][threadIdx.y].x = 0.0f;
-      if (y<=0)
-        p[threadIdx.x][threadIdx.y].y = 0.0f;
-
-      if (x >= width-1)
-        p[threadIdx.x][threadIdx.y].x = 0.0f;
-      if (y >= height-1)
-        p[threadIdx.x][threadIdx.y].y = 0.0f;
-
-      // Write back
+      // Write Back
       if ( (threadIdx.x > 0) && (threadIdx.y > 0) )
-        device_p[c2] = p[threadIdx.x][threadIdx.y];
-    }
-
-        syncthreads();
-
-    // texture fetches
-    float f = tex2D(rof_tex_f, x+0.5f, y+0.5f);
-    float u = tex2D(rof_tex_u, x+0.5f, y+0.5f);
-
-    // Primal update
-    if ( (threadIdx.x > 0) && (threadIdx.y > 0) )
-    {
-      u_[threadIdx.x][threadIdx.y] = u;
-
-      float divergence = p[threadIdx.x][threadIdx.y].x - p[threadIdx.x-1][threadIdx.y].x +
-                         p[threadIdx.x][threadIdx.y].y - p[threadIdx.x][threadIdx.y-1].y;
-
-      // update primal variable
-      u = (u + tau*(divergence + lambda*f))/(1.0f+tau*lambda);
-
-      if ( (threadIdx.x < BSX-1) && (threadIdx.y < BSY-1) )
       {
-        // Write back
+        device_p[c2] = p[threadIdx.x][threadIdx.y];
         device_u[c1] = u;
-        device_u_[c1] = u + theta*(u-u_[threadIdx.x][threadIdx.y]);
       }
     }
   }
@@ -688,8 +680,8 @@ __global__ void update_shared_single(float* device_u, float* device_u_, float2* 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 void rof_primal_dual_shared_single(iu::ImageGpu_32f_C1* device_f, iu::ImageGpu_32f_C1* device_u,
-                            iu::ImageGpu_32f_C1* device_u_, iu::ImageGpu_32f_C2* device_p,
-                            float lambda, int max_iter)
+                                   iu::ImageGpu_32f_C1* device_u_, iu::ImageGpu_32f_C2* device_p,
+                                   float lambda, int max_iter)
 {
   int width = device_f->width();
   int height = device_f->height();
@@ -705,7 +697,6 @@ void rof_primal_dual_shared_single(iu::ImageGpu_32f_C1* device_f, iu::ImageGpu_3
 
   bindTexture(rof_tex_f, device_f);
   bindTexture(rof_tex_u, device_u);
-  bindTexture(rof_tex_u_, device_u_);
   bindTexture(rof_tex_p, device_p);
 
   float L = sqrt(8.0f);
@@ -720,7 +711,7 @@ void rof_primal_dual_shared_single(iu::ImageGpu_32f_C1* device_f, iu::ImageGpu_3
     else
       theta = 1.0f;
 
-    update_shared_single<<<dimGrid, dimBlock>>>(device_u->data(), device_u_->data(), device_p->data(),
+    update_shared_single<<<dimGrid, dimBlock>>>(device_u->data(), device_p->data(),
                                                 tau, theta, sigma, lambda, width, height,
                                                 device_u->stride(), device_p->stride());
     sigma /= theta;
@@ -732,6 +723,135 @@ void rof_primal_dual_shared_single(iu::ImageGpu_32f_C1* device_f, iu::ImageGpu_3
     std::cerr << "An error occured while solving the ROF model." << std::endl;
   }
 }
+
+
+
+//////////////////////////////////////////////////////////////////////////////////
+////############################################################################//
+////OOOOOOOOOOOOOOOOOOOOOOOO SINGLE SHARED MEMORY  OOOOOOOOOOOOOOOOOOOOOOOOOOOOO//
+////############################################################################//
+//////////////////////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////////////////
+//__global__ void update_shared_single(float* device_u, float* device_u_, float2* device_p,
+//                                     float tau, float theta, float sigma, float lambda,
+//                                     int width, int height, int stride1, int stride2)
+//{
+//  int x = blockIdx.x*(blockDim.x-2) + threadIdx.x - 1;
+//  int y = blockIdx.y*(blockDim.y-2) + threadIdx.y - 1;
+//  int c1 = y*stride1 + x;
+//  int c2 = y*stride2 + x;
+
+//  if(x<width && y<height)
+//  {
+//    // Load p
+//    __shared__ float2 p[BSX][BSY];
+//    p[threadIdx.x][threadIdx.y] = tex2D(rof_tex_p, x+0.5f, y+0.5f);
+
+//    // Load u_
+//    __shared__ float u_[BSX][BSY];
+//    u_[threadIdx.x][threadIdx.y] = tex2D(rof_tex_u_, x+0.5f, y+0.5f);
+
+//    syncthreads();
+
+//    // Dual Update
+//    if ( (threadIdx.x < BSX-1) && (threadIdx.y < BSY-1) )
+//    {
+//      float2 grad_u = make_float2(u_[threadIdx.x+1][threadIdx.y] - u_[threadIdx.x][threadIdx.y],
+//                                  u_[threadIdx.x][threadIdx.y+1] - u_[threadIdx.x][threadIdx.y] );
+
+//      p[threadIdx.x][threadIdx.y] = p[threadIdx.x][threadIdx.y] + sigma*grad_u;
+//      p[threadIdx.x][threadIdx.y] = p[threadIdx.x][threadIdx.y]/max(1.0f, length(p[threadIdx.x][threadIdx.y]));
+
+//      if (x<=0)
+//        p[threadIdx.x][threadIdx.y].x = 0.0f;
+//      if (y<=0)
+//        p[threadIdx.x][threadIdx.y].y = 0.0f;
+
+//      if (x >= width-1)
+//        p[threadIdx.x][threadIdx.y].x = 0.0f;
+//      if (y >= height-1)
+//        p[threadIdx.x][threadIdx.y].y = 0.0f;
+
+//      // Write back
+//      if ( (threadIdx.x > 0) && (threadIdx.y > 0) )
+//        device_p[c2] = p[threadIdx.x][threadIdx.y];
+//    }
+
+//        syncthreads();
+
+//    // texture fetches
+//    float f = tex2D(rof_tex_f, x+0.5f, y+0.5f);
+//    float u = tex2D(rof_tex_u, x+0.5f, y+0.5f);
+
+//    // Primal update
+//    if ( (threadIdx.x > 0) && (threadIdx.y > 0) )
+//    {
+//      u_[threadIdx.x][threadIdx.y] = u;
+
+//      float divergence = p[threadIdx.x][threadIdx.y].x - p[threadIdx.x-1][threadIdx.y].x +
+//                         p[threadIdx.x][threadIdx.y].y - p[threadIdx.x][threadIdx.y-1].y;
+
+//      // update primal variable
+//      u = (u + tau*(divergence + lambda*f))/(1.0f+tau*lambda);
+
+//      if ( (threadIdx.x < BSX-1) && (threadIdx.y < BSY-1) )
+//      {
+//        // Write back
+//        device_u[c1] = u;
+//        device_u_[c1] = u + theta*(u-u_[threadIdx.x][threadIdx.y]);
+//      }
+//    }
+//  }
+//}
+
+//////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////
+//void rof_primal_dual_shared_single(iu::ImageGpu_32f_C1* device_f, iu::ImageGpu_32f_C1* device_u,
+//                            iu::ImageGpu_32f_C1* device_u_, iu::ImageGpu_32f_C2* device_p,
+//                            float lambda, int max_iter)
+//{
+//  int width = device_f->width();
+//  int height = device_f->height();
+
+//  // fragmentation
+//  int nb_x = width/(BSX-2);
+//  int nb_y = height/(BSY-2);
+//  if (nb_x*(BSX-2) < width) nb_x++;
+//  if (nb_y*(BSY-2) < height) nb_y++;
+
+//  dim3 dimBlock(BSX,BSY);
+//  dim3 dimGrid(nb_x,nb_y);
+
+//  bindTexture(rof_tex_f, device_f);
+//  bindTexture(rof_tex_u, device_u);
+//  bindTexture(rof_tex_u_, device_u_);
+//  bindTexture(rof_tex_p, device_p);
+
+//  float L = sqrt(8.0f);
+//  float tau = 1/L;
+//  float sigma = 1/L;
+//  float theta;
+
+//  for (int k = 0; k < max_iter; ++k)
+//  {
+//    if (sigma < 1000.0f)
+//      theta = 1/sqrt(1.0f+0.7f*lambda*tau);
+//    else
+//      theta = 1.0f;
+
+//    update_shared_single<<<dimGrid, dimBlock>>>(device_u->data(), device_u_->data(), device_p->data(),
+//                                                tau, theta, sigma, lambda, width, height,
+//                                                device_u->stride(), device_p->stride());
+//    sigma /= theta;
+//    tau *= theta;
+//  }
+//  IuStatus status = iu::checkCudaErrorState(true);
+//  if(status != IU_NO_ERROR)
+//  {
+//    std::cerr << "An error occured while solving the ROF model." << std::endl;
+//  }
+//}
 
 #endif // IUSPARSECOMPARE_CU
 
