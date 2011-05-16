@@ -13,7 +13,7 @@
 
 
 #define NSIZES 2
-#define NALG   4
+#define NALG   5
 
 //cusparseHandle_t handle = 0;
 
@@ -35,6 +35,11 @@ void rof_primal_dual_notex(iu::ImageGpu_32f_C1* device_f, iu::ImageGpu_32f_C1* d
 void rof_primal_dual_shared(iu::ImageGpu_32f_C1* device_f, iu::ImageGpu_32f_C1* device_u,
                             iu::ImageGpu_32f_C1* device_u_, iu::ImageGpu_32f_C2* device_p,
                             float lambda, int max_iter);
+
+void rof_primal_dual_shared_single(iu::ImageGpu_32f_C1* device_f, iu::ImageGpu_32f_C1* device_u,
+                            iu::ImageGpu_32f_C1* device_u_, iu::ImageGpu_32f_C2* device_p,
+                            float lambda, int max_iter);
+
 
 
 // Calls
@@ -67,7 +72,8 @@ void calcROF(iu::ImageGpu_32f_C1* f, iu::ImageGpu_32f_C1* u,
 }
 
 void calcROFshared(iu::ImageGpu_32f_C1* f, iu::ImageGpu_32f_C1* u,
-                   float lambda, int max_iter, double* init, double* alg, double* complete)
+                   float lambda, int max_iter, double* init, double* alg, double* complete,
+                   bool single=false)
 {
   cudaThreadSynchronize();
   double start = iu::getTime();
@@ -81,7 +87,10 @@ void calcROFshared(iu::ImageGpu_32f_C1* f, iu::ImageGpu_32f_C1* u,
   double interm = iu::getTime();
   *init = interm - start;
 
-  rof_primal_dual_shared(f, u, &u_, &p, lambda, max_iter);
+  if (single)
+    rof_primal_dual_shared_single(f, u, &u_, &p, lambda, max_iter);
+  else
+    rof_primal_dual_shared(f, u, &u_, &p, lambda, max_iter);
 
   cudaThreadSynchronize();
   *alg = iu::getTime() - interm;
@@ -183,10 +192,12 @@ int main(int argc, char *argv[])
   iu::ImageGpu_32f_C1 output_256(input_256.size());
   iu::ImageGpu_32f_C1 output_256_notex(input_256.size());
   iu::ImageGpu_32f_C1 output_256_shared(input_256.size());
+  iu::ImageGpu_32f_C1 output_256_shared_single(input_256.size());
   iu::ImageGpu_32f_C1 output_256_sparse(input_256.size());
   iu::copy(&input_256, &output_256);
   iu::copy(&input_256, &output_256_notex);
   iu::copy(&input_256, &output_256_shared);
+  iu::copy(&input_256, &output_256_shared_single);
   iu::copy(&input_256, &output_256_sparse);
 
   iu::ImageGpu_32f_C1 input_1024(1024, 1024*input_full->height()/input_full->width());
@@ -195,10 +206,12 @@ int main(int argc, char *argv[])
   iu::ImageGpu_32f_C1 output_1024(input_1024.size());
   iu::ImageGpu_32f_C1 output_1024_notex(input_1024.size());
   iu::ImageGpu_32f_C1 output_1024_shared(input_1024.size());
+  iu::ImageGpu_32f_C1 output_1024_shared_single(input_1024.size());
   iu::ImageGpu_32f_C1 output_1024_sparse(input_1024.size());
   iu::copy(&input_1024, &output_1024);
   iu::copy(&input_1024, &output_1024_notex);
   iu::copy(&input_1024, &output_1024_shared);
+  iu::copy(&input_1024, &output_1024_shared_single);
   iu::copy(&input_1024, &output_1024_sparse);
 
   float lambda    = 1.0f;
@@ -216,7 +229,7 @@ int main(int argc, char *argv[])
       complete[sz][a] = -1.0;
     }
   }
-  char* name[] = {"Standard: ", "No Tex:   ", "Shared:  ", "Sparse:   "};
+  char* name[] = {"Standard: ", "No Tex:   ", "Shared:   ", "Single:   ", "Sparse:   "};
 
   int calg = 0;
   // Co calculations of standard ROF model
@@ -232,6 +245,11 @@ int main(int argc, char *argv[])
   // Co calculations of standard ROF with shared memory
   calcROFshared(&input_256, &output_256_shared,  lambda, max_iter, &init[0][calg], &alg[0][calg], &complete[0][calg]);
   calcROFshared(&input_1024, &output_1024_shared, lambda, max_iter, &init[1][calg], &alg[1][calg], &complete[1][calg]);
+  calg++;
+
+  // Co calculations of standard ROF with shared memory in single iteration
+  calcROFshared(&input_256, &output_256_shared_single,  lambda, max_iter, &init[0][calg], &alg[0][calg], &complete[0][calg], true);
+  calcROFshared(&input_1024, &output_1024_shared_single, lambda, max_iter, &init[1][calg], &alg[1][calg], &complete[1][calg], true);
   calg++;
 
   //  // Co calculations of sparse ROF model
@@ -255,14 +273,15 @@ int main(int argc, char *argv[])
   iu::imsave(&output_256, "256_output.png");
   iu::imsave(&output_256_notex, "256_notex_output.png");
   iu::imsave(&output_256_shared, "256_shared_output.png");
+  iu::imsave(&output_256_shared_single, "256_shared_single_output.png");
   iu::imsave(&output_256_sparse, "256_sparse_output.png");
 
   iu::imsave(&input_1024, "1024_input.png");
   iu::imsave(&output_1024, "1024_output.png");
   iu::imsave(&output_1024_notex, "1024_notex_output.png");
   iu::imsave(&output_1024_shared, "1024_shared_output.png");
+  iu::imsave(&output_1024_shared_single, "1024_shared_single_output.png");
   iu::imsave(&output_1024_sparse, "1024_sparse_output.png");
-
 
   // Clean up
   //  cusparseDestroy(handle);
