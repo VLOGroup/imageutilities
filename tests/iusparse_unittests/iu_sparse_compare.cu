@@ -17,7 +17,7 @@ texture<float2, 2, cudaReadModeElementType> rof_tex_p;
 texture<float2, 2, cudaReadModeElementType> rof_tex_gradient;
 texture<float, 2, cudaReadModeElementType> rof_tex_divergence;
 
-const unsigned int BSX=16;
+const unsigned int BSX=32;
 const unsigned int BSY=16;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -44,92 +44,6 @@ void bindTexture(texture<float2, 2>& tex, iu::ImageGpu_32f_C2* mem)
                       mem->width(), mem->height(), mem->pitch()));
 }
 
-
-////////////////////////////////////////////////////////////////////////////////
-//! Primal energy kernel
-////////////////////////////////////////////////////////////////////////////////
-__global__ void primal_energy_kernel(float* primal, float lambda,
-                                     int width, int height, int xstride)
-{
-  int x = blockIdx.x*blockDim.x + threadIdx.x;
-  int y = blockIdx.y*blockDim.y + threadIdx.y;
-
-  float xx = x + 0.5f;
-  float yy = y + 0.5f;
-
-  // texture fetches
-  float f = tex2D(rof_tex_f, xx, yy);
-  float u = tex2D(rof_tex_u, xx, yy);
-  float2 grad_u = dp(rof_tex_u, x, y);
-
-  // Compute pixel wise energy
-  if ((x<width) && (y<height))
-  {
-    primal[y*xstride + x] = length(grad_u) + lambda/2.0f * (u-f)*(u-f);
-  }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-//! Dual energy kernel for the 2D TVSEG model
-////////////////////////////////////////////////////////////////////////////////
-__global__ void dual_energy_kernel(float* dual, float lambda,
-                                   int width, int height, int xstride)
-{
-  int x = blockIdx.x*blockDim.x + threadIdx.x;
-  int y = blockIdx.y*blockDim.y + threadIdx.y;
-
-  float xx = x + 0.5f;
-  float yy = y + 0.5f;
-
-  // texture fetches
-  float f = tex2D(rof_tex_f, xx, yy);
-  float divergence = dp_ad(rof_tex_p, x, y, width, height);
-
-  // Compute pixel wise energy
-  if ((x<width) && (y<height))
-  {
-    dual[y*xstride + x] = -divergence*divergence/(2.0f*lambda) - divergence*f;
-  }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-void rof_energy( iu::ImageGpu_32f_C1* device_f, iu::ImageGpu_32f_C1* device_u,
-                iu::ImageGpu_32f_C2* device_p,
-                float lambda, double& primal_energy, double& dual_energy)
-{
-  int width = device_f->width();
-  int height = device_f->height();
-
-  // compute number of Blocks
-  int nb_x = width/BSX;
-  int nb_y = height/BSY;
-  if (nb_x*BSX < width) nb_x++;
-  if (nb_y*BSY < height) nb_y++;
-
-  dim3 dimBlock(BSX,BSY);
-  dim3 dimGrid(nb_x,nb_y);
-
-  bindTexture(rof_tex_f, device_f);
-  bindTexture(rof_tex_u, device_u);
-  bindTexture(rof_tex_p, device_p);
-
-  // Temporary variable for energies
-  iu::ImageGpu_32f_C1 temp_energy(device_f->size());
-
-  // Calculate primal energy
-  primal_energy_kernel
-      <<<dimGrid, dimBlock>>>(temp_energy.data(), lambda,
-                              width, height, temp_energy.stride());
-  iu::summation(&temp_energy, device_f->roi(), primal_energy);
-
-  // Calculate dual energy
-  dual_energy_kernel
-      <<<dimGrid, dimBlock>>>(temp_energy.data(), lambda,
-                              width, height, temp_energy.stride());
-  iu::summation(&temp_energy, device_f->roi(), dual_energy);
-  iu::checkCudaErrorState();
-}
-
 ////////////////////////////////////////////////////////////////////////////////
 //############################################################################//
 //OOOOOOOOOOOOOOOOOOOOOOOOOOO  STANDARD MODEL  OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO//
@@ -151,9 +65,8 @@ __global__ void update_primal(float* device_u, float* device_u_,
     float f = tex2D(rof_tex_f, x+0.5f, y+0.5f);
     float u = tex2D(rof_tex_u, x+0.5f, y+0.5f);
     float u_ = u;
-    float divergence;
 
-    divergence = dp_ad(rof_tex_p, x, y, width, height);
+    float divergence = dp_ad(rof_tex_p, x, y, width, height);
 
     // update primal variable
     u = (u + tau*(divergence + lambda*f))/(1.0f+tau*lambda);
@@ -613,67 +526,57 @@ void rof_primal_dual_shared(iu::ImageGpu_32f_C1* device_f, iu::ImageGpu_32f_C1* 
 ////////////////////////////////////////////////////////////////////////////////
 
 const unsigned int BSX_SINGLE=16;
-const unsigned int BSY_SINGLE=10;
+const unsigned int BSY_SINGLE=12;
 
 ////////////////////////////////////////////////////////////////////////////////
 __global__ void update_shared_single(float* device_u, float2* device_p,
                                      float tau, float theta, float sigma, float lambda,
                                      int width, int height, int stride1, int stride2)
 {
-  int x = blockIdx.x*(blockDim.x-2) + threadIdx.x - 1;
-  int y = blockIdx.y*(blockDim.y-2) + threadIdx.y - 1;
+  int x = blockIdx.x*(blockDim.x-1) + threadIdx.x;
+  int y = blockIdx.y*(blockDim.y-1) + threadIdx.y;
+
+  __shared__ float u_[BSX_SINGLE][BSY_SINGLE];
+
+  float2 p = tex2D(rof_tex_p, x+0.5f, y+0.5f);
+  float2 pwval = tex2D(rof_tex_p, x-0.5f, y+0.5f);
+  float2 pnval = tex2D(rof_tex_p, x+0.5f, y-0.5f);
+  if (x == 0)
+    pwval.x = 0.0f;
+  else if (x >= width-1)
+    p.x = 0.0f;
+  if (y == 0)
+    pnval.y = 0.0f;
+  else if (y >= height-1)
+    p.y = 0.0f;
+
+  float f = tex2D(rof_tex_f, x+0.5f, y+0.5f);
+  float u = tex2D(rof_tex_u, x+0.5f, y+0.5f);
+
+  // Remember old u
+  u_[threadIdx.x][threadIdx.y] = u;
+
+  // Primal update
+  u = (u + tau*((p.x - pwval.x + p.y - pnval.y) + lambda*f))/(1.0f+tau*lambda);
+
+  // Overrelaxation
+  u_[threadIdx.x][threadIdx.y] = u + theta*(u-u_[threadIdx.x][threadIdx.y]);
+
+  __syncthreads();
 
   if(x<width && y<height)
   {
-    __shared__ float2 p[BSX_SINGLE][BSY_SINGLE];
-    p[threadIdx.x][threadIdx.y] = tex2D(rof_tex_p, x+0.5f, y+0.5f);
-
-    if (x<=0)
-      p[threadIdx.x][threadIdx.y].x = 0.0f;
-    if (y<=0)
-      p[threadIdx.x][threadIdx.y].y = 0.0f;
-
-    if (x >= width-1)
-      p[threadIdx.x][threadIdx.y].x = 0.0f;
-    if (y >= height-1)
-      p[threadIdx.x][threadIdx.y].y = 0.0f;
-
-    __shared__ float u_[BSX_SINGLE][BSY_SINGLE];
-
-    float f = tex2D(rof_tex_f, x+0.5f, y+0.5f);
-    float u = tex2D(rof_tex_u, x+0.5f, y+0.5f);
-    u_[threadIdx.x][threadIdx.y] = u;
-
-    syncthreads();
-
-    // Primal update
-    if ( (threadIdx.x > 0) && (threadIdx.y > 0) )
-    {
-      float divergence = p[threadIdx.x][threadIdx.y].x - p[threadIdx.x-1][threadIdx.y].x +
-                         p[threadIdx.x][threadIdx.y].y - p[threadIdx.x][threadIdx.y-1].y;
-
-      // update primal variable
-      u = (u + tau*(divergence + lambda*f))/(1.0f+tau*lambda);
-      u_[threadIdx.x][threadIdx.y] = u + theta*(u-u_[threadIdx.x][threadIdx.y]);
-    }
-
-    syncthreads();
-
-    // Dual Update
     if ( (threadIdx.x < BSX_SINGLE-1) && (threadIdx.y < BSY_SINGLE-1) )
     {
+      // Dual Update
       float2 grad_u = make_float2(u_[threadIdx.x+1][threadIdx.y] - u_[threadIdx.x][threadIdx.y],
                                   u_[threadIdx.x][threadIdx.y+1] - u_[threadIdx.x][threadIdx.y] );
-
-      p[threadIdx.x][threadIdx.y] = p[threadIdx.x][threadIdx.y] + sigma*grad_u;
-      p[threadIdx.x][threadIdx.y] = p[threadIdx.x][threadIdx.y]/max(1.0f, length(p[threadIdx.x][threadIdx.y]));
+      p = p + sigma*grad_u;
+      p = p/max(1.0f, length(p));
 
       // Write Back
-      if ( (threadIdx.x > 0) && (threadIdx.y > 0) )
-      {
-        device_p[y*stride2 + x] = p[threadIdx.x][threadIdx.y];
-        device_u[y*stride1 + x] = u;
-      }
+      device_p[y*stride2 + x] = p;
+      device_u[y*stride1 + x] = u;
     }
   }
 }
@@ -688,10 +591,10 @@ void rof_primal_dual_shared_single(iu::ImageGpu_32f_C1* device_f, iu::ImageGpu_3
   int height = device_f->height();
 
   // fragmentation
-  int nb_x = width/(BSX_SINGLE-2);
-  int nb_y = height/(BSY_SINGLE-2);
-  if (nb_x*(BSX_SINGLE-2) < width) nb_x++;
-  if (nb_y*(BSY_SINGLE-2) < height) nb_y++;
+  int nb_x = width/(BSX_SINGLE-1);
+  int nb_y = height/(BSY_SINGLE-1);
+  if (nb_x*(BSX_SINGLE-1) < width) nb_x++;
+  if (nb_y*(BSY_SINGLE-1) < height) nb_y++;
 
   dim3 dimBlock(BSX_SINGLE,BSY_SINGLE);
   dim3 dimGrid(nb_x,nb_y);
@@ -727,7 +630,7 @@ void rof_primal_dual_shared_single(iu::ImageGpu_32f_C1* device_f, iu::ImageGpu_3
 
 ////////////////////////////////////////////////////////////////////////////////
 //############################################################################//
-//OOOOOOOOOOOOOOOOOOOOOOOO SINGLE SHARED MEMORY  OOOOOOOOOOOOOOOOOOOOOOOOOOOOO//
+//OOOOOOOOOOOOOOOOOOOOOO TWO SINGLE SHARED MEMORY  OOOOOOOOOOOOOOOOOOOOOOOOOOO//
 //############################################################################//
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -736,103 +639,88 @@ const unsigned int BSY_SINGLE2=10;
 
 ////////////////////////////////////////////////////////////////////////////////
 __global__ void update_shared_single2(float* device_u, float2* device_p,
-                                     float tau, float theta, float sigma, float lambda,
-                                     int width, int height, int stride1, int stride2)
+                                      float tau, float theta, float sigma, float lambda,
+                                      int width, int height, int stride1, int stride2)
 {
-  int x = blockIdx.x*(blockDim.x-4) + threadIdx.x - 2;
-  int y = blockIdx.y*(blockDim.y-4) + threadIdx.y - 2;
+  int x = blockIdx.x*(blockDim.x-3) + threadIdx.x - 1;
+  int y = blockIdx.y*(blockDim.y-3) + threadIdx.y - 1;
+
+  __shared__ float u_[BSX_SINGLE2][BSY_SINGLE2];
+  __shared__ float2 p[BSX_SINGLE2][BSY_SINGLE2];
+
+  float2 pc = tex2D(rof_tex_p, x+0.5f, y+0.5f);
+  float2 pwval = tex2D(rof_tex_p, x-0.5f, y+0.5f);
+  float2 pnval = tex2D(rof_tex_p, x+0.5f, y-0.5f);
+  if (x == 0)
+    pwval.x = 0.0f;
+  else if (x >= width-1)
+    pc.x = 0.0f;
+  if (y == 0)
+    pnval.y = 0.0f;
+  else if (y >= height-1)
+    pc.y = 0.0f;
+
+  float f = tex2D(rof_tex_f, x+0.5f, y+0.5f);
+  float u = tex2D(rof_tex_u, x+0.5f, y+0.5f);
+
+  // Remember old u
+  u_[threadIdx.x][threadIdx.y] = u;
+
+  // Primal update
+  u = (u + tau*((pc.x - pwval.x + pc.y - pnval.y) + lambda*f))/(1.0f+tau*lambda);
+
+  // Overrelaxation
+  u_[threadIdx.x][threadIdx.y] = u + theta*(u-u_[threadIdx.x][threadIdx.y]);
+
+  __syncthreads();
+
+  if ( (threadIdx.x < BSX_SINGLE2-1) && (threadIdx.y < BSY_SINGLE2-1) )
+  {
+    // Dual Update
+    float2 grad_u = make_float2(u_[threadIdx.x+1][threadIdx.y] - u_[threadIdx.x][threadIdx.y],
+                                u_[threadIdx.x][threadIdx.y+1] - u_[threadIdx.x][threadIdx.y] );
+    pc = pc + sigma*grad_u;
+    p[threadIdx.x][threadIdx.y] = pc/max(1.0f, length(pc));
+  }
+
+  __syncthreads();
+
+  if (threadIdx.x>0 && threadIdx.y>0)
+  {
+    // Remember old u
+    u_[threadIdx.x][threadIdx.y] = u;
+
+    // Primal update
+    float div = p[threadIdx.x][threadIdx.y].x - p[threadIdx.x-1][threadIdx.y].x +
+        p[threadIdx.x][threadIdx.y].y - p[threadIdx.x][threadIdx.y-1].y;
+    u = (u + tau*(div + lambda*f))/(1.0f+tau*lambda);
+
+    // Overrelaxation
+    u_[threadIdx.x][threadIdx.y] = u + theta*(u-u_[threadIdx.x][threadIdx.y]);
+  }
+
+  __syncthreads();
 
   if(x<width && y<height)
   {
-    __shared__ float2 p[BSX_SINGLE2][BSY_SINGLE2];
-    p[threadIdx.x][threadIdx.y] = tex2D(rof_tex_p, x+0.5f, y+0.5f);
-
-    if (x<=0)
-      p[threadIdx.x][threadIdx.y].x = 0.0f;
-    if (y<=0)
-      p[threadIdx.x][threadIdx.y].y = 0.0f;
-
-    if (x >= width-1)
-      p[threadIdx.x][threadIdx.y].x = 0.0f;
-    if (y >= height-1)
-      p[threadIdx.x][threadIdx.y].y = 0.0f;
-
-    __shared__ float u_[BSX_SINGLE2][BSY_SINGLE2];
-
-    float f = tex2D(rof_tex_f, x+0.5f, y+0.5f);
-    float u = tex2D(rof_tex_u, x+0.5f, y+0.5f);
-    u_[threadIdx.x][threadIdx.y] = u;
-
-    syncthreads();
-
-    // Primal update
-    if ( (threadIdx.x > 0) && (threadIdx.y > 0) )
-    {
-      float divergence = p[threadIdx.x][threadIdx.y].x - p[threadIdx.x-1][threadIdx.y].x +
-                         p[threadIdx.x][threadIdx.y].y - p[threadIdx.x][threadIdx.y-1].y;
-
-      // update primal variable
-      u = (u + tau*(divergence + lambda*f))/(1.0f+tau*lambda);
-      u_[threadIdx.x][threadIdx.y] = u + theta*(u-u_[threadIdx.x][threadIdx.y]);
-    }
-
-    syncthreads();
-
-    // Dual Update
-    if ( (threadIdx.x < BSX_SINGLE2-1) && (threadIdx.y < BSY_SINGLE2-1) )
-    {
-      float2 grad_u = make_float2(u_[threadIdx.x+1][threadIdx.y] - u_[threadIdx.x][threadIdx.y],
-                                  u_[threadIdx.x][threadIdx.y+1] - u_[threadIdx.x][threadIdx.y] );
-
-      p[threadIdx.x][threadIdx.y] = p[threadIdx.x][threadIdx.y] + sigma*grad_u;
-      p[threadIdx.x][threadIdx.y] = p[threadIdx.x][threadIdx.y]/max(1.0f, length(p[threadIdx.x][threadIdx.y]));
-    }
-
-    if (x<=0)
-      p[threadIdx.x][threadIdx.y].x = 0.0f;
-    if (y<=0)
-      p[threadIdx.x][threadIdx.y].y = 0.0f;
-
-    if (x >= width-1)
-      p[threadIdx.x][threadIdx.y].x = 0.0f;
-    if (y >= height-1)
-      p[threadIdx.x][threadIdx.y].y = 0.0f;
-
-    u_[threadIdx.x][threadIdx.y] = u;
-
-    syncthreads();
-
-    // Primal update
-    if ( (threadIdx.x > 1) && (threadIdx.y > 1) )
-    {
-      float divergence = p[threadIdx.x][threadIdx.y].x - p[threadIdx.x-1][threadIdx.y].x +
-                         p[threadIdx.x][threadIdx.y].y - p[threadIdx.x][threadIdx.y-1].y;
-
-      // update primal variable
-      u = (u + tau*(divergence + lambda*f))/(1.0f+tau*lambda);
-      u_[threadIdx.x][threadIdx.y] = u + theta*(u-u_[threadIdx.x][threadIdx.y]);
-    }
-
-    syncthreads();
-
-    // Dual Update
     if ( (threadIdx.x < BSX_SINGLE2-2) && (threadIdx.y < BSY_SINGLE2-2) )
     {
+      // Dual Update
       float2 grad_u = make_float2(u_[threadIdx.x+1][threadIdx.y] - u_[threadIdx.x][threadIdx.y],
                                   u_[threadIdx.x][threadIdx.y+1] - u_[threadIdx.x][threadIdx.y] );
+      pc = p[threadIdx.x][threadIdx.y] + sigma*grad_u;
+      p[threadIdx.x][threadIdx.y] = pc/max(1.0f, length(pc));
 
-      p[threadIdx.x][threadIdx.y] = p[threadIdx.x][threadIdx.y] + sigma*grad_u;
-      p[threadIdx.x][threadIdx.y] = p[threadIdx.x][threadIdx.y]/max(1.0f, length(p[threadIdx.x][threadIdx.y]));
-
-      // Write Back
-      if ( (threadIdx.x > 1) && (threadIdx.y > 1) )
+      if (threadIdx.x>0 && threadIdx.y>0)
       {
+        // Write Back
         device_p[y*stride2 + x] = p[threadIdx.x][threadIdx.y];
         device_u[y*stride1 + x] = u;
       }
     }
-
   }
+
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -845,10 +733,10 @@ void rof_primal_dual_shared_single2(iu::ImageGpu_32f_C1* device_f, iu::ImageGpu_
   int height = device_f->height();
 
   // fragmentation
-  int nb_x = width/(BSX_SINGLE2-4);
-  int nb_y = height/(BSY_SINGLE2-4);
-  if (nb_x*(BSX_SINGLE2-4) < width) nb_x++;
-  if (nb_y*(BSY_SINGLE2-4) < height) nb_y++;
+  int nb_x = width/(BSX_SINGLE2-3);
+  int nb_y = height/(BSY_SINGLE2-3);
+  if (nb_x*(BSX_SINGLE2-3) < width) nb_x++;
+  if (nb_y*(BSY_SINGLE2-3) < height) nb_y++;
 
   dim3 dimBlock(BSX_SINGLE2,BSY_SINGLE2);
   dim3 dimGrid(nb_x,nb_y);
@@ -870,8 +758,8 @@ void rof_primal_dual_shared_single2(iu::ImageGpu_32f_C1* device_f, iu::ImageGpu_
       theta = 1.0f;
 
     update_shared_single2<<<dimGrid, dimBlock>>>(device_u->data(), device_p->data(),
-                                                tau, theta, sigma, lambda, width, height,
-                                                device_u->stride(), device_p->stride());
+                                                 tau, theta, sigma, lambda, width, height,
+                                                 device_u->stride(), device_p->stride());
     sigma /= theta;
     tau *= theta;
   }

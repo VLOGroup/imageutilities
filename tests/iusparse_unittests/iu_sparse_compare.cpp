@@ -267,10 +267,10 @@ int main(int argc, char *argv[])
   calcROFshared(&input_1024, &output_1024_shared_single2, lambda, max_iter, &init[1][calg], &alg[1][calg], &complete[1][calg], true, 2);
   calg++;
 
-  //  // Co calculations of sparse ROF model
-  //  calcROFSparse(&input_256, &output_256_sparse,  lambda, max_iter, &init[0][calg], &alg[0][calg], &complete[0][calg]);
-  //  calcROFSparse(&input_1024, &output_1024_sparse, lambda, max_iter, &init[1][calg], &alg[1][calg], &complete[1][calg]);
-  //  calg++;
+//    // Co calculations of sparse ROF model
+//    calcROFSparse(&input_256, &output_256_sparse,  lambda, max_iter, &init[0][calg], &alg[0][calg], &complete[0][calg]);
+//    calcROFSparse(&input_1024, &output_1024_sparse, lambda, max_iter, &init[1][calg], &alg[1][calg], &complete[1][calg]);
+//    calg++;
 
   std::cout << "          256              1024" << std::endl;
   for (int a=0; a<NALG; a++)
