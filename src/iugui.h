@@ -34,30 +34,12 @@
  *  @{
  */
 
-/* ***************************************************************************
-     Cpu Image Display
- * ***************************************************************************/
-
-//////////////////////////////////////////////////////////////////////////////
-/** @defgroup ImageCpuDisplay
- *  @ingroup Gui
- *  TODO more detailed docu
- *  @{
- */
-#include "iugui/image_cpu_display.h"
-
-//////////////////////////////////////////////////////////////////////////////
-/** @defgroup QGLImageGpuWidget
- *  @ingroup Gui
- *  TODO more detailed docu
- *  @{
- */
-#include "iugui/qgl_image_gpu_widget.h"
+#include "iugui/imagewindow.h"
+//#include "iugui/image_cpu_display.h"
+#include "iugui/qglimagegpuwidget.h"
 
 
 
-
-/** @} */ // end of ImageCpuDisplay
 
 /** @} */ // end of Gui
 

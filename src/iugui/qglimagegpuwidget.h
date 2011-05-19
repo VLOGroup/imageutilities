@@ -22,21 +22,21 @@
  */
 
 
-#ifndef IUPRIVATE_QGL_IMAGE_GPU_WIDGET_H
-#define IUPRIVATE_QGL_IMAGE_GPU_WIDGET_H
+#ifndef IU_QGL_IMAGE_GPU_WIDGET_H
+#define IU_QGL_IMAGE_GPU_WIDGET_H
 
 #include <GL/glew.h>
-//#include <QObject>
+#include <QObject>
 #include <QGLWidget>
 #include <cuda_gl_interop.h>
 
 #include "iudefs.h"
 
-namespace iuprivate {
+namespace iu {
 
-class QGLImageGpuWidget : public QGLWidget
+class IU_DLLAPI QGLImageGpuWidget : public QGLWidget
 {
-  //Q_OBJECT        // must include this if you use Qt signals/slots
+  Q_OBJECT        // must include this if you use Qt signals/slots
 
 public:
   QGLImageGpuWidget(QWidget *parent=0);
@@ -50,7 +50,42 @@ public:
   void autoMinMax();
   void setAutoNormalize(bool flag);
 
+signals:
+  void mouseMoved(int from_x, int from_y, int to_x, int to_y);
+  void mousePressed(int x, int y);
+  void mousePressed(int x, int y, int global_x, int global_y);
+  void mouseReleased(int x, int y);
+
+private slots:
+//  /** Invokes timer triggered updates if the autoupdate ability is set. */
+//  void slotTimerCallback();
+
+//  /** Resets the zoom to 100% (1:1). */
+//  void slotZoomReset();
+
+//  void slotZoom0p25();
+//  void slotZoom0p33();
+//  void slotZoom0p5();
+//  void slotZoom2();
+//  void slotZoom3();
+//  void slotZoom4();
+
+//  /** Sets the minimum gray value that should be displayed from the context menu slider. */
+//  void slotMinimumValue(int value);
+
+//  /** Sets the maximum gray value that should be displayed from the context menu slider. */
+//  void slotMaximumValue(int value);
+
+//  /** Activates the corresponing overlay to be displayed. */
+//  void slotActivateOverlay(const QString& overlay_name);
+
 protected:
+  void mousePressEvent(QMouseEvent *event);
+  void mouseReleaseEvent(QMouseEvent *event);
+  void mouseMoveEvent(QMouseEvent *event);
+
+  void wheelEvent(QWheelEvent *event);
+
 
   void initializeGL();
   void resizeGL(int w, int h);
@@ -74,6 +109,13 @@ protected:
   float max_;
   bool init_ok_;
   float zoom_;
+
+  // mouse interaction
+   int  mouse_x_old_; /**< Previous mouse position (x coordinate). */
+   int  mouse_y_old_; /**< Previous mouse position (y coordinate). */
+   int  mouse_x_;     /**< Current mouse position (x coordinate). */
+   int  mouse_y_;     /**< Current mouse position (y coordinate). */
+
 };
 
 } // namespace iuprivate

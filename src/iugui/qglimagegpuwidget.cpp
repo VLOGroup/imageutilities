@@ -21,18 +21,21 @@
  *
  */
 
+#include <QMouseEvent>
 #include <GL/glew.h>
 #include <cuda_runtime.h>
 #include <iumath.h>
-#include "qgl_image_gpu_widget_p.h"
-#include "qgl_image_gpu_widget.h"
+#include "qglimagegpuwidget.h"
 
 namespace iuprivate {
-
 extern IuStatus cuCopyImageToPbo(iu::Image* image,
                                  unsigned int num_channels, unsigned int bit_depth,
                                  uchar4 *dst,
                                  float min=0.0f, float max=1.0f);
+
+}
+
+namespace iu {
 
 //-----------------------------------------------------------------------------
 QGLImageGpuWidget::QGLImageGpuWidget(QWidget *parent) :
@@ -47,7 +50,11 @@ QGLImageGpuWidget::QGLImageGpuWidget(QWidget *parent) :
   min_(0.0f),
   max_(1.0f),
   init_ok_(false),
-  zoom_(1.0f)
+  zoom_(1.0f),
+  mouse_x_old_(0),
+  mouse_y_old_(0),
+  mouse_x_(0),
+  mouse_y_(0)
 {
   //updateGL();/ // invoke OpenGL initialization
   this->initializeGL();
@@ -73,29 +80,29 @@ QGLImageGpuWidget::~QGLImageGpuWidget()
 //-----------------------------------------------------------------------------
 void QGLImageGpuWidget::setImage(iu::ImageGpu_8u_C1 *image, bool normalize)
 {
-   printf("QGLImageGpuWidget::setImage(ImageGpu_8u_C1*)\n");
+  printf("QGLImageGpuWidget::setImage(ImageGpu_8u_C1*)\n");
 
-   if(image == 0)
-   {
-      fprintf(stderr, "The given input image is null!\n");
-   }
+  if(image == 0)
+  {
+    fprintf(stderr, "The given input image is null!\n");
+  }
 
-   // FIXMEEE
+  // FIXMEEE
   // TODO cleanup pbo and texture if we have already an image set
 
-   if(image_ != 0)
-   {
-     if(image->size() == image_->size())
-     {
-       printf("set new image with same sizings\n");
-       image_ = image;
-       return;
-     }
-     else
-     {
-       printf("currently we do not support setting another image with different size.\n");
-     }
-   }
+  if(image_ != 0)
+  {
+    if(image->size() == image_->size())
+    {
+      printf("set new image with same sizings\n");
+      image_ = image;
+      return;
+    }
+    else
+    {
+      printf("currently we do not support setting another image with different size.\n");
+    }
+  }
 
   image_ = image;
   num_channels_ = 1;
@@ -115,29 +122,29 @@ void QGLImageGpuWidget::setImage(iu::ImageGpu_8u_C1 *image, bool normalize)
 //-----------------------------------------------------------------------------
 void QGLImageGpuWidget::setImage(iu::ImageGpu_8u_C4 *image, bool normalize)
 {
-   printf("QGLImageGpuWidget::setImage(ImageGpu_8u_C4*)\n");
+  printf("QGLImageGpuWidget::setImage(ImageGpu_8u_C4*)\n");
 
-   if(image == 0)
-   {
-      fprintf(stderr, "The given input image is null!\n");
-   }
+  if(image == 0)
+  {
+    fprintf(stderr, "The given input image is null!\n");
+  }
 
-   // FIXMEEE
+  // FIXMEEE
   // TODO cleanup pbo and texture if we have already an image set
 
-   if(image_ != 0)
-   {
-     if(image->size() == image_->size())
-     {
-       printf("set new image with same sizings\n");
-       image_ = image;
-       return;
-     }
-     else
-     {
-       printf("currently we do not support setting another image with different size.\n");
-     }
-   }
+  if(image_ != 0)
+  {
+    if(image->size() == image_->size())
+    {
+      printf("set new image with same sizings\n");
+      image_ = image;
+      return;
+    }
+    else
+    {
+      printf("currently we do not support setting another image with different size.\n");
+    }
+  }
 
   image_ = image;
   num_channels_ = 4;
@@ -157,30 +164,30 @@ void QGLImageGpuWidget::setImage(iu::ImageGpu_8u_C4 *image, bool normalize)
 //-----------------------------------------------------------------------------
 void QGLImageGpuWidget::setImage(iu::ImageGpu_32f_C1 *image, bool normalize)
 {
-   printf("QGLImageGpuWidget::setImage(ImageGpu_32f_C1*)\n");
+  printf("QGLImageGpuWidget::setImage(ImageGpu_32f_C1*)\n");
 
-   if(image == 0)
-   {
-      fprintf(stderr, "The given input image is null!\n");
-   }
+  if(image == 0)
+  {
+    fprintf(stderr, "The given input image is null!\n");
+  }
 
-   // FIXMEEE
+  // FIXMEEE
   // TODO cleanup pbo and texture if we have already an image set
 
-   if(image_ != 0)
-   {
-     if(image->size() == image_->size())
-     {
-       printf("set new image with same sizings\n");
-       image_ = image;
-       normalize_ = normalize;
-       return;
-     }
-     else
-     {
-       printf("currently we do not support setting another image with different size.\n");
-     }
-   }
+  if(image_ != 0)
+  {
+    if(image->size() == image_->size())
+    {
+      printf("set new image with same sizings\n");
+      image_ = image;
+      normalize_ = normalize;
+      return;
+    }
+    else
+    {
+      printf("currently we do not support setting another image with different size.\n");
+    }
+  }
 
   image_ = image;
   num_channels_ = 1;
@@ -201,29 +208,29 @@ void QGLImageGpuWidget::setImage(iu::ImageGpu_32f_C1 *image, bool normalize)
 //-----------------------------------------------------------------------------
 void QGLImageGpuWidget::setImage(iu::ImageGpu_32f_C4 *image, bool normalize)
 {
-   printf("QGLImageGpuWidget::setImage(ImageGpu_32f_C4*)\n");
+  printf("QGLImageGpuWidget::setImage(ImageGpu_32f_C4*)\n");
 
-   if(image == 0)
-   {
-      fprintf(stderr, "The given input image is null!\n");
-   }
+  if(image == 0)
+  {
+    fprintf(stderr, "The given input image is null!\n");
+  }
 
-   // FIXMEEE
+  // FIXMEEE
   // TODO cleanup pbo and texture if we have already an image set
 
-   if(image_ != 0)
-   {
-     if(image->size() == image_->size())
-     {
-       printf("set new image with same sizings\n");
-       image_ = image;
-       return;
-     }
-     else
-     {
-       printf("currently we do not support setting another image with different size.\n");
-     }
-   }
+  if(image_ != 0)
+  {
+    if(image->size() == image_->size())
+    {
+      printf("set new image with same sizings\n");
+      image_ = image;
+      return;
+    }
+    else
+    {
+      printf("currently we do not support setting another image with different size.\n");
+    }
+  }
 
   image_ = image;
   num_channels_ = 4;
@@ -297,6 +304,60 @@ void QGLImageGpuWidget::setAutoNormalize(bool flag)
   normalize_ = flag;
 }
 
+/* ****************************************************************************
+     interactive
+ * ***************************************************************************/
+
+//-----------------------------------------------------------------------------
+void QGLImageGpuWidget::mousePressEvent(QMouseEvent *event)
+{
+  if (event->button() == Qt::LeftButton)
+  {
+    printf("QGLWidget: mouse pressed %d/%d\n", event->x(), event->y());
+    // Save current Position
+    int offset_y = IUMAX(0, static_cast<int>(round(image_->height()/zoom_)) - image_->height());
+    mouse_x_old_ = floor(event->x()/zoom_);
+    mouse_y_old_ = floor(event->y()/zoom_) - offset_y;
+
+    emit mousePressed(mouse_x_old_, mouse_y_old_);
+    emit mousePressed(mouse_x_old_, mouse_y_old_, event->globalX(), event->globalY());
+  }
+}
+
+//-----------------------------------------------------------------------------
+void QGLImageGpuWidget::mouseReleaseEvent(QMouseEvent * event)
+{
+  int offset_y = IUMAX(0, static_cast<int>(round(image_->height()/zoom_)) - image_->height());
+  emit mouseReleased(floor(event->x()/zoom_), floor(event->y()/zoom_) - offset_y);
+}
+
+//-----------------------------------------------------------------------------
+void QGLImageGpuWidget::mouseMoveEvent(QMouseEvent * event)
+{
+  int offset_y = IUMAX(0, static_cast<int>(round(image_->height()/zoom_)) - image_->height());
+  mouse_x_ = floor(event->x()/zoom_);
+  mouse_y_ = floor(event->y()/zoom_) - offset_y;
+  emit mouseMoved(mouse_x_old_, mouse_y_old_, mouse_x_, mouse_y_);
+  mouse_x_old_ = mouse_x_;
+  mouse_y_old_ = mouse_y_;
+
+}
+
+//--------------------------------------------------------------------------------
+void QGLImageGpuWidget::wheelEvent(QWheelEvent *event)
+{
+  int num_degrees = event->delta() / 8;
+  int num_steps = num_degrees / 15;
+
+//  if (event->orientation() == Qt::Vertical && QApplication::keyboardModifiers() == Qt::ControlModifier)
+//  {
+    float cur_zoom = zoom_ + float(num_steps)/30.0f;
+    this->resize(image_->width()*cur_zoom, image_->height()*cur_zoom);
+    event->accept();
+//  }
+//  else
+//    event->ignore();
+}
 
 /* ****************************************************************************
      GL stuff
@@ -313,13 +374,13 @@ void QGLImageGpuWidget::initializeGL()
   printf("  Loading extensions: %s\n", glewGetErrorString(glewInit()));
   if (!glewIsSupported( "GL_VERSION_1_5 GL_ARB_vertex_buffer_object GL_ARB_pixel_buffer_object" ))
   {
-     fprintf(stderr, "QGLImageGpuWidget Error: failed to get minimal GL extensions for QGLImageGpuWidget.\n");
-     fprintf(stderr, "The widget requires:\n");
-     fprintf(stderr, "  OpenGL version 1.5\n");
-     fprintf(stderr, "  GL_ARB_vertex_buffer_object\n");
-     fprintf(stderr, "  GL_ARB_pixel_buffer_object\n");
-     fflush(stderr);
-     return;
+    fprintf(stderr, "QGLImageGpuWidget Error: failed to get minimal GL extensions for QGLImageGpuWidget.\n");
+    fprintf(stderr, "The widget requires:\n");
+    fprintf(stderr, "  OpenGL version 1.5\n");
+    fprintf(stderr, "  GL_ARB_vertex_buffer_object\n");
+    fprintf(stderr, "  GL_ARB_pixel_buffer_object\n");
+    fflush(stderr);
+    return;
   }
 
   printf("QGLImageGpuWidget::initializeGL() done\n");
@@ -442,9 +503,9 @@ void QGLImageGpuWidget::resizeGL(int w, int h)
 void QGLImageGpuWidget::paintGL()
 {
   if(image_ == 0)
-     return;
+    return;
 
-//  printf("QGLImageGpuWidget::paintGL()\n");
+  //  printf("QGLImageGpuWidget::paintGL()\n");
 
   // map GL <-> CUDA resource
   uchar4 *d_dst = NULL;
@@ -457,7 +518,7 @@ void QGLImageGpuWidget::paintGL()
     this->autoMinMax();
 
   // get image data
-  cuCopyImageToPbo(image_, num_channels_, bit_depth_, d_dst, min_, max_);
+  iuprivate::cuCopyImageToPbo(image_, num_channels_, bit_depth_, d_dst, min_, max_);
   cudaThreadSynchronize();
 
   // unmap GL <-> CUDA resource
@@ -494,36 +555,10 @@ void QGLImageGpuWidget::paintGL()
   }
   glPopMatrix();
 
-//  printf("QGLImageGpuWidget::paintGL() done\n");
+  //  printf("QGLImageGpuWidget::paintGL() done\n");
 
 }
 
 
-} // namespace iuprivate
+} // namespace iu
 
-
-///////////////////////////////////////////////////////////////////////////////
-
-namespace iu {
-
-//-----------------------------------------------------------------------------
-QGLImageGpuWidget::QGLImageGpuWidget(QWidget *parent) :
-  iuprivate::QGLImageGpuWidget(parent)
-{
-//  //updateGL();/ // invoke OpenGL initialization
-//  this->initializeGL();
-
-//  IuStatus status = iu::checkCudaErrorState();
-//  if (status == IU_NO_ERROR)
-//    printf("QGLImageGpuWidget::QGLImageGpuWidget: initialized (widget + opengl).\n");
-//  else
-//    printf("QGLImageGpuWidget::QGLImageGpuWidget: error while init (widget + opengl).\n");
-}
-
-//-----------------------------------------------------------------------------
-QGLImageGpuWidget::~QGLImageGpuWidget()
-{
-
-}
-
-}

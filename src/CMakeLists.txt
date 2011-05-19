@@ -292,19 +292,25 @@ if(VMLIBRARIES_IU_USE_GUI AND QT4_FOUND)
     )
 
   set( IU_GUI_HEADERS
-    ${CMAKE_CURRENT_SOURCE_DIR}/iugui/qgl_image_gpu_widget.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/iugui/qgl_image_gpu_widget_p.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/iugui/qglimagegpuwidget.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/iugui/imagewindow.h
     )
 
   set( IU_GUI_SOURCES
-    ${CMAKE_CURRENT_SOURCE_DIR}/iugui/image_cpu_display.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/iugui/qgl_image_gpu_widget.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/iugui/qgl_image_gpu_widget.cu
+    #${CMAKE_CURRENT_SOURCE_DIR}/iugui/image_cpu_display.cpp
+    #${CMAKE_CURRENT_SOURCE_DIR}/iugui/qgl_image_gpu_widget.cpp
+    #${CMAKE_CURRENT_SOURCE_DIR}/iugui/qgl_image_gpu_widget.cu
+    ${CMAKE_CURRENT_SOURCE_DIR}/iugui/qglimagegpuwidget.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/iugui/qglimagegpuwidget.cu
+    ${CMAKE_CURRENT_SOURCE_DIR}/iugui/imagewindow.cpp
     )
 
   set( IU_GUI_MOC_HEADERS
-    ${CMAKE_CURRENT_SOURCE_DIR}/iugui/image_cpu_display.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/iugui/image_cpu_display_p.h
+    #${CMAKE_CURRENT_SOURCE_DIR}/iugui/image_cpu_display.h
+    #${CMAKE_CURRENT_SOURCE_DIR}/iugui/image_cpu_display_p.h
+    #${CMAKE_CURRENT_SOURCE_DIR}/iugui/qgl_image_gpu_widget_p.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/iugui/qglimagegpuwidget.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/iugui/imagewindow.h
     )
 
   # install specialized headers
