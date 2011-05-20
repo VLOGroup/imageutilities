@@ -84,8 +84,8 @@ add_subdirectory(iumath_unittests)
 message(STATUS "iusparse unittests:")
 add_subdirectory(iusparse_unittests)
 
-message(STATUS "iugui unittests:")
-add_subdirectory(iugui_unittests)
+#message(STATUS "iugui unittests:")
+#add_subdirectory(iugui_unittests)
 
 message(STATUS "iuio unittests:")
 add_subdirectory(iuio_unittests)

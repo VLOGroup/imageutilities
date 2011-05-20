@@ -12,7 +12,7 @@
 #include "print_helpers.h"
 
 
-#define NSIZES 2
+#define NSIZES 3
 #define NALG   6
 
 //cusparseHandle_t handle = 0;
@@ -189,40 +189,8 @@ int main(int argc, char *argv[])
   //  // Sparse matrix
   //  cusparseCreate(&handle);
 
-  // full
-  iu::ImageGpu_32f_C1* input_full = iu::imread_cu32f_C1("../../Data/test/cat.pgm");
-
-  iu::ImageGpu_32f_C1 input_256(256, 256*input_full->height()/input_full->width());
-  iu::reduce(input_full, &input_256);
-
-  iu::ImageGpu_32f_C1 output_256(input_256.size());
-  iu::ImageGpu_32f_C1 output_256_notex(input_256.size());
-  iu::ImageGpu_32f_C1 output_256_shared(input_256.size());
-  iu::ImageGpu_32f_C1 output_256_shared_single(input_256.size());
-  iu::ImageGpu_32f_C1 output_256_shared_single2(input_256.size());
-  iu::ImageGpu_32f_C1 output_256_sparse(input_256.size());
-  iu::copy(&input_256, &output_256);
-  iu::copy(&input_256, &output_256_notex);
-  iu::copy(&input_256, &output_256_shared);
-  iu::copy(&input_256, &output_256_shared_single);
-  iu::copy(&input_256, &output_256_shared_single2);
-  iu::copy(&input_256, &output_256_sparse);
-
-  iu::ImageGpu_32f_C1 input_1024(1024, 1024*input_full->height()/input_full->width());
-  iu::reduce(input_full, &input_1024);
-
-  iu::ImageGpu_32f_C1 output_1024(input_1024.size());
-  iu::ImageGpu_32f_C1 output_1024_notex(input_1024.size());
-  iu::ImageGpu_32f_C1 output_1024_shared(input_1024.size());
-  iu::ImageGpu_32f_C1 output_1024_shared_single(input_1024.size());
-  iu::ImageGpu_32f_C1 output_1024_shared_single2(input_1024.size());
-  iu::ImageGpu_32f_C1 output_1024_sparse(input_1024.size());
-  iu::copy(&input_1024, &output_1024);
-  iu::copy(&input_1024, &output_1024_notex);
-  iu::copy(&input_1024, &output_1024_shared);
-  iu::copy(&input_1024, &output_1024_shared_single);
-  iu::copy(&input_1024, &output_1024_shared_single2);
-  iu::copy(&input_1024, &output_1024_sparse);
+  char* name[] = {"Standard: ", "No Tex:   ", "Shared:   ", "Single:   ", "Single2:  ", "Sparse:   "};
+  int sizes[] = {256, 1024, 2048};
 
   float lambda    = 1.0f;
   int   max_iter  = 1000;
@@ -239,66 +207,96 @@ int main(int argc, char *argv[])
       complete[sz][a] = -1.0;
     }
   }
-  char* name[] = {"Standard: ", "No Tex:   ", "Shared:   ", "Single:   ", "Single2:  ", "Sparse:   "};
 
-  int calg = 0;
-  // Co calculations of standard ROF model
-  calcROF(&input_256, &output_256,  lambda, max_iter, &init[0][calg], &alg[0][calg], &complete[0][calg]);
-  calcROF(&input_1024, &output_1024, lambda, max_iter, &init[1][calg], &alg[1][calg], &complete[1][calg]);
-  calg++;
+  // Read input
+  iu::ImageGpu_32f_C1* input_full = iu::imread_cu32f_C1("../../Data/test/cat.pgm");
 
-  // Co calculations of standard ROF with no texture model
-  calcROF(&input_256, &output_256_notex,  lambda, max_iter, &init[0][calg], &alg[0][calg], &complete[0][calg], true);
-  calcROF(&input_1024, &output_1024_notex, lambda, max_iter, &init[1][calg], &alg[1][calg], &complete[1][calg], true);
-  calg++;
 
-  // Co calculations of standard ROF with shared memory
-  calcROFshared(&input_256, &output_256_shared,  lambda, max_iter, &init[0][calg], &alg[0][calg], &complete[0][calg]);
-  calcROFshared(&input_1024, &output_1024_shared, lambda, max_iter, &init[1][calg], &alg[1][calg], &complete[1][calg]);
-  calg++;
+  for (int s=0; s<NSIZES; s++)
+  {
+    // Downsample and create images
+    iu::ImageGpu_32f_C1 input_resized(sizes[s], sizes[s]*input_full->height()/input_full->width());
+    iu::reduce(input_full, &input_resized);
 
-  // Co calculations of standard ROF with shared memory in single kernel
-  calcROFshared(&input_256, &output_256_shared_single,  lambda, max_iter, &init[0][calg], &alg[0][calg], &complete[0][calg], true, 1);
-  calcROFshared(&input_1024, &output_1024_shared_single, lambda, max_iter, &init[1][calg], &alg[1][calg], &complete[1][calg], true, 1);
-  calg++;
+    iu::ImageGpu_32f_C1 output(input_resized.size());
+    iu::ImageGpu_32f_C1 output_notex(input_resized.size());
+    iu::ImageGpu_32f_C1 output_shared(input_resized.size());
+    iu::ImageGpu_32f_C1 output_shared_single(input_resized.size());
+    iu::ImageGpu_32f_C1 output_shared_single2(input_resized.size());
+    iu::ImageGpu_32f_C1 output_sparse(input_resized.size());
+    iu::copy(&input_resized, &output);
+    iu::copy(&input_resized, &output_notex);
+    iu::copy(&input_resized, &output_shared);
+    iu::copy(&input_resized, &output_shared_single);
+    iu::copy(&input_resized, &output_shared_single2);
+    iu::copy(&input_resized, &output_sparse);
 
-  // Co calculations of standard ROF with shared memory in single kernel with two iterations
-  calcROFshared(&input_256, &output_256_shared_single2,  lambda, max_iter, &init[0][calg], &alg[0][calg], &complete[0][calg], true, 2);
-  calcROFshared(&input_1024, &output_1024_shared_single2, lambda, max_iter, &init[1][calg], &alg[1][calg], &complete[1][calg], true, 2);
-  calg++;
+    int calg = 0;
+    // Co calculations of standard ROF model
+    calcROF(&input_resized, &output,  lambda, max_iter, &init[s][calg], &alg[s][calg], &complete[s][calg]);
+    calg++;
 
-//    // Co calculations of sparse ROF model
-//    calcROFSparse(&input_256, &output_256_sparse,  lambda, max_iter, &init[0][calg], &alg[0][calg], &complete[0][calg]);
-//    calcROFSparse(&input_1024, &output_1024_sparse, lambda, max_iter, &init[1][calg], &alg[1][calg], &complete[1][calg]);
-//    calg++;
+    // Co calculations of standard ROF with no texture model
+    calcROF(&input_resized, &output_notex,  lambda, max_iter, &init[s][calg], &alg[s][calg], &complete[s][calg], true);
+    calg++;
 
-  std::cout << "          256              1024" << std::endl;
+    // Co calculations of standard ROF with shared memory
+    calcROFshared(&input_resized, &output_shared,  lambda, max_iter, &init[s][calg], &alg[s][calg], &complete[s][calg]);
+    calg++;
+
+    // Co calculations of standard ROF with shared memory in single kernel
+    calcROFshared(&input_resized, &output_shared_single,  lambda, max_iter, &init[s][calg], &alg[s][calg], &complete[s][calg], true, 1);
+    calg++;
+
+    // Co calculations of standard ROF with shared memory in single kernel with two iterations
+    calcROFshared(&input_resized, &output_shared_single2,  lambda, max_iter, &init[s][calg], &alg[s][calg], &complete[s][calg], true, 2);
+    calg++;
+
+  //    // Co calculations of sparse ROF model
+  //    calcROFSparse(&input_resized, &output_sparse,  lambda, max_iter, &init[s][calg], &alg[s][calg], &complete[s][calg]);
+  //    calg++;
+
+    // Save Output
+    char buffer [50];
+    sprintf(buffer, "%d_input.png", sizes[s]);
+    iu::imsave(&input_resized, buffer);
+    sprintf(buffer, "%d_std_output.png", sizes[s]);
+    iu::imsave(&output, buffer);
+    sprintf(buffer, "%d_notex_output.png", sizes[s]);
+    iu::imsave(&output_notex, buffer);
+    sprintf(buffer, "%d_shared_output.png", sizes[s]);
+    iu::imsave(&output_shared, buffer);
+    sprintf(buffer, "%d_shared_single_output.png", sizes[s]);
+    iu::imsave(&output_shared_single, buffer);
+    sprintf(buffer, "%d_shared_single2_output.png", sizes[s]);
+    iu::imsave(&output_shared_single2, buffer);
+//    sprintf(buffer, "%d_sparse_output.png", sizes[s]);
+//    iu::imsave(&output_sparse, buffer);
+}
+
+  std::cout << "\t\t";
+  for(int sz=0; sz<NSIZES; sz++)
+  {
+    char buffer [50];
+    sprintf(buffer, "%d", sizes[sz]);
+    std::cout.width(8);
+    std::cout << buffer << "\t\t";
+  }
+  std::cout << std::endl;
   for (int a=0; a<NALG; a++)
   {
-    std::cout << name[a];
+    std::cout << name[a]<< "\t";
     for(int sz=0; sz<NSIZES; sz++)
     {
-      std::cout << complete[sz][a] << "(" << alg[sz][a] << ")  ";
+      std::cout.width(7);
+      std::cout << complete[sz][a] << " (";
+      std::cout.width(7);
+      std::cout << alg[sz][a] << ") \t";
     }
     std::cout << std::endl;
   }
   std::cout << std::endl;
 
-  iu::imsave(&input_256, "256_input.png");
-  iu::imsave(&output_256, "256_output.png");
-  iu::imsave(&output_256_notex, "256_notex_output.png");
-  iu::imsave(&output_256_shared, "256_shared_output.png");
-  iu::imsave(&output_256_shared_single, "256_shared_single_output.png");
-  iu::imsave(&output_256_shared_single2, "256_shared_single2_output.png");
-  iu::imsave(&output_256_sparse, "256_sparse_output.png");
-
-  iu::imsave(&input_1024, "1024_input.png");
-  iu::imsave(&output_1024, "1024_output.png");
-  iu::imsave(&output_1024_notex, "1024_notex_output.png");
-  iu::imsave(&output_1024_shared, "1024_shared_output.png");
-  iu::imsave(&output_1024_shared_single, "1024_shared_single_output.png");
-  iu::imsave(&output_1024_shared_single2, "1024_shared_single2_output.png");
-  iu::imsave(&output_1024_sparse, "1024_sparse_output.png");
 
   // Clean up
   //  cusparseDestroy(handle);
