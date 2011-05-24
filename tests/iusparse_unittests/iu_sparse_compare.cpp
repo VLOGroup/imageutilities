@@ -192,8 +192,8 @@ int main(int argc, char *argv[])
   char* name[] = {"Standard: ", "No Tex:   ", "Shared:   ", "Single:   ", "Single2:  ", "Sparse:   "};
   int sizes[] = {256, 1024, 2048};
 
-  float lambda    = 1.0f;
-  int   max_iter  = 1000;
+  float lambda    = 5.0f;
+  int   max_iter  = 100;
 
   double init[NSIZES][NALG];
   double alg[NSIZES][NALG];
@@ -209,7 +209,8 @@ int main(int argc, char *argv[])
   }
 
   // Read input
-  iu::ImageGpu_32f_C1* input_full = iu::imread_cu32f_C1("../../Data/test/cat.pgm");
+//  iu::ImageGpu_32f_C1* input_full = iu::imread_cu32f_C1("../../Data/test/cat.pgm");
+  iu::ImageGpu_32f_C1* input_full = iu::imread_cu32f_C1("/home/markus/Downloads/lena_bw_2048.pgm");
 
 
   for (int s=0; s<NSIZES; s++)

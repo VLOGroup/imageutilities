@@ -238,6 +238,20 @@ void rof_primal_dual_notex(iu::ImageGpu_32f_C1* device_f, iu::ImageGpu_32f_C1* d
   float sigma = 1/L;
   float theta;
 
+
+cudaFuncSetCacheConfig("_Z17update_dual_notexP6float2Pffiiii", cudaFuncCachePreferShared);
+IuStatus status = iu::checkCudaErrorState(true);
+if(status != IU_NO_ERROR)
+{
+  std::cerr << "An error occured while solving the ROF model." << std::endl;
+}
+cudaFuncSetCacheConfig("_Z19update_primal_notexPfS_S_P6float2fffiiii", cudaFuncCachePreferShared);
+status = iu::checkCudaErrorState(true);
+if(status != IU_NO_ERROR)
+{
+  std::cerr << "An error occured while solving the ROF model." << std::endl;
+}
+
   for (int k = 0; k < max_iter; ++k)
   {
     update_dual_notex<<<dimGrid, dimBlock>>>(device_p->data(), device_u_->data(),
@@ -256,7 +270,7 @@ void rof_primal_dual_notex(iu::ImageGpu_32f_C1* device_f, iu::ImageGpu_32f_C1* d
     sigma /= theta;
     tau *= theta;
   }
-  IuStatus status = iu::checkCudaErrorState(true);
+  status = iu::checkCudaErrorState(true);
   if(status != IU_NO_ERROR)
   {
     std::cerr << "An error occured while solving the ROF model." << std::endl;

@@ -21,6 +21,9 @@ project(ImageUtilitiesTests CXX C)
 #set(CMAKE_BUILD_TYPE Debug)
 cmake_minimum_required(VERSION 2.8)
 
+set(CUDA_NVCC_FLAGS "-arch=compute_20;-code=sm_20,sm_21;-use_fast_math;")
+set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS};-keep;--ptxas-options=-v")
+
 ## find iu and set the according libs
 find_package(ImageUtilities COMPONENTS iucore iuio)
 include(${IU_USE_FILE})
