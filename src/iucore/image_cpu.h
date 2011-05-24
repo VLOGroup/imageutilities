@@ -93,19 +93,19 @@ public:
   //ImageCpu& operator= (const ImageCpu<PixelType, Allocator>& from);
 
   /** Returns the total amount of bytes saved in the data buffer. */
-  size_t bytes() const
+  virtual size_t bytes() const
   {
     return height()*pitch_;
   }
 
   /** Returns the distance in bytes between starts of consecutive rows. */
-  size_t pitch() const
+  virtual size_t pitch() const
   {
     return pitch_;
   }
 
   /** Returns the distnace in pixels between starts of consecutive rows. */
-  size_t stride() const
+  virtual size_t stride() const
   {
     return pitch_/sizeof(PixelType);
   }

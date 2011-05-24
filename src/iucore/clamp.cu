@@ -87,7 +87,6 @@ IuStatus cuClamp(const float& min, const float& max,
       roi.x, roi.y, roi.width, roi.height);
 
   IU_CHECK_AND_RETURN_CUDA_ERRORS();
-  return IU_SUCCESS;
 }
 
 } // namespace iuprivate

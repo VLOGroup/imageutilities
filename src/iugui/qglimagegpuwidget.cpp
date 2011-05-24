@@ -22,6 +22,10 @@
  */
 
 #include <QMouseEvent>
+#include <QMenu>
+#include <QSignalMapper>
+#include <QWidgetAction>
+#include <QCheckBox>
 #include <GL/glew.h>
 #include <cuda_runtime.h>
 #include <iumath.h>
@@ -32,7 +36,7 @@ extern IuStatus cuCopyImageToPbo(iu::Image* image,
                                  unsigned int num_channels, unsigned int bit_depth,
                                  uchar4 *dst,
                                  float min=0.0f, float max=1.0f);
-
+extern IuStatus cuCopyOverlayToPbo(iuprivate::Overlay* overlay, uchar4 *dst, IuSize size);
 }
 
 namespace iu {
@@ -63,13 +67,69 @@ QGLImageGpuWidget::QGLImageGpuWidget(QWidget *parent) :
   if (status == IU_NO_ERROR)
     printf("QGLImageGpuWidget::QGLImageGpuWidget: initialized (widget + opengl).\n");
   else
-    printf("QGLImageGpuWidget::QGLImageGpuWidget: error while init (widget + opengl).\n");
+    fprintf(stderr,"QGLImageGpuWidget::QGLImageGpuWidget: error while init (widget + opengl).\n");
+
+
+  context_menu_ = new QMenu("Widget properties", this);
+  this->createActions();
 }
 
 //-----------------------------------------------------------------------------
 QGLImageGpuWidget::~QGLImageGpuWidget()
 {
+  while(!overlay_list_.isEmpty())
+    delete(overlay_list_.takeFirst());
+}
 
+//-----------------------------------------------------------------------------
+void QGLImageGpuWidget::createActions()
+{
+  // close event with ctrl-w
+  action_close_ = new QAction(tr("Close Widget"), this);
+  action_close_->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_W));
+  connect(action_close_, SIGNAL(triggered()), this, SLOT(close()));
+  this->addAction(action_close_);
+  context_menu_->addAction(action_close_);
+
+  // signal mapping for overlays
+  overlay_signal_mapper_ = new QSignalMapper(this);
+  connect(overlay_signal_mapper_, SIGNAL(mapped(const QString&)),
+          this, SLOT(slotActivateOverlay(const QString&)));
+
+//  // zoom
+//  action_zoom_group_ = new QMenu(tr("Zoom"),this);
+//  action_zoom_group_->setStatusTip(tr("Selecte fixed zoom"));
+//  context_menu_->addMenu(action_zoom_group_);
+
+//  action_zoom_0p25_ = new QAction(tr("Zoom 1:4"), this);
+//  action_zoom_0p25_->setStatusTip(tr("Set zoom to 0.25"));
+//  connect(action_zoom_0p25_, SIGNAL(triggered()), this, SLOT(slotZoom0p25()));
+//  action_zoom_group_->addAction(action_zoom_0p25_);
+//  action_zoom_0p33_ = new QAction(tr("Zoom 1:3"), this);
+//  action_zoom_0p33_->setStatusTip(tr("Set zoom to 0.33"));
+//  connect(action_zoom_0p33_, SIGNAL(triggered()), this, SLOT(slotZoom0p33()));
+//  action_zoom_group_->addAction(action_zoom_0p33_);
+//  action_zoom_0p5_ = new QAction(tr("Zoom 1:2"), this);
+//  action_zoom_0p5_->setStatusTip(tr("Set zoom to 0.5"));
+//  connect(action_zoom_0p5_, SIGNAL(triggered()), this, SLOT(slotZoom0p5()));
+//  action_zoom_group_->addAction(action_zoom_0p5_);
+//  action_zoom_reset_ = new QAction(tr("Zoom 1:1"), this);
+//  action_zoom_reset_->setShortcut(tr("Ctrl+0"));
+//  action_zoom_reset_->setStatusTip(tr("Reset zoom to original image size"));
+//  connect(action_zoom_reset_, SIGNAL(triggered()), this, SLOT(slotZoomReset()));
+//  action_zoom_group_->addAction(action_zoom_reset_);
+//  action_zoom_2_ = new QAction( tr("Zoom 2:1"), this);
+//  action_zoom_2_->setStatusTip(tr("Set zoom to 2"));
+//  connect(action_zoom_2_, SIGNAL(triggered()), this, SLOT(slotZoom2()));
+//  action_zoom_group_->addAction(action_zoom_2_);
+//  action_zoom_3_ = new QAction( tr("Zoom 3:1"), this);
+//  action_zoom_3_->setStatusTip(tr("Set zoom to 3"));
+//  connect(action_zoom_3_, SIGNAL(triggered()), this, SLOT(slotZoom3()));
+//  action_zoom_group_->addAction(action_zoom_3_);
+//  action_zoom_4_ = new QAction(tr("Zoom 4:1"), this);
+//  action_zoom_4_->setStatusTip(tr("Set zoom to 4"));
+//  connect(action_zoom_4_, SIGNAL(triggered()), this, SLOT(slotZoom4()));
+//  action_zoom_group_->addAction(action_zoom_4_);
 }
 
 /* ****************************************************************************
@@ -203,6 +263,7 @@ void QGLImageGpuWidget::setImage(iu::ImageGpu_32f_C1 *image, bool normalize)
 
   if(init_ok_)
     this->resize(image_->width(), image_->height());
+  this->update();
 }
 
 //-----------------------------------------------------------------------------
@@ -235,6 +296,7 @@ void QGLImageGpuWidget::setImage(iu::ImageGpu_32f_C4 *image, bool normalize)
   image_ = image;
   num_channels_ = 4;
   bit_depth_ = 32;
+  normalize_ = normalize;
   if (!this->init())
   {
     fprintf(stderr, "Failed to initialize OpenGL buffers.\n");
@@ -245,6 +307,7 @@ void QGLImageGpuWidget::setImage(iu::ImageGpu_32f_C4 *image, bool normalize)
 
   if(init_ok_)
     this->resize(image_->width(), image_->height());
+  this->update();
 }
 
 /* ****************************************************************************
@@ -304,9 +367,52 @@ void QGLImageGpuWidget::setAutoNormalize(bool flag)
   normalize_ = flag;
 }
 
+//-----------------------------------------------------------------------------
+void QGLImageGpuWidget::addOverlay(QString name, iu::Image* constraint_image,
+                iu::LinearMemory* lut_values, iu::LinearDeviceMemory_8u_C4* lut_colors,
+                bool active)
+{
+  if(constraint_image->roi() != image_->roi())
+    qFatal("Size (ROI) of rendered image and overlay constraint image do not match.");
+
+  iuprivate::Overlay* overlay = new iuprivate::Overlay(name, constraint_image,
+                                                       lut_values, lut_colors, active);
+  overlay_list_.append(overlay);
+
+  // create action for overlay
+  if(overlay_list_.empty())
+    context_menu_->addSeparator()->setText(tr("Overlays:"));
+
+  // create actions for context menu switches
+  QCheckBox *overlay_check_box = new QCheckBox(name, this);
+  overlay_check_box->setChecked(active);
+  QWidgetAction *action_overlay_widget = new QWidgetAction(this);
+  action_overlay_widget->setDefaultWidget(overlay_check_box);
+  action_list_overlays_.append(action_overlay_widget);
+  connect(overlay_check_box, SIGNAL(toggled(bool)), overlay_signal_mapper_, SLOT(map()));
+  overlay_signal_mapper_->setMapping(overlay_check_box, name);
+  context_menu_->addAction(action_overlay_widget);
+}
+
 /* ****************************************************************************
      interactive
  * ***************************************************************************/
+
+//-----------------------------------------------------------------------------
+void QGLImageGpuWidget::slotActivateOverlay(const QString& overlay_name)
+{
+  // search for the signal sender in the overlay list
+  iuprivate::OverlayList::iterator it;
+  for ( it=overlay_list_.begin() ; it != overlay_list_.end(); it++ )
+  {
+    if(overlay_name == (*it)->getName())
+    {
+      // toggle overlay state if the sender was found
+      (*it)->toogleActive();
+      this->update();
+    }
+  }
+}
 
 //-----------------------------------------------------------------------------
 void QGLImageGpuWidget::mousePressEvent(QMouseEvent *event)
@@ -357,6 +463,12 @@ void QGLImageGpuWidget::wheelEvent(QWheelEvent *event)
 //  }
 //  else
 //    event->ignore();
+}
+
+//-----------------------------------------------------------------------------
+void QGLImageGpuWidget::contextMenuEvent(QContextMenuEvent* event)
+{
+  context_menu_->exec(event->globalPos());
 }
 
 /* ****************************************************************************
@@ -519,6 +631,17 @@ void QGLImageGpuWidget::paintGL()
 
   // get image data
   iuprivate::cuCopyImageToPbo(image_, num_channels_, bit_depth_, d_dst, min_, max_);
+  cudaThreadSynchronize();
+
+  iuprivate::OverlayList::iterator it;
+  for ( it=overlay_list_.begin() ; it != overlay_list_.end(); it++ )
+  {
+    if ((*it)->isActive())
+    {
+      printf("bla");
+      cuCopyOverlayToPbo((*it), d_dst, image_->size());
+    }
+  }
   cudaThreadSynchronize();
 
   // unmap GL <-> CUDA resource

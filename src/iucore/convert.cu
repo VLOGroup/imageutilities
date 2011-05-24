@@ -78,7 +78,7 @@ __global__ void cuConvertC4ToC3Kernel(const float4* src, size_t src_stride, int 
  */
 __global__ void cuConvert8uC1To32fC1Kernel(const unsigned char *src, size_t src_stride, int src_width, int src_height,
                                       float* dst, size_t dst_stride, int dst_width, int dst_height, float mul_constant,
-																			 float add_constant)
+                                       float add_constant)
 {
   const int x = blockIdx.x*blockDim.x + threadIdx.x;
   const int y = blockIdx.y*blockDim.y + threadIdx.y;
@@ -96,7 +96,7 @@ __global__ void cuConvert8uC1To32fC1Kernel(const unsigned char *src, size_t src_
  */
 __global__ void cuConvert32fC1To8uC1Kernel(const float* src, size_t src_stride, int src_width, int src_height,
                                       unsigned char* dst, size_t dst_stride, int dst_width, int dst_height, float mul_constant,
-																			 unsigned char add_constant)
+                                       unsigned char add_constant)
 {
   const int x = blockIdx.x*blockDim.x + threadIdx.x;
   const int y = blockIdx.y*blockDim.y + threadIdx.y;
@@ -130,7 +130,6 @@ IuStatus cuConvert(const iu::ImageGpu_32f_C3* src, const IuRect& src_roi,
       dst->data(dst_roi.x, dst_roi.y), dst->stride(), dst_roi.width, dst_roi.height);
 
   IU_CHECK_AND_RETURN_CUDA_ERRORS();
-  return IU_SUCCESS;
 }
 
 //-----------------------------------------------------------------------------
@@ -150,14 +149,13 @@ IuStatus cuConvert(const iu::ImageGpu_32f_C4* src, const IuRect& src_roi,
       dst->data(dst_roi.x, dst_roi.y), dst->stride(), dst_roi.width, dst_roi.height);
 
   IU_CHECK_AND_RETURN_CUDA_ERRORS();
-  return IU_SUCCESS;
 }
 
 
 //-----------------------------------------------------------------------------
 IuStatus cuConvert_8u_32f(const iu::ImageGpu_8u_C1* src, const IuRect& src_roi,
                    iu::ImageGpu_32f_C1* dst, const IuRect& dst_roi, float mul_constant,
-									 float add_constant)
+                   float add_constant)
 {
   // fragmentation
   const unsigned int block_size = 16;
@@ -170,14 +168,13 @@ IuStatus cuConvert_8u_32f(const iu::ImageGpu_8u_C1* src, const IuRect& src_roi,
       dst->data(dst_roi.x, dst_roi.y), dst->stride(), dst_roi.width, dst_roi.height, mul_constant, add_constant);
 
   IU_CHECK_AND_RETURN_CUDA_ERRORS();
-  return IU_SUCCESS;
 }
 
 
 //-----------------------------------------------------------------------------
 IuStatus cuConvert_32f_8u(const iu::ImageGpu_32f_C1* src, const IuRect& src_roi,
                    iu::ImageGpu_8u_C1* dst, const IuRect& dst_roi, float mul_constant,
-									 unsigned char add_constant)
+                   unsigned char add_constant)
 {
   // fragmentation
   const unsigned int block_size = 16;
@@ -190,7 +187,6 @@ IuStatus cuConvert_32f_8u(const iu::ImageGpu_32f_C1* src, const IuRect& src_roi,
       dst->data(dst_roi.x, dst_roi.y), dst->stride(), dst_roi.width, dst_roi.height, mul_constant, add_constant);
 
   IU_CHECK_AND_RETURN_CUDA_ERRORS();
-  return IU_SUCCESS;
 }
 
 

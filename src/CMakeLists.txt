@@ -293,6 +293,7 @@ if(VMLIBRARIES_IU_USE_GUI AND QT4_FOUND)
 
   set( IU_GUI_HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/iugui/qglimagegpuwidget.h
+${CMAKE_CURRENT_SOURCE_DIR}/iugui/overlay.h
     ${CMAKE_CURRENT_SOURCE_DIR}/iugui/imagewindow.h
     )
 
@@ -517,6 +518,7 @@ SET( IU_PUBLIC_CORE_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/globaldefs.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/coredefs.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/memorydefs.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/linearmemory.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/linearhostmemory.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/lineardevicememory.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/image.h

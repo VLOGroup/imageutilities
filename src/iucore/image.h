@@ -10,7 +10,7 @@
  * PURPOSE.  See the above copyright notices for more information.
  *
  *
- * Project     : Utilities for IPP and NPP images
+ * Project     : VMLibraries
  * Module      : Image base class
  * Class       : Image
  * Language    : C++

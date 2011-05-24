@@ -82,7 +82,6 @@ IuStatus cuAddWeighted(const iu::ImageGpu_32f_C1* src1, const float& weight1,
 
   // error check
   IU_CHECK_AND_RETURN_CUDA_ERRORS();
-  return IU_SUCCESS;
 }
 
 /******************************************************************************
@@ -132,7 +131,6 @@ IuStatus cuMulC(const iu::ImageGpu_8u_C1* src, const unsigned char& factor, iu::
 
   // error check
   IU_CHECK_AND_RETURN_CUDA_ERRORS();
-  return IU_SUCCESS;
 }
 
 // kernel: multiplication with factor; 8-bit; 4-channel
@@ -180,7 +178,6 @@ IuStatus cuMulC(const iu::ImageGpu_8u_C4* src, const uchar4& factor, iu::ImageGp
 
   // error check
   IU_CHECK_AND_RETURN_CUDA_ERRORS();
-  return IU_SUCCESS;
 }
 
 // kernel: multiplication with factor; 32-bit; 1-channel
@@ -228,7 +225,6 @@ IuStatus cuMulC(const iu::ImageGpu_32f_C1* src, const float& factor, iu::ImageGp
 
   // error check
   IU_CHECK_AND_RETURN_CUDA_ERRORS();
-  return IU_SUCCESS;
 }
 
 // kernel: multiplication with factor; 32-bit; 2-channel
@@ -276,7 +272,6 @@ IuStatus cuMulC(const iu::ImageGpu_32f_C2* src, const float2& factor, iu::ImageG
 
   // error check
   IU_CHECK_AND_RETURN_CUDA_ERRORS();
-  return IU_SUCCESS;
 }
 
 
@@ -325,7 +320,6 @@ IuStatus cuMulC(const iu::ImageGpu_32f_C4* src, const float4& factor, iu::ImageG
 
   // error check
   IU_CHECK_AND_RETURN_CUDA_ERRORS();
-  return IU_SUCCESS;
 }
 
 } // namespace iuprivate

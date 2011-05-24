@@ -25,15 +25,17 @@
 #define IUCORE_LINEARDEVICEMEMORY_H
 
 #include <cuda_runtime_api.h>
+#include "linearmemory.h"
 
 namespace iu {
 
 template<typename PixelType>
-class LinearDeviceMemory
+class LinearDeviceMemory : public LinearMemory
 {
 public:
   LinearDeviceMemory() :
-      data_(0), length_(0), ext_data_pointer_(false)
+    LinearMemory(),
+    data_(0), ext_data_pointer_(false)
   {
   }
 
@@ -46,24 +48,28 @@ public:
     }
   }
 
-  LinearDeviceMemory(const unsigned int& length) :
-      data_(0), length_(length), ext_data_pointer_(false)
-  {
-    cudaMalloc((void**)&data_, length_*sizeof(PixelType));
-  }
-
   LinearDeviceMemory(const LinearDeviceMemory<PixelType>& from) :
-      data_(0), length_(from.length_), ext_data_pointer_(false)
+    LinearMemory(from),
+    data_(0), ext_data_pointer_(false)
   {
     if(from.data_ == NULL)
       return;
 
-    cudaMalloc((void**)&data_, length_*sizeof(PixelType));
-    cudaMemcpy(data_, from.data_, length_ * sizeof(PixelType), cudaMemcpyDeviceToDevice);
+    cudaMalloc((void**)&data_, this->length()*sizeof(PixelType));
+    cudaMemcpy(data_, from.data_, this->length() * sizeof(PixelType), cudaMemcpyDeviceToDevice);
   }
 
+  LinearDeviceMemory(const unsigned int& length) :
+    LinearMemory(length),
+    data_(0), ext_data_pointer_(false)
+  {
+    cudaMalloc((void**)&data_, this->length()*sizeof(PixelType));
+  }
+
+
   LinearDeviceMemory(PixelType* host_data, const unsigned int& length, bool ext_data_pointer = false) :
-      data_(0), length_(length), ext_data_pointer_(ext_data_pointer)
+    LinearMemory(length),
+    data_(0), ext_data_pointer_(ext_data_pointer)
   {
     if(ext_data_pointer_)
     {
@@ -76,18 +82,12 @@ public:
       if(host_data == 0)
         return;
 
-      cudaMalloc((void**)&data_, length_*sizeof(PixelType));
-      cudaMemcpy(data_, host_data, length_ * sizeof(PixelType), cudaMemcpyHostToDevice);
+      cudaMalloc((void**)&data_, this->length()*sizeof(PixelType));
+      cudaMemcpy(data_, host_data, this->length() * sizeof(PixelType), cudaMemcpyHostToDevice);
     }
   }
 
   // :TODO: operator=
-
-  /** Returns the number of elements saved in the device buffer. (length of device buffer) */
-  unsigned int length() const
-  {
-    return length_;
-  }
 
   /** Returns a pointer to the device buffer.
    * The pointer can be offset to position \a offset.
@@ -110,9 +110,21 @@ public:
   }
 
   /** Returns the total amount of bytes saved in the data buffer. */
-  size_t bytes() const
+  virtual size_t bytes() const
   {
-    return length_*sizeof(PixelType);
+    return this->length()*sizeof(PixelType);
+  }
+
+  /** Returns the bit depth of the data pointer. */
+  virtual unsigned int bitDepth() const
+  {
+    return 8*sizeof(PixelType);
+  }
+
+  /** Returns flag if the image data resides on the device/GPU (TRUE) or host/GPU (FALSE) */
+  virtual bool onDevice() const
+  {
+    return true;
   }
 
 protected:
@@ -120,7 +132,6 @@ protected:
 
 private:
   PixelType* data_; /**< Pointer to device buffer. */
-  unsigned int length_; /**< Buffer length (number of elements). */
   bool ext_data_pointer_; /**< Flag if data pointer is handled outside the image class. */
 
 };

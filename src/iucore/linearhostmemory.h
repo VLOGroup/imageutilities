@@ -27,15 +27,17 @@
 #include <stdio.h>
 #include <assert.h>
 #include <cstdlib>
+#include "linearmemory.h"
 
 namespace iu {
 
 template<typename PixelType>
-class LinearHostMemory
+class LinearHostMemory : public LinearMemory
 {
 public:
   LinearHostMemory() :
-      data_(0), length_(0), ext_data_pointer_(false)
+    LinearMemory(),
+    data_(0), ext_data_pointer_(false)
   {
   }
 
@@ -49,35 +51,36 @@ public:
   }
 
   LinearHostMemory(const unsigned int& length) :
-      data_(0), length_(length), ext_data_pointer_(false)
+    LinearMemory(length),
+    data_(0), ext_data_pointer_(false)
   {
-    data_ = (PixelType*)malloc(length_*sizeof(PixelType));
+    data_ = (PixelType*)malloc(this->length()*sizeof(PixelType));
     IU_ASSERT(data_!=NULL);
     if(data_ == NULL)
     {
       fprintf(stderr, "iu::LinearHostMemory: OUT OF MEMORY\n");
-      length_ = NULL;
     }
   }
 
   LinearHostMemory(const LinearHostMemory<PixelType>& from) :
-      data_(0), length_(from.length_), ext_data_pointer_(false)
+    LinearMemory(from),
+    data_(0), ext_data_pointer_(false)
   {
     if(from.data_ == NULL)
       return;
 
-    data_ = (PixelType*)malloc(length_*sizeof(PixelType));
+    data_ = (PixelType*)malloc(this->length()*sizeof(PixelType));
     IU_ASSERT(data_!=NULL);
     if(data_ == NULL)
     {
       fprintf(stderr, "iu::LinearHostMemory: OUT OF MEMORY\n");
-      length_ = NULL;
     }
-    memcpy(data_, from.data_, length_ * sizeof(PixelType));
+    memcpy(data_, from.data_, this->length() * sizeof(PixelType));
   }
 
   LinearHostMemory(PixelType* host_data, const unsigned int& length, bool ext_data_pointer = false) :
-      data_(0), length_(length), ext_data_pointer_(ext_data_pointer)
+    LinearMemory(length),
+    data_(0), ext_data_pointer_(ext_data_pointer)
   {
     if(ext_data_pointer_)
     {
@@ -90,24 +93,17 @@ public:
       if(host_data == 0)
         return;
 
-      data_ = (PixelType*)malloc(length_*sizeof(PixelType));
+      data_ = (PixelType*)malloc(this->length()*sizeof(PixelType));
       IU_ASSERT(data_!=NULL);
       if(data_ == NULL)
       {
         fprintf(stderr, "iu::LinearHostMemory: OUT OF MEMORY\n");
-        length_ = NULL;
       }
-      memcpy(data_, host_data, length_ * sizeof(PixelType));
+      memcpy(data_, host_data, this->length() * sizeof(PixelType));
     }
   }
 
   // :TODO: operator=
-
-  /** Returns the number of elements saved in the device buffer. (length of device buffer) */
-  unsigned int length() const
-  {
-    return length_;
-  }
 
   /** Returns a pointer to the device buffer.
    * The pointer can be offset to position \a offset.
@@ -130,19 +126,29 @@ public:
   }
 
   /** Returns the total amount of bytes saved in the data buffer. */
-  size_t bytes() const
+  virtual size_t bytes() const
   {
-    return length_*sizeof(PixelType);
+    return this->length()*sizeof(PixelType);
   }
 
 
+  /** Returns the bit depth of the data pointer. */
+  virtual unsigned int bitDepth() const
+  {
+    return 8*sizeof(PixelType);
+  }
+
+  /** Returns flag if the image data resides on the device/GPU (TRUE) or host/GPU (FALSE) */
+  virtual bool onDevice() const
+  {
+    return false;
+  }
 
 protected:
 
 
 private:
   PixelType* data_; /**< Pointer to device buffer. */
-  unsigned int length_; /**< Buffer length (number of elements). */
   bool ext_data_pointer_; /**< Flag if data pointer is handled outside the image class. */
 
 };
