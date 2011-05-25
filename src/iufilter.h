@@ -71,6 +71,21 @@ IU_DLLAPI void filterGauss(const ImageGpu_32f_C4* src, ImageGpu_32f_C4* dst, con
 
 /** @} */ // end of Denoising
 
+
+/* ***************************************************************************
+     edge calculation
+ * ***************************************************************************/
+
+IU_DLLAPI void filterEdge(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C2* dst, const IuRect& roi);
+
+IU_DLLAPI void filterEdge(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst, const IuRect& roi,
+                          float alpha, float beta, float minval);
+
+IU_DLLAPI void filterEdge(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C1* dst, const IuRect& roi,
+                          float alpha, float beta, float minval);
+
+
+
 //////////////////////////////////////////////////////////////////////////////
 /* ***************************************************************************
      other filters

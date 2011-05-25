@@ -44,6 +44,27 @@ void filterGauss(const ImageGpu_32f_C4* src, ImageGpu_32f_C4* dst, const IuRect&
                  float sigma, int kernel_size)
 {iuprivate::filterGauss(src, dst, roi, sigma, kernel_size);}
 
+
+/* ***************************************************************************
+     edge calculation
+ * ***************************************************************************/
+
+// edge filter; device; 32-bit; 1-channel
+void filterEdge(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C2* dst, const IuRect& roi)
+{ iuprivate::filterEdge(src, dst, roi); }
+
+// edge filter + evaluation; device; 32-bit; 1-channel
+void filterEdge(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst, const IuRect& roi,
+                float alpha, float beta, float minval)
+{ iuprivate::filterEdge(src, dst, roi, alpha, beta, minval); }
+
+// edge filter + evaluation; device; 32-bit; 4-channel (RGB)
+void filterEdge(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C1* dst, const IuRect& roi,
+                float alpha, float beta, float minval)
+{ iuprivate::filterEdge(src, dst, roi, alpha, beta, minval); }
+
+
+
 /* ***************************************************************************
      other filters
  * ***************************************************************************/

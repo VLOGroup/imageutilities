@@ -518,6 +518,168 @@ IuStatus cuCubicBSplinePrefilter_32f_C1I(iu::ImageGpu_32f_C1 *input)
   return iu::checkCudaErrorState();
 }
 
+
+// ----------------------------------------------------------------------------
+// kernel: edge filter; 32-bit; 1-channel
+__global__ void  cuFilterEdgeKernel_32f_C1(float2* dst, const size_t stride,
+                                           const int xoff, const int yoff,
+                                           const int width, const int height)
+{
+  int x = blockIdx.x*blockDim.x + threadIdx.x;
+  int y = blockIdx.y*blockDim.y + threadIdx.y;
+
+  x += xoff;
+  y += yoff;
+
+  float xx = x+0.5f;
+  float yy = y+0.5f;
+
+  if(x>=0 && y>= 0 && x<width && y<height)
+  {
+    dst[y*stride+x] = make_float2(tex2D(tex1_32f_C1__, xx+1.0f, yy) - tex2D(tex1_32f_C1__, xx, yy),
+                                  tex2D(tex1_32f_C1__, xx, yy) - tex2D(tex1_32f_C1__, xx, yy+1.0f) );
+  }
+}
+
+// ----------------------------------------------------------------------------
+// wrapper: edge filter
+IuStatus cuFilterEdge(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C2* dst, const IuRect& roi)
+{
+  // bind textures
+  cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<float>();
+  tex1_32f_C1__.filterMode = cudaFilterModeLinear;
+  tex1_32f_C1__.addressMode[0] = cudaAddressModeClamp;
+  tex1_32f_C1__.addressMode[1] = cudaAddressModeClamp;
+  tex1_32f_C1__.normalized = false;
+  cudaBindTexture2D(0, &tex1_32f_C1__, src->data(), &channel_desc, src->width(), src->height(), src->pitch());
+
+  // fragmentation
+  unsigned int block_size = 16;
+  dim3 dimBlock(block_size, block_size);
+  dim3 dimGrid(iu::divUp(roi.width, dimBlock.x), iu::divUp(roi.height, dimBlock.y));
+
+  cuFilterEdgeKernel_32f_C1 <<< dimGrid, dimBlock >>> (
+    dst->data(roi.x, roi.y), dst->stride(), roi.x, roi.y, roi.width, roi.height);
+
+  // unbind textures
+  cudaUnbindTexture(&tex1_32f_C1__);
+
+  // error check
+  return iu::checkCudaErrorState();
+}
+
+
+// ----------------------------------------------------------------------------
+// kernel: edge filter + evaluation; 32-bit; 1-channel
+__global__ void  cuFilterEdgeKernel_32f_C1(float* dst, float alpha, float beta, float minval,
+                                           const size_t stride,
+                                           const int xoff, const int yoff,
+                                           const int width, const int height)
+{
+  int x = blockIdx.x*blockDim.x + threadIdx.x;
+  int y = blockIdx.y*blockDim.y + threadIdx.y;
+
+  x += xoff;
+  y += yoff;
+
+  float xx = x+0.5f;
+  float yy = y+0.5f;
+
+  if(x>=0 && y>= 0 && x<width && y<height)
+  {
+    float2 grad = make_float2(tex2D(tex1_32f_C1__, xx+1.0f, yy) - tex2D(tex1_32f_C1__, xx, yy),
+                              tex2D(tex1_32f_C1__, xx, yy) - tex2D(tex1_32f_C1__, xx, yy+1.0f) );
+    dst[y*stride+x] = max(minval, exp(-alpha*pow(length(grad), beta)));
+  }
+}
+
+// ----------------------------------------------------------------------------
+// wrapper: edge filter  + evaluation
+IuStatus cuFilterEdge(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst, const IuRect& roi,
+                      float alpha, float beta, float minval)
+{
+  // bind textures
+  cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<float>();
+  tex1_32f_C1__.filterMode = cudaFilterModeLinear;
+  tex1_32f_C1__.addressMode[0] = cudaAddressModeClamp;
+  tex1_32f_C1__.addressMode[1] = cudaAddressModeClamp;
+  tex1_32f_C1__.normalized = false;
+  cudaBindTexture2D(0, &tex1_32f_C1__, src->data(), &channel_desc, src->width(), src->height(), src->pitch());
+
+  // fragmentation
+  unsigned int block_size = 16;
+  dim3 dimBlock(block_size, block_size);
+  dim3 dimGrid(iu::divUp(roi.width, dimBlock.x), iu::divUp(roi.height, dimBlock.y));
+
+  cuFilterEdgeKernel_32f_C1 <<< dimGrid, dimBlock >>> (
+    dst->data(roi.x, roi.y), alpha, beta, minval, dst->stride(), roi.x, roi.y, roi.width, roi.height);
+
+  // unbind textures
+  cudaUnbindTexture(&tex1_32f_C1__);
+
+  // error check
+  return iu::checkCudaErrorState();
+}
+
+
+// ----------------------------------------------------------------------------
+// kernel: edge filter + evaluation; 32-bit; 4-channel
+__global__ void  cuFilterEdgeKernel_32f_C4(float* dst, float alpha, float beta, float minval,
+                                           const size_t stride,
+                                           const int xoff, const int yoff,
+                                           const int width, const int height)
+{
+  int x = blockIdx.x*blockDim.x + threadIdx.x;
+  int y = blockIdx.y*blockDim.y + threadIdx.y;
+
+  x += xoff;
+  y += yoff;
+
+  float xx = x+0.5f;
+  float yy = y+0.5f;
+
+  if(x>=0 && y>= 0 && x<width && y<height)
+  {
+    float4 gradx = tex2D(tex1_32f_C4__, xx+1.0f, yy) - tex2D(tex1_32f_C4__, xx, yy);
+    float4 grady = tex2D(tex1_32f_C4__, xx, yy+1.0f) - tex2D(tex1_32f_C4__, xx, yy);
+    float3 grad;
+    grad.x = sqrt(gradx.x*gradx.x + grady.x*grady.x);
+    grad.y = sqrt(gradx.y*gradx.y + grady.y*grady.y);
+    grad.z = sqrt(gradx.z*gradx.z + grady.z*grady.z);
+    dst[y*stride+x] = max(minval, exp(-alpha*pow((grad.x+grad.y+grad.z)/3.0f, beta)));
+  }
+}
+
+// ----------------------------------------------------------------------------
+// wrapper: edge filter  + evaluation
+IuStatus cuFilterEdge(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C1* dst, const IuRect& roi,
+                      float alpha, float beta, float minval)
+{
+  printf("In cuFilterEdge(const iu::ImageGpu_32f_C4* src, ... \n");
+
+  // bind textures
+  cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<float4>();
+  tex1_32f_C4__.filterMode = cudaFilterModeLinear;
+  tex1_32f_C4__.addressMode[0] = cudaAddressModeClamp;
+  tex1_32f_C4__.addressMode[1] = cudaAddressModeClamp;
+  tex1_32f_C4__.normalized = false;
+  cudaBindTexture2D(0, &tex1_32f_C4__, src->data(), &channel_desc, src->width(), src->height(), src->pitch());
+
+  // fragmentation
+  unsigned int block_size = 16;
+  dim3 dimBlock(block_size, block_size);
+  dim3 dimGrid(iu::divUp(roi.width, dimBlock.x), iu::divUp(roi.height, dimBlock.y));
+
+  cuFilterEdgeKernel_32f_C4 <<< dimGrid, dimBlock >>> (
+    dst->data(roi.x, roi.y), alpha, beta, minval, dst->stride(), roi.x, roi.y, roi.width, roi.height);
+
+  // unbind textures
+  cudaUnbindTexture(&tex1_32f_C4__);
+
+  // error check
+  return iu::checkCudaErrorState();
+}
+
 } // namespace iuprivate
 
 #endif // IUPRIVATE_FILTER_CU

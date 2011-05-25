@@ -638,7 +638,6 @@ void QGLImageGpuWidget::paintGL()
   {
     if ((*it)->isActive())
     {
-      printf("bla");
       cuCopyOverlayToPbo((*it), d_dst, image_->size());
     }
   }
