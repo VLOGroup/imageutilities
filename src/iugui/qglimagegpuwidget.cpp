@@ -231,6 +231,8 @@ void QGLImageGpuWidget::setImage(iu::ImageGpu_32f_C1 *image, bool normalize)
     fprintf(stderr, "The given input image is null!\n");
   }
 
+  normalize_ = normalize;
+
   // FIXMEEE
   // TODO cleanup pbo and texture if we have already an image set
 
@@ -240,7 +242,6 @@ void QGLImageGpuWidget::setImage(iu::ImageGpu_32f_C1 *image, bool normalize)
     {
       printf("set new image with same sizings\n");
       image_ = image;
-      normalize_ = normalize;
       return;
     }
     else
@@ -252,7 +253,6 @@ void QGLImageGpuWidget::setImage(iu::ImageGpu_32f_C1 *image, bool normalize)
   image_ = image;
   num_channels_ = 1;
   bit_depth_ = 32;
-  normalize_ = normalize;
   if (!this->init())
   {
     fprintf(stderr, "Failed to initialize OpenGL buffers.\n");
@@ -276,6 +276,8 @@ void QGLImageGpuWidget::setImage(iu::ImageGpu_32f_C4 *image, bool normalize)
     fprintf(stderr, "The given input image is null!\n");
   }
 
+  normalize_ = normalize;
+
   // FIXMEEE
   // TODO cleanup pbo and texture if we have already an image set
 
@@ -296,7 +298,6 @@ void QGLImageGpuWidget::setImage(iu::ImageGpu_32f_C4 *image, bool normalize)
   image_ = image;
   num_channels_ = 4;
   bit_depth_ = 32;
-  normalize_ = normalize;
   if (!this->init())
   {
     fprintf(stderr, "Failed to initialize OpenGL buffers.\n");

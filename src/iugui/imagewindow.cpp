@@ -68,6 +68,12 @@ void ImageWindow::setImage(iu::ImageGpu_32f_C4* image, bool normalize)
 }
 
 //-----------------------------------------------------------------------------
+void ImageWindow::update()
+{
+  image_gpu_widget_->update();
+}
+
+//-----------------------------------------------------------------------------
 void ImageWindow::setupGeometry()
 {
 

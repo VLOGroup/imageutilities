@@ -29,6 +29,7 @@ public:
   void addOverlay(QString name, iu::Image* constraint_image,
                   iu::LinearMemory* lut_values, iu::LinearDeviceMemory_8u_C4* lut_colors,
                   bool active = true);
+  void update();
 
 signals:
   void mouseMoved(int from_x, int from_y, int to_x, int to_y);

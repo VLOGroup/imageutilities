@@ -655,8 +655,6 @@ __global__ void  cuFilterEdgeKernel_32f_C4(float* dst, float alpha, float beta, 
 IuStatus cuFilterEdge(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C1* dst, const IuRect& roi,
                       float alpha, float beta, float minval)
 {
-  printf("In cuFilterEdge(const iu::ImageGpu_32f_C4* src, ... \n");
-
   // bind textures
   cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<float4>();
   tex1_32f_C4__.filterMode = cudaFilterModeLinear;
