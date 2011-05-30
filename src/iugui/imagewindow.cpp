@@ -74,11 +74,15 @@ void ImageWindow::update()
 }
 
 //-----------------------------------------------------------------------------
+void ImageWindow::setCursor(QCursor csr)
+{
+  image_gpu_widget_->setCursor(csr);
+}
+
+//-----------------------------------------------------------------------------
 void ImageWindow::setupGeometry()
 {
-
   this->setGeometry(0,0,image_gpu_widget_->width()+15, image_gpu_widget_->height()+15);
-
 }
 
 //-----------------------------------------------------------------------------
