@@ -411,6 +411,21 @@ IU_DLLAPI void convert_8u32f_C1(const iu::ImageGpu_8u_C1* src, const IuRect& src
 IU_DLLAPI void convert_16u32f_C1(const iu::ImageCpu_16u_C1* src, iu::ImageCpu_32f_C1 *dst,
                                  float mul_constant, float add_constant);
 
+
+/** Converts an RGB image to a HSV image.
+ * \params src 4-channel source image [device].
+ * \params dst 4-channel destination image [device].
+ * \params normalize Normalizes all channels to [0, 1]
+ */
+IU_DLLAPI void convert_RgbHsv(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst, bool normalize=false);
+
+/** Converts a HSV image to an RGB image.
+ * \params src 4-channel source image [device].
+ * \params dst 4-channel destination image [device].
+ * \params normalize Normalizes all channels to [0, 1]
+ */
+IU_DLLAPI void convert_HsvRgb(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst, bool denormalize=false);
+
 /** \} */ // end of Conversions
 
 

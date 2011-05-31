@@ -35,11 +35,13 @@ extern IuStatus cuConvert(const iu::ImageGpu_32f_C3* src, const IuRect& src_roi,
 extern IuStatus cuConvert(const iu::ImageGpu_32f_C4* src, const IuRect& src_roi,
                           iu::ImageGpu_32f_C3* dst, const IuRect& dst_roi);
 extern IuStatus cuConvert_8u_32f(const iu::ImageGpu_8u_C1* src, const IuRect& src_roi,
-                   iu::ImageGpu_32f_C1* dst, const IuRect& dst_roi, float mul_constant,
-									 float add_constant);
+                                 iu::ImageGpu_32f_C1* dst, const IuRect& dst_roi,
+                                 float mul_constant,  float add_constant);
 extern IuStatus cuConvert_32f_8u(const iu::ImageGpu_32f_C1* src, const IuRect& src_roi,
-                   iu::ImageGpu_8u_C1* dst, const IuRect& dst_roi, float mul_constant,
-									 unsigned char add_constant);
+                                 iu::ImageGpu_8u_C1* dst, const IuRect& dst_roi,
+                                 float mul_constant, unsigned char add_constant);
+extern IuStatus cuConvert_rgb_to_hsv(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst, bool normalize);
+extern IuStatus cuConvert_hsv_to_rgb(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst, bool denormalize);
 /* ***************************************************************************/
 
 
@@ -118,6 +120,22 @@ void convert(const iu::ImageGpu_32f_C4* src, const IuRect& src_roi, iu::ImageGpu
   IU_ASSERT(status == IU_SUCCESS);
 }
 
+//-----------------------------------------------------------------------------
+// [device] conversion RGB -> HSV
+void convertRgbHsv(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst, bool normalize)
+{
+  IuStatus status;
+  status = cuConvert_rgb_to_hsv(src, dst, normalize);
+  IU_ASSERT(status == IU_SUCCESS);
+}
 
+//-----------------------------------------------------------------------------
+// [device] conversion HSV -> RGB
+void convertHsvRgb(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst, bool denormalize)
+{
+  IuStatus status;
+  status = cuConvert_hsv_to_rgb(src, dst, denormalize);
+  IU_ASSERT(status == IU_SUCCESS);
+}
 
 } // namespace iuprivate

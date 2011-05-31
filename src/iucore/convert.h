@@ -62,6 +62,12 @@ void convert(const iu::ImageGpu_32f_C3* src, const IuRect& src_roi, iu::ImageGpu
 // 2D conversion; device; 32-bit 4-channel -> 32-bit 3-channel
 void convert(const iu::ImageGpu_32f_C4* src, const IuRect& src_roi, iu::ImageGpu_32f_C3* dst, const IuRect& dst_roi);
 
+// [device] 2D Color conversion from RGB to HSV (32-bit 4-channel)
+void convertRgbHsv(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst, bool normalize);
+
+// [device] 2D Color conversion from HSV to RGB (32-bit 4-channel)
+void convertHsvRgb(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst, bool denormalize);
+
 } // namespace iuprivate
 
 #endif // IUPRIVATE_IUCORE_CONVERT_H
