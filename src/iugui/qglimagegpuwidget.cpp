@@ -34,8 +34,7 @@
 namespace iuprivate {
 extern IuStatus cuCopyImageToPbo(iu::Image* image,
                                  unsigned int num_channels, unsigned int bit_depth,
-                                 uchar4 *dst,
-                                 float min=0.0f, float max=1.0f);
+                                 uchar4 *dst, float min, float max);
 extern IuStatus cuCopyOverlayToPbo(iuprivate::Overlay* overlay, uchar4 *dst, IuSize size);
 }
 
@@ -51,8 +50,6 @@ QGLImageGpuWidget::QGLImageGpuWidget(QWidget *parent) :
   num_channels_(0),
   bit_depth_(0),
   normalize_(false),
-  min_(0.0f),
-  max_(1.0f),
   init_ok_(false),
   zoom_(1.0f),
   mouse_x_old_(0),
@@ -96,40 +93,40 @@ void QGLImageGpuWidget::createActions()
   connect(overlay_signal_mapper_, SIGNAL(mapped(const QString&)),
           this, SLOT(slotActivateOverlay(const QString&)));
 
-//  // zoom
-//  action_zoom_group_ = new QMenu(tr("Zoom"),this);
-//  action_zoom_group_->setStatusTip(tr("Selecte fixed zoom"));
-//  context_menu_->addMenu(action_zoom_group_);
+  //  // zoom
+  //  action_zoom_group_ = new QMenu(tr("Zoom"),this);
+  //  action_zoom_group_->setStatusTip(tr("Selecte fixed zoom"));
+  //  context_menu_->addMenu(action_zoom_group_);
 
-//  action_zoom_0p25_ = new QAction(tr("Zoom 1:4"), this);
-//  action_zoom_0p25_->setStatusTip(tr("Set zoom to 0.25"));
-//  connect(action_zoom_0p25_, SIGNAL(triggered()), this, SLOT(slotZoom0p25()));
-//  action_zoom_group_->addAction(action_zoom_0p25_);
-//  action_zoom_0p33_ = new QAction(tr("Zoom 1:3"), this);
-//  action_zoom_0p33_->setStatusTip(tr("Set zoom to 0.33"));
-//  connect(action_zoom_0p33_, SIGNAL(triggered()), this, SLOT(slotZoom0p33()));
-//  action_zoom_group_->addAction(action_zoom_0p33_);
-//  action_zoom_0p5_ = new QAction(tr("Zoom 1:2"), this);
-//  action_zoom_0p5_->setStatusTip(tr("Set zoom to 0.5"));
-//  connect(action_zoom_0p5_, SIGNAL(triggered()), this, SLOT(slotZoom0p5()));
-//  action_zoom_group_->addAction(action_zoom_0p5_);
-//  action_zoom_reset_ = new QAction(tr("Zoom 1:1"), this);
-//  action_zoom_reset_->setShortcut(tr("Ctrl+0"));
-//  action_zoom_reset_->setStatusTip(tr("Reset zoom to original image size"));
-//  connect(action_zoom_reset_, SIGNAL(triggered()), this, SLOT(slotZoomReset()));
-//  action_zoom_group_->addAction(action_zoom_reset_);
-//  action_zoom_2_ = new QAction( tr("Zoom 2:1"), this);
-//  action_zoom_2_->setStatusTip(tr("Set zoom to 2"));
-//  connect(action_zoom_2_, SIGNAL(triggered()), this, SLOT(slotZoom2()));
-//  action_zoom_group_->addAction(action_zoom_2_);
-//  action_zoom_3_ = new QAction( tr("Zoom 3:1"), this);
-//  action_zoom_3_->setStatusTip(tr("Set zoom to 3"));
-//  connect(action_zoom_3_, SIGNAL(triggered()), this, SLOT(slotZoom3()));
-//  action_zoom_group_->addAction(action_zoom_3_);
-//  action_zoom_4_ = new QAction(tr("Zoom 4:1"), this);
-//  action_zoom_4_->setStatusTip(tr("Set zoom to 4"));
-//  connect(action_zoom_4_, SIGNAL(triggered()), this, SLOT(slotZoom4()));
-//  action_zoom_group_->addAction(action_zoom_4_);
+  //  action_zoom_0p25_ = new QAction(tr("Zoom 1:4"), this);
+  //  action_zoom_0p25_->setStatusTip(tr("Set zoom to 0.25"));
+  //  connect(action_zoom_0p25_, SIGNAL(triggered()), this, SLOT(slotZoom0p25()));
+  //  action_zoom_group_->addAction(action_zoom_0p25_);
+  //  action_zoom_0p33_ = new QAction(tr("Zoom 1:3"), this);
+  //  action_zoom_0p33_->setStatusTip(tr("Set zoom to 0.33"));
+  //  connect(action_zoom_0p33_, SIGNAL(triggered()), this, SLOT(slotZoom0p33()));
+  //  action_zoom_group_->addAction(action_zoom_0p33_);
+  //  action_zoom_0p5_ = new QAction(tr("Zoom 1:2"), this);
+  //  action_zoom_0p5_->setStatusTip(tr("Set zoom to 0.5"));
+  //  connect(action_zoom_0p5_, SIGNAL(triggered()), this, SLOT(slotZoom0p5()));
+  //  action_zoom_group_->addAction(action_zoom_0p5_);
+  //  action_zoom_reset_ = new QAction(tr("Zoom 1:1"), this);
+  //  action_zoom_reset_->setShortcut(tr("Ctrl+0"));
+  //  action_zoom_reset_->setStatusTip(tr("Reset zoom to original image size"));
+  //  connect(action_zoom_reset_, SIGNAL(triggered()), this, SLOT(slotZoomReset()));
+  //  action_zoom_group_->addAction(action_zoom_reset_);
+  //  action_zoom_2_ = new QAction( tr("Zoom 2:1"), this);
+  //  action_zoom_2_->setStatusTip(tr("Set zoom to 2"));
+  //  connect(action_zoom_2_, SIGNAL(triggered()), this, SLOT(slotZoom2()));
+  //  action_zoom_group_->addAction(action_zoom_2_);
+  //  action_zoom_3_ = new QAction( tr("Zoom 3:1"), this);
+  //  action_zoom_3_->setStatusTip(tr("Set zoom to 3"));
+  //  connect(action_zoom_3_, SIGNAL(triggered()), this, SLOT(slotZoom3()));
+  //  action_zoom_group_->addAction(action_zoom_3_);
+  //  action_zoom_4_ = new QAction(tr("Zoom 4:1"), this);
+  //  action_zoom_4_->setStatusTip(tr("Set zoom to 4"));
+  //  connect(action_zoom_4_, SIGNAL(triggered()), this, SLOT(slotZoom4()));
+  //  action_zoom_group_->addAction(action_zoom_4_);
 }
 
 /* ****************************************************************************
@@ -140,12 +137,16 @@ void QGLImageGpuWidget::createActions()
 //-----------------------------------------------------------------------------
 void QGLImageGpuWidget::setImage(iu::ImageGpu_8u_C1 *image, bool normalize)
 {
-  printf("QGLImageGpuWidget::setImage(ImageGpu_8u_C1*)\n");
+//  printf("QGLImageGpuWidget::setImage(ImageGpu_8u_C1*)\n");
 
   if(image == 0)
   {
     fprintf(stderr, "The given input image is null!\n");
   }
+
+  normalize_ = normalize;
+  min_ = 0.0f; // make sure there are min/max default values!!!
+  max_ = 255.0f;
 
   // FIXMEEE
   // TODO cleanup pbo and texture if we have already an image set
@@ -182,12 +183,16 @@ void QGLImageGpuWidget::setImage(iu::ImageGpu_8u_C1 *image, bool normalize)
 //-----------------------------------------------------------------------------
 void QGLImageGpuWidget::setImage(iu::ImageGpu_8u_C4 *image, bool normalize)
 {
-  printf("QGLImageGpuWidget::setImage(ImageGpu_8u_C4*)\n");
+//  printf("QGLImageGpuWidget::setImage(ImageGpu_8u_C4*)\n");
 
   if(image == 0)
   {
     fprintf(stderr, "The given input image is null!\n");
   }
+
+  normalize_ = normalize;
+  min_ = 0.0f; // make sure there are min/max default values!!!
+  max_ = 255.0f;
 
   // FIXMEEE
   // TODO cleanup pbo and texture if we have already an image set
@@ -224,7 +229,7 @@ void QGLImageGpuWidget::setImage(iu::ImageGpu_8u_C4 *image, bool normalize)
 //-----------------------------------------------------------------------------
 void QGLImageGpuWidget::setImage(iu::ImageGpu_32f_C1 *image, bool normalize)
 {
-  printf("QGLImageGpuWidget::setImage(ImageGpu_32f_C1*)\n");
+//  printf("QGLImageGpuWidget::setImage(ImageGpu_32f_C1*)\n");
 
   if(image == 0)
   {
@@ -232,6 +237,8 @@ void QGLImageGpuWidget::setImage(iu::ImageGpu_32f_C1 *image, bool normalize)
   }
 
   normalize_ = normalize;
+  min_ = 0.0f; // make sure there are min/max default values!!!
+  max_ = 1.0f;
 
   // FIXMEEE
   // TODO cleanup pbo and texture if we have already an image set
@@ -269,7 +276,7 @@ void QGLImageGpuWidget::setImage(iu::ImageGpu_32f_C1 *image, bool normalize)
 //-----------------------------------------------------------------------------
 void QGLImageGpuWidget::setImage(iu::ImageGpu_32f_C4 *image, bool normalize)
 {
-  printf("QGLImageGpuWidget::setImage(ImageGpu_32f_C4*)\n");
+//  printf("QGLImageGpuWidget::setImage(ImageGpu_32f_C4*)\n");
 
   if(image == 0)
   {
@@ -277,6 +284,8 @@ void QGLImageGpuWidget::setImage(iu::ImageGpu_32f_C4 *image, bool normalize)
   }
 
   normalize_ = normalize;
+  min_ = 0.0f; // make sure there are min/max default values!!!
+  max_ = 1.0f;
 
   // FIXMEEE
   // TODO cleanup pbo and texture if we have already an image set
@@ -370,8 +379,8 @@ void QGLImageGpuWidget::setAutoNormalize(bool flag)
 
 //-----------------------------------------------------------------------------
 void QGLImageGpuWidget::addOverlay(QString name, iu::Image* constraint_image,
-                iu::LinearMemory* lut_values, iu::LinearDeviceMemory_8u_C4* lut_colors,
-                bool active)
+                                   iu::LinearMemory* lut_values, iu::LinearDeviceMemory_8u_C4* lut_colors,
+                                   bool active)
 {
   if(constraint_image->roi() != image_->roi())
     qFatal("Size (ROI) of rendered image and overlay constraint image do not match.");
@@ -456,14 +465,14 @@ void QGLImageGpuWidget::wheelEvent(QWheelEvent *event)
   int num_degrees = event->delta() / 8;
   int num_steps = num_degrees / 15;
 
-//  if (event->orientation() == Qt::Vertical && QApplication::keyboardModifiers() == Qt::ControlModifier)
-//  {
-    float cur_zoom = zoom_ + float(num_steps)/30.0f;
-    this->resize(image_->width()*cur_zoom, image_->height()*cur_zoom);
-    event->accept();
-//  }
-//  else
-//    event->ignore();
+  //  if (event->orientation() == Qt::Vertical && QApplication::keyboardModifiers() == Qt::ControlModifier)
+  //  {
+  float cur_zoom = zoom_ + float(num_steps)/30.0f;
+  this->resize(image_->width()*cur_zoom, image_->height()*cur_zoom);
+  event->accept();
+  //  }
+  //  else
+  //    event->ignore();
 }
 
 //-----------------------------------------------------------------------------
@@ -479,12 +488,12 @@ void QGLImageGpuWidget::contextMenuEvent(QContextMenuEvent* event)
 //-----------------------------------------------------------------------------
 void QGLImageGpuWidget::initializeGL()
 {
-  printf("QGLImageGpuWidget::initializeGL()\n");
+//  printf("QGLImageGpuWidget::initializeGL()\n");
 
   makeCurrent();
 
   glewInit();
-  printf("  Loading extensions: %s\n", glewGetErrorString(glewInit()));
+//  printf("  Loading extensions: %s\n", glewGetErrorString(glewInit()));
   if (!glewIsSupported( "GL_VERSION_1_5 GL_ARB_vertex_buffer_object GL_ARB_pixel_buffer_object" ))
   {
     fprintf(stderr, "QGLImageGpuWidget Error: failed to get minimal GL extensions for QGLImageGpuWidget.\n");
@@ -496,7 +505,7 @@ void QGLImageGpuWidget::initializeGL()
     return;
   }
 
-  printf("QGLImageGpuWidget::initializeGL() done\n");
+//  printf("QGLImageGpuWidget::initializeGL() done\n");
 }
 
 //-----------------------------------------------------------------------------
@@ -580,22 +589,22 @@ void QGLImageGpuWidget::deletePbo()
 //-----------------------------------------------------------------------------
 bool QGLImageGpuWidget::init()
 {
-  printf("QGLImageGpuWidget::init()\n");
+//  printf("QGLImageGpuWidget::init()\n");
 
 
   this->createTexture();
 
   if (iu::checkCudaErrorState() != IU_NO_ERROR)
     fprintf(stderr, "error while initializing texture (gl)\n");
-  else
-    printf("  Texture created.\n");
+//  else
+//    printf("  Texture created.\n");
 
   this->createPbo();
 
   if (iu::checkCudaErrorState() != IU_NO_ERROR)
     fprintf(stderr, "error while initializing pbo (gl)\n");
-  else
-    printf("  PBO created.\n");
+//  else
+//    printf("  PBO created.\n");
 
   return !iu::checkCudaErrorState();
 }

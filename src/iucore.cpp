@@ -268,6 +268,12 @@ void convert_32f8u_C1(const iu::ImageGpu_32f_C1* src, const IuRect& src_roi, iu:
                      float mul_constant, unsigned char add_constant)
 {iuprivate::convert_32f8u_C1(src, src_roi, dst, dst_roi, mul_constant, add_constant);}
 
+// [device] 2D bit depth conversion: 32f_C4 -> 8u_C4
+void convert_32f8u_C4(const iu::ImageGpu_32f_C4* src, const IuRect& src_roi, iu::ImageGpu_8u_C4* dst, const IuRect& dst_roi,
+                     float mul_constant, unsigned char add_constant)
+{iuprivate::convert_32f8u_C4(src, src_roi, dst, dst_roi, mul_constant, add_constant);}
+
+
 // [device] 2D bit depth conversion: 8u_C1 -> 32f_C1
 void convert_8u32f_C1(const iu::ImageGpu_8u_C1* src, const IuRect& src_roi, iu::ImageGpu_32f_C1* dst, const IuRect& dst_roi,
                      float mul_constant, float add_constant)
