@@ -200,9 +200,9 @@ namespace iu {
       return reinterpret_cast<const LinearDeviceMemory<int>*>(col_);
     }
 
-    int n_elements() { return n_elements_; }
-    int n_row() { return n_row_; }
-    int n_col() { return n_col_; }
+    unsigned int n_elements() { return n_elements_; }
+    unsigned int n_row() { return n_row_; }
+    unsigned int n_col() { return n_col_; }
     cusparseMatDescr_t mat_descriptor() { return A_; }
 
     cusparseHandle_t* handle() { return handle_; }
@@ -285,9 +285,9 @@ namespace iu {
 
     cusparseHandle_t* handle_;
 
-    int n_row_;      /**< Number of rows in the sparse matrix */
-    int n_col_;      /**< Number of columns in the sparse matrix */
-    int n_elements_; /**< Number of non-zero elements in the sparse matrix */
+    unsigned int n_row_;      /**< Number of rows in the sparse matrix */
+    unsigned int n_col_;      /**< Number of columns in the sparse matrix */
+    unsigned int n_elements_; /**< Number of non-zero elements in the sparse matrix */
 
     LinearDeviceMemory<PixelType>* value_;
     LinearDeviceMemory<int>* row_;

@@ -223,6 +223,30 @@ IU_DLLAPI void ssim(const iu::ImageGpu_32f_C1* src, const iu::ImageGpu_32f_C1* r
 /** @} */ // end of Error Measurements
 
 
+/* ***************************************************************************
+     HISTOGRAMS
+ * ***************************************************************************/
+
+//////////////////////////////////////////////////////////////////////////////
+/** @defgroup Histograms
+ *  @ingroup Math
+ *  TODO more detailed docu
+ *  @{
+ */
+
+/** Computes the color histogram of an already binned image
+ * \param binned_image Already binned image (make sure this fits to actual hist
+ * \param mask         A mask image (only pixels where the mask value equals mask_val will be taken into account)
+ * \param hist         The output histogram
+ * \param mask_val     The mask value
+ */
+IU_DLLAPI void colorHistogram(const iu::ImageGpu_8u_C4* binned_image, const iu::ImageGpu_8u_C1* mask,
+                              iu::VolumeGpu_32f_C1* hist, unsigned char mask_val);
+
+/** @} */ // end of Histograms
+
+
+
 /** @} */ // end of Math
 
 } // namespace iu

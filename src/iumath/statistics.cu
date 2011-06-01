@@ -1164,6 +1164,62 @@ IuStatus cuSsim(const iu::ImageGpu_32f_C1* src, const iu::ImageGpu_32f_C1* refer
   return iu::checkCudaErrorState();
 }
 
+
+// kernel: color histogram
+__global__ void  cuColorHistogramKernel(float* hist, int width, int height,
+                                        int hstrideX, int hstrideXY, unsigned char mask_val)
+{
+  int x = blockIdx.x*blockDim.x + threadIdx.x;
+  int y = blockIdx.y*blockDim.y + threadIdx.y;
+
+  if(x<width && y<height)
+  {
+    if (tex2D(tex1_8u_C1__, x+0.5f, y+0.5f) == mask_val)
+    {
+#if !defined(__CUDA_ARCH__) || __CUDA_ARCH__ >= 200
+      uchar4 bins = tex2D(tex1_8u_C4__, x+0.5f, y+0.5f);
+      int hc = bins.x + bins.y*hstrideX + bins.z*hstrideXY;
+      atomicAdd(&hist[hc], 1.0f);
+#else
+    #warning Color Histograms will not work: >= sm_20 needed!
+#endif
+    }
+  }
+}
+
+
+// wrapper: color histogram
+IuStatus cuColorHistogram(const iu::ImageGpu_8u_C4* binned_image, const iu::ImageGpu_8u_C1* mask,
+                          iu::VolumeGpu_32f_C1* hist, unsigned char mask_val)
+{
+  tex1_8u_C4__.addressMode[0] = cudaAddressModeClamp;
+  tex1_8u_C4__.addressMode[1] = cudaAddressModeClamp;
+  tex1_8u_C4__.filterMode = cudaFilterModePoint;
+  tex1_8u_C4__.normalized = false;
+
+  tex1_8u_C1__.addressMode[0] = cudaAddressModeClamp;
+  tex1_8u_C1__.addressMode[1] = cudaAddressModeClamp;
+  tex1_8u_C1__.filterMode = cudaFilterModePoint;
+  tex1_8u_C1__.normalized = false;
+
+
+  cudaChannelFormatDesc channel_desc_c4 = cudaCreateChannelDesc<uchar4>();
+  cudaBindTexture2D(0, &tex1_8u_C4__, binned_image->data(), &channel_desc_c4, binned_image->width(), binned_image->height(), binned_image->pitch());
+  cudaChannelFormatDesc channel_desc_c1 = cudaCreateChannelDesc<unsigned char>();
+  cudaBindTexture2D(0, &tex1_8u_C1__, mask->data(), &channel_desc_c1, mask->width(), mask->height(), mask->pitch());
+
+  const unsigned int block_size = 16;
+  dim3 dimBlock(block_size, block_size);
+  dim3 dimGrid(iu::divUp(binned_image->width(), dimBlock.x), iu::divUp(binned_image->height(), dimBlock.y));
+
+  cuColorHistogramKernel <<< dimGrid,dimBlock >>> (
+      hist->data(), binned_image->width(), binned_image->height(), hist->stride(), hist->slice_stride(), mask_val);
+
+  return iu::checkCudaErrorState();
+}
+
+
+
 } // namespace iuprivate
 
 #endif // IUMATH_STATISTICS_CU

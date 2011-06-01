@@ -140,6 +140,12 @@ IuStatus cuMse(const iu::ImageGpu_32f_C1* src, const iu::ImageGpu_32f_C1* refere
 IuStatus cuSsim(const iu::ImageGpu_32f_C1* src, const iu::ImageGpu_32f_C1* reference, const IuRect& roi, double& ssim);
 
 
+/* ***************************************************************************
+   HISTOGRAMS
+*/
+
+IuStatus cuColorHistogram(const iu::ImageGpu_8u_C4* binned_image, const iu::ImageGpu_8u_C1* mask,
+                          iu::VolumeGpu_32f_C1* hist, unsigned char mask_val);
 
 }
 #endif // IUMATH_STATISTICS_CUH

@@ -322,5 +322,17 @@ void ssim(const iu::ImageGpu_32f_C1* src, const iu::ImageGpu_32f_C1* reference, 
   IU_ASSERT(status == IU_SUCCESS);
 }
 
+/* ***************************************************************************
+   HISTOGRAMS
+*/
+
+void colorHistogram(const iu::ImageGpu_8u_C4* binned_image, const iu::ImageGpu_8u_C1* mask,
+                    iu::VolumeGpu_32f_C1* hist, unsigned char mask_val)
+{
+  IuStatus status;
+  status = cuColorHistogram(binned_image, mask, hist, mask_val);
+  IU_ASSERT(status == IU_SUCCESS);
+}
+
 
 } // namespace iuprivate

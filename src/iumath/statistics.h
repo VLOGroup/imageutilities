@@ -149,6 +149,10 @@ void mse(const iu::ImageGpu_32f_C1* src, const iu::ImageGpu_32f_C1* reference, c
 // internal computation of the structural similarity index
 void ssim(const iu::ImageGpu_32f_C1* src, const iu::ImageGpu_32f_C1* reference, const IuRect& roi, double& ssim);
 
+// Color Histogram calculation
+void colorHistogram(const iu::ImageGpu_8u_C4* binned_image, const iu::ImageGpu_8u_C1* mask,
+                    iu::VolumeGpu_32f_C1* hist, unsigned char mask_val);
+
 } // namespace iuprivate
 
 #endif // IUMATH_STATISTICS_H

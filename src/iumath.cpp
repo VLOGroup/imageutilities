@@ -118,4 +118,13 @@ void mse(const iu::ImageGpu_32f_C1* src, const iu::ImageGpu_32f_C1* reference, c
 void ssim(const iu::ImageGpu_32f_C1* src, const iu::ImageGpu_32f_C1* reference, const IuRect& roi, double& ssim)
 {iuprivate::ssim(src, reference, roi, ssim);}
 
+/* ***************************************************************************
+     HISTOGRAMS
+ * ***************************************************************************/
+
+void colorHistogram(const iu::ImageGpu_8u_C4* binned_image, const iu::ImageGpu_8u_C1* mask,
+                              iu::VolumeGpu_32f_C1* hist, unsigned char mask_val)
+{iuprivate::colorHistogram(binned_image, mask, hist, mask_val);}
+
+
 } // namespace iu
