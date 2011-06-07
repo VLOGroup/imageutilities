@@ -322,6 +322,245 @@ IuStatus cuMulC(const iu::ImageGpu_32f_C4* src, const float4& factor, iu::ImageG
   IU_CHECK_AND_RETURN_CUDA_ERRORS();
 }
 
+
+/******************************************************************************
+  add val
+*******************************************************************************/
+
+// kernel: add val; 8-bit; 1-channel
+__global__ void  cuAddCKernel(const unsigned char val, unsigned char* dst, const size_t stride,
+                              const int xoff, const int yoff,
+                              const int width, const int height)
+{
+  int x = blockIdx.x*blockDim.x + threadIdx.x;
+  int y = blockIdx.y*blockDim.y + threadIdx.y;
+  const unsigned int oc = y*stride+x;
+
+  x += xoff;
+  y += yoff;
+
+  float xx = x+0.5f;
+  float yy = y+0.5f;
+
+  if(x>=0 && y>= 0 && x<width && y<height)
+  {
+    dst[oc] = val + tex2D(tex1_8u_C1__, xx, yy);
+  }
+}
+
+// wrapper: add val; 8-bit; 1-channel
+IuStatus cuAddC(const iu::ImageGpu_8u_C1* src, const unsigned char& val, iu::ImageGpu_8u_C1* dst, const IuRect& roi)
+{
+  // bind textures
+  cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<uchar1>();
+  cudaBindTexture2D(0, &tex1_8u_C1__, src->data(), &channel_desc, src->width(), src->height(), src->pitch());
+
+  // fragmentation
+  unsigned int block_size = 16;
+  dim3 dimBlock(block_size, block_size);
+  dim3 dimGrid(iu::divUp(dst->width(), dimBlock.x),
+               iu::divUp(dst->height(), dimBlock.y));
+
+  cuAddCKernel <<< dimGrid, dimBlock >>> (
+    val, dst->data(roi.x, roi.y), dst->stride(), roi.x, roi.y, roi.width, roi.height);
+
+  // unbind textures
+  cudaUnbindTexture(&tex1_8u_C1__);
+
+  // error check
+  IU_CHECK_AND_RETURN_CUDA_ERRORS();
+}
+
+// kernel: add val; 8-bit; 4-channel
+__global__ void  cuAddCKernel(const uchar4 val, uchar4* dst, const size_t stride,
+                              const int xoff, const int yoff,
+                              const int width, const int height)
+{
+  int x = blockIdx.x*blockDim.x + threadIdx.x;
+  int y = blockIdx.y*blockDim.y + threadIdx.y;
+  const unsigned int oc = y*stride+x;
+
+  x += xoff;
+  y += yoff;
+
+  float xx = x+0.5f;
+  float yy = y+0.5f;
+
+  if(x>=0 && y>= 0 && x<width && y<height)
+  {
+    uchar4 value = tex2D(tex1_8u_C4__, xx, yy);
+    value.x = value.x + val.x;
+    value.y = value.y + val.y;
+    value.z = value.z + val.z;
+    value.w = value.w + val.w;
+    dst[oc] = value;
+  }
+}
+
+// wrapper: add val; 8-bit; 4-channel
+IuStatus cuAddC(const iu::ImageGpu_8u_C4* src, const uchar4& val, iu::ImageGpu_8u_C4* dst, const IuRect& roi)
+{
+  // bind textures
+  cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<uchar4>();
+  cudaBindTexture2D(0, &tex1_8u_C4__, (uchar4*)src->data(), &channel_desc, src->width(), src->height(), src->pitch());
+
+  // fragmentation
+  unsigned int block_size = 16;
+  dim3 dimBlock(block_size, block_size);
+  dim3 dimGrid(iu::divUp(dst->width(), dimBlock.x),
+               iu::divUp(dst->height(), dimBlock.y));
+
+  cuAddCKernel <<< dimGrid, dimBlock >>> (
+    val, dst->data(roi.x, roi.y), dst->stride(),
+    roi.x, roi.y, roi.width, roi.height);
+
+
+  // unbind textures
+  cudaUnbindTexture(&tex1_8u_C4__);
+
+  // error check
+  IU_CHECK_AND_RETURN_CUDA_ERRORS();
+}
+
+// kernel: add val; 32-bit; 1-channel
+__global__ void  cuAddCKernel(const float val, float* dst, const size_t stride,
+                              const int xoff, const int yoff,
+                              const int width, const int height)
+{
+  int x = blockIdx.x*blockDim.x + threadIdx.x;
+  int y = blockIdx.y*blockDim.y + threadIdx.y;
+  const unsigned int oc = y*stride+x;
+
+  x += xoff;
+  y += yoff;
+
+  float xx = x+0.5f;
+  float yy = y+0.5f;
+
+  if(x>=0 && y>= 0 && x<width && y<height)
+  {
+    dst[oc] = val + tex2D(tex1_32f_C1__, xx, yy);
+  }
+}
+
+// wrapper: add val; 32-bit; 1-channel
+IuStatus cuAddC(const iu::ImageGpu_32f_C1* src, const float& val, iu::ImageGpu_32f_C1* dst, const IuRect& roi)
+{
+  // bind textures
+  cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<float>();
+  cudaBindTexture2D(0, &tex1_32f_C1__, src->data(), &channel_desc, src->width(), src->height(), src->pitch());
+
+  // fragmentation
+  unsigned int block_size = 16;
+  dim3 dimBlock(block_size, block_size);
+  dim3 dimGrid(iu::divUp(dst->width(), dimBlock.x),
+               iu::divUp(dst->height(), dimBlock.y));
+
+  cuAddCKernel <<< dimGrid, dimBlock >>> (
+    val, dst->data(roi.x, roi.y), dst->stride(),
+    roi.x, roi.y, roi.width, roi.height);
+
+
+  // unbind textures
+  cudaUnbindTexture(&tex1_32f_C1__);
+
+  // error check
+  IU_CHECK_AND_RETURN_CUDA_ERRORS();
+}
+
+// kernel: add val; 32-bit; 2-channel
+__global__ void  cuAddCKernel(const float2 val, float2* dst, const size_t stride,
+                              const int xoff, const int yoff,
+                              const int width, const int height)
+{
+  int x = blockIdx.x*blockDim.x + threadIdx.x;
+  int y = blockIdx.y*blockDim.y + threadIdx.y;
+  const unsigned int oc = y*stride+x;
+
+  x += xoff;
+  y += yoff;
+
+  float xx = x+0.5f;
+  float yy = y+0.5f;
+
+  if(x>=0 && y>= 0 && x<width && y<height)
+  {
+    dst[oc] = val + tex2D(tex1_32f_C2__, xx, yy);
+  }
+}
+
+// wrapper: add val; 32-bit; 4-channel
+IuStatus cuAddC(const iu::ImageGpu_32f_C2* src, const float2& val, iu::ImageGpu_32f_C2* dst, const IuRect& roi)
+{
+  // bind textures
+  cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<float2>();
+  cudaBindTexture2D(0, &tex1_32f_C2__, src->data(), &channel_desc, src->width(), src->height(), src->pitch());
+
+  // fragmentation
+  unsigned int block_size = 16;
+  dim3 dimBlock(block_size, block_size);
+  dim3 dimGrid(iu::divUp(dst->width(), dimBlock.x),
+               iu::divUp(dst->height(), dimBlock.y));
+
+  cuAddCKernel <<< dimGrid, dimBlock >>> (
+    val, dst->data(roi.x, roi.y), dst->stride(),
+    roi.x, roi.y, roi.width, roi.height);
+
+
+  // unbind textures
+  cudaUnbindTexture(&tex1_32f_C2__);
+
+  // error check
+  IU_CHECK_AND_RETURN_CUDA_ERRORS();
+}
+
+
+// kernel: add val; 32-bit; 1-channel
+__global__ void  cuAddCKernel(const float4 val, float4* dst, const size_t stride,
+                              const int xoff, const int yoff,
+                              const int width, const int height)
+{
+  int x = blockIdx.x*blockDim.x + threadIdx.x;
+  int y = blockIdx.y*blockDim.y + threadIdx.y;
+  const unsigned int oc = y*stride+x;
+
+  x += xoff;
+  y += yoff;
+
+  float xx = x+0.5f;
+  float yy = y+0.5f;
+
+  if(x>=0 && y>= 0 && x<width && y<height)
+  {
+    dst[oc] = val + tex2D(tex1_32f_C4__, xx, yy);
+  }
+}
+
+// wrapper: add val; 32-bit; 4-channel
+IuStatus cuAddC(const iu::ImageGpu_32f_C4* src, const float4& val, iu::ImageGpu_32f_C4* dst, const IuRect& roi)
+{
+  // bind textures
+  cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<float4>();
+  cudaBindTexture2D(0, &tex1_32f_C4__, (float4*)src->data(), &channel_desc, src->width(), src->height(), src->pitch());
+
+  // fragmentation
+  unsigned int block_size = 16;
+  dim3 dimBlock(block_size, block_size);
+  dim3 dimGrid(iu::divUp(dst->width(), dimBlock.x),
+               iu::divUp(dst->height(), dimBlock.y));
+
+  cuAddCKernel <<< dimGrid, dimBlock >>> (
+    val, dst->data(roi.x, roi.y), dst->stride(),
+    roi.x, roi.y, roi.width, roi.height);
+
+
+  // unbind textures
+  cudaUnbindTexture(&tex1_32f_C4__);
+
+  // error check
+  IU_CHECK_AND_RETURN_CUDA_ERRORS();
+}
+
 } // namespace iuprivate
 
 #endif // IUMATH_ARITHMETIC_CU

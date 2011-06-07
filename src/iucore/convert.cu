@@ -136,8 +136,8 @@ __global__ void cuConvert32fC4To8uC4Kernel(const float4* src, size_t src_stride,
 //-----------------------------------------------------------------------------
 /** convert kernel rgb -> hsv
  */
-__global__ void cuConvertRGBToHSVKernel(const float4* src, float4* dst, size_t stride, int width, int height,
-                                        bool normalize)
+__global__ void cuConvertRGBToHSVKernel(const float4* src, float4* dst, size_t stride,
+                                        int width, int height, bool normalize)
 {
   const int x = blockIdx.x*blockDim.x + threadIdx.x;
   const int y = blockIdx.y*blockDim.y + threadIdx.y;
@@ -147,31 +147,42 @@ __global__ void cuConvertRGBToHSVKernel(const float4* src, float4* dst, size_t s
   {
     // Read
     float4 in = src[c];
-    float M = IUMAX(in.x, IUMAX(in.y, in.z));
-    float m = IUMIN(in.x, IUMIN(in.y, in.z));
-    float C = M-m;
+    float R = in.x;
+    float G = in.y;
+    float B = in.z;
+
+    float Ma = IUMAX(R, IUMAX(G, B));
+    float mi = IUMIN(R, IUMIN(G, B));
+    float C = Ma-mi;
 
     // Hue
     float H = 0.0f;
-    if (M == in.x)
-      H = fmod((in.y - in.z)/C, 6.0f);
-    if (M == in.y)
-      H = (in.z - in.x)/C + 2.0f;
-    if (M == in.z)
-      H = (in.x - in.y)/C + 4.0f;
-    H = H*60.0f;
+    if (C != 0.0f)
+    {
+      if (Ma == R)
+        H = fmod((G - B)/C, 6.0f);
+      if (Ma == G)
+        H = (B - R)/C + 2.0f;
+      if (Ma == B)
+        H = (R - G)/C + 4.0f;
+    }
+
+    H *= 60.0f;
 
     // Value
-    float V = M;
+    float V = Ma;
 
     // Saturation
     float S = 0.0f;
     if (C != 0.0f)
       S = C/V;
 
+    if (H < 0.0f)
+      H += 360.0f;
+
     // Normalize
     if (normalize)
-      H = H/360.0f;
+      H /= 360.0f;
 
     // Write Back
     dst[c] = make_float4(H, S, V, in.w);
@@ -181,8 +192,8 @@ __global__ void cuConvertRGBToHSVKernel(const float4* src, float4* dst, size_t s
 //-----------------------------------------------------------------------------
 /** convert kernel hsv -> rgb
  */
-__global__ void cuConvertHSVToRGBKernel(const float4* src, float4* dst, size_t stride, int width, int height,
-                                        bool denormalize)
+__global__ void cuConvertHSVToRGBKernel(const float4* src, float4* dst, size_t stride,
+                                        int width, int height, bool denormalize)
 {
   const int x = blockIdx.x*blockDim.x + threadIdx.x;
   const int y = blockIdx.y*blockDim.y + threadIdx.y;
@@ -192,36 +203,70 @@ __global__ void cuConvertHSVToRGBKernel(const float4* src, float4* dst, size_t s
   {
     // Read
     float4 in = src[c];
-
-    float C = in.z*in.y;
-
-    // Denormalize
-    if (denormalize)
-      in.x = in.x*360.0f;
-
-    // RGB
-    float H = in.x/60.0f;
-    float X = C*(1.0f - abs(fmod(H, 2.0f) - 1.0f));
+    float H = in.x;
+    float S = in.y;
+    float V = in.z;
 
     float4 rgb = make_float4(0.0f, 0.0f, 0.0f, 0.0f);
-    if (H >= 0.0f)
+
+    //    float C = V*S;
+
+    //    // Denormalize
+    //    if (denormalize)
+    //      H = H*360.0f;
+
+    //    // RGB
+    //    H /= 60.0f;
+    //    float X = C*(1.0f - abs(fmod(H, 2.0f) - 1.0f));
+
+
+    //    if (H >= 0.0f)
+    //    {
+    //      if (H < 1.0f)
+    //        rgb = make_float4(C, X, 0.0f, 0.0f);
+    //      else if (H < 2.0f)
+    //        rgb = make_float4(X, C, 0.0f, 0.0f);
+    //      else if (H < 3.0f)
+    //        rgb = make_float4(0.0f, C, X, 0.0f);
+    //      else if (H < 4.0f)
+    //        rgb = make_float4(0.0f, X, C, 0.0f);
+    //      else if (H < 5.0f)
+    //        rgb = make_float4(X, 0.0f, C, 0.0f);
+    //      else if (H <= 6.0f)
+    //        rgb = make_float4(C, 0.0f, X, 0.0f);
+    //    }
+
+    //    float m = V-C;
+    //    rgb += m;
+
+    if (S == 0)
     {
-      if (H < 1.0f)
-        rgb = make_float4(C, X, 0.0f, 0.0f);
-      else if (H < 2.0f)
-        rgb = make_float4(X, C, 0.0f, 0.0f);
-      else if (H < 3.0f)
-        rgb = make_float4(0.0f, C, X, 0.0f);
-      else if (H < 4.0f)
-        rgb = make_float4(0.0f, X, C, 0.0f);
-      else if (H < 5.0f)
-        rgb = make_float4(X, 0.0f, C, 0.0f);
-      else if (H < 6.0f)
-        rgb = make_float4(C, 0.0f, X, 0.0f);
+      rgb = make_float4(V, V, V, in.w);
+      dst[c] = rgb;
+      return;
     }
 
-    float m = in.z-C;
-    rgb += m;
+     H /= 60.0f;
+     int i = floor(H);
+     float f = H-i;
+     float p = V*(1.0f - S);
+     float q = V*(1.0f - S*f);
+     float t = V*(1.0f - S*(1.0f-f));
+
+     if (i == 0)
+       rgb = make_float4(V, t, p, in.w);
+     else if (i == 1)
+       rgb = make_float4(q, V, p, in.w);
+     else if (i == 2)
+       rgb = make_float4(p, V, t, in.w);
+     else if (i == 3)
+       rgb = make_float4(p, q, V, in.w);
+     else if (i == 4)
+       rgb = make_float4(t, p, V, in.w);
+     else if (i == 5)
+       rgb = make_float4(V, p, q, in.w);
+
+
 
     // Write Back
     rgb.w = in.w;
@@ -246,9 +291,10 @@ IuStatus cuConvert(const iu::ImageGpu_32f_C3* src, const IuRect& src_roi,
   dim3 dimGrid(iu::divUp(dst_roi.width - dst_roi.x, dimBlock.x),
                iu::divUp(dst_roi.height - dst_roi.y, dimBlock.y));
 
-  cuConvertC3ToC4Kernel <<< dimGrid, dimBlock >>> (
-                                                   src->data(src_roi.x, src_roi.y), src->stride(), src_roi.width, src_roi.height,
-                                                   dst->data(dst_roi.x, dst_roi.y), dst->stride(), dst_roi.width, dst_roi.height);
+  cuConvertC3ToC4Kernel<<<dimGrid, dimBlock>>>(src->data(src_roi.x, src_roi.y), src->stride(),
+                                               src_roi.width, src_roi.height,
+                                               dst->data(dst_roi.x, dst_roi.y), dst->stride(),
+                                               dst_roi.width, dst_roi.height);
 
   IU_CHECK_AND_RETURN_CUDA_ERRORS();
 }
@@ -265,9 +311,10 @@ IuStatus cuConvert(const iu::ImageGpu_32f_C4* src, const IuRect& src_roi,
   dim3 dimGrid(iu::divUp(dst_roi.width - dst_roi.x, dimBlock.x),
                iu::divUp(dst_roi.height - dst_roi.y, dimBlock.y));
 
-  cuConvertC4ToC3Kernel <<< dimGrid, dimBlock >>> (
-                                                   src->data(src_roi.x, src_roi.y), src->stride(), src_roi.width, src_roi.height,
-                                                   dst->data(dst_roi.x, dst_roi.y), dst->stride(), dst_roi.width, dst_roi.height);
+  cuConvertC4ToC3Kernel<<<dimGrid, dimBlock>>>(src->data(src_roi.x, src_roi.y), src->stride(),
+                                               src_roi.width, src_roi.height,
+                                               dst->data(dst_roi.x, dst_roi.y), dst->stride(),
+                                               dst_roi.width, dst_roi.height);
 
   IU_CHECK_AND_RETURN_CUDA_ERRORS();
 }
@@ -284,9 +331,11 @@ IuStatus cuConvert_8u_32f(const iu::ImageGpu_8u_C1* src, const IuRect& src_roi,
   dim3 dimGrid(iu::divUp(dst_roi.width - dst_roi.x, dimBlock.x),
                iu::divUp(dst_roi.height - dst_roi.y, dimBlock.y));
 
-  cuConvert8uC1To32fC1Kernel <<< dimGrid, dimBlock >>> (
-                                                        src->data(src_roi.x, src_roi.y), src->stride(), src_roi.width, src_roi.height,
-                                                        dst->data(dst_roi.x, dst_roi.y), dst->stride(), dst_roi.width, dst_roi.height, mul_constant, add_constant);
+  cuConvert8uC1To32fC1Kernel<<<dimGrid, dimBlock>>>(src->data(src_roi.x, src_roi.y),
+                                                    src->stride(), src_roi.width, src_roi.height,
+                                                    dst->data(dst_roi.x, dst_roi.y),
+                                                    dst->stride(), dst_roi.width, dst_roi.height,
+                                                    mul_constant, add_constant);
 
   IU_CHECK_AND_RETURN_CUDA_ERRORS();
 }
@@ -303,9 +352,11 @@ IuStatus cuConvert_32f_8u(const iu::ImageGpu_32f_C1* src, const IuRect& src_roi,
   dim3 dimGrid(iu::divUp(dst_roi.width - dst_roi.x, dimBlock.x),
                iu::divUp(dst_roi.height - dst_roi.y, dimBlock.y));
 
-  cuConvert32fC1To8uC1Kernel <<< dimGrid, dimBlock >>> (
-                                                        src->data(src_roi.x, src_roi.y), src->stride(), src_roi.width, src_roi.height,
-                                                        dst->data(dst_roi.x, dst_roi.y), dst->stride(), dst_roi.width, dst_roi.height, mul_constant, add_constant);
+  cuConvert32fC1To8uC1Kernel<<<dimGrid, dimBlock>>>(src->data(src_roi.x, src_roi.y), src->stride(),
+                                                    src_roi.width, src_roi.height,
+                                                    dst->data(dst_roi.x, dst_roi.y),
+                                                    dst->stride(), dst_roi.width, dst_roi.height,
+                                                    mul_constant, add_constant);
 
   IU_CHECK_AND_RETURN_CUDA_ERRORS();
 }
@@ -321,15 +372,18 @@ IuStatus cuConvert_32f_8u(const iu::ImageGpu_32f_C4* src, const IuRect& src_roi,
   dim3 dimGrid(iu::divUp(dst_roi.width - dst_roi.x, dimBlock.x),
                iu::divUp(dst_roi.height - dst_roi.y, dimBlock.y));
 
-  cuConvert32fC4To8uC4Kernel <<< dimGrid, dimBlock >>> (
-                                                        src->data(src_roi.x, src_roi.y), src->stride(), src_roi.width, src_roi.height,
-                                                        dst->data(dst_roi.x, dst_roi.y), dst->stride(), dst_roi.width, dst_roi.height, mul_constant, add_constant);
+  cuConvert32fC4To8uC4Kernel<<<dimGrid, dimBlock>>>(src->data(src_roi.x, src_roi.y),
+                                                    src->stride(), src_roi.width, src_roi.height,
+                                                    dst->data(dst_roi.x, dst_roi.y),
+                                                    dst->stride(), dst_roi.width,
+                                                    dst_roi.height, mul_constant, add_constant);
 
   IU_CHECK_AND_RETURN_CUDA_ERRORS();
 }
 
 //-----------------------------------------------------------------------------
-IuStatus cuConvert_rgb_to_hsv(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst, bool normalize)
+IuStatus cuConvert_rgb_to_hsv(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst,
+                              bool normalize)
 {
   // fragmentation
   const unsigned int block_size = 16;
@@ -337,14 +391,16 @@ IuStatus cuConvert_rgb_to_hsv(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C
   dim3 dimGrid(iu::divUp(src->width(), dimBlock.x),
                iu::divUp(src->height(), dimBlock.y));
 
-  cuConvertRGBToHSVKernel <<< dimGrid, dimBlock >>> (
-                                                     src->data(), dst->data(), src->stride(), src->width(), src->height(), normalize);
+  cuConvertRGBToHSVKernel<<<dimGrid, dimBlock>>>(src->data(), dst->data(), src->stride(),
+                                                 src->width(), src->height(), normalize);
 
+  cudaThreadSynchronize();
   IU_CHECK_AND_RETURN_CUDA_ERRORS();
 }
 
 //-----------------------------------------------------------------------------
-IuStatus cuConvert_hsv_to_rgb(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst, bool denormalize)
+IuStatus cuConvert_hsv_to_rgb(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst,
+                              bool denormalize)
 {
   // fragmentation
   const unsigned int block_size = 16;
@@ -352,9 +408,10 @@ IuStatus cuConvert_hsv_to_rgb(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C
   dim3 dimGrid(iu::divUp(src->width(), dimBlock.x),
                iu::divUp(src->height(), dimBlock.y));
 
-  cuConvertHSVToRGBKernel <<< dimGrid, dimBlock >>> (
-                                                     src->data(), dst->data(), src->stride(), src->width(), src->height(), denormalize);
+  cuConvertHSVToRGBKernel<<<dimGrid, dimBlock>>>(src->data(), dst->data(), src->stride(),
+                                                 src->width(), src->height(), denormalize);
 
+  cudaThreadSynchronize();
   IU_CHECK_AND_RETURN_CUDA_ERRORS();
 }
 

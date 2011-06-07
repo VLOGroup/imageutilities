@@ -82,4 +82,49 @@ void mulC(const iu::ImageGpu_32f_C4* src, const float4& factor, iu::ImageGpu_32f
   IU_ASSERT(status == IU_SUCCESS);
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
+
+// [gpu] add val; Not-in-place; 8-bit; 1-channel
+void addC(const iu::ImageGpu_8u_C1* src, const unsigned char& val, iu::ImageGpu_8u_C1* dst, const IuRect& roi)
+{
+  IuStatus status;
+  status = cuAddC(src, val, dst, roi);
+  IU_ASSERT(status == IU_SUCCESS);
+}
+
+// [gpu] add val; Not-in-place; 8-bit; 4-channel
+void addC(const iu::ImageGpu_8u_C4* src, const uchar4& val, iu::ImageGpu_8u_C4* dst, const IuRect& roi)
+{
+  IuStatus status;
+  status = cuAddC(src, val, dst, roi);
+  IU_ASSERT(status == IU_SUCCESS);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+// [gpu] add val; Not-in-place; 32-bit; 1-channel
+void addC(const iu::ImageGpu_32f_C1* src, const float& val, iu::ImageGpu_32f_C1* dst, const IuRect& roi)
+{
+  IuStatus status;
+  status = cuAddC(src, val, dst, roi);
+  IU_ASSERT(status == IU_SUCCESS);
+}
+
+// [gpu] add val; Not-in-place; 32-bit; 2-channel
+void addC(const iu::ImageGpu_32f_C2* src, const float2& val, iu::ImageGpu_32f_C2* dst, const IuRect& roi)
+{
+  IuStatus status;
+  status = cuAddC(src, val, dst, roi);
+  IU_ASSERT(status == IU_SUCCESS);
+}
+
+// [gpu] add val; Not-in-place; 32-bit; 4-channel
+void addC(const iu::ImageGpu_32f_C4* src, const float4& val, iu::ImageGpu_32f_C4* dst, const IuRect& roi)
+{
+  IuStatus status;
+  status = cuAddC(src, val, dst, roi);
+  IU_ASSERT(status == IU_SUCCESS);
+}
+
 } // namespace iu

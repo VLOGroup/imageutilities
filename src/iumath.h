@@ -87,6 +87,24 @@ IU_DLLAPI void mulC(const iu::ImageGpu_32f_C4* src, const float4& factor, iu::Im
 // multiplication with factor; host; 8-bit
 // :TODO: \todo implement inplace interfaces.
 
+/** Addition to every pixel of a constant value. (can be called in-place)
+ * \param src Source image.
+ * \param val Value to be added.
+ * \param dst Destination image.
+ * \param roi Region of interest in the source and destination image
+ *
+ * \note supported gpu: 8u_C1, 8u_C4, 32f_C1, 32f_C4,
+ */
+// [gpu] add val; Not-in-place; 8-bit;
+IU_DLLAPI void addC(const iu::ImageGpu_8u_C1* src, const unsigned char& val, iu::ImageGpu_8u_C1* dst, const IuRect& roi);
+IU_DLLAPI void addC(const iu::ImageGpu_8u_C4* src, const uchar4& val, iu::ImageGpu_8u_C4* dst, const IuRect& roi);
+
+// [gpu] add val; Not-in-place; 32-bit;
+IU_DLLAPI void addC(const iu::ImageGpu_32f_C1* src, const float& val, iu::ImageGpu_32f_C1* dst, const IuRect& roi);
+IU_DLLAPI void addC(const iu::ImageGpu_32f_C2* src, const float2& val, iu::ImageGpu_32f_C2* dst, const IuRect& roi);
+IU_DLLAPI void addC(const iu::ImageGpu_32f_C4* src, const float4& val, iu::ImageGpu_32f_C4* dst, const IuRect& roi);
+
+
 /** @} */ // end of Arithmetics
 
 /* ***************************************************************************
