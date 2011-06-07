@@ -135,6 +135,17 @@ void minMax(const iu::ImageGpu_32f_C4 *src, const IuRect &roi, float4& min, floa
 
 ///////////////////////////////////////////////////////////////////////////////
 
+// [device] find min/max value of volume; 32-bit; 1-channel
+void minMax(iu::VolumeGpu_32f_C1 *src, float& min, float& max)
+{
+  IuStatus status;
+  status = cuMinMax(src, min, max);
+  IU_ASSERT(status == IU_SUCCESS);
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+
 // [device] find min value and its coordinates of image; 32-bit; 1-channel
 void min(const iu::ImageGpu_32f_C1* src, const IuRect&roi, float& min, int& x, int& y)
 {

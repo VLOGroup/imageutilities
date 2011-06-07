@@ -45,57 +45,57 @@ namespace iuprivate {
 __global__ void cuMinMaxXKernel_8u_C1(unsigned char* min, unsigned char* max,
                                       int xoff, int yoff, int width, int height)
 {
- const int x = blockIdx.x*blockDim.x + threadIdx.x;
- const int y = blockIdx.y*blockDim.y + threadIdx.y;
+  const int x = blockIdx.x*blockDim.x + threadIdx.x;
+  const int y = blockIdx.y*blockDim.y + threadIdx.y;
 
- float xx = x+xoff+0.5f;
- float yy = y+yoff+0.5f;
+  float xx = x+xoff+0.5f;
+  float yy = y+yoff+0.5f;
 
- unsigned char cur_min = tex2D(tex1_8u_C1__, xx, yy);
- unsigned char cur_max = tex2D(tex1_8u_C1__, xx, yy);
+  unsigned char cur_min = tex2D(tex1_8u_C1__, xx, yy);
+  unsigned char cur_max = tex2D(tex1_8u_C1__, xx, yy);
 
- // find minima of columns
- if (x<width)
- {
-   unsigned char val;
-   for(int y = 1; y < height; ++y)
-   {
-     yy = y+yoff+0.5f;
-     val = tex2D(tex1_8u_C1__, xx, yy);
-     if(val < cur_min) cur_min = val;
-     if(val > cur_max) cur_max = val;
-   }
+  // find minima of columns
+  if (x<width)
+  {
+    unsigned char val;
+    for(int y = 1; y < height; ++y)
+    {
+      yy = y+yoff+0.5f;
+      val = tex2D(tex1_8u_C1__, xx, yy);
+      if(val < cur_min) cur_min = val;
+      if(val > cur_max) cur_max = val;
+    }
 
-   min[x] = cur_min;
-   max[x] = cur_max;
- }
+    min[x] = cur_min;
+    max[x] = cur_max;
+  }
 }
 
 __global__ void cuMinMaxXKernel2_8u_C1(unsigned char* min, unsigned char* max,
-                                      int xoff, int yoff, int width, int height,
-                                      const unsigned char* img, size_t stride)
+                                       int xoff, int yoff, int width, int height,
+                                       const unsigned char* img, size_t stride)
 {
- const int x = blockIdx.x*blockDim.x + threadIdx.x;
- const int y = blockIdx.y*blockDim.y + threadIdx.y;
+  const int x = blockIdx.x*blockDim.x + threadIdx.x;
+  const int y = blockIdx.y*blockDim.y + threadIdx.y;
 
 
- unsigned char cur_min = img[y*stride+x];
- unsigned char cur_max = cur_min;
+  unsigned char cur_min = img[y*stride+x];
+  unsigned char cur_max = cur_min;
 
- // find minima of columns
- if (x<width)
- {
-   unsigned char val;
-   for(int y = 1; y < height; ++y)
-   {
-     val = img[y*stride+x];
-     if(val < cur_min) cur_min = val;
-     if(val > cur_max) cur_max = val;
-   }
+  // find minima of columns
+  if (x<width)
+  {
+    unsigned char val;
+    for(int y = 1; y < height; ++y)
+    {
+      val = img[y*stride+x];
+      if(val < cur_min) cur_min = val;
+      if(val > cur_max) cur_max = val;
+    }
 
-   min[x] = cur_min;
-   max[x] = cur_max;
- }
+    min[x] = cur_min;
+    max[x] = cur_max;
+  }
 }
 
 
@@ -140,30 +140,30 @@ __global__ void cuMinMaxXKernel_8u_C4(uchar4* min, uchar4* max,
 __global__ void cuMinMaxXKernel_32f_C1(float* min, float* max,
                                        int xoff, int yoff, int width, int height)
 {
- const int x = blockIdx.x*blockDim.x + threadIdx.x;
- const int y = blockIdx.y*blockDim.y + threadIdx.y;
+  const int x = blockIdx.x*blockDim.x + threadIdx.x;
+  const int y = blockIdx.y*blockDim.y + threadIdx.y;
 
- // find minima of columns
- if (x<width)
- {
-   float xx = x+xoff+0.5f;
-   float yy = y+yoff+0.5f;
+  // find minima of columns
+  if (x<width)
+  {
+    float xx = x+xoff+0.5f;
+    float yy = y+yoff+0.5f;
 
-   float cur_min = tex2D(tex1_32f_C1__, xx, yy);
-   float cur_max = tex2D(tex1_32f_C1__, xx, yy);
+    float cur_min = tex2D(tex1_32f_C1__, xx, yy);
+    float cur_max = tex2D(tex1_32f_C1__, xx, yy);
 
-   float val;
-   for(int y = 1; y < height; ++y)
-   {
-     yy = y+yoff+0.5f;
-     val = tex2D(tex1_32f_C1__, xx, yy);
-     if(val < cur_min) cur_min = val;
-     if(val > cur_max) cur_max = val;
-   }
+    float val;
+    for(int y = 1; y < height; ++y)
+    {
+      yy = y+yoff+0.5f;
+      val = tex2D(tex1_32f_C1__, xx, yy);
+      if(val < cur_min) cur_min = val;
+      if(val > cur_max) cur_max = val;
+    }
 
-   min[x] = cur_min;
-   max[x] = cur_max;
- }
+    min[x] = cur_min;
+    max[x] = cur_max;
+  }
 }
 
 // kernel; find min/max; 32f_C2
@@ -258,19 +258,19 @@ __global__ void cuMinXKernel_32f_C1(float* min, unsigned short* min_col_idx,
 
     float val;
     for(unsigned short y = 1; y < height; ++y)
-   {
-     yy = y+yoff+0.5f;
-     val = tex2D(tex1_32f_C1__, xx, yy);
-     if(val < cur_min)
-     {
-       cur_min_col_idx = y;
-       cur_min = val;
-     }
-   }
+    {
+      yy = y+yoff+0.5f;
+      val = tex2D(tex1_32f_C1__, xx, yy);
+      if(val < cur_min)
+      {
+        cur_min_col_idx = y;
+        cur_min = val;
+      }
+    }
 
-   min_col_idx[x] = cur_min_col_idx;
-   min[x] = cur_min;
- }
+    min_col_idx[x] = cur_min_col_idx;
+    min[x] = cur_min;
+  }
 }
 
 /*
@@ -281,33 +281,33 @@ __global__ void cuMinXKernel_32f_C1(float* min, unsigned short* min_col_idx,
 __global__ void cuMaxXKernel_32f_C1(float* max, float* max_col_idx,
                                     int xoff, int yoff, int width, int height)
 {
- const int x = blockIdx.x*blockDim.x + threadIdx.x;
- const int y = blockIdx.y*blockDim.y + threadIdx.y;
+  const int x = blockIdx.x*blockDim.x + threadIdx.x;
+  const int y = blockIdx.y*blockDim.y + threadIdx.y;
 
- float xx = x+xoff+0.5f;
- float yy = y+yoff+0.5f;
+  float xx = x+xoff+0.5f;
+  float yy = y+yoff+0.5f;
 
- float cur_max_col_idx = 0.0f;
- float cur_max = tex2D(tex1_32f_C1__, xx, yy);
+  float cur_max_col_idx = 0.0f;
+  float cur_max = tex2D(tex1_32f_C1__, xx, yy);
 
- // find minima of columns
- if (x<width)
- {
-   float val;
-   for(int y = 0; y < height; ++y)
-   {
-     yy = y+yoff+0.5f;
-     val = tex2D(tex1_32f_C1__, xx, yy);
-     if(val > cur_max)
-     {
-       cur_max_col_idx = (float)y;
-       cur_max = val;
-     }
-   }
+  // find minima of columns
+  if (x<width)
+  {
+    float val;
+    for(int y = 0; y < height; ++y)
+    {
+      yy = y+yoff+0.5f;
+      val = tex2D(tex1_32f_C1__, xx, yy);
+      if(val > cur_max)
+      {
+        cur_max_col_idx = (float)y;
+        cur_max = val;
+      }
+    }
 
-   max_col_idx[x] = cur_max_col_idx;
-   max[x] = cur_max;
- }
+    max_col_idx[x] = cur_max_col_idx;
+    max[x] = cur_max;
+  }
 }
 
 /*
@@ -317,47 +317,47 @@ __global__ void cuMaxXKernel_32f_C1(float* max, float* max_col_idx,
 // kernel; compute sum; 8u_C1
 __global__ void cuSumColKernel_8u_C1(unsigned char* sum, int xoff, int yoff, int width, int height)
 {
- const int x = blockIdx.x*blockDim.x + threadIdx.x;
- const int y = blockIdx.y*blockDim.y + threadIdx.y;
+  const int x = blockIdx.x*blockDim.x + threadIdx.x;
+  const int y = blockIdx.y*blockDim.y + threadIdx.y;
 
- float xx = x+xoff+0.5f;
- float yy = y+yoff+0.5f;
+  float xx = x+xoff+0.5f;
+  float yy = y+yoff+0.5f;
 
- float cur_sum = 0.0f;
+  float cur_sum = 0.0f;
 
- // compute sum of each column
- if (xx<width+0.5f)
- {
-   for(int y = yoff; y < height; ++y)
-   {
-     yy = y+0.5f;
-     cur_sum += tex2D(tex1_8u_C1__, xx, yy);
-   }
-   sum[x] = cur_sum;
- }
+  // compute sum of each column
+  if (xx<width+0.5f)
+  {
+    for(int y = yoff; y < height; ++y)
+    {
+      yy = y+0.5f;
+      cur_sum += tex2D(tex1_8u_C1__, xx, yy);
+    }
+    sum[x] = cur_sum;
+  }
 }
 
 // kernel; compute sum; 32f_C1
 __global__ void cuSumColKernel_32f_C1(float* sum, int xoff, int yoff, int width, int height)
 {
- const int x = blockIdx.x*blockDim.x + threadIdx.x;
- const int y = blockIdx.y*blockDim.y + threadIdx.y;
+  const int x = blockIdx.x*blockDim.x + threadIdx.x;
+  const int y = blockIdx.y*blockDim.y + threadIdx.y;
 
- float xx = x+xoff+0.5f;
- float yy = y+yoff+0.5f;
+  float xx = x+xoff+0.5f;
+  float yy = y+yoff+0.5f;
 
- float cur_sum = 0.0f;
+  float cur_sum = 0.0f;
 
- // compute sum of each column
- if ((x+xoff)<width)
- {
-   for(int y = yoff; y < height; ++y)
-   {
-     yy = y+0.5f;
-     cur_sum += tex2D(tex1_32f_C1__, xx, yy);
-   }
-   sum[x] = cur_sum;
- }
+  // compute sum of each column
+  if ((x+xoff)<width)
+  {
+    for(int y = yoff; y < height; ++y)
+    {
+      yy = y+0.5f;
+      cur_sum += tex2D(tex1_32f_C1__, xx, yy);
+    }
+    sum[x] = cur_sum;
+  }
 }
 
 /*
@@ -454,7 +454,7 @@ __global__ void  cuNormDiffValueL2Kernel_32f_C1(float value, float* dst, size_t 
 
 // wrapper: find min/max; 8u_C1
 IuStatus cuMinMax(const iu::ImageGpu_8u_C1 *src, const IuRect &roi,
-                   unsigned char& min_C1, unsigned char& max_C1)
+                  unsigned char& min_C1, unsigned char& max_C1)
 {
   // prepare and bind texture
   tex1_8u_C1__.filterMode = cudaFilterModePoint;
@@ -478,11 +478,11 @@ IuStatus cuMinMax(const iu::ImageGpu_8u_C1 *src, const IuRect &roi,
 
 #if 1
   cuMinMaxXKernel_8u_C1 <<< dimGridX, dimBlock >>> (
-      row_mins.data(), row_maxs.data(), roi.x, roi.y, roi.width, roi.height);
+                                                    row_mins.data(), row_maxs.data(), roi.x, roi.y, roi.width, roi.height);
 #else
   cuMinMaxXKernel2_8u_C1  <<< dimGridX, dimBlock >>> (
-    row_mins.data(), row_maxs.data(), roi.x, roi.y, roi.width, roi.height,
-    src->data(), src->stride());
+                                                      row_mins.data(), row_maxs.data(), roi.x, roi.y, roi.width, roi.height,
+                                                      src->data(), src->stride());
 #endif
   iu::LinearHostMemory_8u_C1 h_row_mins(num_row_sums);
   iu::LinearHostMemory_8u_C1 h_row_maxs(num_row_sums);
@@ -527,8 +527,8 @@ IuStatus cuMinMax(const iu::ImageGpu_8u_C4 *src, const IuRect &roi, uchar4& min_
   iu::LinearDeviceMemory_8u_C4 row_maxs(num_row_sums);
 
   cuMinMaxXKernel_8u_C4 <<< dimGridX, dimBlock >>> (
-      row_mins.data(), row_maxs.data(),
-      roi.x, roi.y, roi.width, roi.height);
+                                                    row_mins.data(), row_maxs.data(),
+                                                    roi.x, roi.y, roi.width, roi.height);
 
   iu::LinearHostMemory_8u_C4 h_row_mins(num_row_sums);
   iu::LinearHostMemory_8u_C4 h_row_maxs(num_row_sums);
@@ -578,7 +578,7 @@ IuStatus cuMinMax(const iu::ImageGpu_32f_C1 *src, const IuRect &roi, float& min_
   iu::LinearDeviceMemory_32f_C1 row_maxs(num_row_sums);
 
   cuMinMaxXKernel_32f_C1 <<< dimGridX, dimBlock >>> (
-      row_mins.data(), row_maxs.data(), roi.x, roi.y, roi.width, roi.height);
+                                                     row_mins.data(), row_maxs.data(), roi.x, roi.y, roi.width, roi.height);
 
   iu::LinearHostMemory_32f_C1 h_row_mins(num_row_sums);
   iu::LinearHostMemory_32f_C1 h_row_maxs(num_row_sums);
@@ -598,6 +598,142 @@ IuStatus cuMinMax(const iu::ImageGpu_32f_C1 *src, const IuRect &roi, float& min_
   return iu::checkCudaErrorState();
 }
 
+
+// kernel; find min/max; 32f_C1
+__global__ void cuMinMaxXYKernel_32f_C1(float* minim, float* maxim,
+                                        int width, int height, int m_stride,
+                                        float* data, int depth, int d_stride,
+                                        int d_slice_stride)
+{
+  const int x = blockIdx.x*blockDim.x + threadIdx.x;
+  const int y = blockIdx.y*blockDim.y + threadIdx.y;
+
+  // find minima of columns
+  if (x<width && y<height)
+  {
+    float cur_min = data[y*d_stride + x];
+    float cur_max = cur_min;
+
+    float val;
+    for(int z = 1; z < depth; z++)
+    {
+      val = data[z*d_slice_stride + y*d_stride + x];
+      if(val < cur_min) cur_min = val;
+      if(val > cur_max) cur_max = val;
+    }
+
+    minim[y*m_stride + x] = cur_min;
+    maxim[y*m_stride + x] = cur_max;
+  }
+}
+
+// kernel; find min; 32f_C1
+__global__ void cuMinXKernel_32f_C1(float* minim, int width, int height)
+{
+  const int x = blockIdx.x*blockDim.x + threadIdx.x;
+  const int y = blockIdx.y*blockDim.y + threadIdx.y;
+
+  // find minima of columns
+  if (x<width)
+  {
+    float xx = x+0.5f;
+    float yy = y+0.5f;
+
+    float cur_min = tex2D(tex1_32f_C1__, xx, yy);
+
+    float val;
+    for(int y = 1; y < height; ++y)
+    {
+      yy = y+0.5f;
+      val = tex2D(tex1_32f_C1__, xx, yy);
+      if(val < cur_min) cur_min = val;
+    }
+
+    minim[x] = cur_min;
+  }
+}
+
+// kernel; find max; 32f_C1
+__global__ void cuMaxXKernel_32f_C1(float* maxim, int width, int height)
+{
+  const int x = blockIdx.x*blockDim.x + threadIdx.x;
+  const int y = blockIdx.y*blockDim.y + threadIdx.y;
+
+  // find minima of columns
+  if (x<width)
+  {
+    float xx = x+0.5f;
+    float yy = y+0.5f;
+
+    float cur_max = tex2D(tex1_32f_C1__, xx, yy);
+
+    float val;
+    for(int y = 1; y < height; ++y)
+    {
+      yy = y+0.5f;
+      val = tex2D(tex1_32f_C1__, xx, yy);
+      if(val > cur_max) cur_max = val;
+    }
+
+    maxim[x] = cur_max;
+  }
+}
+
+
+// wrapper: find min/max; 32f_C1
+IuStatus cuMinMax(iu::VolumeGpu_32f_C1 *src, float& min_C1, float& max_C1)
+{
+  iu::ImageGpu_32f_C1 minim(src->width(), src->height());
+  iu::ImageGpu_32f_C1 maxim(src->width(), src->height());
+
+  const unsigned int block_size = 16;
+  dim3 dimBlock(block_size, block_size);
+  dim3 dimGrid(iu::divUp(src->width(), dimBlock.x), iu::divUp(src->height(), dimBlock.y));
+
+  cuMinMaxXYKernel_32f_C1<<< dimGrid,dimBlock >>>(minim.data(), maxim.data(),
+                                                  minim.width(), minim.height(), minim.stride(),
+                                                  src->data(), src->depth(),
+                                                  src->stride(), src->slice_stride());
+
+  // prepare and bind texture
+  tex1_32f_C1__.filterMode = cudaFilterModePoint;
+  tex1_32f_C1__.addressMode[0] = cudaAddressModeClamp;
+  tex1_32f_C1__.addressMode[1] = cudaAddressModeClamp;
+  tex1_32f_C1__.normalized = false;
+  cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<float1>();
+
+  // fragmentation
+  const unsigned int block_width = 512;
+  dim3 dimBlockX(block_width, 1, 1);
+  dim3 dimGridX(iu::divUp(minim.width(), block_width), 1);
+
+  // find minimum
+  cudaBindTexture2D(0, &tex1_32f_C1__, minim.data(), &channel_desc,
+                    minim.width(), minim.height(), minim.pitch());
+  int num_row_sums = minim.width();
+  iu::LinearDeviceMemory_32f_C1 row_mins(num_row_sums);
+  cuMinXKernel_32f_C1<<<dimGridX, dimBlockX>>>(row_mins.data(), minim.width(), minim.height());
+  iu::LinearHostMemory_32f_C1 h_row_mins(num_row_sums);
+  iuprivate::copy(&row_mins, &h_row_mins);
+  min_C1 = *h_row_mins.data(0);
+  for (int i = 1; i < num_row_sums; ++i)
+    min_C1 = IUMIN(min_C1, *h_row_mins.data(i));
+  cudaUnbindTexture(&tex1_32f_C1__);
+
+  // find maximum
+  cudaBindTexture2D(0, &tex1_32f_C1__, maxim.data(), &channel_desc,
+                    maxim.width(), maxim.height(), maxim.pitch());
+  iu::LinearDeviceMemory_32f_C1 row_maxs(num_row_sums);
+  cuMaxXKernel_32f_C1<<<dimGridX, dimBlockX>>>(row_maxs.data(), maxim.width(), maxim.height());
+  iu::LinearHostMemory_32f_C1 h_row_maxs(num_row_sums);
+  iuprivate::copy(&row_maxs, &h_row_maxs);
+  max_C1 = *h_row_maxs.data(0);
+  for (int i = 1; i < num_row_sums; ++i)
+    max_C1 = IUMAX(max_C1, *h_row_maxs.data(i));
+  cudaUnbindTexture(&tex1_32f_C1__);
+
+  return iu::checkCudaErrorState();
+}
 
 // wrapper: find min/max; 32f_C2
 IuStatus cuMinMax(const iu::ImageGpu_32f_C2 *src, const IuRect &roi, float2& min_C2, float2& max_C2)
@@ -622,8 +758,8 @@ IuStatus cuMinMax(const iu::ImageGpu_32f_C2 *src, const IuRect &roi, float2& min
   iu::LinearDeviceMemory_32f_C2 row_maxs(num_row_sums);
 
   cuMinMaxXKernel_32f_C2 <<< dimGridX, dimBlock >>> (
-      row_mins.data(), row_maxs.data(),
-      roi.x, roi.y, roi.width, roi.height);
+                                                     row_mins.data(), row_maxs.data(),
+                                                     roi.x, roi.y, roi.width, roi.height);
 
   iu::LinearHostMemory_32f_C2 h_row_mins(num_row_sums);
   iu::LinearHostMemory_32f_C2 h_row_maxs(num_row_sums);
@@ -669,8 +805,8 @@ IuStatus cuMinMax(const iu::ImageGpu_32f_C4 *src, const IuRect &roi, float4& min
   iu::LinearDeviceMemory_32f_C4 row_maxs(num_cols);
 
   cuMinMaxXKernel_32f_C4 <<< dimGridX, dimBlock >>> (
-      row_mins.data(), row_maxs.data(),
-      roi.x, roi.y, roi.width, roi.height);
+                                                     row_mins.data(), row_maxs.data(),
+                                                     roi.x, roi.y, roi.width, roi.height);
 
   iu::LinearHostMemory_32f_C4 h_row_mins(num_cols);
   iu::LinearHostMemory_32f_C4 h_row_maxs(num_cols);
@@ -805,6 +941,7 @@ IuStatus cuMax(const iu::ImageGpu_32f_C1 *src, const IuRect &roi,
 }
 
 
+
 /*
   WRAPPERS FOR SUM
 */
@@ -830,7 +967,7 @@ IuStatus cuSummation(const iu::ImageGpu_8u_C1 *src, const IuRect &roi, long& sum
   iu::LinearDeviceMemory_8u_C1 col_sums(num_col_sums);
 
   cuSumColKernel_8u_C1 <<< dimGridX, dimBlock >>> (
-      col_sums.data(), roi.x, roi.y, roi.width, roi.height);
+                                                   col_sums.data(), roi.x, roi.y, roi.width, roi.height);
 
   // :TODO: 32f vs 32u?
   iu::LinearHostMemory_8u_C1 h_col_sums(num_col_sums);
@@ -867,7 +1004,7 @@ IuStatus cuSummation(const iu::ImageGpu_32f_C1 *src, const IuRect &roi, double& 
   iu::LinearDeviceMemory_32f_C1 col_sums(num_col_sums);
 
   cuSumColKernel_32f_C1 <<< dimGridX, dimBlock >>> (
-      col_sums.data(), roi.x, roi.y, roi.width, roi.height);
+                                                    col_sums.data(), roi.x, roi.y, roi.width, roi.height);
 
   iu::LinearHostMemory_32f_C1 h_col_sums(num_col_sums);
   iuprivate::copy(&col_sums, &h_col_sums);
@@ -912,7 +1049,7 @@ IuStatus cuNormDiffL1(const iu::ImageGpu_32f_C1* src1, const iu::ImageGpu_32f_C1
   iu::ImageGpu_32f_C1 squared_deviances(roi.width, roi.height);
 
   cuNormDiffL1Kernel_32f_C1 <<< dimGrid, dimBlock >>> (
-      squared_deviances.data(roi.x, roi.y), squared_deviances.stride(), roi.x, roi.y, roi.width, roi.height);
+                                                       squared_deviances.data(roi.x, roi.y), squared_deviances.stride(), roi.x, roi.y, roi.width, roi.height);
 
   double sum_squared = 0.0;
   iuprivate::cuSummation(&squared_deviances, roi, sum_squared);
@@ -940,8 +1077,8 @@ IuStatus cuNormDiffL1(const iu::ImageGpu_32f_C1* src, const float& value, const 
   iu::ImageGpu_32f_C1 squared_deviances(roi.width, roi.height);
 
   cuNormDiffValueL1Kernel_32f_C1 <<< dimGrid, dimBlock >>> (
-      value, squared_deviances.data(roi.x, roi.y), squared_deviances.stride(),
-      roi.x, roi.y, roi.width, roi.height);
+                                                            value, squared_deviances.data(roi.x, roi.y), squared_deviances.stride(),
+                                                            roi.x, roi.y, roi.width, roi.height);
 
   double sum_squared = 0.0;
   iuprivate::cuSummation(&squared_deviances, roi, sum_squared);
@@ -976,7 +1113,7 @@ IuStatus cuNormDiffL2(const iu::ImageGpu_32f_C1* src1, const iu::ImageGpu_32f_C1
   iu::ImageGpu_32f_C1 squared_deviances(roi.width, roi.height);
 
   cuNormDiffL2Kernel_32f_C1 <<< dimGrid, dimBlock >>> (
-      squared_deviances.data(roi.x, roi.y), squared_deviances.stride(), roi.x, roi.y, roi.width, roi.height);
+                                                       squared_deviances.data(roi.x, roi.y), squared_deviances.stride(), roi.x, roi.y, roi.width, roi.height);
 
   double sum_squared = 0.0;
   iuprivate::cuSummation(&squared_deviances, roi, sum_squared);
@@ -1004,8 +1141,8 @@ IuStatus cuNormDiffL2(const iu::ImageGpu_32f_C1* src, const float& value, const 
   iu::ImageGpu_32f_C1 squared_deviances(roi.width, roi.height);
 
   cuNormDiffValueL2Kernel_32f_C1 <<< dimGrid, dimBlock >>> (
-      value, squared_deviances.data(roi.x, roi.y), squared_deviances.stride(),
-      roi.x, roi.y, roi.width, roi.height);
+                                                            value, squared_deviances.data(roi.x, roi.y), squared_deviances.stride(),
+                                                            roi.x, roi.y, roi.width, roi.height);
 
   double sum_squared = 0.0;
   iuprivate::cuSummation(&squared_deviances, roi, sum_squared);
@@ -1060,7 +1197,7 @@ IuStatus cuMse(const iu::ImageGpu_32f_C1* src, const iu::ImageGpu_32f_C1* refere
   iuprivate::setValue(0.0f, &tmp, tmp.roi());
 
   cuMseKernel <<< dimGrid,dimBlock >>> (
-      tmp.data(), tmp.stride(), roi.x, roi.y, roi.width, roi.height);
+                                        tmp.data(), tmp.stride(), roi.x, roi.y, roi.width, roi.height);
 
   double sum = 0.0;
   cuSummation(&tmp, tmp.roi(), sum);
@@ -1155,7 +1292,7 @@ IuStatus cuSsim(const iu::ImageGpu_32f_C1* src, const iu::ImageGpu_32f_C1* refer
   float c2 = (k2*dynamic_range)*(k2*dynamic_range);
 
   cuSsimKernel <<< dimGrid,dimBlock >>> (
-      c1, c2, tmp.data(), tmp.stride(), roi.x, roi.y, roi.width, roi.height);
+                                         c1, c2, tmp.data(), tmp.stride(), roi.x, roi.y, roi.width, roi.height);
 
   double sum = 0.0;
   cuSummation(&tmp, tmp.roi(), sum);
@@ -1181,7 +1318,7 @@ __global__ void  cuColorHistogramKernel(float* hist, int width, int height,
       int hc = bins.x + bins.y*hstrideX + bins.z*hstrideXY;
       atomicAdd(&hist[hc], 1.0f);
 #else
-    #warning Color Histograms will not work: >= sm_20 needed!
+#warning Color Histograms will not work: >= sm_20 needed!
 #endif
     }
   }
@@ -1202,18 +1339,23 @@ IuStatus cuColorHistogram(const iu::ImageGpu_8u_C4* binned_image, const iu::Imag
   tex1_8u_C1__.filterMode = cudaFilterModePoint;
   tex1_8u_C1__.normalized = false;
 
+  setValue(0.0f, hist, hist->roi());
 
   cudaChannelFormatDesc channel_desc_c4 = cudaCreateChannelDesc<uchar4>();
-  cudaBindTexture2D(0, &tex1_8u_C4__, binned_image->data(), &channel_desc_c4, binned_image->width(), binned_image->height(), binned_image->pitch());
+  cudaBindTexture2D(0, &tex1_8u_C4__, binned_image->data(), &channel_desc_c4,
+                    binned_image->width(), binned_image->height(), binned_image->pitch());
   cudaChannelFormatDesc channel_desc_c1 = cudaCreateChannelDesc<unsigned char>();
-  cudaBindTexture2D(0, &tex1_8u_C1__, mask->data(), &channel_desc_c1, mask->width(), mask->height(), mask->pitch());
+  cudaBindTexture2D(0, &tex1_8u_C1__, mask->data(), &channel_desc_c1, mask->width(),
+                    mask->height(), mask->pitch());
 
   const unsigned int block_size = 16;
   dim3 dimBlock(block_size, block_size);
-  dim3 dimGrid(iu::divUp(binned_image->width(), dimBlock.x), iu::divUp(binned_image->height(), dimBlock.y));
+  dim3 dimGrid(iu::divUp(binned_image->width(), dimBlock.x),
+               iu::divUp(binned_image->height(), dimBlock.y));
 
-  cuColorHistogramKernel <<< dimGrid,dimBlock >>> (
-      hist->data(), binned_image->width(), binned_image->height(), hist->stride(), hist->slice_stride(), mask_val);
+  cuColorHistogramKernel<<<dimGrid,dimBlock>>>(hist->data(), binned_image->width(),
+                                               binned_image->height(), hist->stride(),
+                                               hist->slice_stride(), mask_val);
 
   return iu::checkCudaErrorState();
 }

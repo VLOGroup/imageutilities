@@ -135,6 +135,17 @@ IU_DLLAPI void minMax(const ImageGpu_32f_C2* src, const IuRect& roi, float2& min
 IU_DLLAPI void minMax(const ImageGpu_32f_C4* src, const IuRect& roi, float4& min, float4& max);
 
 
+/** Finds the minimum and maximum value of a volume.
+ * \param src Source image [device]
+ * \param[out] min Minium value found in the source volume.
+ * \param[out] max Maximum value found in the source volume.
+ *
+ * \note supported gpu: 32f_C1
+ */
+// find min/max; volume; device; 32-bit
+IU_DLLAPI void minMax(VolumeGpu_32f_C1* src, float& min, float& max);
+
+
 /** Finds the minimum value of an image in a certain ROI and the minimums coordinates.
  * \param src Source image [device]
  * \param src_roi Region of interest in the source image.

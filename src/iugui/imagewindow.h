@@ -32,6 +32,8 @@ public:
   void update();
   void setCursor(QCursor csr);
 
+  QGLImageGpuWidget* getWidget() {return image_gpu_widget_;}
+
 signals:
   void mouseMoved(int from_x, int from_y, int to_x, int to_y);
   void mousePressed(int x, int y);
