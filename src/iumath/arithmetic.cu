@@ -227,6 +227,42 @@ IuStatus cuMulC(const iu::ImageGpu_32f_C1* src, const float& factor, iu::ImageGp
   IU_CHECK_AND_RETURN_CUDA_ERRORS();
 }
 
+// kernel: volume multiplication with factor; 32-bit; 1-channel
+__global__ void  cuVolMulCKernel(const float factor, float* dst, const float*src,
+                                 const size_t stride, const size_t slice_stride,
+                                 const int width, const int height, const int depth)
+{
+  int x = blockIdx.x*blockDim.x + threadIdx.x;
+  int y = blockIdx.y*blockDim.y + threadIdx.y;
+  const unsigned int oc = y*stride+x;
+
+  if(x<width && y<height)
+  {
+    for (int z=0; z<depth; z++)
+    {
+      int vc = oc + z*slice_stride;
+      dst[vc] = src[vc] * factor;
+    }
+  }
+}
+
+// wrapper: volume multiplication with factor; 32-bit; 1-channel
+IuStatus cuMulC(const iu::VolumeGpu_32f_C1* src, const float& factor,
+                iu::VolumeGpu_32f_C1* dst)
+{
+  // fragmentation
+  unsigned int block_size = 16;
+  dim3 dimBlock(block_size, block_size);
+  dim3 dimGrid(iu::divUp(dst->width(), dimBlock.x),
+               iu::divUp(dst->height(), dimBlock.y));
+
+  cuVolMulCKernel<<<dimGrid, dimBlock>>>(factor, dst->data(), src->data(),
+    dst->stride(), dst->slice_stride(), dst->width(), dst->height(), dst->depth());
+
+  // error check
+  IU_CHECK_AND_RETURN_CUDA_ERRORS();
+}
+
 // kernel: multiplication with factor; 32-bit; 2-channel
 __global__ void  cuMulCKernel(const float2 factor, float2* dst, const size_t stride,
                               const int xoff, const int yoff,
@@ -275,7 +311,7 @@ IuStatus cuMulC(const iu::ImageGpu_32f_C2* src, const float2& factor, iu::ImageG
 }
 
 
-// kernel: multiplication with factor; 32-bit; 1-channel
+// kernel: multiplication with factor; 32-bit; 4-channel
 __global__ void  cuMulCKernel(const float4 factor, float4* dst, const size_t stride,
                               const int xoff, const int yoff,
                               const int width, const int height)

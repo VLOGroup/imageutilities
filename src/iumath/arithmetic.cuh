@@ -50,6 +50,15 @@ IuStatus cuMulC(const iu::ImageGpu_32f_C1* src, const float& factor, iu::ImageGp
 IuStatus cuMulC(const iu::ImageGpu_32f_C2* src, const float2& factor, iu::ImageGpu_32f_C2* dst, const IuRect& roi);
 IuStatus cuMulC(const iu::ImageGpu_32f_C4* src, const float4& factor, iu::ImageGpu_32f_C4* dst, const IuRect& roi);
 
+/** Cuda wrappers for volumetric not-in-place multiplication of every pixel with a constant factor.
+ * \param src Source volume.
+ * \param factor Multiplication factor applied to each pixel.
+ * \param dst Destination volume.
+ *
+ * \note supported gpu: 32f_C1,
+ * \note 3-channel stuff not supported due to texture usage!
+ */
+IuStatus cuMulC(const iu::VolumeGpu_32f_C1* src, const float& factor, iu::VolumeGpu_32f_C1* dst);
 
 /** Cuda wrappers for not-in-place addition to every pixel of a constant factor.
  * \param src Source image.
