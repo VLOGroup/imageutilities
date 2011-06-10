@@ -95,7 +95,7 @@ IuStatus CUDAdrawLine(iu::ImageGpu_8u_C1 *image, int x_start, int y_start,
   int size_x = max_x - min_x;
   int size_y = max_y - min_y;
 
-  if ((size_x == 0) && (size_y == 0))
+  if ((size_x == 0) || (size_y == 0))
     return IU_SUCCESS; // outside
 
   // fragmentation

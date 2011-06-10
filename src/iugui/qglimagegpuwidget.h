@@ -29,6 +29,7 @@
 #include <QObject>
 #include <QGLWidget>
 #include <QString>
+#include <QRadioButton>
 #include <cuda_gl_interop.h>
 
 #include "iudefs.h"
@@ -71,19 +72,33 @@ signals:
   void mousePressed(int x, int y, int global_x, int global_y);
   void mouseReleased(int x, int y);
 
+  void pan(int from_x, int from_y, int to_x, int to_y);
+
+  void zoomChanged(float val);
+  void zoomed(double factor);
+
+  void showToolbar(bool val);
+  void pixelInfo(QString text);
+
+public slots:
+  void setZoom(float val);
+
 private slots:
   //  /** Invokes timer triggered updates if the autoupdate ability is set. */
   //  void slotTimerCallback();
 
   /** Resets the zoom to 100% (1:1). */
-//  void slotZoomReset();
+  void slotZoomReset();
 
-  //  void slotZoom0p25();
-  //  void slotZoom0p33()
-  //  void slotZoom0p5();
-  //  void slotZoom2();
-  //  void slotZoom3();
-  //  void slotZoom4();
+  void slotZoom0p25();
+  void slotZoom0p33();
+  void slotZoom0p5();
+  void slotZoom2();
+  void slotZoom3();
+  void slotZoom4();
+
+  void useNN(bool val);
+  void useLinear(bool val);
 
   //  /** Sets the minimum gray value that should be displayed from the context menu slider. */
   //  void slotMinimumValue(int value);
@@ -139,20 +154,32 @@ protected:
   QSignalMapper *overlay_signal_mapper_; /**< Maps the signal from the overlay checkbox to active the overlay. */
   QList<QWidgetAction*> action_list_overlays_; /**< Checkboxes for all added overlays. */
   QAction *action_close_; /**< Action that closes the widget. */
-//  QAction *action_zoom_reset_; /**< Action that sets the zoom to 100% (1:1) */
-//  QAction *action_zoom_0p25_;
-//  QAction *action_zoom_0p33_;
-//  QAction *action_zoom_0p5_;
-//  QAction *action_zoom_2_;
-//  QAction *action_zoom_3_;
-//  QAction *action_zoom_4_;
-//  QMenu *action_zoom_group_;
-//  QWidgetAction *action_slider_min_; /**< Slider for the min gray value. */
-//  QWidgetAction *action_slider_max_; /**< Slider for the max gray value. */
-//  QWidgetAction *action_slider_range_label_; /**< Slider range label. */
-//  QLabel* min_max_slider_label_; /**< Slider range label text. */
-//  QSlider *slider_min_;
-//  QSlider *slider_max_;
+  QAction *action_zoom_reset_; /**< Action that sets the zoom to 100% (1:1) */
+  QAction *action_zoom_0p25_;
+  QAction *action_zoom_0p33_;
+  QAction *action_zoom_0p5_;
+  QAction *action_zoom_2_;
+  QAction *action_zoom_3_;
+  QAction *action_zoom_4_;
+  QMenu *action_zoom_group_;
+
+  QMenu *action_interpolate_group_;
+  QWidgetAction *action_NN_;
+  QWidgetAction *action_Linear_;
+
+  QWidgetAction *show_Toolbar_;
+
+  bool filter_linear_;
+  int button_;
+
+  QCursor old_cursor_;
+
+  //  QWidgetAction *action_slider_min_; /**< Slider for the min gray value. */
+  //  QWidgetAction *action_slider_max_; /**< Slider for the max gray value. */
+  //  QWidgetAction *action_slider_range_label_; /**< Slider range label. */
+  //  QLabel* min_max_slider_label_; /**< Slider range label text. */
+  //  QSlider *slider_min_;
+  //  QSlider *slider_max_;
 
 private:
   // Copy and asignment operator intentionally declared private.

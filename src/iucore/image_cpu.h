@@ -89,6 +89,12 @@ public:
       Allocator::copy(_data, _pitch, data_, pitch_, this->size());
     }
   }
+
+  PixelType getPixel(unsigned int x, unsigned int y)
+  {
+    return *data(x, y);
+  }
+
   // :TODO:
   //ImageCpu& operator= (const ImageCpu<PixelType, Allocator>& from);
 

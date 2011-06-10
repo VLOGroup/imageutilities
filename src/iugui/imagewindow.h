@@ -6,7 +6,9 @@
 #include "iudefs.h"
 
 class QScrollArea;
-
+class QScrollBar;
+class QToolBar;
+class QLabel;
 
 namespace iu {
 
@@ -40,15 +42,29 @@ signals:
   void mousePressed(int x, int y, int global_x, int global_y);
   void mouseReleased(int x, int y);
 
+  void zoomChanged(float val);
+
 public slots:
-  /* this slot is just for testing purpose */
-  void mouseGotPressed(int x, int y, int global_x, int global_y);
+  void pan(int from_x, int from_y, int to_x, int to_y);
+  void zoomed(double factor);
+
+  void showToolbar(bool val=true);
+  void updatePixelInfo(QString text);
 
 protected:
   void setupGeometry();
 
+private:
+  void panScrollBar(QScrollBar *scrollBar, int offset);
+  void adjustScrollBar(QScrollBar *scrollBar, double factor);
+
   QGLImageGpuWidget* image_gpu_widget_;
   QScrollArea* image_gpu_scroll_area_;
+
+  QToolBar* tool_bar_;
+  QAction* action_save_;
+
+  QLabel* pixel_info_;
 
 };
 

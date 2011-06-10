@@ -94,6 +94,14 @@ public:
     }
   }
 
+  PixelType getPixel(unsigned int x, unsigned int y)
+  {
+    PixelType value;
+    cudaMemcpy2D(&value, sizeof(PixelType), &data_[y*stride()+x], pitch_,
+                 sizeof(PixelType), 1, cudaMemcpyDeviceToHost);
+    return value;
+  }
+
   // :TODO:
   //ImageGpu& operator= (const ImageGpu<PixelType, Allocator>& from);
 
