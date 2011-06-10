@@ -646,8 +646,7 @@ void QGLImageGpuWidget::mouseMoveEvent(QMouseEvent * event)
       }
     }
 
-    if (this->parentWidget()->hasFocus())
-      emit pixelInfo(text);
+    emit pixelInfo(text);
   }
 }
 
@@ -837,10 +836,14 @@ void QGLImageGpuWidget::paintGL()
   if(image_ == 0)
     return;
 
-  if (!glewIsSupported( "GL_VERSION_1_5 GL_ARB_vertex_buffer_object GL_ARB_pixel_buffer_object" ))
-   return;
+//  printf("QGLImageGpuWidget::paintGL()\n");
 
-//  printf("QGLImageGpuWidget::paintGL()\n");s
+  if (!glewIsSupported( "GL_VERSION_1_5 GL_ARB_vertex_buffer_object GL_ARB_pixel_buffer_object" ))
+  {
+    printf("!!!!!!!!!!!! CALL GLEW INIT !!!!!!!!!!!!\n");
+    glewInit();
+    return;
+  }
 
   // map GL <-> CUDA resource
   uchar4 *d_dst = NULL;

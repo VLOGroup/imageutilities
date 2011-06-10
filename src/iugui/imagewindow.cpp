@@ -66,8 +66,7 @@ void ImageWindow::showToolbar(bool val)
 //-----------------------------------------------------------------------------
 void ImageWindow::updatePixelInfo(QString text)
 {
-  if (this->image_gpu_scroll_area_->hasFocus())
-    pixel_info_->setText(text);
+  pixel_info_->setText(text);
 }
 
 
