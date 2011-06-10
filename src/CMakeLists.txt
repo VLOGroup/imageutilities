@@ -317,6 +317,10 @@ ${CMAKE_CURRENT_SOURCE_DIR}/iugui/overlay.h
     ${CMAKE_CURRENT_SOURCE_DIR}/iugui/imagewindow.h
     )
 
+  SET(IU_GUI_RC_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/iugui/images.qrc
+    )
+
   # install specialized headers
   install(FILES ${IU_GUI_MOC_HEADERS} ${IU_GUI_HEADERS}
     DESTINATION include/iu/iugui
@@ -324,6 +328,11 @@ ${CMAKE_CURRENT_SOURCE_DIR}/iugui/overlay.h
 
   # compile moc headers
   QT4_WRAP_CPP (IU_GUI_MOC_SOURCES ${IU_GUI_MOC_HEADERS})
+
+  # add resources
+  qt4_add_resources(QTRC_SOURCES ${IU_GUI_RC_SOURCES})
+
+  message("QTRC_SOURCES = ${QTRC_SOURCES}")
 
 else()
   message("[-] ImageUtilities omitting GUI module")
@@ -335,6 +344,7 @@ else()
   set(GLEW_LIBRARIES "")
 
 endif()
+
 
 ##-----------------------------------------------------------------------------
 ## IO MODULE: OpenCV for Image I/O
@@ -711,7 +721,7 @@ endif(VMLIBRARIES_IU_USE_MATLAB)
 ## build gui library
 set(IU_GUI_LIB iugui)
 if(VMLIBRARIES_IU_USE_GUI)
-  cuda_add_library( ${IU_GUI_LIB} SHARED ${IU_GUI_HEADERS} ${IU_GUI_SOURCES} ${IU_GUI_MOC_SOURCES} )
+  cuda_add_library( ${IU_GUI_LIB} SHARED ${IU_GUI_HEADERS} ${IU_GUI_SOURCES} ${IU_GUI_MOC_SOURCES} ${QTRC_SOURCES})
   set_target_properties(${IU_GUI_LIB} PROPERTIES
     DEFINE_SYMBOL IU_DLL_EXPORTS
     VERSION ${IMAGEUTILITIES_VERSION}

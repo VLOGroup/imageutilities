@@ -5,12 +5,18 @@
 #include <QToolBar>
 #include <QAction>
 #include <QLabel>
-
+#include <QResource>
 
 #include "qglimagegpuwidget.h"
 #include "imagewindow.h"
 
+#define STRINGIFY(x) #x
+#define TOSTRING(x) STRINGIFY(x)
+
+
 #define MINWINSIZE 50
+
+extern int qInitResources_images();
 
 namespace iu {
 
@@ -18,6 +24,23 @@ namespace iu {
 ImageWindow::ImageWindow(QWidget *parent) :
     QWidget(parent)
 {
+// bool worked = QResource::registerResource("../../lib/images.rcc");
+// printf("QResource worked = %d\n", worked);
+
+//#undef QT_NAMESPACE
+//  Q_INIT_RESOURCE(images);
+//#define QT_NAMESPACE
+
+  printf("------------------------\n");
+
+  fprintf (stderr, TOSTRING(Q_INIT_RESOURCE(images)) "\n");
+
+  printf("------------------------\n");
+
+  int val = qInitResources_images();
+
+  printf("val = %d\n", val);
+
   // setup basic qglwidget
   image_gpu_widget_ = new iu::QGLImageGpuWidget;
 
@@ -39,8 +62,9 @@ ImageWindow::ImageWindow(QWidget *parent) :
   // Toolbar
   tool_bar_ = new QToolBar(this);
 
-//  action_save_ = new QAction("Save image", this);
-//  tool_bar_->addAction(action_save_);
+  action_save_ = new QAction(QIcon(":disk"), "Save image", this);
+  tool_bar_->addAction(action_save_);
+
 
   pixel_info_ = new QLabel("Pixel info", this);
   tool_bar_->addWidget(pixel_info_);
