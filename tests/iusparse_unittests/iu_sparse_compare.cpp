@@ -209,8 +209,8 @@ int main(int argc, char *argv[])
   }
 
   // Read input
-//  iu::ImageGpu_32f_C1* input_full = iu::imread_cu32f_C1("../../Data/test/cat.pgm");
-  iu::ImageGpu_32f_C1* input_full = iu::imread_cu32f_C1("/home/markus/Downloads/lena_bw_2048.pgm");
+  iu::ImageGpu_32f_C1* input_full = iu::imread_cu32f_C1("../../Data/test/cat.pgm");
+//  iu::ImageGpu_32f_C1* input_full = iu::imread_cu32f_C1("/home/markus/Downloads/lena_bw_2048.pgm");
 
 
   for (int s=0; s<NSIZES; s++)
