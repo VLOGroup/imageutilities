@@ -55,6 +55,7 @@ public slots:
   void updatePixelInfo(QString text);
 
   void sliceSelect(int val);
+  void on_action_save__triggered();
 
 protected:
   void setupGeometry();

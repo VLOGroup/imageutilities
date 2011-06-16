@@ -60,15 +60,13 @@ QGLImageGpuWidget::QGLImageGpuWidget(QWidget *parent) :
   mouse_y_(0),
   filter_linear_(false)
 {
-  printf("QGLImageGpuWidget::QGLImageGpuWidget(QWidget *parent)\n");
+//  printf("QGLImageGpuWidget::QGLImageGpuWidget(QWidget *parent)\n");
 
   //updateGL();/ // invoke OpenGL initialization
   this->initializeGL();
 
   IuStatus status = iu::checkCudaErrorState();
-  if (status == IU_NO_ERROR)
-    printf("QGLImageGpuWidget::QGLImageGpuWidget: initialized (widget + opengl).\n");
-  else
+  if (status != IU_NO_ERROR)
     fprintf(stderr,"QGLImageGpuWidget::QGLImageGpuWidget: error while init (widget + opengl).\n");
 
 

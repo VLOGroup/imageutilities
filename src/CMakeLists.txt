@@ -318,7 +318,7 @@ ${CMAKE_CURRENT_SOURCE_DIR}/iugui/overlay.h
     )
 
   SET(IU_GUI_RC_SOURCES
-    ${CMAKE_CURRENT_SOURCE_DIR}/iugui/images.qrc
+    ${CMAKE_CURRENT_SOURCE_DIR}/iugui/iu_gui_images.qrc
     )
 
   # install specialized headers

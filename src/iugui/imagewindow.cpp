@@ -7,18 +7,15 @@
 #include <QLabel>
 #include <QResource>
 #include <QSpinBox>
+#include <QFileDialog>
 
 #include "qglimagegpuwidget.h"
 #include "imagewindow.h"
 #include "iucore.h"
 
-#define STRINGIFY(x) #x
-#define TOSTRING(x) STRINGIFY(x)
-
-
 #define MINWINSIZE 50
 
-extern int qInitResources_images();
+extern int qInitResources_iu_gui_images();
 
 namespace iu {
 
@@ -26,21 +23,8 @@ namespace iu {
 ImageWindow::ImageWindow(QWidget *parent) :
   QWidget(parent)
 {
-  // bool worked = QResource::registerResource("../../lib/images.rcc");
-  // printf("QResource worked = %d\n", worked);
-
-  //#undef QT_NAMESPACE
-  //  Q_INIT_RESOURCE(images);
-  //#define QT_NAMESPACE
-
-  printf("------------------------\n");
-
-  fprintf (stderr, TOSTRING(Q_INIT_RESOURCE(images)) "\n");
-
-  printf("------------------------\n");
-
-  int val = qInitResources_images();
-  printf("val = %d\n", val);
+  // Load resources
+  qInitResources_iu_gui_images();
 
   // setup basic qglwidget
   image_gpu_widget_ = new iu::QGLImageGpuWidget;
@@ -64,11 +48,14 @@ ImageWindow::ImageWindow(QWidget *parent) :
 
   // Toolbar
   tool_bar_ = new QToolBar(this);
+  tool_bar_->setIconSize(QSize(21,21));
 
   action_save_ = new QAction(QIcon(":disk"), "Save image", this);
   tool_bar_->addAction(action_save_);
+  connect(action_save_, SIGNAL(triggered()), this, SLOT(on_action_save__triggered()));
 
   slice_selector_ = new QSpinBox(this);
+  slice_selector_->setToolTip("Slice selector");
   connect(slice_selector_, SIGNAL(valueChanged(int)), this, SLOT(sliceSelect(int)));
   slice_action_ = tool_bar_->addWidget(slice_selector_);
   slice_action_->setVisible(false);
@@ -100,6 +87,12 @@ void ImageWindow::updatePixelInfo(QString text)
   pixel_info_->setText(text);
 }
 
+//-----------------------------------------------------------------------------
+void ImageWindow::on_action_save__triggered()
+{
+  QString fileName = "segmentation.png";
+  fileName = QFileDialog::getSaveFileName(this, tr("Save current view to file"),fileName, tr("Images (*.png *.jpg *.jpeg *.tif *.tiff *.bmp *.pgm  *.pnm)"));
+}
 
 //-----------------------------------------------------------------------------
 void ImageWindow::setImage(iu::ImageGpu_8u_C1* image, bool normalize)
