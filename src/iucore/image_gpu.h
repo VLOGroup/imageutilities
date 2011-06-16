@@ -29,13 +29,13 @@
 
 namespace iu {
 
-template<typename PixelType, class Allocator>
+template<typename PixelType, class Allocator, IuPixelType pixel_type = IU_UNKNOWN_PIXEL_TYPE>
 class ImageGpu : public Image
 {
 public:
   ImageGpu() :
     Image(),
-    data_(0), pitch_(0), ext_data_pointer_(false)
+    data_(0), pitch_(0), ext_data_pointer_(false), pixel_type_(pixel_type)
   {
   }
 
@@ -52,21 +52,21 @@ public:
 
   ImageGpu(unsigned int _width, unsigned int _height) :
       Image(_width, _height), data_(0), pitch_(0),
-      ext_data_pointer_(false)
+      ext_data_pointer_(false), pixel_type_(pixel_type)
   {
     data_ = Allocator::alloc(this->size(), &pitch_);
   }
 
   ImageGpu(const IuSize& size) :
       Image(size), data_(0), pitch_(0),
-      ext_data_pointer_(false)
+      ext_data_pointer_(false), pixel_type_(pixel_type)
   {
     data_ = Allocator::alloc(size, &pitch_);
   }
 
   ImageGpu(const ImageGpu<PixelType, Allocator>& from) :
       Image(from), data_(0), pitch_(0),
-      ext_data_pointer_(false)
+      ext_data_pointer_(false), pixel_type_(pixel_type)
   {
     data_ = Allocator::alloc(from.size(), &pitch_);
     Allocator::copy(from.data(), from.pitch(), data_, pitch_, this->size());
@@ -75,7 +75,7 @@ public:
 
   ImageGpu(PixelType* _data, unsigned int _width, unsigned int _height,
            size_t _pitch, bool ext_data_pointer = false) :
-      Image(_width, _height), data_(0), pitch_(0), ext_data_pointer_(ext_data_pointer)
+      Image(_width, _height), data_(0), pitch_(0), ext_data_pointer_(ext_data_pointer), pixel_type_(pixel_type)
   {
     if(ext_data_pointer_)
     {
@@ -155,8 +155,13 @@ protected:
   PixelType* data_;
   size_t pitch_;
   bool ext_data_pointer_; /**< Flag if data pointer is handled outside the image class. */
+  const IuPixelType pixel_type_;
 };
+
+//template<typename PixelType, class Allocator, IuPixelType pixel_type>
+//IuPixelType ImageGpu::pixel_type_ = pixel_type_;
 
 } // namespace iuprivate
 
 #endif // IUCORE_IMAGE_GPU_H
+

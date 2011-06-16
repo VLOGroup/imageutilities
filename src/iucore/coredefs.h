@@ -72,6 +72,27 @@ typedef enum
 
 typedef enum
 {
+  IU_UNKNOWN_PIXEL_TYPE = -1,
+  IU_8U_C1,
+  IU_8U_C2,
+  IU_8U_C3,
+  IU_8U_C4,
+  IU_16U_C1,
+  IU_16U_C2,
+  IU_16U_C3,
+  IU_16U_C4,
+  IU_32S_C1,
+  IU_32S_C2,
+  IU_32S_C3,
+  IU_32S_C4,
+  IU_32F_C1,
+  IU_32F_C2,
+  IU_32F_C3,
+  IU_32F_C4
+} IuPixelType;
+
+typedef enum
+{
   IU_NO  = 0, // no function
   IU_ABS = 1, // abs(x)
   IU_SQR = 2, // x*x

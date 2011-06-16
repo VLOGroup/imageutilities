@@ -86,21 +86,24 @@ void copy(const iu::LinearDeviceMemory<PixelType> *src, iu::LinearHostMemory<Pix
 
 // 2D; copy host -> host
 template<typename PixelType, class Allocator>
-void copy(const iu::ImageCpu<PixelType, Allocator> *src, iu::ImageCpu<PixelType, Allocator> *dst)
+void copy(const iu::ImageCpu<PixelType, Allocator> *src,
+          iu::ImageCpu<PixelType, Allocator> *dst)
 {
   Allocator::copy(src->data(), src->pitch(), dst->data(), dst->pitch(), dst->size());
 }
 
 // 2D; copy device -> device
-template<typename PixelType, class Allocator>
-void copy(const iu::ImageGpu<PixelType, Allocator> *src, iu::ImageGpu<PixelType, Allocator> *dst)
+template<typename PixelType, class Allocator, IuPixelType _pixel_type>
+void copy(const iu::ImageGpu<PixelType, Allocator, _pixel_type> *src,
+          iu::ImageGpu<PixelType, Allocator, _pixel_type> *dst)
 {
   Allocator::copy(src->data(), src->pitch(), dst->data(), dst->pitch(), dst->size());
 }
 
 // 2D; copy host -> device
-template<typename PixelType, class AllocatorCpu, class AllocatorGpu>
-void copy(const iu::ImageCpu<PixelType, AllocatorCpu> *src, iu::ImageGpu<PixelType, AllocatorGpu> *dst)
+template<typename PixelType, class AllocatorCpu, class AllocatorGpu, IuPixelType _pixel_type>
+void copy(const iu::ImageCpu<PixelType, AllocatorCpu> *src,
+          iu::ImageGpu<PixelType, AllocatorGpu, _pixel_type> *dst)
 {
   cudaError_t status;
   unsigned int roi_width = dst->roi().width;
@@ -113,8 +116,9 @@ void copy(const iu::ImageCpu<PixelType, AllocatorCpu> *src, iu::ImageGpu<PixelTy
 }
 
 // 2D; copy device -> host
-template<typename PixelType, class AllocatorGpu, class AllocatorCpu>
-void copy(const iu::ImageGpu<PixelType, AllocatorGpu> *src, iu::ImageCpu<PixelType, AllocatorCpu> *dst)
+template<typename PixelType, class AllocatorGpu, class AllocatorCpu, IuPixelType _pixel_type>
+void copy(const iu::ImageGpu<PixelType, AllocatorGpu, _pixel_type> *src,
+          iu::ImageCpu<PixelType, AllocatorCpu> *dst)
 {
   cudaError_t status;
   unsigned int roi_width = dst->roi().width;

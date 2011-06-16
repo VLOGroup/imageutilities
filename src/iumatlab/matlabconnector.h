@@ -120,9 +120,9 @@ IuStatus convertMatlabToCpu(int* matlab_src_buffer, unsigned int width, unsigned
 
 //-----------------------------------------------------------------------------
 // [device] conversion from matlab to ImageGpu memory layout
-template<typename PixelType, class Allocator>
+template<typename PixelType, class Allocator, IuPixelType _pixel_type>
 IuStatus convertMatlabToGpu(double* matlab_src_buffer, unsigned int width, unsigned int height,
-                            iu::ImageGpu<PixelType, Allocator> *dst)
+                            iu::ImageGpu<PixelType, Allocator, _pixel_type> *dst)
 {
   iu::ImageCpu_32f_C1 tmp_cpu(dst->size());
   tmp_cpu.roi() = dst->roi();
@@ -137,9 +137,9 @@ IuStatus convertMatlabToGpu(double* matlab_src_buffer, unsigned int width, unsig
 
 //-----------------------------------------------------------------------------
 // [device] conversion from matlab to ImageGpu memory layout
-template<typename PixelType, class Allocator>
+template<typename PixelType, class Allocator, IuPixelType _pixel_type>
 IuStatus convertMatlabToGpu(int* matlab_src_buffer, unsigned int width, unsigned int height,
-                            iu::ImageGpu<PixelType, Allocator> *dst)
+                            iu::ImageGpu<PixelType, Allocator, _pixel_type> *dst)
 {
   iu::ImageCpu_32s_C1 tmp_cpu(dst->size());
   tmp_cpu.roi() = dst->roi();
@@ -199,7 +199,7 @@ IuStatus convertMatlabC2ToCpuC2(double *matlab_src_buffer, unsigned int width, u
     }
   }
 
-  return IU_NO_ERROR; 
+  return IU_NO_ERROR;
 }
 
 //-----------------------------------------------------------------------------
@@ -224,7 +224,7 @@ IuStatus convertMatlabC4ToCpuC4(double *matlab_src_buffer, unsigned int width, u
     }
   }
 
-  return IU_NO_ERROR; 
+  return IU_NO_ERROR;
 }
 
 //-----------------------------------------------------------------------------
@@ -433,8 +433,8 @@ IuStatus convertCpuToMatlab(iu::ImageCpu<PixelType, Allocator> *src,
 
 //-----------------------------------------------------------------------------
 // [device] conversion from matlab to ImageGpu memory layout
-template<typename PixelType, class Allocator>
-IuStatus convertGpuToMatlab(iu::ImageGpu<PixelType, Allocator> *src,
+template<typename PixelType, class Allocator, IuPixelType _pixel_type>
+IuStatus convertGpuToMatlab(iu::ImageGpu<PixelType, Allocator, _pixel_type> *src,
                             double* matlab_dst_buffer, unsigned int width, unsigned int height)
 {
   // BUG? ... should this be 32f_C1 ???
@@ -453,8 +453,8 @@ IuStatus convertGpuToMatlab(iu::ImageGpu<PixelType, Allocator> *src,
 
 //-----------------------------------------------------------------------------
 // [device] conversion from matlab to ImageGpu memory layout
-template<typename PixelType, class Allocator>
-IuStatus convertGpuToMatlab(iu::ImageGpu<PixelType, Allocator> *src,
+template<typename PixelType, class Allocator, IuPixelType _pixel_type>
+IuStatus convertGpuToMatlab(iu::ImageGpu<PixelType, Allocator, _pixel_type> *src,
                             unsigned char* matlab_dst_buffer, unsigned int width, unsigned int height)
 {
   iu::ImageCpu_8u_C1 tmp_cpu(src->size());

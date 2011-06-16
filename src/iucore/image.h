@@ -35,7 +35,7 @@ class Image
 {
 public:
   Image() :
-    size_(0,0), roi_(0,0,0,0)
+    size_(0,0), roi_(0,0,0,0), pixel_type_(IU_UNKNOWN_PIXEL_TYPE)
   {
   }
 
@@ -98,6 +98,12 @@ public:
     return roi_;
   }
 
+  /** Returns the element types. */
+  IuPixelType pixelType() const
+  {
+    return pixel_type_;
+  }
+
   /** Returns the total amount of bytes saved in the data buffer. */
   virtual size_t bytes() const {return 0;};
 
@@ -116,7 +122,7 @@ public:
 private:
   IuSize size_;
   IuRect roi_;
-
+  IuPixelType pixel_type_;
 };
 
 } // namespace iuprivate

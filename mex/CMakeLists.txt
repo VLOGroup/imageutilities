@@ -23,7 +23,7 @@ cmake_minimum_required(VERSION 2.8)
 ##-----------------------------------------------------------------------------
 ## CMake
 INCLUDE(AddFileDependencies)
-FILE(TO_CMAKE_PATH "$ENV{VMLIBRARIES_ROOT}/cmake" OT_VMLIBRARIES_CMAKE_MODULE_PATH)
+FILE(TO_CMAKE_PATH "$ENV{VMLIBRARIES_ROOT}/imageutilities/cmake" OT_VMLIBRARIES_CMAKE_MODULE_PATH)
 SET(CMAKE_MODULE_PATH ${OT_VMLIBRARIES_CMAKE_MODULE_PATH})
 
 ##-----------------------------------------------------------------------------

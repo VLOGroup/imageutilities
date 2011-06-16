@@ -132,8 +132,8 @@ inline void setValue(const PixelType &value, iu::VolumeCpu<PixelType, Allocator>
 }
 
 // 2D set pixel value; device;
-template<typename PixelType, class Allocator>
-void setValue(const PixelType &value, iu::ImageGpu<PixelType, Allocator> *srcdst, const IuRect& roi)
+template<typename PixelType, class Allocator, IuPixelType _pixel_type>
+void setValue(const PixelType &value, iu::ImageGpu<PixelType, Allocator, _pixel_type> *srcdst, const IuRect& roi)
 {
   IuStatus status;
   status = cuSetValue(value, srcdst, roi);

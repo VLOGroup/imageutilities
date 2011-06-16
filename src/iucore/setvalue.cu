@@ -132,9 +132,10 @@ __global__ void cuSetValueKernel(T value, T* dst, size_t stride,
 
 //-----------------------------------------------------------------------------
 // templated wrapper: set value; 2D;
-template<typename PixelType, class Allocator>
+template<typename PixelType, class Allocator, IuPixelType _pixel_type>
 IuStatus cuSetValueTemplate(const PixelType &value,
-                             iu::ImageGpu<PixelType, Allocator> *dst, const IuRect& roi)
+                            iu::ImageGpu<PixelType, Allocator, _pixel_type> *dst,
+                            const IuRect& roi)
 {
   // fragmentation
   const unsigned int block_size = 16;
