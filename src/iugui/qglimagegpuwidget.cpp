@@ -546,7 +546,7 @@ void QGLImageGpuWidget::mousePressEvent(QMouseEvent *event)
 
   if (event->button() == Qt::LeftButton)
   {
-    printf("QGLWidget: mouse pressed %d/%d\n", event->x(), event->y());
+//    printf("QGLWidget: mouse pressed %d/%d\n", event->x(), event->y());
     emit mousePressed(mouse_x_old_, mouse_y_old_);
     emit mousePressed(mouse_x_old_, mouse_y_old_, event->globalX(), event->globalY());
   }

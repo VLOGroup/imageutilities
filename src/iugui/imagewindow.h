@@ -9,6 +9,7 @@ class QScrollArea;
 class QScrollBar;
 class QToolBar;
 class QLabel;
+class QSpinBox;
 
 namespace iu {
 
@@ -27,6 +28,8 @@ public:
   void setImage(iu::ImageGpu_32f_C1* image, bool normalize = false);
   void setImage(iu::ImageGpu_8u_C4* image, bool normalize = false);
   void setImage(iu::ImageGpu_32f_C4* image, bool normalize = false);
+
+  void setVolume(iu::VolumeGpu_32f_C1* volume, bool normalize = false);
 
   void addOverlay(QString name, iu::Image* constraint_image,
                   iu::LinearMemory* lut_values, iu::LinearDeviceMemory_8u_C4* lut_colors,
@@ -51,10 +54,15 @@ public slots:
   void showToolbar(bool val=true);
   void updatePixelInfo(QString text);
 
+  void sliceSelect(int val);
+
 protected:
   void setupGeometry();
 
 private:
+  iu::VolumeGpu_32f_C1* volume_;
+  iu::ImageGpu_32f_C1* image_;
+
   void panScrollBar(QScrollBar *scrollBar, int offset);
   void adjustScrollBar(QScrollBar *scrollBar, double factor);
 
@@ -65,6 +73,9 @@ private:
   QAction* action_save_;
 
   QLabel* pixel_info_;
+
+  QSpinBox* slice_selector_;
+  QAction* slice_action_;
 
 };
 

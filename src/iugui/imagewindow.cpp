@@ -6,9 +6,11 @@
 #include <QAction>
 #include <QLabel>
 #include <QResource>
+#include <QSpinBox>
 
 #include "qglimagegpuwidget.h"
 #include "imagewindow.h"
+#include "iucore.h"
 
 #define STRINGIFY(x) #x
 #define TOSTRING(x) STRINGIFY(x)
@@ -22,14 +24,14 @@ namespace iu {
 
 //-----------------------------------------------------------------------------
 ImageWindow::ImageWindow(QWidget *parent) :
-    QWidget(parent)
+  QWidget(parent)
 {
-// bool worked = QResource::registerResource("../../lib/images.rcc");
-// printf("QResource worked = %d\n", worked);
+  // bool worked = QResource::registerResource("../../lib/images.rcc");
+  // printf("QResource worked = %d\n", worked);
 
-//#undef QT_NAMESPACE
-//  Q_INIT_RESOURCE(images);
-//#define QT_NAMESPACE
+  //#undef QT_NAMESPACE
+  //  Q_INIT_RESOURCE(images);
+  //#define QT_NAMESPACE
 
   printf("------------------------\n");
 
@@ -38,7 +40,6 @@ ImageWindow::ImageWindow(QWidget *parent) :
   printf("------------------------\n");
 
   int val = qInitResources_images();
-
   printf("val = %d\n", val);
 
   // setup basic qglwidget
@@ -55,6 +56,8 @@ ImageWindow::ImageWindow(QWidget *parent) :
   connect(image_gpu_widget_, SIGNAL(showToolbar(bool)), this, SLOT(showToolbar(bool)));
   connect(image_gpu_widget_, SIGNAL(pixelInfo(QString)), this, SLOT(updatePixelInfo(QString)));
 
+  volume_ = NULL;
+  image_ = NULL;
 
   // setup layout
   QVBoxLayout *main_layout = new QVBoxLayout(this);
@@ -65,6 +68,10 @@ ImageWindow::ImageWindow(QWidget *parent) :
   action_save_ = new QAction(QIcon(":disk"), "Save image", this);
   tool_bar_->addAction(action_save_);
 
+  slice_selector_ = new QSpinBox(this);
+  connect(slice_selector_, SIGNAL(valueChanged(int)), this, SLOT(sliceSelect(int)));
+  slice_action_ = tool_bar_->addWidget(slice_selector_);
+  slice_action_->setVisible(false);
 
   pixel_info_ = new QLabel("Pixel info", this);
   tool_bar_->addWidget(pixel_info_);
@@ -142,6 +149,7 @@ void ImageWindow::setImage(iu::ImageGpu_8u_C4* image, bool normalize)
 //-----------------------------------------------------------------------------
 void ImageWindow::setImage(iu::ImageGpu_32f_C4* image, bool normalize)
 {
+  slice_selector_->hide();
   image_gpu_widget_->setImage(image, normalize);
 
   float minsize = IUMIN(image->width(), image->height());
@@ -155,8 +163,46 @@ void ImageWindow::setImage(iu::ImageGpu_32f_C4* image, bool normalize)
 }
 
 //-----------------------------------------------------------------------------
+void ImageWindow::setVolume(iu::VolumeGpu_32f_C1* volume, bool normalize)
+{
+  volume_ = volume;
+  slice_action_->setVisible(true);
+  slice_selector_->setMinimum(0);
+  slice_selector_->setMaximum(volume_->roi().depth-1);
+
+  image_ = new iu::ImageGpu_32f_C1(volume_->data(slice_selector_->value()*volume_->slice_stride()),
+                                   volume_->width(), volume_->height(), volume_->pitch(), true);
+
+  image_gpu_widget_->setImage(image_, normalize);
+
+  float minsize = IUMIN(image_->width(), image_->height());
+  float aspectX = image_->width()/minsize;
+  float aspectY = image_->height()/minsize;
+  int sizex = MINWINSIZE*aspectX;
+  int sizey = MINWINSIZE*aspectY;
+  image_gpu_widget_->setMinimumSize(sizex, sizey);
+
+  this->setupGeometry();
+}
+
+//-----------------------------------------------------------------------------
+void  ImageWindow::sliceSelect(int val)
+{
+  if (image_)
+    delete image_;
+
+  image_ = new iu::ImageGpu_32f_C1(volume_->data(val*volume_->slice_stride()),
+                                   volume_->width(), volume_->height(), volume_->pitch(), true);
+}
+
+//-----------------------------------------------------------------------------
 void ImageWindow::update()
 {
+  if (volume_)
+  {
+    slice_selector_->setMaximum(volume_->roi().depth-1);
+  }
+
   image_gpu_widget_->update();
 }
 
@@ -206,14 +252,14 @@ void ImageWindow::zoomed(double factor)
 //-----------------------------------------------------------------------------
 void ImageWindow::panScrollBar(QScrollBar *scrollBar, int offset)
 {
-    scrollBar->setValue(int(scrollBar->value() - offset));
+  scrollBar->setValue(int(scrollBar->value() - offset));
 }
 
 //-----------------------------------------------------------------------------
 void ImageWindow::adjustScrollBar(QScrollBar *scrollBar, double factor)
 {
-    scrollBar->setValue(int(factor * scrollBar->value()
-                            + ((factor - 1) * scrollBar->pageStep()/2)));
+  scrollBar->setValue(int(factor * scrollBar->value()
+                          + ((factor - 1) * scrollBar->pageStep()/2)));
 }
 
 } // namespace iu
