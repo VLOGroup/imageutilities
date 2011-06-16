@@ -45,39 +45,47 @@ int main(int argc, char** argv)
 
   std::cout << "reading image " << filename << std::endl;
   iu::ImageGpu_32f_C1* image = iu::imread_cu32f_C1(filename);
+  std::cout << "image pixel_type = " << image->pixelType() << std::endl;
 
   iu::imshow(image, "original input");
 
   unsigned int levels = 100;
-  iu::ImagePyramid_32f_C1 pyramid(levels, image->size(), 0.8f, 32);
+  iu::ImagePyramid pyramid(levels, image->size(), 0.8f, 32);
 
   std::cout << "#levels changed to " << levels << " to fit the pyramid" << std::endl;
 
   std::stringstream stream;
   std::string winname;
 
+  std::cout << "--pyramid pixel type = " << pyramid.pixelType() << std::endl;
+  pyramid.setImage(image);
+  std::cout << "--pyramid pixel type = " << pyramid.pixelType() << std::endl;
 
-  iu::copy(image, pyramid.image(0));
-  iu::imshow(pyramid.image(0), "level 0");
+//  iu::copy(image, reinterpret_cast<iu::ImageGpu_32f_C1*>(pyramid.image(0)));
+//  iu::imshow(reinterpret_cast<iu::ImageGpu_32f_C1*>(pyramid.image(0)), "level 0");
 
   double time = iu::getTime();
+  std::cout << "num_levels=" << pyramid.numLevels() << std::endl;
 
-  std::cout << "level " << 0 << ": size=" << pyramid.size(0).width << "/" << pyramid.size(0).height
-            << "; rate=" << pyramid.scaleFactor(0) << std::endl;
+//  std::cout << "level " << 0 << ": size=" << pyramid.size(0).width << "/" << pyramid.size(0).height
+//            << "; rate=" << pyramid.scaleFactor(0) << std::endl;
 
+
+  std::cout << "image pixel type = " << image->pixelType() << std::endl;
+  std::cout << "pyramid pixel type = " << pyramid.pixelType() << std::endl;
 
   // print all the created level sizes:
   for(unsigned int i=1; i<pyramid.numLevels(); ++i)
   {
-    std::cout << "level " << i << ": size=" << pyramid.size(i).width << "/" << pyramid.size(i).height
-              << "; rate=" << pyramid.scaleFactor(i) << std::endl;
+    std::cout << "level " << i << ":" << std::endl;
 
-    iu::reduce(pyramid.image(i-1), pyramid.image(i), IU_INTERPOLATE_CUBIC, 0, 0);
+    std::cout << "  size=" << pyramid.size(i).width << "/" << pyramid.size(i).height
+              << "; rate=" << pyramid.scaleFactor(i) << std::endl;
 
     stream.clear();
     stream << "level " << i;
     winname = stream.str();
-    iu::imshow(pyramid.image(i), winname);
+    iu::imshow(reinterpret_cast<iu::ImageGpu_32f_C1*>(pyramid.image(i)), winname);
   }
 
   time = iu::getTime() - time;

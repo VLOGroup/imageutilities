@@ -29,12 +29,12 @@
 
 namespace iu {
 
-template<typename PixelType, class Allocator>
+template<typename PixelType, class Allocator, IuPixelType _pixel_type>
 class ImageCpu : public Image
 {
 public:
   ImageCpu() :
-    Image(),
+    Image(_pixel_type),
     data_(0), pitch_(0), ext_data_pointer_(false)
   {
   }
@@ -51,20 +51,20 @@ public:
   }
 
   ImageCpu(unsigned int _width, unsigned int _height) :
-    Image(_width, _height), data_(0), pitch_(0),
+    Image(_pixel_type, _width, _height), data_(0), pitch_(0),
     ext_data_pointer_(false)
   {
     data_ = Allocator::alloc(_width, _height, &pitch_);
   }
 
   ImageCpu(const IuSize& size) :
-    Image(size.width, size.height), data_(0), pitch_(0),
+    Image(_pixel_type, size.width, size.height), data_(0), pitch_(0),
     ext_data_pointer_(false)
   {
     data_ = Allocator::alloc(size.width, size.height, &pitch_);
   }
 
-  ImageCpu(const ImageCpu<PixelType, Allocator>& from) :
+  ImageCpu(const ImageCpu<PixelType, Allocator, _pixel_type>& from) :
     Image(from), data_(0), pitch_(0),
     ext_data_pointer_(false)
   {
@@ -74,7 +74,7 @@ public:
 
   ImageCpu(PixelType* _data, unsigned int _width, unsigned int _height,
            size_t _pitch, bool ext_data_pointer = false) :
-    Image(_width, _height), data_(0), pitch_(0),
+    Image(_pixel_type, _width, _height), data_(0), pitch_(0),
     ext_data_pointer_(ext_data_pointer)
   {
     if(ext_data_pointer_)

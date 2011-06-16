@@ -29,13 +29,13 @@
 
 namespace iu {
 
-template<typename PixelType, class Allocator, IuPixelType pixel_type = IU_UNKNOWN_PIXEL_TYPE>
+template<typename PixelType, class Allocator, IuPixelType _pixel_type>
 class ImageGpu : public Image
 {
 public:
   ImageGpu() :
-    Image(),
-    data_(0), pitch_(0), ext_data_pointer_(false), pixel_type_(pixel_type)
+    Image(_pixel_type),
+    data_(0), pitch_(0), ext_data_pointer_(false)
   {
   }
 
@@ -51,22 +51,22 @@ public:
   }
 
   ImageGpu(unsigned int _width, unsigned int _height) :
-      Image(_width, _height), data_(0), pitch_(0),
-      ext_data_pointer_(false), pixel_type_(pixel_type)
+      Image(_pixel_type, _width, _height), data_(0), pitch_(0),
+      ext_data_pointer_(false)
   {
     data_ = Allocator::alloc(this->size(), &pitch_);
   }
 
   ImageGpu(const IuSize& size) :
-      Image(size), data_(0), pitch_(0),
-      ext_data_pointer_(false), pixel_type_(pixel_type)
+      Image(_pixel_type, size), data_(0), pitch_(0),
+      ext_data_pointer_(false)
   {
     data_ = Allocator::alloc(size, &pitch_);
   }
 
-  ImageGpu(const ImageGpu<PixelType, Allocator>& from) :
+  ImageGpu(const ImageGpu<PixelType, Allocator, _pixel_type>& from) :
       Image(from), data_(0), pitch_(0),
-      ext_data_pointer_(false), pixel_type_(pixel_type)
+      ext_data_pointer_(false)
   {
     data_ = Allocator::alloc(from.size(), &pitch_);
     Allocator::copy(from.data(), from.pitch(), data_, pitch_, this->size());
@@ -75,7 +75,7 @@ public:
 
   ImageGpu(PixelType* _data, unsigned int _width, unsigned int _height,
            size_t _pitch, bool ext_data_pointer = false) :
-      Image(_width, _height), data_(0), pitch_(0), ext_data_pointer_(ext_data_pointer), pixel_type_(pixel_type)
+      Image(_pixel_type, _width, _height), data_(0), pitch_(0), ext_data_pointer_(ext_data_pointer)
   {
     if(ext_data_pointer_)
     {
@@ -155,11 +155,7 @@ protected:
   PixelType* data_;
   size_t pitch_;
   bool ext_data_pointer_; /**< Flag if data pointer is handled outside the image class. */
-  const IuPixelType pixel_type_;
 };
-
-//template<typename PixelType, class Allocator, IuPixelType pixel_type>
-//IuPixelType ImageGpu::pixel_type_ = pixel_type_;
 
 } // namespace iuprivate
 

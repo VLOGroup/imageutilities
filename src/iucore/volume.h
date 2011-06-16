@@ -34,8 +34,8 @@ namespace iu{
 class Volume
 {
 public:
-  Volume() :
-    size_(), roi_()
+  Volume(IuPixelType pixel_type) :
+    pixel_type_(pixel_type), size_(), roi_()
   {
   }
 
@@ -44,17 +44,17 @@ public:
   }
 
   Volume(const Volume &from) :
-      size_(from.size_), roi_(from.roi_)
+    pixel_type_(from.pixelType()), size_(from.size_), roi_(from.roi_)
   {
   }
 
-  Volume(unsigned int width, unsigned int height, unsigned int depth) :
-      size_(width, height, depth), roi_(0, 0, 0, width, height, depth)
+  Volume(IuPixelType pixel_type, unsigned int width, unsigned int height, unsigned int depth) :
+    pixel_type_(pixel_type), size_(width, height, depth), roi_(0, 0, 0, width, height, depth)
   {
   }
 
-  Volume(const IuSize &size) :
-      size_(size), roi_(0, 0, 0, size.width, size.height, size.depth)
+  Volume(IuPixelType pixel_type, const IuSize &size) :
+    pixel_type_(pixel_type), size_(size), roi_(0, 0, 0, size.width, size.height, size.depth)
   {
   }
 
@@ -70,6 +70,21 @@ public:
   void setRoi(const IuCube& roi)
   {
     roi_ = roi;
+  }
+
+  IuPixelType pixelType() const
+  {
+    return pixel_type_;
+  }
+
+  IuSize size() const
+  {
+    return size_;
+  }
+
+  IuCube roi() const
+  {
+    return roi_;
   }
 
   unsigned int width() const
@@ -93,15 +108,7 @@ public:
     return (size_.width * size_.height * size_.depth);
   }
 
-  IuSize size() const
-  {
-    return size_;
-  }
 
-  IuCube roi() const
-  {
-    return roi_;
-  }
 
   /** Returns the total amount of bytes saved in the data buffer. */
   virtual size_t bytes() const {return 0;};
@@ -119,6 +126,7 @@ public:
   virtual bool onDevice() const {return false;};
 
 private:
+  IuPixelType pixel_type_;
   IuSize size_;
   IuCube roi_;
 

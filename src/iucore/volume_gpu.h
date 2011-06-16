@@ -29,12 +29,13 @@
 
 namespace iu {
 
-template<typename PixelType, class Allocator>
+template<typename PixelType, class Allocator, IuPixelType _pixel_type>
 class VolumeGpu : public Volume
 {
 public:
   VolumeGpu() :
-      data_(0), pitch_(0), ext_data_pointer_(false)
+    Volume(_pixel_type),
+    data_(0), pitch_(0), ext_data_pointer_(false)
   {
   }
 
@@ -50,22 +51,22 @@ public:
   }
 
   VolumeGpu(unsigned int _width, unsigned int _height, unsigned int _depth) :
-      Volume(_width, _height, _depth), data_(0), pitch_(0),
-      ext_data_pointer_(false)
+    Volume(_pixel_type, _width, _height, _depth), data_(0), pitch_(0),
+    ext_data_pointer_(false)
   {
     data_ = Allocator::alloc(this->size(), &pitch_);
   }
 
   VolumeGpu(const IuSize& size) :
-      Volume(size), data_(0), pitch_(0),
-      ext_data_pointer_(false)
+    Volume(_pixel_type, size), data_(0), pitch_(0),
+    ext_data_pointer_(false)
   {
     data_ = Allocator::alloc(this->size(), &pitch_);
   }
 
-  VolumeGpu(const VolumeGpu<PixelType, Allocator>& from) :
-      Volume(from), data_(0), pitch_(0),
-      ext_data_pointer_(false)
+  VolumeGpu(const VolumeGpu<PixelType, Allocator, _pixel_type>& from) :
+    Volume(from), data_(0), pitch_(0),
+    ext_data_pointer_(false)
   {
     data_ = Allocator::alloc(this->size(), &pitch_);
     Allocator::copy(from.data(), from.pitch(), data_, pitch_, this->size());
@@ -73,9 +74,9 @@ public:
   }
 
   VolumeGpu(PixelType* _data, unsigned int _width, unsigned int _height, unsigned int _depth,
-           size_t _pitch, bool ext_data_pointer = false) :
-      Volume(_width, _height, _depth), data_(0), pitch_(0),
-      ext_data_pointer_(ext_data_pointer)
+            size_t _pitch, bool ext_data_pointer = false) :
+    Volume(_pixel_type, _width, _height, _depth), data_(0), pitch_(0),
+    ext_data_pointer_(ext_data_pointer)
   {
     if(ext_data_pointer_)
     {
@@ -153,7 +154,7 @@ public:
   const PixelType* data(int ox = 0, int oy = 0, int oz = 0) const
   {
     return reinterpret_cast<const PixelType*>(
-        &data_[oz*stride()*height() + oy*stride() + ox]);
+          &data_[oz*stride()*height() + oy*stride() + ox]);
   }
 
   /** Returns a volume slice given by a z-offset as ImageGpu
@@ -161,9 +162,10 @@ public:
     * @return volume slice at depth z as ImageGpu. Note, the ImageGpu merely holds a pointer to the volume data at depth z,
     * i.e. it does not manage its own data -> changes to the Image are transparent to the volume and vice versa.
     */
-  ImageGpu<PixelType, iuprivate::ImageAllocatorGpu<PixelType> > getSlice(int oz)
+  ImageGpu<PixelType, iuprivate::ImageAllocatorGpu<PixelType>, _pixel_type> getSlice(int oz)
   {
-    return ImageGpu<PixelType, iuprivate::ImageAllocatorGpu<PixelType> >(&data_[oz*stride()*height()], width(), height(), pitch_, true);
+    return ImageGpu<PixelType, iuprivate::ImageAllocatorGpu<PixelType>, _pixel_type>(
+          &data_[oz*stride()*height()], width(), height(), pitch_, true);
   }
 
 protected:

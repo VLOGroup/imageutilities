@@ -45,9 +45,9 @@ namespace iuprivate {
 
 //-----------------------------------------------------------------------------
 // [host] conversion from matlab to ImageCpu memory layout
-template<typename PixelType, class Allocator>
+template<typename PixelType, class Allocator, IuPixelType _pixel_type>
 IuStatus convertMatlabToCpu(double* matlab_src_buffer, unsigned int width, unsigned int height,
-                            iu::ImageCpu<PixelType, Allocator> *dst)
+                            iu::ImageCpu<PixelType, Allocator, _pixel_type> *dst)
 
 {
   if(width > dst->width() || height > dst->height())
@@ -70,9 +70,9 @@ IuStatus convertMatlabToCpu(double* matlab_src_buffer, unsigned int width, unsig
 
 //-----------------------------------------------------------------------------
 // [host] conversion from matlab to ImageCpu memory layout - float/single version
-template<typename PixelType, class Allocator>
+template<typename PixelType, class Allocator, IuPixelType _pixel_type>
 IuStatus convertMatlabToCpu(float* matlab_src_buffer, unsigned int width, unsigned int height,
-                            iu::ImageCpu<PixelType, Allocator> *dst)
+                            iu::ImageCpu<PixelType, Allocator, _pixel_type> *dst)
 
 {
   if(width > dst->width() || height > dst->height())
@@ -95,9 +95,9 @@ IuStatus convertMatlabToCpu(float* matlab_src_buffer, unsigned int width, unsign
 
 //-----------------------------------------------------------------------------
 // [host] conversion from matlab to ImageCpu memory layout - int version
-template<typename PixelType, class Allocator>
+template<typename PixelType, class Allocator, IuPixelType _pixel_type>
 IuStatus convertMatlabToCpu(int* matlab_src_buffer, unsigned int width, unsigned int height,
-                            iu::ImageCpu<PixelType, Allocator> *dst)
+                            iu::ImageCpu<PixelType, Allocator, _pixel_type> *dst)
 
 {
   if(width > dst->width() || height > dst->height())
@@ -384,8 +384,8 @@ IuStatus convertGpuC2ToMatlabC2(iu::ImageGpu_32f_C2 *src, double* matlab_dst_buf
 
 //-----------------------------------------------------------------------------
 // [host] conversion from ImageCpu to matlab memory layout
-template<typename PixelType, class Allocator>
-IuStatus convertCpuToMatlab(iu::ImageCpu<PixelType, Allocator> *src,
+template<typename PixelType, class Allocator, IuPixelType _pixel_type>
+IuStatus convertCpuToMatlab(iu::ImageCpu<PixelType, Allocator, _pixel_type> *src,
                             double* matlab_dst_buffer, unsigned int width, unsigned int height)
 {
   if(width > src->width() || height > src->height())
@@ -408,8 +408,8 @@ IuStatus convertCpuToMatlab(iu::ImageCpu<PixelType, Allocator> *src,
 
 //-----------------------------------------------------------------------------
 // [host] conversion from ImageCpu to matlab memory layout
-template<typename PixelType, class Allocator>
-IuStatus convertCpuToMatlab(iu::ImageCpu<PixelType, Allocator> *src,
+template<typename PixelType, class Allocator, IuPixelType _pixel_type>
+IuStatus convertCpuToMatlab(iu::ImageCpu<PixelType, Allocator, _pixel_type> *src,
                             unsigned char* matlab_dst_buffer, unsigned int width, unsigned int height)
 {
   if(width > src->width() || height > src->height())

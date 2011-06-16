@@ -34,8 +34,8 @@ namespace iu{
 class Image
 {
 public:
-  Image() :
-    size_(0,0), roi_(0,0,0,0), pixel_type_(IU_UNKNOWN_PIXEL_TYPE)
+  Image(IuPixelType pixel_type) :
+    pixel_type_(pixel_type), size_(0,0), roi_(0,0,0,0)
   {
   }
 
@@ -44,24 +44,24 @@ public:
   }
 
   Image(const Image &from) :
-      size_(from.size_), roi_(from.roi_)
+    pixel_type_(from.pixelType()), size_(from.size_), roi_(from.roi_)
   {
   }
 
-  Image(unsigned int width, unsigned int height) :
-      size_(width, height), roi_(0, 0, width, height)
+  Image(IuPixelType pixel_type, unsigned int width, unsigned int height) :
+      pixel_type_(pixel_type), size_(width, height), roi_(0, 0, width, height)
   {
   }
 
-  Image(const IuSize &size) :
-      size_(size), roi_(0, 0, size.width, size.height)
+  Image(IuPixelType pixel_type, const IuSize &size) :
+      pixel_type_(pixel_type), size_(size), roi_(0, 0, size.width, size.height)
   {
   }
 
   Image& operator= (const Image &from)
   {
     // TODO == operator
-
+    this->pixel_type_ = from.pixel_type_;
     this->size_ = from.size_;
     this->roi_ = from.roi_;
     return *this;
@@ -70,6 +70,22 @@ public:
   void setRoi(const IuRect& roi)
   {
     roi_ = roi;
+  }
+
+  /** Returns the element types. */
+  IuPixelType pixelType() const
+  {
+    return pixel_type_;
+  }
+
+  IuSize size() const
+  {
+    return size_;
+  }
+
+  IuRect roi() const
+  {
+    return roi_;
   }
 
   unsigned int width() const
@@ -88,22 +104,6 @@ public:
     return (size_.width * size_.height);
   }
 
-  IuSize size() const
-  {
-    return size_;
-  }
-
-  IuRect roi() const
-  {
-    return roi_;
-  }
-
-  /** Returns the element types. */
-  IuPixelType pixelType() const
-  {
-    return pixel_type_;
-  }
-
   /** Returns the total amount of bytes saved in the data buffer. */
   virtual size_t bytes() const {return 0;};
 
@@ -120,9 +120,9 @@ public:
   virtual bool onDevice() const {return false;};
 
 private:
+  IuPixelType pixel_type_;
   IuSize size_;
   IuRect roi_;
-  IuPixelType pixel_type_;
 };
 
 } // namespace iuprivate

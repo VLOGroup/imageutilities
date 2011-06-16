@@ -85,9 +85,9 @@ void copy(const iu::LinearDeviceMemory<PixelType> *src, iu::LinearHostMemory<Pix
  **************************************************************************** */
 
 // 2D; copy host -> host
-template<typename PixelType, class Allocator>
-void copy(const iu::ImageCpu<PixelType, Allocator> *src,
-          iu::ImageCpu<PixelType, Allocator> *dst)
+template<typename PixelType, class Allocator, IuPixelType _pixel_type>
+void copy(const iu::ImageCpu<PixelType, Allocator, _pixel_type> *src,
+          iu::ImageCpu<PixelType, Allocator, _pixel_type> *dst)
 {
   Allocator::copy(src->data(), src->pitch(), dst->data(), dst->pitch(), dst->size());
 }
@@ -102,7 +102,7 @@ void copy(const iu::ImageGpu<PixelType, Allocator, _pixel_type> *src,
 
 // 2D; copy host -> device
 template<typename PixelType, class AllocatorCpu, class AllocatorGpu, IuPixelType _pixel_type>
-void copy(const iu::ImageCpu<PixelType, AllocatorCpu> *src,
+void copy(const iu::ImageCpu<PixelType, AllocatorCpu, _pixel_type> *src,
           iu::ImageGpu<PixelType, AllocatorGpu, _pixel_type> *dst)
 {
   cudaError_t status;
@@ -118,7 +118,7 @@ void copy(const iu::ImageCpu<PixelType, AllocatorCpu> *src,
 // 2D; copy device -> host
 template<typename PixelType, class AllocatorGpu, class AllocatorCpu, IuPixelType _pixel_type>
 void copy(const iu::ImageGpu<PixelType, AllocatorGpu, _pixel_type> *src,
-          iu::ImageCpu<PixelType, AllocatorCpu> *dst)
+          iu::ImageCpu<PixelType, AllocatorCpu, _pixel_type> *dst)
 {
   cudaError_t status;
   unsigned int roi_width = dst->roi().width;
@@ -137,25 +137,25 @@ void copy(const iu::ImageGpu<PixelType, AllocatorGpu, _pixel_type> *src,
  **************************************************************************** */
 
 // 3D; copy host -> host
-template<typename PixelType, class Allocator>
-void copy(const iu::VolumeCpu<PixelType, Allocator> *src,
-          iu::VolumeCpu<PixelType, Allocator> *dst)
+template<typename PixelType, class Allocator, IuPixelType _pixel_type>
+void copy(const iu::VolumeCpu<PixelType, Allocator, _pixel_type> *src,
+          iu::VolumeCpu<PixelType, Allocator, _pixel_type> *dst)
 {
   Allocator::copy(src->data(), src->pitch(), dst->data(), dst->pitch(), dst->size());
 }
 
 // 3D; copy device -> device
-template<typename PixelType, class Allocator>
-void copy(const iu::VolumeGpu<PixelType, Allocator> *src,
-          iu::VolumeGpu<PixelType, Allocator> *dst)
+template<typename PixelType, class Allocator, IuPixelType _pixel_type>
+void copy(const iu::VolumeGpu<PixelType, Allocator, _pixel_type> *src,
+          iu::VolumeGpu<PixelType, Allocator, _pixel_type> *dst)
 {
   Allocator::copy(src->data(), src->pitch(), dst->data(), dst->pitch(), dst->size());
 }
 
 // 3D; copy host -> device
-template<typename PixelType, class AllocatorCpu, class AllocatorGpu>
-void copy(const iu::VolumeCpu<PixelType, AllocatorCpu> *src,
-          iu::VolumeGpu<PixelType, AllocatorGpu> *dst)
+template<typename PixelType, class AllocatorCpu, class AllocatorGpu, IuPixelType _pixel_type>
+void copy(const iu::VolumeCpu<PixelType, AllocatorCpu, _pixel_type> *src,
+          iu::VolumeGpu<PixelType, AllocatorGpu, _pixel_type> *dst)
 {
   cudaError_t status;
   unsigned int roi_width = dst->roi().width;
@@ -169,9 +169,9 @@ void copy(const iu::VolumeCpu<PixelType, AllocatorCpu> *src,
 }
 
 // 3D; copy device -> host
-template<typename PixelType, class AllocatorGpu, class AllocatorCpu>
-void copy(const iu::VolumeGpu<PixelType, AllocatorGpu> *src,
-          iu::VolumeCpu<PixelType, AllocatorCpu> *dst)
+template<typename PixelType, class AllocatorGpu, class AllocatorCpu, IuPixelType _pixel_type>
+void copy(const iu::VolumeGpu<PixelType, AllocatorGpu, _pixel_type> *src,
+          iu::VolumeCpu<PixelType, AllocatorCpu, _pixel_type> *dst)
 {
   cudaError_t status;
   unsigned int roi_width = dst->roi().width;

@@ -101,8 +101,9 @@ void setValue(const float3& value, iu::LinearDeviceMemory_32f_C3* srcdst);
 void setValue(const float4& value, iu::LinearDeviceMemory_32f_C4* srcdst);
 
 // 2D set pixel value; host;
-template<typename PixelType, class Allocator>
-inline void setValue(const PixelType &value, iu::ImageCpu<PixelType, Allocator> *srcdst,
+template<typename PixelType, class Allocator, IuPixelType _pixel_type>
+inline void setValue(const PixelType &value,
+                     iu::ImageCpu<PixelType, Allocator, _pixel_type> *srcdst,
                      const IuRect& roi)
 {
   for(unsigned int y=roi.y; y<roi.height; ++y)
@@ -115,8 +116,9 @@ inline void setValue(const PixelType &value, iu::ImageCpu<PixelType, Allocator> 
 }
 
 // 3D set pixel value; host;
-template<typename PixelType, class Allocator>
-inline void setValue(const PixelType &value, iu::VolumeCpu<PixelType, Allocator> *srcdst,
+template<typename PixelType, class Allocator, IuPixelType _pixel_type>
+inline void setValue(const PixelType &value,
+                     iu::VolumeCpu<PixelType, Allocator, _pixel_type> *srcdst,
                      const IuCube& roi)
 {
   for(unsigned int z=roi.z; z<roi.depth; ++z)
@@ -141,8 +143,10 @@ void setValue(const PixelType &value, iu::ImageGpu<PixelType, Allocator, _pixel_
 }
 
 // 3D set pixel value; device;
-template<typename PixelType, class Allocator>
-void setValue(const PixelType &value, iu::VolumeGpu<PixelType, Allocator> *srcdst, const IuCube& roi)
+template<typename PixelType, class Allocator, IuPixelType _pixel_type>
+void setValue(const PixelType &value,
+              iu::VolumeGpu<PixelType, Allocator, _pixel_type> *srcdst,
+              const IuCube& roi)
 {
   IuStatus status;
   status = cuSetValue(value, srcdst, roi);

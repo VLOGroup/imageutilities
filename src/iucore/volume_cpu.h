@@ -29,12 +29,13 @@
 
 namespace iu {
 
-template<typename PixelType, class Allocator>
+template<typename PixelType, class Allocator, IuPixelType _pixel_type>
 class VolumeCpu : public Volume
 {
 public:
   VolumeCpu() :
-      data_(0), pitch_(0), ext_data_pointer_(false)
+    Volume(_pixel_type),
+    data_(0), pitch_(0), ext_data_pointer_(false)
   {
   }
 
@@ -50,22 +51,23 @@ public:
   }
 
   VolumeCpu(unsigned int _width, unsigned int _height, unsigned int _depth) :
-      Volume(_width, _height, _depth), data_(0), pitch_(0),
-      ext_data_pointer_(false)
+    Volume(_pixel_type, _width, _height, _depth),
+    data_(0), pitch_(0),
+    ext_data_pointer_(false)
   {
     data_ = Allocator::alloc(_width, _height, _depth, &pitch_);
   }
 
   VolumeCpu(const IuSize& size) :
-      Volume(size), data_(0), pitch_(0),
-      ext_data_pointer_(false)
+    Volume(_pixel_type, size), data_(0), pitch_(0),
+    ext_data_pointer_(false)
   {
     data_ = Allocator::alloc(size.width, size.height, size.depth, &pitch_);
   }
 
-  VolumeCpu(const VolumeCpu<PixelType, Allocator>& from) :
-      Volume(from), data_(0), pitch_(0),
-      ext_data_pointer_(false)
+  VolumeCpu(const VolumeCpu<PixelType, Allocator, _pixel_type>& from) :
+    Volume(from),
+    data_(0), pitch_(0), ext_data_pointer_(false)
   {
     data_ = Allocator::alloc(from.width(), from.height(), from.depth(), &pitch_);
     Allocator::copy(from.data(), from.pitch(), data_, pitch_, this->size());
@@ -73,9 +75,9 @@ public:
   }
 
   VolumeCpu(PixelType* _data, unsigned int _width, unsigned int _height, unsigned int _depth,
-           size_t _pitch, bool ext_data_pointer = false) :
-      Volume(_width, _height, _depth), data_(0), pitch_(0),
-      ext_data_pointer_(ext_data_pointer)
+            size_t _pitch, bool ext_data_pointer = false) :
+    Volume(_pixel_type, _width, _height, _depth),
+    data_(0), pitch_(0), ext_data_pointer_(ext_data_pointer)
   {
     if(ext_data_pointer_)
     {
@@ -153,17 +155,17 @@ public:
   const PixelType* data(int ox = 0, int oy = 0, int oz = 0) const
   {
     return reinterpret_cast<const PixelType*>(
-        &data_[oz*slice_stride() + oy*stride() + ox]);
+          &data_[oz*slice_stride() + oy*stride() + ox]);
   }
-  
+
   /** Returns a volume slice given by a z-offset as ImageCpu
     * @param[in] oz z-offset into the volume
     * @return volume slice at depth z as ImageCpu. Note, the ImageCpu merely holds a pointer to the volume data at depth z,
     * i.e. it does not manage its own data -> changes to the Image are transparent to the volume and vice versa.
     */
-  ImageCpu<PixelType, iuprivate::ImageAllocatorCpu<PixelType> > getSlice(int oz)
+  ImageCpu<PixelType, iuprivate::ImageAllocatorCpu<PixelType>, _pixel_type> getSlice(int oz)
   {
-    return ImageCpu<PixelType, iuprivate::ImageAllocatorCpu<PixelType> >(&data_[oz*stride()*height()], width(), height(), pitch_, true);
+    return ImageCpu<PixelType, iuprivate::ImageAllocatorCpu<PixelType>, _pixel_type>(&data_[oz*stride()*height()], width(), height(), pitch_, true);
   }
 
 protected:

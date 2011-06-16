@@ -28,5 +28,6 @@
 #include "iucore/globaldefs.h"
 #include "iucore/coredefs.h"
 #include "iucore/memorydefs.h"
+#include "iucore/imagepyramid.h" //!< FIXME we should put that include somewhere else?
 
 #endif // IU_DEFS_H
