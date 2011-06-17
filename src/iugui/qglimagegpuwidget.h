@@ -66,6 +66,10 @@ public:
                   iu::LinearMemory* lut_values, iu::LinearDeviceMemory_8u_C4* lut_colors,
                   bool active = true);
 
+  void getPboOutput(iu::ImageGpu_8u_C4* image);
+  unsigned int imageWidth();
+  unsigned int imageHeight();
+
 signals:
   void mouseMoved(int from_x, int from_y, int to_x, int to_y);
   void mousePressed(int x, int y);
@@ -126,6 +130,7 @@ protected:
   bool init();
   //void resizeGL(int w, int h);
   void paintGL();
+  void fillPbo(iu::ImageGpu_8u_C4* output=NULL);
 
   GLuint gl_pbo_; /**< OpenGL PBO name. */
   GLuint gl_tex_; /**< OpenGL texture name. */

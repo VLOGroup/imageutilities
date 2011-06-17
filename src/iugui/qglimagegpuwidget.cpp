@@ -60,7 +60,7 @@ QGLImageGpuWidget::QGLImageGpuWidget(QWidget *parent) :
   mouse_y_(0),
   filter_linear_(false)
 {
-//  printf("QGLImageGpuWidget::QGLImageGpuWidget(QWidget *parent)\n");
+  //  printf("QGLImageGpuWidget::QGLImageGpuWidget(QWidget *parent)\n");
 
   //updateGL();/ // invoke OpenGL initialization
   this->initializeGL();
@@ -355,6 +355,33 @@ void QGLImageGpuWidget::setImage(iu::ImageGpu_32f_C4 *image, bool normalize)
   this->update();
 }
 
+//-----------------------------------------------------------------------------
+void QGLImageGpuWidget::getPboOutput(iu::ImageGpu_8u_C4* image)
+{
+  if (!image_)
+    return;
+
+  fillPbo(image);
+}
+
+//-----------------------------------------------------------------------------
+unsigned int QGLImageGpuWidget::imageWidth()
+{
+  if (!image_)
+    return 0;
+
+  return image_->width();
+}
+
+//-----------------------------------------------------------------------------
+unsigned int QGLImageGpuWidget::imageHeight()
+{
+  if (!image_)
+    return 0;
+
+  return image_->height();
+}
+
 /* ****************************************************************************
      some interaction
  * ***************************************************************************/
@@ -544,7 +571,7 @@ void QGLImageGpuWidget::mousePressEvent(QMouseEvent *event)
 
   if (event->button() == Qt::LeftButton)
   {
-//    printf("QGLWidget: mouse pressed %d/%d\n", event->x(), event->y());
+    //    printf("QGLWidget: mouse pressed %d/%d\n", event->x(), event->y());
     emit mousePressed(mouse_x_old_, mouse_y_old_);
     emit mousePressed(mouse_x_old_, mouse_y_old_, event->globalX(), event->globalY());
   }
@@ -680,12 +707,12 @@ void QGLImageGpuWidget::contextMenuEvent(QContextMenuEvent* event)
 //-----------------------------------------------------------------------------
 void QGLImageGpuWidget::initializeGL()
 {
-//  printf("QGLImageGpuWidget::initializeGL()\n");
+  //  printf("QGLImageGpuWidget::initializeGL()\n");
 
   makeCurrent();
 
   glewInit();
-//  printf("  Loading extensions: %s\n", glewGetErrorString(glewInit()));
+  //  printf("  Loading extensions: %s\n", glewGetErrorString(glewInit()));
   if (!glewIsSupported( "GL_VERSION_1_5 GL_ARB_vertex_buffer_object GL_ARB_pixel_buffer_object" ))
   {
     fprintf(stderr, "QGLImageGpuWidget Error: failed to get minimal GL extensions for QGLImageGpuWidget.\n");
@@ -704,7 +731,7 @@ void QGLImageGpuWidget::initializeGL()
 //-----------------------------------------------------------------------------
 void QGLImageGpuWidget::createTexture()
 {
-//  printf("void QGLImageGpuWidget::createTexture()\n");
+  //  printf("void QGLImageGpuWidget::createTexture()\n");
   if(gl_tex_) deleteTexture();
 
   IuSize sz = image_->size();
@@ -750,7 +777,7 @@ void QGLImageGpuWidget::createTexture()
 //-----------------------------------------------------------------------------
 void QGLImageGpuWidget::deleteTexture()
 {
-//  printf("void QGLImageGpuWidget::deleteTexture()\n");
+  //  printf("void QGLImageGpuWidget::deleteTexture()\n");
   if(gl_tex_)
   {
     glDeleteTextures(1, &gl_tex_);
@@ -761,7 +788,7 @@ void QGLImageGpuWidget::deleteTexture()
 //-----------------------------------------------------------------------------
 void QGLImageGpuWidget::createPbo()
 {
-//  printf("void QGLImageGpuWidget::createPbo()\n");
+  //  printf("void QGLImageGpuWidget::createPbo()\n");
   IuSize sz = image_->size();
 
   // set up vertex data parameter
@@ -782,7 +809,7 @@ void QGLImageGpuWidget::createPbo()
 //-----------------------------------------------------------------------------
 void QGLImageGpuWidget::deletePbo()
 {
-//  printf("void QGLImageGpuWidget::deletePbo()\n");
+  //  printf("void QGLImageGpuWidget::deletePbo()\n");
   if(gl_pbo_)
   {
     // delete the PBO
@@ -796,7 +823,7 @@ void QGLImageGpuWidget::deletePbo()
 //-----------------------------------------------------------------------------
 bool QGLImageGpuWidget::init()
 {
-//  printf("QGLImageGpuWidget::init()\n");
+  //  printf("QGLImageGpuWidget::init()\n");
 
 
   this->createTexture();
@@ -819,7 +846,7 @@ bool QGLImageGpuWidget::init()
 //-----------------------------------------------------------------------------
 void QGLImageGpuWidget::resizeGL(int w, int h)
 {
-//  printf("void QGLImageGpuWidget::resizeGL(int w, int h)\n");
+  //  printf("void QGLImageGpuWidget::resizeGL(int w, int h)\n");
   if(image_ == 0)
     return;
 
@@ -829,12 +856,44 @@ void QGLImageGpuWidget::resizeGL(int w, int h)
 }
 
 //-----------------------------------------------------------------------------
+void QGLImageGpuWidget::fillPbo(iu::ImageGpu_8u_C4* output)
+{
+  // map GL <-> CUDA resource
+  uchar4 *d_dst = NULL;
+  size_t start;
+  cudaGraphicsMapResources(1, &cuda_pbo_resource_, 0);
+  cudaGraphicsResourceGetMappedPointer((void**)&d_dst, &start, cuda_pbo_resource_);
+
+  // get image data
+  iuprivate::cuCopyImageToPbo(image_, num_channels_, bit_depth_, d_dst, min_, max_);
+  cudaThreadSynchronize();
+
+  // get overlays
+  iuprivate::OverlayList::iterator it;
+  for ( it=overlay_list_.begin() ; it != overlay_list_.end(); it++ )
+    if ((*it)->isActive())
+      cuCopyOverlayToPbo((*it), d_dst, image_->size());
+  cudaThreadSynchronize();
+
+  if (output != NULL)
+  {
+    // copy final pbo to output
+    iu::ImageGpu_8u_C4 temp(d_dst, image_->width(), image_->height(),
+                            image_->width()*sizeof(uchar4), true);
+    iu::copy(&temp, output);
+  }
+
+  // unmap GL <-> CUDA resource
+  cudaGraphicsUnmapResources(1, &cuda_pbo_resource_, 0);
+}
+
+//-----------------------------------------------------------------------------
 void QGLImageGpuWidget::paintGL()
 {
   if(image_ == 0)
     return;
 
-//  printf("QGLImageGpuWidget::paintGL()\n");
+  //  printf("QGLImageGpuWidget::paintGL()\n");
 
   if (!glewIsSupported( "GL_VERSION_1_5 GL_ARB_vertex_buffer_object GL_ARB_pixel_buffer_object" ))
   {
@@ -843,32 +902,12 @@ void QGLImageGpuWidget::paintGL()
     return;
   }
 
-  // map GL <-> CUDA resource
-  uchar4 *d_dst = NULL;
-  size_t start;
-  cudaGraphicsMapResources(1, &cuda_pbo_resource_, 0);
-  cudaGraphicsResourceGetMappedPointer((void**)&d_dst, &start, cuda_pbo_resource_);
-
   // check for min/max values if normalization is activated
   if(normalize_)
     this->autoMinMax();
 
-  // get image data
-  iuprivate::cuCopyImageToPbo(image_, num_channels_, bit_depth_, d_dst, min_, max_);
-  cudaThreadSynchronize();
-
-  iuprivate::OverlayList::iterator it;
-  for ( it=overlay_list_.begin() ; it != overlay_list_.end(); it++ )
-  {
-    if ((*it)->isActive())
-    {
-      cuCopyOverlayToPbo((*it), d_dst, image_->size());
-    }
-  }
-  cudaThreadSynchronize();
-
-  // unmap GL <-> CUDA resource
-  cudaGraphicsUnmapResources(1, &cuda_pbo_resource_, 0);
+  // fill the picture buffer object
+  fillPbo();
 
   // common display code path
   {
@@ -901,7 +940,7 @@ void QGLImageGpuWidget::paintGL()
   }
   glPopMatrix();
 
-//  printf("QGLImageGpuWidget::paintGL() done\n");
+  //  printf("QGLImageGpuWidget::paintGL() done\n");
 
 }
 

@@ -12,6 +12,7 @@
 #include "qglimagegpuwidget.h"
 #include "imagewindow.h"
 #include "iucore.h"
+#include "iuio.h"
 
 #define MINWINSIZE 50
 
@@ -42,6 +43,8 @@ ImageWindow::ImageWindow(QWidget *parent) :
 
   volume_ = NULL;
   image_ = NULL;
+
+  file_prefix_ = "display_output";
 
   // setup layout
   QVBoxLayout *main_layout = new QVBoxLayout(this);
@@ -90,8 +93,20 @@ void ImageWindow::updatePixelInfo(QString text)
 //-----------------------------------------------------------------------------
 void ImageWindow::on_action_save__triggered()
 {
-  QString fileName = "segmentation.png";
+  QString fileName = file_prefix_;
+  if (volume_)
+    fileName.append(QString("_slice%1").arg(slice_selector_->value()));
+
+  fileName.append(".png");
   fileName = QFileDialog::getSaveFileName(this, tr("Save current view to file"),fileName, tr("Images (*.png *.jpg *.jpeg *.tif *.tiff *.bmp *.pgm  *.pnm)"));
+
+  if (fileName == "")
+    return;
+
+  // save image
+  iu::ImageGpu_8u_C4 temp_out(image_gpu_widget_->imageWidth(), image_gpu_widget_->imageHeight());
+  image_gpu_widget_->getPboOutput(&temp_out);
+  iu::imsave(&temp_out, fileName.toStdString());
 }
 
 //-----------------------------------------------------------------------------

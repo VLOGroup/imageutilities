@@ -37,6 +37,8 @@ public:
   void update();
   void setCursor(QCursor csr);
 
+  void setFilePrefix(QString prefix) {file_prefix_ = prefix;}
+
   QGLImageGpuWidget* getWidget() {return image_gpu_widget_;}
 
 signals:
@@ -77,6 +79,8 @@ private:
 
   QSpinBox* slice_selector_;
   QAction* slice_action_;
+
+  QString file_prefix_;
 
 };
 
