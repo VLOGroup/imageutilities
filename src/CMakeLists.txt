@@ -98,8 +98,11 @@ cuda_include_directories(${CUDA_INCLUDE_DIRS} ${CUDA_CUT_INCLUDE_DIR})
 include_directories(${CUDA_INCLUDE_DIRS} ${CUDA_CUT_INCLUDE_DIR})
 set(IU_IUCORE_LIB_DEPENDENCIES ${IU_IUCORE_LIB_DEPENDENCIES} ${CUDA_LIBRARIES})
 
-message(STATUS "IU: using SM 20")
-set(CUDA_NVCC_FLAGS -arch=sm_20)
+message(STATUS "IU: using SM 12")
+set(CUDA_NVCC_FLAGS -arch=sm_12)
+
+#message(STATUS "IU: using SM 20")
+#set(CUDA_NVCC_FLAGS -arch=sm_20)
 
 # Checking cuda version
 # set defines due to some missing functions in cuda 3.1

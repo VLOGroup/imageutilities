@@ -31,7 +31,19 @@
 #include "statistics.cuh"
 
 
+#ifdef CUDA_NO_SM12_ATOMIC_INTRINSICS
+#error Compilation target does not support shared-memory atomics
+#endif
+
 namespace iuprivate {
+
+////////////////////////////////////////////////////////////////////////////////
+__device__ inline void histogramAtomicAdd(float* address, float value)
+{
+  float old = value;
+  while ((old = atomicExch(address, atomicExch(address, 0.0f)+old))!=0.0f);
+}
+
 
 /******************************************************************************
     CUDA KERNELS
@@ -1318,7 +1330,13 @@ __global__ void  cuColorHistogramKernel(float* hist, int width, int height,
       int hc = bins.x + bins.y*hstrideX + bins.z*hstrideXY;
       atomicAdd(&hist[hc], 1.0f);
 #else
-#warning Color Histograms will not work: >= sm_20 needed!
+  #if __CUDA_ARCH__ >= 120
+        uchar4 bins = tex2D(tex1_8u_C4__, x+0.5f, y+0.5f);
+        int hc = bins.x + bins.y*hstrideX + bins.z*hstrideXY;
+        histogramAtomicAdd(&hist[hc], 1.0f);
+  #else
+  #warning Color Histograms will not work: >= sm_12 needed!
+  #endif
 #endif
     }
   }
