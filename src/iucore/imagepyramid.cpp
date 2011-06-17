@@ -149,32 +149,29 @@ unsigned int ImagePyramid::setImage(iu::Image* image,
   {
     printf("32f_C1\n");
     printf("images=%p\n", images_);
-    iu::ImageGpu_32f_C1** cur_images = 0;
-    printf("cur_images=%p\n", cur_images);
+    iu::ImageGpu_32f_C1*** cur_images = reinterpret_cast<iu::ImageGpu_32f_C1***>(&images_); // *** needed so that always the same mem is used.
+    printf("cur_images=%p\n", *cur_images);
     if (images_ == 0)
     {
       printf("create array\n");
-      cur_images = new iu::ImageGpu_32f_C1*[num_levels_];
+      (*cur_images) = new iu::ImageGpu_32f_C1*[num_levels_];
+      for (unsigned int i=0; i<num_levels_; i++)
+      {
+        IuSize sz(static_cast<int>(floor(0.5+static_cast<double>(image->width())*static_cast<double>(scale_factors_[i]))),
+                  static_cast<int>(floor(0.5+static_cast<double>(image->height())*static_cast<double>(scale_factors_[i]))));
+        printf("i=%d: sz=%d/%d\n", i, sz.width, sz.height);
+        (*cur_images)[i] = new iu::ImageGpu_32f_C1(sz);
+      }
     }
-    else
-      cur_images = reinterpret_cast<iu::ImageGpu_32f_C1**>(images_);
-    images_ = reinterpret_cast<iu::Image**>(cur_images);
-    printf("cur_images=%p\n", cur_images);
+    printf("cur_images=%p\n", (*cur_images));
     printf("images=%p\n", images_);
-    cur_images[0] = new iu::ImageGpu_32f_C1(image->size());
-    iuprivate::copy(reinterpret_cast<iu::ImageGpu_32f_C1*>(image), cur_images[0]);
-    printf("1\n");
 
+    printf("i=0: sz=%d/%d\n", image->size().width, image->size().height);
+    iuprivate::copy(reinterpret_cast<iu::ImageGpu_32f_C1*>(image), (*cur_images)[0]);
     for (unsigned int i=1; i<num_levels_; i++)
     {
-      IuSize sz(static_cast<int>(floor(0.5+static_cast<double>(image->width())*static_cast<double>(scale_factors_[i]))),
-                static_cast<int>(floor(0.5+static_cast<double>(image->height())*static_cast<double>(scale_factors_[i]))));
-      printf("i=%d: sz=%d/%d\n", i, sz.width, sz.height);
-
-      cur_images[i] = new iu::ImageGpu_32f_C1(sz);
-      iuprivate::reduce(reinterpret_cast<iu::ImageGpu_32f_C1*>(cur_images[i-1]),
-                        reinterpret_cast<iu::ImageGpu_32f_C1*>(cur_images[i]),
-                        interp_type, 1, 0);
+      printf("i=%d, reduction\n", i);
+      iuprivate::reduce((*cur_images)[i-1], (*cur_images)[i], interp_type, 1, 0);
     }
     printf("2\n");
     break;
