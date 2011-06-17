@@ -75,7 +75,7 @@ int main(int argc, char** argv)
   std::cout << "pyramid pixel type = " << pyramid.pixelType() << std::endl;
 
   // print all the created level sizes:
-  for(unsigned int i=1; i<pyramid.numLevels(); ++i)
+  for(unsigned int i=0; i<pyramid.numLevels(); ++i)
   {
     std::cout << "level " << i << ":" << std::endl;
 
@@ -85,7 +85,7 @@ int main(int argc, char** argv)
     stream.clear();
     stream << "level " << i;
     winname = stream.str();
-    iu::imshow(reinterpret_cast<iu::ImageGpu_32f_C1*>(pyramid.image(i)), winname);
+    iu::imshow(pyramid.imageGpu_32f_C1(i), winname);
   }
 
   time = iu::getTime() - time;

@@ -43,7 +43,8 @@ ImagePyramid::ImagePyramid(unsigned int& max_num_levels, const IuSize& size, con
   images_(0), pixel_type_(IU_UNKNOWN_PIXEL_TYPE), scale_factors_(0), num_levels_(0),
   max_num_levels_(0), scale_factor_(0.0f), size_bound_(0)
 {
-  this->init(max_num_levels, size, scale_factor, size_bound);
+  max_num_levels = this->init(max_num_levels, size, scale_factor, size_bound);
+  printf("max_num_levels = %d, num_levels_ = %d\n", max_num_levels, num_levels_);
 }
 
 //---------------------------------------------------------------------------
@@ -53,8 +54,8 @@ ImagePyramid::~ImagePyramid()
 }
 
 //---------------------------------------------------------------------------
-bool ImagePyramid::init(unsigned int max_num_levels, const IuSize& size,
-                        const float& scale_factor, unsigned int size_bound)
+unsigned int ImagePyramid::init(unsigned int max_num_levels, const IuSize& size,
+                                const float& scale_factor, unsigned int size_bound)
 {
   if ((scale_factor <= 0) || (scale_factor >=1))
   {
@@ -115,18 +116,18 @@ void ImagePyramid::reset()
 }
 
 //---------------------------------------------------------------------------
-void ImagePyramid::setImage(iu::Image* image,
-                            IuInterpolationType interp_type)
+unsigned int ImagePyramid::setImage(iu::Image* image,
+                                    IuInterpolationType interp_type)
 {
   if (image == 0)
   {
     fprintf(stderr, "ImagePyramid::setImage: input image is 0.");
-    return;
+    return 0;
   }
   if (!image->onDevice())
   {
     fprintf(stderr, "ImagePyramid::setImage: currently only device images supported.");
-    return;
+    return 0;
   }
 
   if ((images_ != 0) && (
@@ -180,8 +181,10 @@ void ImagePyramid::setImage(iu::Image* image,
   }
   default:
     fprintf(stderr, "ImagePyramid::setImage: unsupported pixel type (currently only 32F_C1 supported)\n");
-    return;
+    return 0;
   }
+
+  return num_levels_;
 }
 
 } // namespace iu

@@ -58,8 +58,8 @@ public:
    * @param size_bound Smaller size of coarsest level.
    * @returns Number of available levels.
    */
-  bool init(unsigned int max_num_levels, const IuSize& size, const float& scale_factor,
-            unsigned int size_bound=1);
+  unsigned int init(unsigned int max_num_levels, const IuSize& size, const float& scale_factor,
+                    unsigned int size_bound=1);
 
   /** Resets the image pyramid. Deletes all the data.
    */
@@ -67,9 +67,10 @@ public:
 
   /** Sets the image data of the pyramid.
    * @params[in] image Input image representing the finest scale.
+   * @returns the number of initialized pyramid levels.
    */
-  void setImage(iu::Image* image,
-                IuInterpolationType interp_type = IU_INTERPOLATE_LINEAR);
+  unsigned int setImage(iu::Image* image,
+                        IuInterpolationType interp_type = IU_INTERPOLATE_LINEAR);
   //---------------------------------------------------------------------------
   // GETTERS / SETTERS
 
@@ -87,6 +88,12 @@ public:
 
   /** Returns the scale factor (multiplicative factor) from the current level to the base level. */
   inline float scaleFactor(unsigned int i) {return scale_factors_[i];}
+
+  //---------------------------------------------------------------------------
+  // Get specialized image types.
+  // ATTENTION: Whenever a wrong function is called you get a 0-pointer!
+  inline iu::ImageGpu_32f_C1* imageGpu_32f_C1(unsigned int i)
+  { return reinterpret_cast<iu::ImageGpu_32f_C1*>(images_[i]); }
 
 
 private:
