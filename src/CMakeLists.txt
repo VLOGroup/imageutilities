@@ -602,6 +602,7 @@ SET( IU_HEADERS
 
 SET( IU_SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/imagepyramid.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/setvalue.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/setvalue.cu
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/convert.cpp

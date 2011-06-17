@@ -32,12 +32,12 @@
 
 namespace iu {
 
-template<typename PixelType, unsigned int NumChannels, class Allocator>
+template<typename PixelType, unsigned int NumChannels, class Allocator, IuPixelType _pixel_type>
 class ImageIpp : public virtual Image
 {
 public:
   ImageIpp() :
-    Image(),
+    Image(_pixel_type, _pixel_type),
     data_(0), pitch_(0), ext_data_pointer_(false), n_channels_(NumChannels)
   {
   }
@@ -54,27 +54,27 @@ public:
   }
 
   ImageIpp(unsigned int _width, unsigned int _height) :
-    Image(_width, _height), data_(0), pitch_(0), ext_data_pointer_(false),
+    Image(_pixel_type, _width, _height), data_(0), pitch_(0), ext_data_pointer_(false),
     n_channels_(NumChannels)
   {
     data_ = Allocator::alloc(_width, _height, &pitch_);
   }
 
   ImageIpp(const IppiSize& size) :
-    Image(size.width, size.height), data_(0), pitch_(0), ext_data_pointer_(false),
+    Image(_pixel_type, size.width, size.height), data_(0), pitch_(0), ext_data_pointer_(false),
     n_channels_(NumChannels)
   {
     data_ = Allocator::alloc(size.width, size.height, &pitch_);
   }
 
   ImageIpp(const IuSize& size) :
-    Image(size.width, size.height), data_(0), pitch_(0), ext_data_pointer_(false),
+    Image(_pixel_type, size.width, size.height), data_(0), pitch_(0), ext_data_pointer_(false),
     n_channels_(NumChannels)
   {
     data_ = Allocator::alloc(width(), height(), &pitch_);
   }
 
-  ImageIpp(const ImageIpp<PixelType, NumChannels, Allocator>& from) :
+  ImageIpp(const ImageIpp<PixelType, NumChannels, Allocator, _pixel_type>& from) :
     Image(from), data_(0), pitch_(0),
     n_channels_(NumChannels)
   {
@@ -84,7 +84,7 @@ public:
 
   ImageIpp(PixelType* _data, unsigned int _width, unsigned int _height,
            size_t _pitch, bool ext_data_pointer = false) :
-    Image(_width, _height), data_(0), pitch_(0),
+    Image(_pixel_type, _width, _height), data_(0), pitch_(0),
     ext_data_pointer_(ext_data_pointer), n_channels_(NumChannels)
   {
     if(ext_data_pointer_)

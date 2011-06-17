@@ -40,18 +40,18 @@
 namespace iu {
 
 // 2D; copy host -> host
-template<typename PixelType, unsigned int NumChannels, class Allocator>
-void copy(const iu::ImageIpp<PixelType, NumChannels, Allocator> *src,
-          iu::ImageIpp<PixelType, NumChannels, Allocator> *dst)
+template<typename PixelType, unsigned int NumChannels, class Allocator, IuPixelType _pixel_type>
+void copy(const iu::ImageIpp<PixelType, NumChannels, Allocator, _pixel_type> *src,
+          iu::ImageIpp<PixelType, NumChannels, Allocator, _pixel_type> *dst)
 {
   Allocator::copy(src->data(), src->pitch(), dst->data(), dst->pitch(), dst->size());
 }
 
 // 2D; copy host -> device
 template<typename PixelTypeSrc, typename PixelTypeDst, unsigned int NumChannels,
-         class AllocatorSrc, class AllocatorDst>
-void copy(const iu::ImageIpp<PixelTypeSrc, NumChannels, AllocatorSrc> *src,
-          const iu::ImageGpu<PixelTypeDst, AllocatorDst> *dst)
+         class AllocatorSrc, class AllocatorDst, IuPixelType _pixel_type>
+void copy(const iu::ImageIpp<PixelTypeSrc, NumChannels, AllocatorSrc, _pixel_type> *src,
+          const iu::ImageGpu<PixelTypeDst, AllocatorDst, _pixel_type> *dst)
 {
   cudaError_t status;
   IU_ASSERT(sizeof(PixelTypeSrc)*NumChannels == sizeof(PixelTypeDst));
@@ -66,9 +66,9 @@ void copy(const iu::ImageIpp<PixelTypeSrc, NumChannels, AllocatorSrc> *src,
 
 // 2D; copy device -> host
 template<typename PixelTypeSrc, typename PixelTypeDst, unsigned int NumChannels,
-         class AllocatorSrc, class AllocatorDst>
-void copy(const iu::ImageGpu<PixelTypeSrc, AllocatorSrc> *src,
-          const iu::ImageIpp<PixelTypeDst, NumChannels, AllocatorDst> *dst)
+         class AllocatorSrc, class AllocatorDst, IuPixelType _pixel_type>
+void copy(const iu::ImageGpu<PixelTypeSrc, AllocatorSrc, _pixel_type> *src,
+          const iu::ImageIpp<PixelTypeDst, NumChannels, AllocatorDst, _pixel_type> *dst)
 {
   cudaError_t status;
   if(sizeof(PixelTypeSrc) != (sizeof(PixelTypeDst)*NumChannels))

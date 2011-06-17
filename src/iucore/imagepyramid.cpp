@@ -123,6 +123,11 @@ void ImagePyramid::setImage(iu::Image* image,
     fprintf(stderr, "ImagePyramid::setImage: input image is 0.");
     return;
   }
+  if (!image->onDevice())
+  {
+    fprintf(stderr, "ImagePyramid::setImage: currently only device images supported.");
+    return;
+  }
 
   if ((images_ != 0) && (
         (images_[0]->size() != image->size()) ||

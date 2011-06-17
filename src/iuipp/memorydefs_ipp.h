@@ -32,15 +32,15 @@ namespace iu {
 
 // typedefs of ipp images here so these files can stand on their on and are only included if used from an ipp aware application
 // Ipp Images; 8-bit
-typedef ImageIpp<Ipp8u, 1, iuprivate::ImageAllocatorIpp<Ipp8u, 1> > ImageIpp_8u_C1;
-typedef ImageIpp<Ipp8u, 2, iuprivate::ImageAllocatorIpp<Ipp8u, 2> > ImageIpp_8u_C2;
-typedef ImageIpp<Ipp8u, 3, iuprivate::ImageAllocatorIpp<Ipp8u, 3> > ImageIpp_8u_C3;
-typedef ImageIpp<Ipp8u, 4, iuprivate::ImageAllocatorIpp<Ipp8u, 4> > ImageIpp_8u_C4;
+typedef ImageIpp<Ipp8u, 1, iuprivate::ImageAllocatorIpp<Ipp8u, 1>, IU_8U_C1> ImageIpp_8u_C1;
+typedef ImageIpp<Ipp8u, 2, iuprivate::ImageAllocatorIpp<Ipp8u, 2>, IU_8U_C2> ImageIpp_8u_C2;
+typedef ImageIpp<Ipp8u, 3, iuprivate::ImageAllocatorIpp<Ipp8u, 3>, IU_8U_C3> ImageIpp_8u_C3;
+typedef ImageIpp<Ipp8u, 4, iuprivate::ImageAllocatorIpp<Ipp8u, 4>, IU_8U_C4> ImageIpp_8u_C4;
 // Ipp Images; 32-bit
-typedef ImageIpp<Ipp32f, 1, iuprivate::ImageAllocatorIpp<Ipp32f, 1> > ImageIpp_32f_C1;
-typedef ImageIpp<Ipp32f, 2, iuprivate::ImageAllocatorIpp<Ipp32f, 2> > ImageIpp_32f_C2;
-typedef ImageIpp<Ipp32f, 3, iuprivate::ImageAllocatorIpp<Ipp32f, 3> > ImageIpp_32f_C3;
-typedef ImageIpp<Ipp32f, 4, iuprivate::ImageAllocatorIpp<Ipp32f, 4> > ImageIpp_32f_C4;
+typedef ImageIpp<Ipp32f, 1, iuprivate::ImageAllocatorIpp<Ipp32f, 1>, IU_32F_C1> ImageIpp_32f_C1;
+typedef ImageIpp<Ipp32f, 2, iuprivate::ImageAllocatorIpp<Ipp32f, 2>, IU_32F_C2> ImageIpp_32f_C2;
+typedef ImageIpp<Ipp32f, 3, iuprivate::ImageAllocatorIpp<Ipp32f, 3>, IU_32F_C3> ImageIpp_32f_C3;
+typedef ImageIpp<Ipp32f, 4, iuprivate::ImageAllocatorIpp<Ipp32f, 4>, IU_32F_C4> ImageIpp_32f_C4;
 
 }
 
