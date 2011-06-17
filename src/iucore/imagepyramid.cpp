@@ -44,7 +44,6 @@ ImagePyramid::ImagePyramid(unsigned int& max_num_levels, const IuSize& size, con
   max_num_levels_(0), scale_factor_(0.0f), size_bound_(0)
 {
   max_num_levels = this->init(max_num_levels, size, scale_factor, size_bound);
-  printf("max_num_levels = %d, num_levels_ = %d\n", max_num_levels, num_levels_);
 }
 
 //---------------------------------------------------------------------------
@@ -84,7 +83,6 @@ unsigned int ImagePyramid::init(unsigned int max_num_levels, const IuSize& size,
   for (unsigned int i=0; i<num_levels_; i++)
   {
     scale_factors_[i] = pow(scale_factor, static_cast<float>(i));
-    printf("scale_factors[%d]=%f\n", i, scale_factors_[i]);
   }
 
   return num_levels_;
@@ -95,10 +93,8 @@ unsigned int ImagePyramid::init(unsigned int max_num_levels, const IuSize& size,
    */
 void ImagePyramid::reset()
 {
-  printf("reset\n");
   if(images_ != 0)
   {
-    printf("delete images[i]\n");
     // delete all arrays and hold elements!
     for (unsigned int i=0; i<num_levels_; i++)
     {
