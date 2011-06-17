@@ -12,7 +12,7 @@
 #include "qglimagegpuwidget.h"
 #include "imagewindow.h"
 #include "iucore.h"
-#include "iuio.h"
+#include <iuio.h>
 
 #define MINWINSIZE 50
 

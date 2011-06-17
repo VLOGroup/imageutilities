@@ -722,24 +722,6 @@ endif(VMLIBRARIES_IU_USE_MATLAB)
 
 
 ##-----------------------------------------------------------------------------
-## build gui library
-set(IU_GUI_LIB iugui)
-if(VMLIBRARIES_IU_USE_GUI)
-  cuda_add_library( ${IU_GUI_LIB} SHARED ${IU_GUI_HEADERS} ${IU_GUI_SOURCES} ${IU_GUI_MOC_SOURCES} ${QTRC_SOURCES})
-  set_target_properties(${IU_GUI_LIB} PROPERTIES
-    DEFINE_SYMBOL IU_DLL_EXPORTS
-    VERSION ${IMAGEUTILITIES_VERSION}
-    SOVERSION ${IMAGEUTILITIES_SOVERSION}
-    )
-  target_link_libraries( ${IU_GUI_LIB}
-    ${IU_CORE_LIB} ${CUDA_LIBRARIES}
-    ${QT_LIBRARIES} ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES}
-    )
-  set(IU_LIBS ${IU_LIBS} ${IU_GUI_LIB})
-
-endif(VMLIBRARIES_IU_USE_GUI)
-
-##-----------------------------------------------------------------------------
 ## build io library
 set(IU_IO_LIB iuio)
 if(VMLIBRARIES_IU_USE_IO)
@@ -754,6 +736,24 @@ if(VMLIBRARIES_IU_USE_IO)
     )
   set(IU_LIBS ${IU_LIBS} ${IU_IO_LIB})
 endif(VMLIBRARIES_IU_USE_IO)
+
+##-----------------------------------------------------------------------------
+## build gui library
+set(IU_GUI_LIB iugui)
+if(VMLIBRARIES_IU_USE_GUI)
+  cuda_add_library( ${IU_GUI_LIB} SHARED ${IU_GUI_HEADERS} ${IU_GUI_SOURCES} ${IU_GUI_MOC_SOURCES} ${QTRC_SOURCES})
+  set_target_properties(${IU_GUI_LIB} PROPERTIES
+    DEFINE_SYMBOL IU_DLL_EXPORTS
+    VERSION ${IMAGEUTILITIES_VERSION}
+    SOVERSION ${IMAGEUTILITIES_SOVERSION}
+    )
+  target_link_libraries( ${IU_GUI_LIB}
+    ${IU_CORE_LIB} ${IU_IO_LIB} ${CUDA_LIBRARIES}
+    ${QT_LIBRARIES} ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES}
+    )
+  set(IU_LIBS ${IU_LIBS} ${IU_GUI_LIB})
+
+endif(VMLIBRARIES_IU_USE_GUI)
 
 
 ##-----------------------------------------------------------------------------
