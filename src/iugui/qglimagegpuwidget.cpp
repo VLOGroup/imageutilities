@@ -575,7 +575,7 @@ void QGLImageGpuWidget::mousePressEvent(QMouseEvent *event)
     emit mousePressed(mouse_x_old_, mouse_y_old_);
     emit mousePressed(mouse_x_old_, mouse_y_old_, event->globalX(), event->globalY());
   }
-  else if (button_ == Qt::MiddleButton)
+  else if (button_ == Qt::MidButton)
   {
     old_cursor_ = this->cursor();
     this->setCursor(Qt::ClosedHandCursor);
@@ -587,7 +587,7 @@ void QGLImageGpuWidget::mouseReleaseEvent(QMouseEvent * event)
 {
   if (button_ == Qt::LeftButton)
     emit mouseReleased(floor(event->x()/zoom_), floor(event->y()/zoom_));
-  else if (button_ == Qt::MiddleButton)
+  else if (button_ == Qt::MidButton)
     this->setCursor(old_cursor_);
 
   button_ = Qt::NoButton;
@@ -603,7 +603,7 @@ void QGLImageGpuWidget::mouseMoveEvent(QMouseEvent * event)
 
   if (button_ == Qt::LeftButton)
     emit mouseMoved(mouse_x_old_, mouse_y_old_, mouse_x_, mouse_y_);
-  else if (button_ == Qt::MiddleButton)
+  else if (button_ == Qt::MidButton)
     emit pan(mouse_x_old_*zoom_, mouse_y_old_*zoom_, mouse_x_*zoom_, mouse_y_*zoom_);
 
   mouse_x_old_ = mouse_x_;
