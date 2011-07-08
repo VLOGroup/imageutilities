@@ -284,12 +284,20 @@ if(VMLIBRARIES_IU_USE_GUI AND QT4_FOUND)
 
 
   ## GLEW
-  find_package( GLEW REQUIRED )
-  include_directories(${GLEW_INCLUDE_DIR})
+  find_package( GLEW )
+  if(GLEW_INCLUDE_DIR)
+    include_directories(${GLEW_INCLUDE_DIR})
+  else(GLEW_INCLUDE_DIR)
+    set(VMLIBRARIES_IU_USE_GUI OFF)
+  endif(GLEW_INCLUDE_DIR)
 
   ## OpenGL
-  find_package( OpenGL REQUIRED )
-  include_directories(${OPENGL_INCLUDE_DIR})
+  find_package( OpenGL )
+  if(OPENGL_INCLUDE_DIR)
+    include_directories(${OPENGL_INCLUDE_DIR})
+  else(OPENGL_INCLUDE_DIR)
+    set(VMLIBRARIES_IU_USE_GUI OFF)
+  endif(OPENGL_INCLUDE_DIR)
 
 
   set( IU_PUBLIC_HEADERS
