@@ -37,6 +37,11 @@ IuStatus cuFilterMedian3x3(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* 
 IuStatus cuFilterGauss(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
                         const IuRect& roi, float sigma, int kernel_size);
 
+// cuda wrapper: Gaussian filter; Volume; 32-bit; 1-channel
+IuStatus cuFilterGauss(const iu::VolumeGpu_32f_C1* src, iu::VolumeGpu_32f_C1* dst,
+                       float sigma, int kernel_size);
+
+
 // cuda wrapper: Cubic bspline coefficients prefilter.
 IuStatus cuCubicBSplinePrefilter_32f_C1I(iu::ImageGpu_32f_C1 *input);
 

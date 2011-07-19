@@ -34,6 +34,13 @@ void filterGauss(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst, const
   IU_ASSERT(status == IU_SUCCESS);
 }
 
+// device; Volume; 32-bit; 1-channel
+void filterGauss(const iu::VolumeGpu_32f_C1* src, iu::VolumeGpu_32f_C1* dst, float sigma, int kernel_size)
+{
+  IuStatus status = cuFilterGauss(src, dst, sigma, kernel_size);
+  IU_ASSERT(status == IU_SUCCESS);
+}
+
 // device; 32-bit; 4-channel
 void filterGauss(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst, const IuRect& roi, float sigma, int kernel_size)
 {

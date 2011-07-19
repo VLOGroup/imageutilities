@@ -39,6 +39,10 @@ void filterMedian3x3(const ImageGpu_32f_C1* src, ImageGpu_32f_C1* dst, const IuR
 void filterGauss(const ImageGpu_32f_C1* src, ImageGpu_32f_C1* dst, const IuRect& roi,
                  float sigma, int kernel_size)
 {iuprivate::filterGauss(src, dst, roi, sigma, kernel_size);}
+// device; volume; 32-bit; 1-channel
+void filterGauss(const VolumeGpu_32f_C1* src, VolumeGpu_32f_C1* dst,
+                 float sigma, int kernel_size)
+{iuprivate::filterGauss(src, dst, sigma, kernel_size);}
 // device; 32-bit; 4-channel
 void filterGauss(const ImageGpu_32f_C4* src, ImageGpu_32f_C4* dst, const IuRect& roi,
                  float sigma, int kernel_size)
