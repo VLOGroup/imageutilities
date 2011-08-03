@@ -54,14 +54,15 @@ void copy(const iu::ImageIpp<PixelTypeSrc, NumChannels, AllocatorSrc, _pixel_typ
           const iu::ImageGpu<PixelTypeDst, AllocatorDst, _pixel_type> *dst)
 {
   cudaError_t status;
-  IU_ASSERT(sizeof(PixelTypeSrc)*NumChannels == sizeof(PixelTypeDst));
+  if (sizeof(PixelTypeSrc)*NumChannels != sizeof(PixelTypeDst))
+    throw IuException("Source and destination pixel type do not macht.", __FILE__, __FUNCTION__, __LINE__);
   unsigned int roi_width = dst->roi().width;
   unsigned int roi_height = dst->roi().height;
   status = cudaMemcpy2D((void*)dst->data(dst->roi().x, dst->roi().y), dst->pitch(),
                         (void*)src->data(src->roi().x, src->roi().y), src->pitch(),
                         roi_width * NumChannels * sizeof(PixelTypeSrc), roi_height,
                         cudaMemcpyHostToDevice);
-  IU_ASSERT(status == cudaSuccess);
+  if (status != cudaSuccess) throw IuException("cudaMemcpy2D returned error code", __FILE__, __FUNCTION__, __LINE__);
 }
 
 // 2D; copy device -> host
@@ -71,11 +72,8 @@ void copy(const iu::ImageGpu<PixelTypeSrc, AllocatorSrc, _pixel_type> *src,
           const iu::ImageIpp<PixelTypeDst, NumChannels, AllocatorDst, _pixel_type> *dst)
 {
   cudaError_t status;
-  if(sizeof(PixelTypeSrc) != (sizeof(PixelTypeDst)*NumChannels))
-  {
-    printf("PixelType sizes do not match. No copy possible.\n");
-    return;
-  }
+  if (sizeof(PixelTypeSrc) != sizeof(PixelTypeDst)*NumChannels)
+    throw IuException("Source and destination pixel type do not macht.", __FILE__, __FUNCTION__, __LINE__);
 
   unsigned int roi_width = dst->roi().width;
   unsigned int roi_height = dst->roi().height;
@@ -83,7 +81,7 @@ void copy(const iu::ImageGpu<PixelTypeSrc, AllocatorSrc, _pixel_type> *src,
                         (void*)src->data(src->roi().x, src->roi().y), src->pitch(),
                         roi_width * sizeof(PixelTypeSrc), roi_height,
                         cudaMemcpyDeviceToHost);
-  IU_ASSERT(status == cudaSuccess);
+  if (status != cudaSuccess) throw IuException("cudaMemcpy2D returned error code", __FILE__, __FUNCTION__, __LINE__);
 }
 
 } // namespace iuprivate

@@ -96,7 +96,7 @@ void minMax(const iu::ImageGpu_8u_C1 *src, const IuRect &roi, unsigned char& min
   IuStatus status;
   printf("wrapper\n");
   status = cuMinMax(src, roi, min, max);
-  IU_ASSERT(status == IU_SUCCESS);
+  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
 }
 
 // [device] find min/max value of image; 8-bit; 4-channel
@@ -104,7 +104,7 @@ void minMax(const iu::ImageGpu_8u_C4 *src, const IuRect &roi, uchar4& min, uchar
 {
   IuStatus status;
   status = cuMinMax(src, roi, min, max);
-  IU_ASSERT(status == IU_SUCCESS);
+  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -114,7 +114,7 @@ void minMax(const iu::ImageGpu_32f_C1 *src, const IuRect &roi, float& min, float
 {
   IuStatus status;
   status = cuMinMax(src, roi, min, max);
-  IU_ASSERT(status == IU_SUCCESS);
+  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
 }
 
 // [device] find min/max value of image; 32-bit; 2-channel
@@ -122,7 +122,7 @@ void minMax(const iu::ImageGpu_32f_C2 *src, const IuRect &roi, float2& min, floa
 {
   IuStatus status;
   status = cuMinMax(src, roi, min, max);
-  IU_ASSERT(status == IU_SUCCESS);
+  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
 }
 
 // [device] find min/max value of image; 32-bit; 4-channel
@@ -130,7 +130,7 @@ void minMax(const iu::ImageGpu_32f_C4 *src, const IuRect &roi, float4& min, floa
 {
   IuStatus status;
   status = cuMinMax(src, roi, min, max);
-  IU_ASSERT(status == IU_SUCCESS);
+  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -140,7 +140,7 @@ void minMax(iu::VolumeGpu_32f_C1 *src, float& min, float& max)
 {
   IuStatus status;
   status = cuMinMax(src, min, max);
-  IU_ASSERT(status == IU_SUCCESS);
+  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
 }
 
 
@@ -151,7 +151,7 @@ void min(const iu::ImageGpu_32f_C1* src, const IuRect&roi, float& min, int& x, i
 {
   IuStatus status;
   status = cuMin(src, roi, min, x, y);
-  IU_ASSERT(status == IU_SUCCESS);
+  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
 }
 
 // [device] find max value and its coordinates of image; 32-bit; 1-channel
@@ -159,7 +159,7 @@ void max(const iu::ImageGpu_32f_C1* src, const IuRect&roi, float& max, int& x, i
 {
   IuStatus status;
   status = cuMax(src, roi, max, x, y);
-  IU_ASSERT(status == IU_SUCCESS);
+  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
 }
 
 
@@ -232,7 +232,7 @@ void summation(const iu::ImageGpu_8u_C1 *src, const IuRect &roi, long& sum)
 {
   IuStatus status;
   status = cuSummation(src, roi, sum);
-  IU_ASSERT(status == IU_SUCCESS);
+  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
 }
 
 //// [device] compute sum of image; 8-bit; 4-channel
@@ -240,7 +240,7 @@ void summation(const iu::ImageGpu_8u_C1 *src, const IuRect &roi, long& sum)
 //{
 //  IuStatus status;
 //  status = cusummation(const src, roi, sum);
-//  IU_ASSERT(status == IU_SUCCESS);
+//  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
 //}
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -250,7 +250,7 @@ void summation(const iu::ImageGpu_32f_C1 *src, const IuRect &roi, double &sum)
 {
   IuStatus status;
   status = cuSummation(src, roi, sum);
-  IU_ASSERT(status == IU_SUCCESS);
+  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
 }
 
 // [device] compute sum of volume; 32-bit; 1-channel
@@ -265,7 +265,7 @@ void summation(iu::VolumeGpu_32f_C1 *src, const IuCube &roi, double &sum)
     status = cuSummation(&cur_slice, cur_slice.roi(), slice_sum);
     sum += slice_sum;
   }
-  IU_ASSERT(status == IU_SUCCESS);
+  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
 }
 
 //// [device] compute sum of image; 32-bit; 4-channel
@@ -273,7 +273,7 @@ void summation(iu::VolumeGpu_32f_C1 *src, const IuCube &roi, double &sum)
 //{
 //  IuStatus status;
 //  status = cusummation(const src, roi, sum);
-//  IU_ASSERT(status == IU_SUCCESS);
+//  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
 //}
 
 
@@ -286,7 +286,7 @@ void normDiffL1(const iu::ImageGpu_32f_C1* src1, const iu::ImageGpu_32f_C1* src2
 {
   IuStatus status;
   status = cuNormDiffL1(src1, src2, roi, norm);
-  IU_ASSERT(status == IU_SUCCESS);
+  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
 }
 
 // [device] compute L1 norm; |image-value|;
@@ -294,7 +294,7 @@ void normDiffL1(const iu::ImageGpu_32f_C1* src, const float& value, const IuRect
 {
   IuStatus status;
   status = cuNormDiffL1(src, value, roi, norm);
-  IU_ASSERT(status == IU_SUCCESS);
+  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
 }
 
 // [device] compute L2 norm; ||image1-image2||;
@@ -302,7 +302,7 @@ void normDiffL2(const iu::ImageGpu_32f_C1* src1, const iu::ImageGpu_32f_C1* src2
 {
   IuStatus status;
   status = cuNormDiffL2(src1, src2, roi, norm);
-  IU_ASSERT(status == IU_SUCCESS);
+  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
 }
 
 // [device] compute L2 norm; ||image-value||;
@@ -310,7 +310,7 @@ void normDiffL2(const iu::ImageGpu_32f_C1* src, const float& value, const IuRect
 {
   IuStatus status;
   status = cuNormDiffL2(src, value, roi, norm);
-  IU_ASSERT(status == IU_SUCCESS);
+  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
 }
 
 /* ***************************************************************************
@@ -322,7 +322,7 @@ void mse(const iu::ImageGpu_32f_C1* src, const iu::ImageGpu_32f_C1* reference, c
 {
   IuStatus status;
   status = cuMse(src, reference, roi, mse);
-  IU_ASSERT(status == IU_SUCCESS);
+  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
 }
 
 // [device] compute SSIM;
@@ -330,7 +330,7 @@ void ssim(const iu::ImageGpu_32f_C1* src, const iu::ImageGpu_32f_C1* reference, 
 {
   IuStatus status;
   status = cuSsim(src, reference, roi, ssim);
-  IU_ASSERT(status == IU_SUCCESS);
+  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
 }
 
 /* ***************************************************************************
@@ -342,7 +342,7 @@ void colorHistogram(const iu::ImageGpu_8u_C4* binned_image, const iu::ImageGpu_8
 {
   IuStatus status;
   status = cuColorHistogram(binned_image, mask, hist, mask_val);
-  IU_ASSERT(status == IU_SUCCESS);
+  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
 }
 
 

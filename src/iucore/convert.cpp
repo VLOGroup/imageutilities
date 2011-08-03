@@ -90,7 +90,7 @@ void convert_32f8u_C1(const iu::ImageGpu_32f_C1* src, const IuRect& src_roi, iu:
 {
   IuStatus status;
   status = cuConvert_32f_8u(src, src_roi, dst, dst_roi, mul_constant, add_constant);
-  IU_ASSERT(status == IU_SUCCESS);
+  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
 }
 
 //-----------------------------------------------------------------------------
@@ -100,7 +100,7 @@ void convert_32f8u_C4(const iu::ImageGpu_32f_C4* src, const IuRect& src_roi, iu:
 {
   IuStatus status;
   status = cuConvert_32f_8u(src, src_roi, dst, dst_roi, mul_constant, add_constant);
-  IU_ASSERT(status == IU_SUCCESS);
+  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
 }
 
 
@@ -112,7 +112,7 @@ void convert_8u32f_C1(const iu::ImageGpu_8u_C1* src, const IuRect& src_roi, iu::
 {
   IuStatus status;
   status = cuConvert_8u_32f(src, src_roi, dst, dst_roi, mul_constant, add_constant);
-  IU_ASSERT(status == IU_SUCCESS);
+  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
 }
 
 
@@ -122,7 +122,7 @@ void convert(const iu::ImageGpu_32f_C3* src, const IuRect& src_roi, iu::ImageGpu
 {
   IuStatus status;
   status = cuConvert(src, src_roi, dst, dst_roi);
-  IU_ASSERT(status == IU_SUCCESS);
+  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
 }
 
 //-----------------------------------------------------------------------------
@@ -131,7 +131,7 @@ void convert(const iu::ImageGpu_32f_C4* src, const IuRect& src_roi, iu::ImageGpu
 {
   IuStatus status;
   status = cuConvert(src, src_roi, dst, dst_roi);
-  IU_ASSERT(status == IU_SUCCESS);
+  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
 }
 
 //-----------------------------------------------------------------------------
@@ -140,7 +140,7 @@ void convertRgbHsv(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst, boo
 {
   IuStatus status;
   status = cuConvert_rgb_to_hsv(src, dst, normalize);
-  IU_ASSERT(status == IU_SUCCESS);
+  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
 }
 
 //-----------------------------------------------------------------------------
@@ -149,7 +149,7 @@ void convertHsvRgb(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst, boo
 {
   IuStatus status;
   status = cuConvert_hsv_to_rgb(src, dst, denormalize);
-  IU_ASSERT(status == IU_SUCCESS);
+  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
 }
 
 } // namespace iuprivate

@@ -16,8 +16,8 @@
  * Language    : C++
  * Description : Implementation of sparse sum functions
  *
- * Author     : 
- * EMail      : 
+ * Author     :
+ * EMail      :
  *
  */
 
@@ -42,7 +42,7 @@ namespace iuprivate {
     A->changeSparseFormat(CSR);
 
     status = cuSumRow(A, dst->data(), function);
-    IU_ASSERT(status == IU_SUCCESS);
+    if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
     return IU_NO_ERROR;
   }
 
@@ -59,7 +59,7 @@ namespace iuprivate {
     A->changeSparseFormat(CSR);
 
     status = cuSumRow(A, dst->data(), function);
-    IU_ASSERT(status == IU_SUCCESS);
+    if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
     return IU_NO_ERROR;
   }
 
@@ -80,7 +80,7 @@ namespace iuprivate {
 
     A->changeSparseFormat(CSC);
     status = cuSumCol(A, dst->data(), function);
-    IU_ASSERT(status == IU_SUCCESS);
+    if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
     return IU_NO_ERROR;
   }
 
@@ -97,7 +97,7 @@ namespace iuprivate {
 
     A->changeSparseFormat(CSC);
     status = cuSumCol(A, dst->data(), function);
-    IU_ASSERT(status == IU_SUCCESS);
+    if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
     return IU_NO_ERROR;
   }
 

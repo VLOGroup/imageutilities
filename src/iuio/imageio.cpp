@@ -44,7 +44,8 @@ iu::ImageCpu_8u_C1* imread_8u_C1(const std::string& filename)
   iu::ImageCpu_8u_C1* im = new iu::ImageCpu_8u_C1(sz);
   cv::Mat im_mat(sz.height, sz.width, CV_8UC1, im->data(), im->pitch());
 
-  IU_ASSERT( mat.size() == im_mat.size() && mat.channels() == im_mat.channels() );
+  if ((mat.size()!=im_mat.size()) || (mat.channels()!=im_mat.channels()))
+    throw IuException("mat sizes do not match", __FILE__, __FUNCTION__, __LINE__);
   mat.copyTo(im_mat);
   return im;
 }
@@ -58,7 +59,9 @@ iu::ImageCpu_8u_C3* imread_8u_C3(const std::string& filename)
   iu::ImageCpu_8u_C3* im = new iu::ImageCpu_8u_C3(sz);
   cv::Mat im_mat(sz.height, sz.width, CV_8UC3, im->data(), im->pitch());
 
-  IU_ASSERT( mat.size() == im_mat.size() );
+  if (mat.size()!=im_mat.size())
+    throw IuException("mat sizes do not match", __FILE__, __FUNCTION__, __LINE__);
+
   cv::cvtColor(mat, im_mat, CV_BGR2RGB);
   return im;
 }
@@ -72,7 +75,9 @@ iu::ImageCpu_8u_C4* imread_8u_C4(const std::string& filename)
   iu::ImageCpu_8u_C4* im = new iu::ImageCpu_8u_C4(sz);
   cv::Mat im_mat(sz.height, sz.width, CV_8UC4, im->data(), im->pitch());
 
-  IU_ASSERT( mat.size() == im_mat.size() );
+  if (mat.size()!=im_mat.size())
+    throw IuException("mat sizes do not match", __FILE__, __FUNCTION__, __LINE__);
+
   cv::cvtColor(mat, im_mat, CV_BGR2RGBA);
   return im;
 }
@@ -86,7 +91,8 @@ iu::ImageCpu_32f_C1* imread_32f_C1(const std::string& filename)
   iu::ImageCpu_32f_C1* im = new iu::ImageCpu_32f_C1(sz);
   cv::Mat im_mat(sz.height, sz.width, CV_32FC1, im->data(), im->pitch());
 
-  IU_ASSERT( mat.size() == im_mat.size() && mat.channels() == im_mat.channels() );
+  if ((mat.size()!=im_mat.size()) || (mat.channels()!=im_mat.channels()))
+    throw IuException("mat sizes do not match", __FILE__, __FUNCTION__, __LINE__);
   mat.convertTo(im_mat, im_mat.type(), 1.0f/255.0f, 0);
   return im;
 }
@@ -103,7 +109,8 @@ iu::ImageCpu_32f_C3* imread_32f_C3(const std::string& filename)
   iu::ImageCpu_32f_C3* im = new iu::ImageCpu_32f_C3(sz);
   cv::Mat im_mat(sz.height, sz.width, CV_32FC3, im->data(), im->pitch());
 
-  IU_ASSERT( mat_32f_C3.size() == im_mat.size() );
+  if (mat.size()!=im_mat.size())
+    throw IuException("mat sizes do not match", __FILE__, __FUNCTION__, __LINE__);
   cv::cvtColor(mat_32f_C3, im_mat, CV_BGR2RGB);
   return im;
 }
@@ -120,7 +127,8 @@ iu::ImageCpu_32f_C4* imread_32f_C4(const std::string& filename)
   iu::ImageCpu_32f_C4* im = new iu::ImageCpu_32f_C4(sz);
   cv::Mat im_mat(sz.height, sz.width, CV_32FC4, im->data(), im->pitch());
 
-  IU_ASSERT( mat_32f_C3.size() == im_mat.size() );
+  if (mat.size()!=im_mat.size())
+    throw IuException("mat sizes do not match", __FILE__, __FUNCTION__, __LINE__);
   cv::cvtColor(mat_32f_C3, im_mat, CV_BGR2RGBA);
   // FIXMEEEE the alpha layer is 0 !!!
   return im;

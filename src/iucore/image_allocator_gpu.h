@@ -38,14 +38,14 @@ class ImageAllocatorGpu
 public:
   static PixelType* alloc(IuSize size, size_t *pitch)
   {
-    IU_ASSERT(size.width * size.height > 0);
+    if ((size.width == 0) || (size.height == 0)) throw IuException("width or height is 0", __FILE__, __FUNCTION__, __LINE__);
     cudaError_t status;
     PixelType* buffer = 0;
     status = cudaMallocPitch((void **)&buffer, pitch,
                              size.width * sizeof(PixelType), size.height);
 
-    IuStatus iu_status = iu::checkCudaErrorState();
-    IU_ASSERT(status == cudaSuccess && iu_status == IU_NO_ERROR);
+    if (buffer == 0) throw std::bad_alloc();
+    if (status != cudaSuccess) throw IuException("cudaMallocPitch returned error code", __FILE__, __FUNCTION__, __LINE__);
 
     return buffer;
   }
@@ -54,8 +54,7 @@ public:
   {
     cudaError_t status;
     status = cudaFree((void *)buffer);
-    IuStatus iu_status = iu::checkCudaErrorState();
-    IU_ASSERT(status == cudaSuccess && iu_status == IU_NO_ERROR);
+    if (status != cudaSuccess) throw IuException("cudaFree returned error code", __FILE__, __FUNCTION__, __LINE__);
   }
 
   static void copy(const PixelType *src, size_t src_pitch, PixelType *dst, size_t dst_pitch, IuSize size)
@@ -64,8 +63,7 @@ public:
     status = cudaMemcpy2D(dst, dst_pitch, src, src_pitch,
                           size.width * sizeof(PixelType), size.height,
                           cudaMemcpyDeviceToDevice);
-    IuStatus iu_status = iu::checkCudaErrorState();
-    IU_ASSERT(status == cudaSuccess && iu_status == IU_NO_ERROR);
+    if (status != cudaSuccess) throw IuException("cudaMemcpy2D returned error code", __FILE__, __FUNCTION__, __LINE__);
   }
 };
 

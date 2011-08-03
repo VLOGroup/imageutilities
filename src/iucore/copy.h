@@ -57,7 +57,7 @@ void copy(const iu::LinearDeviceMemory<PixelType> *src, iu::LinearDeviceMemory<P
 {
   cudaError_t status;
   status = cudaMemcpy(dst->data(), src->data(), dst->length() * sizeof(PixelType), cudaMemcpyDeviceToDevice);
-  IU_ASSERT(status == cudaSuccess);
+  if (status != cudaSuccess) throw IuException("cudaMemcpy returned error code", __FILE__, __FUNCTION__, __LINE__);
 }
 
 // 1D; copy host -> device
@@ -66,7 +66,7 @@ void copy(const iu::LinearHostMemory<PixelType> *src, iu::LinearDeviceMemory<Pix
 {
   cudaError_t status;
   status = cudaMemcpy(dst->data(), src->data(), dst->length() * sizeof(PixelType), cudaMemcpyHostToDevice);
-  IU_ASSERT(status == cudaSuccess);
+  if (status != cudaSuccess) throw IuException("cudaMemcpy returned error code", __FILE__, __FUNCTION__, __LINE__);
 }
 
 // 1D; copy device -> host
@@ -75,7 +75,7 @@ void copy(const iu::LinearDeviceMemory<PixelType> *src, iu::LinearHostMemory<Pix
 {
   cudaError_t status;
   status = cudaMemcpy(dst->data(), src->data(), dst->length() * sizeof(PixelType), cudaMemcpyDeviceToHost);
-  IU_ASSERT(status == cudaSuccess);
+  if (status != cudaSuccess) throw IuException("cudaMemcpy returned error code", __FILE__, __FUNCTION__, __LINE__);
 }
 
 /* ****************************************************************************
@@ -112,7 +112,7 @@ void copy(const iu::ImageCpu<PixelType, AllocatorCpu, _pixel_type> *src,
                         src->data(src->roi().x, src->roi().y), src->pitch(),
                         roi_width * sizeof(PixelType), roi_height,
                         cudaMemcpyHostToDevice);
-  IU_ASSERT(status == cudaSuccess);
+  if (status != cudaSuccess) throw IuException("cudaMemcpy2D returned error code", __FILE__, __FUNCTION__, __LINE__);
 }
 
 // 2D; copy device -> host
@@ -127,7 +127,7 @@ void copy(const iu::ImageGpu<PixelType, AllocatorGpu, _pixel_type> *src,
                         src->data(src->roi().x, src->roi().y), src->pitch(),
                         roi_width * sizeof(PixelType), roi_height,
                         cudaMemcpyDeviceToHost);
-  IU_ASSERT(status == cudaSuccess);
+  if (status != cudaSuccess) throw IuException("cudaMemcpy2D returned error code", __FILE__, __FUNCTION__, __LINE__);
 }
 
 /* ****************************************************************************
@@ -165,7 +165,7 @@ void copy(const iu::VolumeCpu<PixelType, AllocatorCpu, _pixel_type> *src,
                         src->data(src->roi().x, src->roi().y, dst->roi().z), src->pitch(),
                         roi_width * sizeof(PixelType), roi_height*roi_depth,
                         cudaMemcpyHostToDevice);
-  IU_ASSERT(status == cudaSuccess);
+  if (status != cudaSuccess) throw IuException("cudaMemcpy2D returned error code", __FILE__, __FUNCTION__, __LINE__);
 }
 
 // 3D; copy device -> host
@@ -181,7 +181,7 @@ void copy(const iu::VolumeGpu<PixelType, AllocatorGpu, _pixel_type> *src,
                         src->data(src->roi().x, src->roi().y, dst->roi().z), src->pitch(),
                         roi_width * sizeof(PixelType), roi_height*roi_depth,
                         cudaMemcpyDeviceToHost);
-  IU_ASSERT(status == cudaSuccess);
+  if (status != cudaSuccess) throw IuException("cudaMemcpy2D returned error code", __FILE__, __FUNCTION__, __LINE__);
 }
 
 

@@ -48,42 +48,40 @@ public:
     }
   }
 
-  LinearDeviceMemory(const LinearDeviceMemory<PixelType>& from) :
-    LinearMemory(from),
-    data_(0), ext_data_pointer_(false)
-  {
-    if(from.data_ == NULL)
-      return;
-
-    cudaMalloc((void**)&data_, this->length()*sizeof(PixelType));
-    cudaMemcpy(data_, from.data_, this->length() * sizeof(PixelType), cudaMemcpyDeviceToDevice);
-  }
-
   LinearDeviceMemory(const unsigned int& length) :
     LinearMemory(length),
     data_(0), ext_data_pointer_(false)
   {
     cudaMalloc((void**)&data_, this->length()*sizeof(PixelType));
+    if (data_ == 0) throw std::bad_alloc();
   }
 
+  LinearDeviceMemory(const LinearDeviceMemory<PixelType>& from) :
+    LinearMemory(from),
+    data_(0), ext_data_pointer_(false)
+  {
+    if (from.data_==0) throw IuException("input data not valid", __FILE__, __FUNCTION__, __LINE__);
+    cudaMalloc((void**)&data_, this->length()*sizeof(PixelType));
+    if (data_ == 0) throw std::bad_alloc();
+    cudaMemcpy(data_, from.data_, this->length() * sizeof(PixelType), cudaMemcpyDeviceToDevice);
+  }
 
-  LinearDeviceMemory(PixelType* host_data, const unsigned int& length, bool ext_data_pointer = false) :
+  LinearDeviceMemory(PixelType* device_data, const unsigned int& length, bool ext_data_pointer = false) :
     LinearMemory(length),
     data_(0), ext_data_pointer_(ext_data_pointer)
   {
+    if (device_data==0) throw IuException("input data not valid", __FILE__, __FUNCTION__, __LINE__);
     if(ext_data_pointer_)
     {
       // This uses the external data pointer as internal data pointer.
-      data_ = host_data;
+      data_ = device_data;
     }
     else
     {
       // allocates an internal data pointer and copies the external data onto it.
-      if(host_data == 0)
-        return;
-
       cudaMalloc((void**)&data_, this->length()*sizeof(PixelType));
-      cudaMemcpy(data_, host_data, this->length() * sizeof(PixelType), cudaMemcpyHostToDevice);
+      if (data_ == 0) throw std::bad_alloc();
+      cudaMemcpy(data_, device_data, this->length() * sizeof(PixelType), cudaMemcpyHostToDevice);
     }
   }
 
@@ -96,6 +94,7 @@ public:
    */
   PixelType* data(int offset = 0)
   {
+    if (offset > (int)this->length()) throw IuException("offset not in range", __FILE__, __FUNCTION__, __LINE__);
     return &(data_[offset]);
   }
 
@@ -106,6 +105,7 @@ public:
    */
   const PixelType* data(int offset = 0) const
   {
+    if (offset > (int)this->length()) throw IuException("offset not in range", __FILE__, __FUNCTION__, __LINE__);
     return reinterpret_cast<const PixelType*>(&(data_[offset]));
   }
 

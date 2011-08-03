@@ -55,26 +55,16 @@ public:
     data_(0), ext_data_pointer_(false)
   {
     data_ = (PixelType*)malloc(this->length()*sizeof(PixelType));
-    IU_ASSERT(data_!=NULL);
-    if(data_ == NULL)
-    {
-      fprintf(stderr, "iu::LinearHostMemory: OUT OF MEMORY\n");
-    }
+    if (data_ == 0) throw std::bad_alloc();
   }
 
   LinearHostMemory(const LinearHostMemory<PixelType>& from) :
     LinearMemory(from),
     data_(0), ext_data_pointer_(false)
   {
-    if(from.data_ == NULL)
-      return;
-
+    if (from.data_==0) throw IuException("input data not valid", __FILE__, __FUNCTION__, __LINE__);
     data_ = (PixelType*)malloc(this->length()*sizeof(PixelType));
-    IU_ASSERT(data_!=NULL);
-    if(data_ == NULL)
-    {
-      fprintf(stderr, "iu::LinearHostMemory: OUT OF MEMORY\n");
-    }
+    if (data_ == 0) throw std::bad_alloc();
     memcpy(data_, from.data_, this->length() * sizeof(PixelType));
   }
 
@@ -82,6 +72,7 @@ public:
     LinearMemory(length),
     data_(0), ext_data_pointer_(ext_data_pointer)
   {
+    if (host_data==0) throw IuException("input data not valid", __FILE__, __FUNCTION__, __LINE__);
     if(ext_data_pointer_)
     {
       // This uses the external data pointer as internal data pointer.
@@ -90,15 +81,8 @@ public:
     else
     {
       // allocates an internal data pointer and copies the external data onto it.
-      if(host_data == 0)
-        return;
-
       data_ = (PixelType*)malloc(this->length()*sizeof(PixelType));
-      IU_ASSERT(data_!=NULL);
-      if(data_ == NULL)
-      {
-        fprintf(stderr, "iu::LinearHostMemory: OUT OF MEMORY\n");
-      }
+      if (data_ == 0) throw std::bad_alloc();
       memcpy(data_, host_data, this->length() * sizeof(PixelType));
     }
   }
@@ -112,6 +96,7 @@ public:
    */
   PixelType* data(int offset = 0)
   {
+    if (offset > (int)this->length()) throw IuException("offset not in range", __FILE__, __FUNCTION__, __LINE__);
     return &(data_[offset]);
   }
 
@@ -122,6 +107,7 @@ public:
    */
   const PixelType* data(int offset = 0) const
   {
+    if (offset > (int)this->length()) throw IuException("offset not in range", __FILE__, __FUNCTION__, __LINE__);
     return reinterpret_cast<const PixelType*>(&(data_[offset]));
   }
 

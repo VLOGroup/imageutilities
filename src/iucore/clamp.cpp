@@ -35,7 +35,7 @@ void clamp(const float& min, const float& max,
            iu::ImageGpu_32f_C1 *srcdst, const IuRect &roi)
 {
   IuStatus status = cuClamp(min, max, srcdst, roi);
-  IU_ASSERT(status == IU_SUCCESS);
+  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
 }
 
 

@@ -26,14 +26,18 @@
 
 #include <stdio.h>
 #include <assert.h>
+#include <iostream>
+#include <sstream>
+#include "globaldefs.h"
 
-/** Basic assert macro
+ /** Basic assert macro
  * This macro should be used to enforce any kind of pre or post conditions.
  * Unlike the C assertion this assert also prints an error/warning as output in release mode.
  * \note The macro is written in such a way that omitting a semicolon after its usage
  * causes a compiler error. The correct way to invoke this macro is:
  * IU_ASSERT(small_value < big_value);
  */
+/*
 #define IU_ASSERT(C) \
   do { \
   if (!(C)) \
@@ -45,7 +49,37 @@
     fprintf(stderr,"  line:       %d\n\n",__LINE__); \
   } \
   } while(false)
+*/
 
+/** Assertion with additional error information
+ */
+class IU_DLLAPI IuException : public std::exception
+{
+public:
+  IuException(const std::string& msg, const char* file=NULL, const char* function=NULL, int line=0) throw():
+    msg_(msg),
+    file_(file),
+    function_(function),
+    line_(line)
+  { }
+
+  virtual ~IuException() throw()
+  { }
+
+  virtual const char* what() const throw()
+  {
+    std::ostringstream out_msg;
+
+    out_msg << "IuException: " << msg_ << "\n"
+            << "      where: " << file_ << " | " << function_ << ":" << line_;
+    return out_msg.str().c_str();
+  }
+
+  std::string msg_;
+  std::string file_;
+  std::string function_;
+  int line_;
+}; // class
 
 /** Error status codes.
  * Negative error codes represent an error.

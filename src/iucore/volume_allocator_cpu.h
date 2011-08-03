@@ -37,11 +37,10 @@ class VolumeAllocatorCpu
 public:
   static PixelType* alloc(unsigned int width, unsigned int height, unsigned int depth, size_t *pitch)
   {
-    IU_ASSERT(width * height * depth > 0);
+    if ((width==0) || (height==0) || (depth==0))
+      throw IuException("width, height or depth is 0", __FILE__,__FUNCTION__, __LINE__);
     PixelType *buffer = new PixelType[width*height*depth];
-    IU_ASSERT(buffer != 0);
     *pitch = width * sizeof(PixelType);
-
     return buffer;
   }
 

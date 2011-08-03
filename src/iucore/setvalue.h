@@ -139,7 +139,7 @@ void setValue(const PixelType &value, iu::ImageGpu<PixelType, Allocator, _pixel_
 {
   IuStatus status;
   status = cuSetValue(value, srcdst, roi);
-  IU_ASSERT(status == IU_SUCCESS);
+  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
 }
 
 // 3D set pixel value; device;
@@ -150,7 +150,7 @@ void setValue(const PixelType &value,
 {
   IuStatus status;
   status = cuSetValue(value, srcdst, roi);
-  IU_ASSERT(status == IU_SUCCESS);
+  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
 }
 
 

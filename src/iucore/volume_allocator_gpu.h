@@ -37,11 +37,13 @@ class VolumeAllocatorGpu
 public:
   static PixelType* alloc(IuSize size, size_t *pitch)
   {
-    IU_ASSERT(size.width * size.height * size.depth > 0);
+    if ((size.width==0) || (size.height==0) || (size.depth==0))
+      throw IuException("width, height or depth is 0", __FILE__,__FUNCTION__, __LINE__);
     cudaError_t status;
     PixelType* buffer = 0;
     status = cudaMallocPitch((void **)&buffer, pitch, size.width * sizeof(PixelType), size.height*size.depth);
-    IU_ASSERT(status == cudaSuccess);
+    if (buffer == 0) throw std::bad_alloc();
+    if (status != cudaSuccess) throw IuException("cudaMallocPitch returned error code", __FILE__, __FUNCTION__, __LINE__);
 
     return buffer;
   }
@@ -57,7 +59,7 @@ public:
     status = cudaMemcpy2D(dst, dst_pitch, src, src_pitch,
                           size.width * sizeof(PixelType), size.height*size.depth,
                           cudaMemcpyDeviceToDevice);
-    IU_ASSERT(status == cudaSuccess);
+    if (status != cudaSuccess) throw IuException("cudaMemcpy2D returned error code", __FILE__, __FUNCTION__, __LINE__);
   }
 };
 
