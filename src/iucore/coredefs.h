@@ -37,19 +37,19 @@
  * causes a compiler error. The correct way to invoke this macro is:
  * IU_ASSERT(small_value < big_value);
  */
-/*
+#ifdef DEBUG
 #define IU_ASSERT(C) \
   do { \
-  if (!(C)) \
-  { \
-    assert(C); \
-    fprintf(stderr, "\n\n ImageUtilities assertion faild: \n "); \
-    fprintf(stderr,"  file:       %s\n",__FILE__); \
-    fprintf(stderr,"  function:   %s\n",__FUNCTION__); \
-    fprintf(stderr,"  line:       %d\n\n",__LINE__); \
-  } \
+    if (!(C)) \
+    { \
+      fprintf(stderr, "%s(%d) : assertion '%s' failed!\n", \
+		__FILE__, __LINE__, #C ); \
+	  abort(); \
+    } \
   } while(false)
-*/
+#else //DEBUG
+#define IU_ASSERT(C)
+#endif //DEBUG
 
 /** Assertion with additional error information
  */
