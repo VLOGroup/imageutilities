@@ -102,7 +102,17 @@ IuStatus cuSetValue(const float& value, iu::LinearDeviceMemory_32f_C1* dst)
   cuSetValueKernel <<< dimGrid, dimBlock >>> (
       value, dst->data(), dst->length());
 
-  IU_CHECK_AND_RETURN_CUDA_ERRORS();
+  {
+    do {
+      cudaThreadSynchronize();
+      cudaError_t err = cudaGetLastError();
+      if (err != cudaSuccess)
+        throw IuCudaException(err);
+    } while(false);
+  }
+
+  IU_CUDA_CHECK();
+  return IU_SUCCESS;
 }
 
 

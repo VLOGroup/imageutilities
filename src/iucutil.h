@@ -34,6 +34,7 @@
 #include <cutil_math.h>
 //#endif
 
+#include <driver_types.h>
 #include "iucore/coredefs.h"
 
 // including some common device functions
@@ -65,31 +66,34 @@ inline __host__ __device__ Type2 IUMAX(Type1 a, Type2 b) {return (a>b)?a:b;}
 
 #define IU_CUDACALL(err) iu::cudaCall(err, __FILE__, __LINE__ );
 
-/** Print CUDA error. */
-namespace iu {
+#define IU_CUDA_CHECK() \
+{ \
+  do { \
+    cudaThreadSynchronize(); \
+    cudaError_t err = cudaGetLastError(); \
+    if (err != cudaSuccess) \
+      throw IuCudaException(err); \
+  } while(false); \
+}
 
-#define IU_CUDA_CHECK() do {\
-	if( ( cudaErrno_t cudaErrno = cudaGetLastError() ) != cudaSuccess ) \
-	throw IuCudaException( cudaErrno ); \
-	} while(false)
-	
 class IU_DLLAPI IuCudaException : public IuException
 {
 public:
-	IuCudaException(const cudaError_t cudaErrno, const std::string& msg="", const char* file=NULL, const char* function=NULL, int line=0) throw():
-		IuException( msg, file, function, line ),
-		cudaErrno_( cudaErrno ) {};
-	virtual const char* what() const throw()
-  {
-    std::ostringstream out_msg;
+  IuCudaException(const cudaError_t cudaErr, const std::string& msg="CUDA Error - ",
+                  const char* file=NULL, const char* function=NULL, int line=0) throw():
+    IuException(cudaGetErrorString(cudaErr), file, function, line),
+    cudaErr_( cudaErr )
+  { }
 
-    out_msg << "IuCudaException: " << msg_ << ":" << cudaGetErrorString(cudaErrno_) << "\n"
-            << "      where: " << file_ << " | " << function_ << ":" << line_;
-    return out_msg.str().c_str();
-  }
 protected:
-	cudaError_t cudaErrno_;
+  cudaError_t cudaErr_;
 };
+
+
+/** Print CUDA error. */
+namespace iu {
+
+
 
 static inline IuStatus checkCudaErrorState(bool print_error = true)
 {

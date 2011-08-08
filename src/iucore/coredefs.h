@@ -43,8 +43,8 @@
     if (!(C)) \
     { \
       fprintf(stderr, "%s(%d) : assertion '%s' failed!\n", \
-		__FILE__, __LINE__, #C ); \
-	  abort(); \
+    __FILE__, __LINE__, #C ); \
+    abort(); \
     } \
   } while(false)
 #else //DEBUG
@@ -61,18 +61,23 @@ public:
     file_(file),
     function_(function),
     line_(line)
-  { }
+  {
+    std::ostringstream out_msg;
+
+    out_msg << "IuException: ";
+    out_msg << (msg_.empty() ? "unknown error" : msg_) << "\n";
+    out_msg << "      where: ";
+    out_msg << (file_.empty() ? "no filename available" : file_) << " | ";
+    out_msg << (function_.empty() ? "unknown function" : function_) << ":" << line_;
+    msg_ = out_msg.str();
+  }
 
   virtual ~IuException() throw()
   { }
 
   virtual const char* what() const throw()
   {
-    std::ostringstream out_msg;
-
-    out_msg << "IuException: " << msg_ << "\n"
-            << "      where: " << file_ << " | " << function_ << ":" << line_;
-    return out_msg.str().c_str();
+    return msg_.c_str();
   }
 
   std::string msg_;
