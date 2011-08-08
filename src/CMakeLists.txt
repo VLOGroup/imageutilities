@@ -288,7 +288,8 @@ if(VMLIBRARIES_IU_USE_GUI AND QT4_FOUND)
   if(GLEW_INCLUDE_DIR)
     include_directories(${GLEW_INCLUDE_DIR})
   else(GLEW_INCLUDE_DIR)
-    set(VMLIBRARIES_IU_USE_GUI OFF)
+    message("[-] ImageUtilities omitting GUI module (due to missing GLEW module")
+    set(VMLIBRARIES_IU_USE_GUI OFF CACHE PATH "IU: GLEW module not found. Needed for GUI module to build." FORCE)
   endif(GLEW_INCLUDE_DIR)
 
   ## OpenGL
@@ -296,7 +297,8 @@ if(VMLIBRARIES_IU_USE_GUI AND QT4_FOUND)
   if(OPENGL_INCLUDE_DIR)
     include_directories(${OPENGL_INCLUDE_DIR})
   else(OPENGL_INCLUDE_DIR)
-    set(VMLIBRARIES_IU_USE_GUI OFF)
+    message("[-] ImageUtilities omitting GUI module (due to missing OpenGL module")
+    set(VMLIBRARIES_IU_USE_GUI OFF CACHE PATH "IU: GLEW module not found. Needed for GUI module to build." FORCE)
   endif(OPENGL_INCLUDE_DIR)
 
 
