@@ -78,6 +78,22 @@ void filterEdge(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst, const 
   if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
 }
 
+// edge filter + evaluation; device; 32-bit; 1-channel
+void filterEdge(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C2* dst, const IuRect& roi,
+                    float alpha, float beta, float minval)
+{
+  IuStatus status = cuFilterEdge(src, dst, roi, alpha, beta, minval);
+  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
+}
+
+// edge filter + evaluation; device; 32-bit; 1-channel
+void filterEdge(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C4* dst, const IuRect& roi,
+                    float alpha, float beta, float minval)
+{
+  IuStatus status = cuFilterEdge(src, dst, roi, alpha, beta, minval);
+  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
+}
+
 // edge filter + evaluation; device; 32-bit; 4-channel (RGB)
 void filterEdge(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C1* dst, const IuRect& roi,
                     float alpha, float beta, float minval)
@@ -86,5 +102,20 @@ void filterEdge(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C1* dst, const 
   if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
 }
 
+// edge filter + evaluation; device; 32-bit; 4-channel (RGB)
+void filterEdge(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C2* dst, const IuRect& roi,
+                    float alpha, float beta, float minval)
+{
+  IuStatus status = cuFilterEdge(src, dst, roi, alpha, beta, minval);
+  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
+}
+
+// edge filter + evaluation; device; 32-bit; 4-channel (RGB)
+void filterEdge(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst, const IuRect& roi,
+                    float alpha, float beta, float minval)
+{
+  IuStatus status = cuFilterEdge(src, dst, roi, alpha, beta, minval);
+  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
+}
 
 } // namespace iuprivate
