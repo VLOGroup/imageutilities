@@ -474,7 +474,7 @@ IuStatus cuMinMax(const iu::ImageGpu_8u_C1 *src, const IuRect &roi,
   tex1_8u_C1__.addressMode[1] = cudaAddressModeClamp;
   tex1_8u_C1__.normalized = false;
   cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<uchar1>();
-  printf("bind texture\n");
+//  printf("bind texture\n");
   cudaBindTexture2D(0, &tex1_8u_C1__, src->data(), &channel_desc,
                     src->width(), src->height(), src->pitch());
 
@@ -506,13 +506,13 @@ IuStatus cuMinMax(const iu::ImageGpu_8u_C1 *src, const IuRect &roi,
 
   for (int i = 0; i < num_row_sums; ++i)
   {
-    printf("#%d: %d / %d\n", i, h_row_mins.data(i)[0], h_row_maxs.data(i)[0]);
+//    printf("#%d: %d / %d\n", i, h_row_mins.data(i)[0], h_row_maxs.data(i)[0]);
     min_C1 = IUMIN(min_C1, *h_row_mins.data(i));
     max_C1 = IUMAX(max_C1, *h_row_maxs.data(i));
   }
 
   cudaUnbindTexture(&tex1_8u_C1__);
-  printf("min/max=%d/%d\n", min_C1, max_C1);
+//  printf("min/max=%d/%d\n", min_C1, max_C1);
   return iu::checkCudaErrorState();
 }
 
