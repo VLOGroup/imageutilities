@@ -282,6 +282,18 @@ if(VMLIBRARIES_IU_USE_GUI AND QT4_FOUND)
   message("[+] ImageUtilities include GUI module")
   include(${QT_USE_FILE})
 
+## Qwt
+find_package(Qwt)
+IF (QWT_FOUND)
+  include_directories(${QWT_INCLUDE_DIR})
+  add_definitions(-DUSE_QWT)
+  set( IU_QWT_SOURCES
+       ${CMAKE_CURRENT_SOURCE_DIR}/iugui/plotgapwidget.cpp
+     )
+  set( IU_QWT_MOC_HEADERS
+       ${CMAKE_CURRENT_SOURCE_DIR}/iugui/plotgapwidget.h
+     )
+ENDIF (QWT_FOUND)
 
   ## GLEW
   find_package( GLEW )
@@ -320,6 +332,7 @@ ${CMAKE_CURRENT_SOURCE_DIR}/iugui/overlay.h
     ${CMAKE_CURRENT_SOURCE_DIR}/iugui/qglimagegpuwidget.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/iugui/qglimagegpuwidget.cu
     ${CMAKE_CURRENT_SOURCE_DIR}/iugui/imagewindow.cpp
+    ${IU_QWT_SOURCES}
     )
 
   set( IU_GUI_MOC_HEADERS
@@ -328,6 +341,7 @@ ${CMAKE_CURRENT_SOURCE_DIR}/iugui/overlay.h
     #${CMAKE_CURRENT_SOURCE_DIR}/iugui/qgl_image_gpu_widget_p.h
     ${CMAKE_CURRENT_SOURCE_DIR}/iugui/qglimagegpuwidget.h
     ${CMAKE_CURRENT_SOURCE_DIR}/iugui/imagewindow.h
+    ${IU_QWT_MOC_HEADERS}
     )
 
   SET(IU_GUI_RC_SOURCES
@@ -759,7 +773,7 @@ if(VMLIBRARIES_IU_USE_GUI)
     )
   target_link_libraries( ${IU_GUI_LIB}
     ${IU_CORE_LIB} ${IU_IO_LIB} ${CUDA_LIBRARIES}
-    ${QT_LIBRARIES} ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES}
+    ${QT_LIBRARIES} ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES} ${QWT_LIBRARIES}
     )
   set(IU_LIBS ${IU_LIBS} ${IU_GUI_LIB})
 

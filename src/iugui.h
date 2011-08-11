@@ -38,6 +38,10 @@
 //#include "iugui/image_cpu_display.h"
 #include "iugui/qglimagegpuwidget.h"
 
+#ifdef USE_QWT
+  #include "iugui/plotgapwidget.h"
+#endif // USE_QWT
+
 
 
 

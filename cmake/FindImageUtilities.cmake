@@ -271,7 +271,16 @@ else(IU_INCLUDE_DIRS AND IU_LIBRARY_DIR)
        include_directories(${OPENGL_INCLUDE_DIR})
 
       set(IU_IUGUI_LIB_DEPENDENCIES ${IU_IUGUI_LIB_DEPENDENCIES} ${QT_LIBRARIES} ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES})
+ 
+      find_package(Qwt)
+      IF(QWT_FOUND)
+        add_definitions(-DUSE_QWT)
+	include_directories(${QWT_INCLUDE_DIR})
+	set(IU_IUGUI_LIB_DEPENDENCIES ${IU_IUGUI_LIB_DEPENDENCIES} ${QWT_LIBRARIES})
+      ENDIF(QWT_FOUND)
     endif(QT4_FOUND)
+
+
   endif(IU_IUGUI_FOUND)
 
   ## IO module
