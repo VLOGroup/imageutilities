@@ -21,7 +21,7 @@ PlotGapWidget::PlotGapWidget(QWidget* parent, bool x_log_scale, bool y_log_scale
   :QWidget(parent)
 {
   myPlot_ = new QwtPlot(0);
-  int numDecimals = 4;
+  int numDecimals = 6;
 
   myPlot_->setCanvasBackground(QColor(255,255,255));
   if (x_log_scale)
@@ -76,6 +76,34 @@ PlotGapWidget::~PlotGapWidget()
 }
 
 //-----------------------------------------------------------------------------
+void PlotGapWidget::addCurve(std::list<int> x_values, std::list<double> y_values,
+                             QString name, QColor color)
+{
+  int elements_list = x_values.size();
+  double* x_values_array = new double[elements_list];
+  double* y_values_array = new double[elements_list];
+
+  std::list<int>::iterator itx;
+  int count = 1;
+  for ( itx=x_values.begin() ; itx != x_values.end(); itx++ )
+  {
+    x_values_array[elements_list-count] = *itx;
+    count++;
+  }
+  count = 1;
+
+ std::list<double>::iterator ity;
+  for ( ity=y_values.begin() ; ity != y_values.end(); ity++ )
+  {
+    y_values_array[elements_list-count] = *ity;
+    count++;
+  }
+
+  addCurve(x_values_array, y_values_array, elements_list, name, color);
+}
+
+
+//-----------------------------------------------------------------------------
 void PlotGapWidget::addCurve(std::list<double> x_values, std::list<double> y_values,
                              QString name, QColor color)
 {
@@ -98,6 +126,13 @@ void PlotGapWidget::addCurve(std::list<double> x_values, std::list<double> y_val
     count++;
   }
 
+  addCurve(x_values_array, y_values_array, elements_list, name, color);
+}
+
+//-----------------------------------------------------------------------------
+void PlotGapWidget::addCurve(double* x_values_array, double* y_values_array,
+                             int elements_list, QString name, QColor color)
+{
   QwtPlotCurve *curveDual = new QwtPlotCurve(name);
   curveDual->setPen(QPen(color));
   curveDual->setData(x_values_array, y_values_array, elements_list);

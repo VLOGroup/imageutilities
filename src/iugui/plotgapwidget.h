@@ -23,8 +23,11 @@ public:
   PlotGapWidget(QWidget* parent, bool x_log_scale = true, bool y_log_scale = false);
   virtual ~PlotGapWidget();
 
+  void addCurve(std::list<int> x_values, std::list<double> y_values, QString name, QColor color);
   void addCurve(std::list<double> x_values, std::list<double> y_values, QString name, QColor color);
 
+  void addCurve(double* x_values_array, double* y_values_array,
+                               int elements_list, QString name, QColor color);
 public slots:
 
 private slots:
