@@ -332,6 +332,7 @@ ${CMAKE_CURRENT_SOURCE_DIR}/iugui/overlay.h
     ${CMAKE_CURRENT_SOURCE_DIR}/iugui/qglimagegpuwidget.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/iugui/qglimagegpuwidget.cu
     ${CMAKE_CURRENT_SOURCE_DIR}/iugui/imagewindow.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/iugui/QScienceSpinBox.cpp
     ${IU_QWT_SOURCES}
     )
 
@@ -341,6 +342,7 @@ ${CMAKE_CURRENT_SOURCE_DIR}/iugui/overlay.h
     #${CMAKE_CURRENT_SOURCE_DIR}/iugui/qgl_image_gpu_widget_p.h
     ${CMAKE_CURRENT_SOURCE_DIR}/iugui/qglimagegpuwidget.h
     ${CMAKE_CURRENT_SOURCE_DIR}/iugui/imagewindow.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/iugui/QScienceSpinBox.h
     ${IU_QWT_MOC_HEADERS}
     )
 

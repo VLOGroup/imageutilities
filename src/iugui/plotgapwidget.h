@@ -5,6 +5,11 @@
 #include <QObject>
 #include <QWidget>
 #include <QDoubleSpinBox>
+#include <QCheckBox>
+
+
+#include "QScienceSpinBox.h"
+
 
 #include "iudefs.h"
 
@@ -33,8 +38,10 @@ public slots:
 private slots:
   void updateXMin(double value);
   void updateXMax(double value);
+  void updateXLog(bool value);
   void updateYMin(double value);
   void updateYMax(double value);
+  void updateYLog(bool value);
 
 signals:
 
@@ -50,10 +57,12 @@ private:
 
 
   QwtPlot* myPlot_;
-  QDoubleSpinBox* xMin_;
-  QDoubleSpinBox* xMax_;
-  QDoubleSpinBox* yMin_;
-  QDoubleSpinBox* yMax_;
+  QScienceSpinBox* xMin_;
+  QScienceSpinBox* xMax_;
+  QScienceSpinBox* yMin_;
+  QScienceSpinBox* yMax_;
+  QCheckBox* xLog_;
+  QCheckBox* yLog_;
 };
 
 } // namespace iu
