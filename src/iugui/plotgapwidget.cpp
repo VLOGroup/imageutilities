@@ -43,7 +43,7 @@ PlotGapWidget::PlotGapWidget(QWidget* parent, bool x_log_scale, bool y_log_scale
   yMax_->setDecimals(numDecimals);
   controlLayout->addWidget(yMax_);
 
-  yLog_ = new QCheckBox;
+  yLog_ = new QCheckBox();
   yLog_->setText("Log scale");
   if (y_log_scale)
     yLog_->setChecked(true);
@@ -120,6 +120,9 @@ void PlotGapWidget::addCurve(std::list<int> x_values, std::list<double> y_values
   }
 
   addCurve(x_values_array, y_values_array, elements_list, name, color);
+
+  delete x_values_array;
+  delete y_values_array;
 }
 
 
@@ -147,6 +150,9 @@ void PlotGapWidget::addCurve(std::list<double> x_values, std::list<double> y_val
   }
 
   addCurve(x_values_array, y_values_array, elements_list, name, color);
+
+  delete x_values_array;
+  delete y_values_array;
 }
 
 //-----------------------------------------------------------------------------
@@ -157,9 +163,6 @@ void PlotGapWidget::addCurve(double* x_values_array, double* y_values_array,
   curveDual->setPen(QPen(color));
   curveDual->setData(x_values_array, y_values_array, elements_list);
   curveDual->attach(myPlot_);
-
-  delete x_values_array;
-  delete y_values_array;
 
   myPlot_->setAxisAutoScale(QwtPlot::xBottom);
   myPlot_->setAxisAutoScale(QwtPlot::yLeft);
