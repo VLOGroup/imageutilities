@@ -321,7 +321,7 @@ ENDIF (QWT_FOUND)
 
   set( IU_GUI_HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/iugui/qglimagegpuwidget.h
-${CMAKE_CURRENT_SOURCE_DIR}/iugui/overlay.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/iugui/overlay.h
     ${CMAKE_CURRENT_SOURCE_DIR}/iugui/imagewindow.h
     )
 
