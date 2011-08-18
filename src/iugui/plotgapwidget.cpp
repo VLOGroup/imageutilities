@@ -103,10 +103,18 @@ void PlotGapWidget::addCurve(std::list<int> x_values, std::list<double> y_values
   double* x_values_array = new double[elements_list];
   double* y_values_array = new double[elements_list];
 
+//  // skip first element
+//  if (*(x_values.begin()) == 0)
+//  {
+//    x_values.pop_front();
+//    y_values.pop_front();
+//  }
+
+  // copy
   std::list<int>::iterator itx;
   int count = 1;
   for ( itx=x_values.begin() ; itx != x_values.end(); itx++ )
-  {
+  {    
     x_values_array[elements_list-count] = *itx;
     count++;
   }
@@ -118,6 +126,14 @@ void PlotGapWidget::addCurve(std::list<int> x_values, std::list<double> y_values
     y_values_array[elements_list-count] = *ity;
     count++;
   }
+
+  printf("OOOOOOOOOOOOOOOOOOOOOOOOO\n");
+  for (int i=0; i<count-1; i++)
+  {
+    printf("(x,y): %f, %f\n", x_values_array[i], y_values_array[i]);
+  }
+  printf("OOOOOOOOOOOOOOOOOOOOOOOOO\n");
+
 
   addCurve(x_values_array, y_values_array, elements_list, name, color);
 
@@ -134,6 +150,14 @@ void PlotGapWidget::addCurve(std::list<double> x_values, std::list<double> y_val
   double* x_values_array = new double[elements_list];
   double* y_values_array = new double[elements_list];
 
+//  // skip first element
+//  if (*(x_values.begin()) == 0)
+//  {
+//    x_values.pop_front();
+//    y_values.pop_front();
+//  }
+
+
   std::list<double>::iterator it;
   int count = 1;
   for ( it=x_values.begin() ; it != x_values.end(); it++ )
@@ -148,6 +172,14 @@ void PlotGapWidget::addCurve(std::list<double> x_values, std::list<double> y_val
     y_values_array[elements_list-count] = *it;
     count++;
   }
+
+
+  printf("########################\n");
+  for (int i=0; i<count-1; i++)
+  {
+    printf("(x,y): %f, %f\n", x_values_array[i], y_values_array[i]);
+  }
+  printf("########################\n");
 
   addCurve(x_values_array, y_values_array, elements_list, name, color);
 
