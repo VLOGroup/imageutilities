@@ -72,7 +72,7 @@ inline __host__ __device__ Type2 IUMAX(Type1 a, Type2 b) {return (a>b)?a:b;}
     cudaThreadSynchronize(); \
     cudaError_t err = cudaGetLastError(); \
     if (err != cudaSuccess) \
-      throw IuCudaException(err); \
+  throw IuCudaException(err, "CUDA ERror - ", __FILE__, __FUNCTION__, __LINE__); \
   } while(false); \
 }
 
@@ -83,7 +83,16 @@ public:
                   const char* file=NULL, const char* function=NULL, int line=0) throw():
     IuException(cudaGetErrorString(cudaErr), file, function, line),
     cudaErr_( cudaErr )
-  { }
+  {
+//    std::ostringstream out_msg;
+
+//    out_msg << "IuException: ";
+//    out_msg << (msg_.empty() ? "unknown error" : msg_) << "\n";
+//    out_msg << "      where: ";
+//    out_msg << (file_.empty() ? "no filename available" : file_) << " | ";
+//    out_msg << (function_.empty() ? "unknown function" : function_) << ":" << line_;
+//    msg_ = out_msg.str();
+  }
 
 protected:
   cudaError_t cudaErr_;
