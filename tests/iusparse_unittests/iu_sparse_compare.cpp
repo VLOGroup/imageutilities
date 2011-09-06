@@ -127,9 +127,9 @@ void calcROFSparse(iu::ImageGpu_32f_C1* f, iu::ImageGpu_32f_C1* u,
   iu::LinearHostMemory<float> valG(u->stride()*u->height()*4);
 
   int cind = 0;
-  for (int y=0; y<u->height(); y++)
+  for (unsigned int y=0; y<u->height(); y++)
   {
-    for (int x=0; x<u->width(); x++)
+    for (unsigned int x=0; x<u->width(); x++)
     {
       if (x<u->width()-1)
       {

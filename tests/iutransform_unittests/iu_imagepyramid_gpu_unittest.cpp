@@ -27,6 +27,7 @@
 #include <cuda_runtime.h>
 #include <cutil_math.h>
 #include <iu/iudefs.h>
+#include <iu/iucontainers.h>
 #include <iu/iucore.h>
 #include <iu/iucutil.h>
 #include <iu/iuio.h>

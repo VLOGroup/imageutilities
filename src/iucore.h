@@ -25,6 +25,7 @@
 #define IU_CORE_MODULE_H
 
 #include "iudefs.h"
+#include "iucontainers.h"
 
 namespace iu {
 
