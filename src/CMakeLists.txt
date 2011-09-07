@@ -27,9 +27,9 @@ set(${IU_PUBLIC_HEADERS} "")
 # general settings
 set( CMAKE_DEBUG_POSTFIX "d" )
 
-FILE(TO_CMAKE_PATH "$ENV{CMAKE_MODULE_PATH}" OT_CMAKE_MODULE_PATH)
+#FILE(TO_CMAKE_PATH "$ENV{CMAKE_MODULE_PATH}" OT_CMAKE_MODULE_PATH)
 FILE(TO_CMAKE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../cmake" OT_IU_CMAKE_MODULE_PATH)
-SET(CMAKE_MODULE_PATH ${OT_CMAKE_MODULE_PATH} ${OT_IU_CMAKE_MODULE_PATH})
+SET(CMAKE_MODULE_PATH ${OT_IU_CMAKE_MODULE_PATH})
 
 ##-----------------------------------------------------------------------------
 ## Current version number:
@@ -298,17 +298,20 @@ if(VMLIBRARIES_IU_USE_GUI AND QT4_FOUND)
   include(${QT_USE_FILE})
 
 ## Qwt
-find_package(Qwt)
-IF (QWT_FOUND)
+find_package(Qwt QUIET)
+if(QWT_FOUND)
+  message(STATUS "QWT found. Building GUI module with QWT support.")
   include_directories(${QWT_INCLUDE_DIR})
   add_definitions(-DUSE_QWT)
   set( IU_QWT_SOURCES
-       ${CMAKE_CURRENT_SOURCE_DIR}/iugui/plotgapwidget.cpp
-     )
+    ${CMAKE_CURRENT_SOURCE_DIR}/iugui/plotgapwidget.cpp
+    )
   set( IU_QWT_MOC_HEADERS
-       ${CMAKE_CURRENT_SOURCE_DIR}/iugui/plotgapwidget.h
-     )
-ENDIF (QWT_FOUND)
+    ${CMAKE_CURRENT_SOURCE_DIR}/iugui/plotgapwidget.h
+    )
+else(QWT_FOUND)
+  message(STATUS "QWT not found. QWT support turned off")
+endif(QWT_FOUND)
 
   ## GLEW
   find_package( GLEW )
@@ -922,6 +925,7 @@ set( IU_CMAKE_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/../cmake/FindIPP.cmake
   ${CMAKE_CURRENT_SOURCE_DIR}/../cmake/FindMatlab_ICG.cmake
   ${CMAKE_CURRENT_SOURCE_DIR}/../cmake/FindGLEW.cmake
+  ${CMAKE_CURRENT_SOURCE_DIR}/../cmake/FindQwt.cmake
   ${CMAKE_CURRENT_SOURCE_DIR}/../cmake/FindImageUtilities.cmake
   ${CMAKE_CURRENT_SOURCE_DIR}/../cmake/UseImageUtilities.cmake
   )
