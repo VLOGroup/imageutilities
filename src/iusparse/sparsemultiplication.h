@@ -90,6 +90,26 @@ namespace iu {
     return sparseMultiplicationCore(handle, A, (float*)src->data(), (float*)dst->data(), transpose);
   }
 
+  inline IuStatus sparseMultiplication(cusparseHandle_t* handle,
+                                       iu::SparseMatrixGpu<float>* A,
+                                       iu::ImageGpu_32f_C1* src,
+                                       iu::VolumeGpu_32f_C1* dst,
+                                       cusparseOperation_t transpose=CUSPARSE_OPERATION_NON_TRANSPOSE)
+  {
+    return sparseMultiplicationCore(handle, A, (float*)src->data(), (float*)dst->data(), transpose);
+  }
+
+
+  inline IuStatus sparseMultiplication(cusparseHandle_t* handle,
+                                       iu::SparseMatrixGpu<float>* A,
+                                       iu::VolumeGpu_32f_C1* src,
+                                       iu::ImageGpu_32f_C1* dst,
+                                       cusparseOperation_t transpose=CUSPARSE_OPERATION_NON_TRANSPOSE)
+  {
+    return sparseMultiplicationCore(handle, A, (float*)src->data(), (float*)dst->data(), transpose);
+  }
+
+
 } // namespace iuprivate
 
 #endif // SPARSEMULTIPLICATION_H
