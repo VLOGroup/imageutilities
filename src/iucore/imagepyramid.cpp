@@ -58,8 +58,7 @@ unsigned int ImagePyramid::init(unsigned int max_num_levels, const IuSize& size,
 {
   if ((scale_factor <= 0) || (scale_factor >=1))
   {
-    fprintf(stderr, "ImagePyramid::init: scale_factor must be in the interval (0,1). Init failed.");
-    return 0;
+    throw IuException("scale_factor out of range; must be in interval ]0,1[.", __FILE__, __FUNCTION__, __LINE__);
   }
 
   if (images_ != 0)
@@ -117,13 +116,11 @@ unsigned int ImagePyramid::setImage(iu::Image* image,
 {
   if (image == 0)
   {
-    fprintf(stderr, "ImagePyramid::setImage: input image is 0.");
-    return 0;
+    throw IuException("Input image is NULL.", __FILE__, __FUNCTION__, __LINE__);
   }
   if (!image->onDevice())
   {
-    fprintf(stderr, "ImagePyramid::setImage: currently only device images supported.");
-    return 0;
+    throw IuException("Currently only device images supported.", __FILE__, __FUNCTION__, __LINE__);
   }
 
   if ((images_ != 0) && (
@@ -159,8 +156,7 @@ unsigned int ImagePyramid::setImage(iu::Image* image,
     break;
   }
   default:
-    fprintf(stderr, "ImagePyramid::setImage: unsupported pixel type (currently only 32F_C1 supported)\n");
-    return 0;
+    throw IuException("Unsupported pixel type. currently supported: 32f_C1", __FILE__, __FUNCTION__, __LINE__);
   }
 
   return num_levels_;

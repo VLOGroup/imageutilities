@@ -57,6 +57,7 @@ public:
    * @param rate Multiplicative scale factor.
    * @param size_bound Smaller size of coarsest level.
    * @returns Number of available levels.
+   * @throw IuException
    */
   unsigned int init(unsigned int max_num_levels, const IuSize& size, const float& scale_factor,
                     unsigned int size_bound=1);
@@ -68,6 +69,7 @@ public:
   /** Sets the image data of the pyramid.
    * @params[in] image Input image representing the finest scale.
    * @returns the number of initialized pyramid levels.
+   * @throw IuException
    */
   unsigned int setImage(iu::Image* image,
                         IuInterpolationType interp_type = IU_INTERPOLATE_LINEAR);

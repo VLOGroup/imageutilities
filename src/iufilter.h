@@ -78,6 +78,7 @@ IU_DLLAPI void filterGauss(const ImageGpu_32f_C4* src, ImageGpu_32f_C4* dst, con
      edge calculation
  * ***************************************************************************/
 
+
 IU_DLLAPI void filterEdge(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C2* dst, const IuRect& roi);
 
 IU_DLLAPI void filterEdge(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst, const IuRect& roi,
@@ -104,6 +105,7 @@ IU_DLLAPI void filterEdge(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* d
 /* ***************************************************************************
      other filters
  * ***************************************************************************/
+
 IU_DLLAPI void cubicBSplinePrefilter(iu::ImageGpu_32f_C1* srcdst);
 
 

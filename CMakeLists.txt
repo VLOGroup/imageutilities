@@ -23,4 +23,3 @@ add_subdirectory(mex)
 add_subdirectory(tests)
 
 #add_custom_target(doc COMMAND cd ${CMAKE_SOURCE_DIR} && doxygen ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile)
-
