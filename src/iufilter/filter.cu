@@ -295,7 +295,7 @@ __global__ void cuFilterGaussKernel_32f_C1(float* dst, const size_t stride,
     if (horizontal)
     {
       // convolve horizontally
-      float g0 = 1.0f / (sqrt(2.0f * 3.141592653589793f) * sigma);
+      float g0 = 1.0f / (sqrtf(2.0f * 3.141592653589793f) * sigma);
       float g1 = exp(-0.5f / (sigma * sigma));
       float g2 = g1 * g1;
       sum = g0 * tex2D(tex1_32f_C1__, xx, yy);
@@ -315,7 +315,7 @@ __global__ void cuFilterGaussKernel_32f_C1(float* dst, const size_t stride,
     else
     {
       // convolve vertically
-      float g0 = 1.0f / (sqrt(2.0f * 3.141592653589793f) * sigma);
+      float g0 = 1.0f / (sqrtf(2.0f * 3.141592653589793f) * sigma);
       float g1 = exp(-0.5f / (sigma * sigma));
       float g2 = g1 * g1;
       sum = g0 * tex2D(tex1_32f_C1__, xx, yy);
@@ -364,7 +364,7 @@ __global__ void cuFilterGaussZKernel_32f_C1(float* dst, float* src,
     int half_kernel_elements = (kernel_size - 1) / 2;
 
     // convolve horizontally
-    float g0 = 1.0f / (sqrt(2.0f * 3.141592653589793f) * sigma);
+    float g0 = 1.0f / (sqrtf(2.0f * 3.141592653589793f) * sigma);
     float g1 = exp(-0.5f / (sigma * sigma));
     float g2 = g1 * g1;
     sum = g0 * src[z*slice_stride + y*stride + x];
@@ -419,7 +419,7 @@ __global__ void cuFilterGaussKernel_32f_C4(float4* dst, const size_t stride,
     if (horizontal)
     {
       // convolve horizontally
-      float g0 = 1.0f / (sqrt(2.0f * 3.141592653589793f) * sigma);
+      float g0 = 1.0f / (sqrtf(2.0f * 3.141592653589793f) * sigma);
       float g1 = exp(-0.5f / (sigma * sigma));
       float g2 = g1 * g1;
       sum = g0 * tex2D(tex1_32f_C4__, xx, yy);
@@ -439,7 +439,7 @@ __global__ void cuFilterGaussKernel_32f_C4(float4* dst, const size_t stride,
     else
     {
       // convolve vertically
-      float g0 = 1.0f / (sqrt(2.0f * 3.141592653589793f) * sigma);
+      float g0 = 1.0f / (sqrtf(2.0f * 3.141592653589793f) * sigma);
       float g1 = exp(-0.5f / (sigma * sigma));
       float g2 = g1 * g1;
       sum = g0 * tex2D(tex1_32f_C4__, xx, yy);
@@ -868,9 +868,9 @@ __global__ void  cuFilterEdgeKernel_32f_C4(float* dst, float alpha, float beta, 
     float4 gradx = tex2D(tex1_32f_C4__, xx+1.0f, yy) - tex2D(tex1_32f_C4__, xx, yy);
     float4 grady = tex2D(tex1_32f_C4__, xx, yy+1.0f) - tex2D(tex1_32f_C4__, xx, yy);
     float3 grad;
-    grad.x = sqrt(gradx.x*gradx.x + grady.x*grady.x);
-    grad.y = sqrt(gradx.y*gradx.y + grady.y*grady.y);
-    grad.z = sqrt(gradx.z*gradx.z + grady.z*grady.z);
+    grad.x = sqrtf(gradx.x*gradx.x + grady.x*grady.x);
+    grad.y = sqrtf(gradx.y*gradx.y + grady.y*grady.y);
+    grad.z = sqrtf(gradx.z*gradx.z + grady.z*grady.z);
     dst[y*stride+x] = max(minval, exp(-alpha*pow((grad.x+grad.y+grad.z)/3.0f, beta)));
   }
 }

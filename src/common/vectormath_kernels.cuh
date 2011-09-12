@@ -138,7 +138,7 @@ static inline __host__ __device__ uchar4 operator*(uchar4 a, uchar4 b)
  *  float functions
  * ****************************************************************************/
 
-//inline __device__ __host__ float sqr(float a)
+//inline __device__ __host__ float iu::sqr(float a)
 //{
 //  return a*a;
 //}
@@ -168,7 +168,7 @@ static inline __host__ __device__ float2 operator-(float a, float2 b)
 }
 #endif
 
-//inline __device__ __host__ float2 sqr(float2 a)
+//inline __device__ __host__ float2 iu::sqr(float2 a)
 //{
 //  return a*a;
 //}
@@ -196,7 +196,7 @@ static inline __host__ __device__ float3 operator-(float a, float3 b)
   return make_float3(a - b.x, a - b.y, a - b.z);
 }
 #endif
-//inline __device__ __host__ float3 sqr(float3 a)
+//inline __device__ __host__ float3 iu::sqr(float3 a)
 //{
 //  return a*a;
 //}
@@ -225,7 +225,7 @@ static inline __host__ __device__ float4 operator*(float4 a, float4 b)
     return make_float4(a.x * b.x, a.y * b.y, a.z * b.z,  a.w * b.w);
 }
 #endif
-//inline __device__ __host__ float4 sqr(float4 a)
+//inline __device__ __host__ float4 iu::sqr(float4 a)
 //{
 //  return a*a;
 //}

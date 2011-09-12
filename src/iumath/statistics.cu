@@ -1065,7 +1065,7 @@ IuStatus cuNormDiffL1(const iu::ImageGpu_32f_C1* src1, const iu::ImageGpu_32f_C1
 
   double sum_squared = 0.0;
   iuprivate::cuSummation(&squared_deviances, roi, sum_squared);
-  norm = sqrt(sum_squared);
+  norm = sqrtf(sum_squared);
 
   return iu::checkCudaErrorState();
 }
@@ -1094,7 +1094,7 @@ IuStatus cuNormDiffL1(const iu::ImageGpu_32f_C1* src, const float& value, const 
 
   double sum_squared = 0.0;
   iuprivate::cuSummation(&squared_deviances, roi, sum_squared);
-  norm = sqrt(sum_squared);
+  norm = sqrtf(sum_squared);
 
   return iu::checkCudaErrorState();
 }
@@ -1129,7 +1129,7 @@ IuStatus cuNormDiffL2(const iu::ImageGpu_32f_C1* src1, const iu::ImageGpu_32f_C1
 
   double sum_squared = 0.0;
   iuprivate::cuSummation(&squared_deviances, roi, sum_squared);
-  norm = sqrt(sum_squared);
+  norm = sqrtf(sum_squared);
 
   return iu::checkCudaErrorState();
 }
@@ -1158,7 +1158,7 @@ IuStatus cuNormDiffL2(const iu::ImageGpu_32f_C1* src, const float& value, const 
 
   double sum_squared = 0.0;
   iuprivate::cuSummation(&squared_deviances, roi, sum_squared);
-  norm = sqrt(sum_squared);
+  norm = sqrtf(sum_squared);
 
   return iu::checkCudaErrorState();
 }

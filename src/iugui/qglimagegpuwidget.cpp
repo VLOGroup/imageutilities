@@ -684,7 +684,7 @@ void QGLImageGpuWidget::wheelEvent(QWheelEvent *event)
 
   float fact = 1.0f;
   if (zoom_>1.0f)
-    fact += float(num_steps)/(10.0f*sqrt(zoom_));
+    fact += float(num_steps)/(10.0f*sqrtf(zoom_));
   else
     fact += float(num_steps)/(10.0f);
   float cur_zoom = zoom_*fact;

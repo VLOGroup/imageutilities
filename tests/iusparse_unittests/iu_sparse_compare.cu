@@ -119,7 +119,7 @@ void rof_primal_dual(iu::ImageGpu_32f_C1* device_f, iu::ImageGpu_32f_C1* device_
   bindTexture(rof_tex_u_, device_u_);
   bindTexture(rof_tex_p, device_p);
 
-  float L = sqrt(8.0f);
+  float L = sqrtf(8.0f);
   float tau = 1/L;
   float sigma = 1/L;
   float theta;
@@ -130,7 +130,7 @@ void rof_primal_dual(iu::ImageGpu_32f_C1* device_f, iu::ImageGpu_32f_C1* device_
                                        width, height, device_p->stride());
 
     if (sigma < 1000.0f)
-      theta = 1/sqrt(1.0f+0.7f*lambda*tau);
+      theta = 1/sqrtf(1.0f+0.7f*lambda*tau);
     else
       theta = 1.0f;
 
@@ -233,7 +233,7 @@ void rof_primal_dual_notex(iu::ImageGpu_32f_C1* device_f, iu::ImageGpu_32f_C1* d
   dim3 dimBlock(BSX,BSY);
   dim3 dimGrid(nb_x,nb_y);
 
-  float L = sqrt(8.0f);
+  float L = sqrtf(8.0f);
   float tau = 1/L;
   float sigma = 1/L;
   float theta;
@@ -259,7 +259,7 @@ if(status != IU_NO_ERROR)
                                              device_u_->stride(), device_p->stride());
 
     if (sigma < 1000.0f)
-      theta = 1/sqrt(1.0f+0.7f*lambda*tau);
+      theta = 1/sqrtf(1.0f+0.7f*lambda*tau);
     else
       theta = 1.0f;
 
@@ -342,7 +342,7 @@ void rof_primal_dual_sparse(iu::SparseMatrixGpu_32f* G,
   iu::ImageGpu_32f_C2 gradient(width, height);
   iu::ImageGpu_32f_C1 divergence(width, height);
 
-  float L = sqrt(8.0f);
+  float L = sqrtf(8.0f);
   float tau = 1/L;
   float sigma = 1/L;
   float theta;
@@ -363,7 +363,7 @@ void rof_primal_dual_sparse(iu::SparseMatrixGpu_32f* G,
 
     // Update Timesteps
     if (sigma < 1000.0f)
-      theta = 1/sqrt(1.0f+0.7f*lambda*tau);
+      theta = 1/sqrtf(1.0f+0.7f*lambda*tau);
     else
       theta = 1.0f;
 
@@ -504,7 +504,7 @@ void rof_primal_dual_shared(iu::ImageGpu_32f_C1* device_f, iu::ImageGpu_32f_C1* 
   bindTexture(rof_tex_u_, device_u_);
   bindTexture(rof_tex_p, device_p);
 
-  float L = sqrt(8.0f);
+  float L = sqrtf(8.0f);
   float tau = 1/L;
   float sigma = 1/L;
   float theta;
@@ -515,7 +515,7 @@ void rof_primal_dual_shared(iu::ImageGpu_32f_C1* device_f, iu::ImageGpu_32f_C1* 
                                               width, height, device_p->stride());
 
     if (sigma < 1000.0f)
-      theta = 1/sqrt(1.0f+0.7f*lambda*tau);
+      theta = 1/sqrtf(1.0f+0.7f*lambda*tau);
     else
       theta = 1.0f;
 
@@ -617,7 +617,7 @@ void rof_primal_dual_shared_single(iu::ImageGpu_32f_C1* device_f, iu::ImageGpu_3
   bindTexture(rof_tex_u, device_u);
   bindTexture(rof_tex_p, device_p);
 
-  float L = sqrt(8.0f);
+  float L = sqrtf(8.0f);
   float tau = 1/L;
   float sigma = 1/L;
   float theta;
@@ -625,7 +625,7 @@ void rof_primal_dual_shared_single(iu::ImageGpu_32f_C1* device_f, iu::ImageGpu_3
   for (int k = 0; k < max_iter; ++k)
   {
     if (sigma < 1000.0f)
-      theta = 1/sqrt(1.0f+0.7f*lambda*tau);
+      theta = 1/sqrtf(1.0f+0.7f*lambda*tau);
     else
       theta = 1.0f;
 
@@ -759,7 +759,7 @@ void rof_primal_dual_shared_single2(iu::ImageGpu_32f_C1* device_f, iu::ImageGpu_
   bindTexture(rof_tex_u, device_u);
   bindTexture(rof_tex_p, device_p);
 
-  float L = sqrt(8.0f);
+  float L = sqrtf(8.0f);
   float tau = 1/L;
   float sigma = 1/L;
   float theta;
@@ -767,7 +767,7 @@ void rof_primal_dual_shared_single2(iu::ImageGpu_32f_C1* device_f, iu::ImageGpu_
   for (int k = 0; k < max_iter; k+=2)
   {
     if (sigma < 1000.0f)
-      theta = 1/sqrt(1.0f+0.7f*lambda*tau);
+      theta = 1/sqrtf(1.0f+0.7f*lambda*tau);
     else
       theta = 1.0f;
 
