@@ -44,13 +44,24 @@
 //#include "common/bind_textures.cuh"
 
 ///// SIMPLE MIN MAX HELPERS
-template<typename Type1, typename Type2>
-inline __host__ __device__ Type2 IUMIN(Type1 a, Type2 b) {return (a<b)?a:b;}
+#ifndef __CUDACC__
+template<typename Type>
+inline Type IUMIN(Type a, Type b) {return (a<b)?a:b;}
 
-template<typename Type1, typename Type2>
-inline __host__ __device__ Type2 IUMAX(Type1 a, Type2 b) {return (a>b)?a:b;}
+template<typename Type>
+inline Type IUMAX(Type a, Type b) {return (a>b)?a:b;}
+#else
+template<typename Type>
+inline __host__ __device__ Type IUMIN(Type a, Type b) {return min(a,b);}
 
+template<typename Type>
+inline __host__ __device__ Type IUMAX(Type a, Type b) {return max(a,b);}
+#endif
 
+namespace iu {
+template<typename Type>
+inline __host__ __device__ Type sqr(Type a) {return a*a;}
+}
 
 // includes for time measurements
 #ifdef WIN32

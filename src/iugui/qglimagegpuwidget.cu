@@ -51,8 +51,8 @@ __global__ void cuCopyImageToPboKernel_8u_C1(uchar4* dst, int width, int height,
   if(x<width && y<height)
   {
     unsigned char val = tex2D(tex_qgl_image_8u_C1, xx, yy);
-    val = IUMIN(255, IUMAX(0, 255 * (val-min) / (max-min) ));
-    dst[c] = make_uchar4(val, val, val, 255);
+    val = IUMIN(255u, IUMAX(0u, 255u * (val-min) / (max-min) ));
+    dst[c] = make_uchar4(val, val, val, 255u);
   }
 }
 
@@ -71,10 +71,10 @@ __global__ void cuCopyImageToPboKernel_8u_C4(uchar4* dst, int width, int height,
   if(x<width && y<height)
   {
     uchar4 val = tex2D(tex_qgl_image_8u_C4, xx, yy);
-    val.x = IUMIN(255, IUMAX(0, 255 * (val.x-min) / (max-min)));
-    val.y = IUMIN(255, IUMAX(0, 255 * (val.y-min) / (max-min)));
-    val.z = IUMIN(255, IUMAX(0, 255 * (val.z-min) / (max-min)));
-    val.w = 255;
+    val.x = IUMIN(255u, IUMAX(0u, 255u * (val.x-min) / (max-min)));
+    val.y = IUMIN(255u, IUMAX(0u, 255u * (val.y-min) / (max-min)));
+    val.z = IUMIN(255u, IUMAX(0u, 255u * (val.z-min) / (max-min)));
+    val.w = 255u;
     dst[c] = val;
   }
 }

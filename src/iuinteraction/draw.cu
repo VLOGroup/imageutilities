@@ -81,7 +81,7 @@ IuStatus CUDAdrawLine(iu::ImageGpu_8u_C1 *image, int x_start, int y_start,
                       int x_end, int y_end, int line_width, unsigned char value)
 {
   // adapt brush size_x
-  float brush_size = line_width*line_width;
+  int brush_size = line_width*line_width;
 
   // extract some variables
   int width = image->width();
@@ -104,7 +104,7 @@ IuStatus CUDAdrawLine(iu::ImageGpu_8u_C1 *image, int x_start, int y_start,
   dim3 dimGrid(iu::divUp(size_x, dimBlock.x), iu::divUp(size_y, dimBlock.y));
 
   // Call drawing algorithm
-  drawLineKernel<<<dimGrid, dimBlock>>>(image->data(), 
+  drawLineKernel<<<dimGrid, dimBlock>>>(image->data(),
                                         x_start, y_start, x_end, y_end,
                                         min_x, min_y, width, height, image->stride(),
                                         brush_size, value);

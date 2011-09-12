@@ -138,10 +138,10 @@ static inline __host__ __device__ uchar4 operator*(uchar4 a, uchar4 b)
  *  float functions
  * ****************************************************************************/
 
-inline __device__ __host__ float sqr(float a)
-{
-  return a*a;
-}
+//inline __device__ __host__ float sqr(float a)
+//{
+//  return a*a;
+//}
 
 /* ****************************************************************************
  *  float2 functions
@@ -168,10 +168,10 @@ static inline __host__ __device__ float2 operator-(float a, float2 b)
 }
 #endif
 
-inline __device__ __host__ float2 sqr(float2 a)
-{
-  return a*a;
-}
+//inline __device__ __host__ float2 sqr(float2 a)
+//{
+//  return a*a;
+//}
 
 /* ****************************************************************************
  *  float3 functions
@@ -196,16 +196,11 @@ static inline __host__ __device__ float3 operator-(float a, float3 b)
   return make_float3(a - b.x, a - b.y, a - b.z);
 }
 #endif
-inline __device__ __host__ float3 sqr(float3 a)
-{
-  return a*a;
-}
+//inline __device__ __host__ float3 sqr(float3 a)
+//{
+//  return a*a;
+//}
 
-inline __device__ __host__ float IUMAX(float3 a)
-{
-  float tmp = (a.x>a.y) ? a.x : a.y;
-  return (a.z>tmp) ? a.z : tmp;
-}
 
 /* ****************************************************************************
  *  float4 functions
@@ -230,9 +225,9 @@ static inline __host__ __device__ float4 operator*(float4 a, float4 b)
     return make_float4(a.x * b.x, a.y * b.y, a.z * b.z,  a.w * b.w);
 }
 #endif
-inline __device__ __host__ float4 sqr(float4 a)
-{
-  return a*a;
-}
+//inline __device__ __host__ float4 sqr(float4 a)
+//{
+//  return a*a;
+//}
 
 #endif // IU_VECTORMATH_KERNELS_CUH
