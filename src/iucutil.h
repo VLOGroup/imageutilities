@@ -48,26 +48,26 @@
 template<typename Type>
 inline __host__ __device__ Type IUMIN(Type a, Type b, bool check_inf_or_nan=true)
 {
-  if (check_inf_or_nan)
-  {
-    if (isnan(a) || isinf(a))
-      return b;
-    if (isnan(b) || isinf(b))
-      return a;
-  }
+//  if (check_inf_or_nan)
+//  {
+//    if (isnan(a) || isinf(a))
+//      return b;
+//    if (isnan(b) || isinf(b))
+//      return a;
+//  }
   return a<b ? a : b;
 }
 
 template<typename Type>
 inline __host__ __device__ Type IUMAX(Type a, Type b, bool check_inf_or_nan=true)
 {
-  if (check_inf_or_nan)
-  {
-    if (isnan(a) || isinf(a))
-      return b;
-    if (isnan(b) || isinf(b))
-      return a;
-  }
+//  if (check_inf_or_nan)
+//  {
+//    if (isnan(a) || isinf(a))
+//      return b;
+//    if (isnan(b) || isinf(b))
+//      return a;
+//  }
   return a>b ? a : b;
 }
 
