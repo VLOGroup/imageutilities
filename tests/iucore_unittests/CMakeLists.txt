@@ -59,6 +59,11 @@ TARGET_LINK_LIBRARIES(iu_exception_unittest ${IU_LIBRARIES})
 add_test(iu_exception_unittest iu_exception_unittest)
 set(IU_UNITTEST_TARGETS ${IU_UNITTEST_TARGETS} iu_exception_unittest)
 
+cuda_add_executable( iu_minmax_unittest iu_minmax_unittest.cpp iu_minmax_unittest.cu)
+TARGET_LINK_LIBRARIES(iu_minmax_unittest ${IU_LIBRARIES})
+add_test(iu_minmax_unittest iu_minmax_unittest)
+set(IU_UNITTEST_TARGETS ${IU_UNITTEST_TARGETS} iu_minmax_unittest)
+
 # install targets
 message(STATUS "install targets=${IU_UNITTEST_TARGETS}")
 install(TARGETS ${IU_UNITTEST_TARGETS} RUNTIME DESTINATION bin)
