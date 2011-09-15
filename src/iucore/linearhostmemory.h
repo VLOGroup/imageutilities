@@ -96,7 +96,7 @@ public:
    */
   PixelType* data(int offset = 0)
   {
-    if (offset > (int)this->length()) throw IuException("offset not in range", __FILE__, __FUNCTION__, __LINE__);
+    if ((size_t)offset > this->length()) throw IuException("offset not in range", __FILE__, __FUNCTION__, __LINE__);
     return &(data_[offset]);
   }
 
@@ -107,7 +107,7 @@ public:
    */
   const PixelType* data(int offset = 0) const
   {
-    if (offset > (int)this->length()) throw IuException("offset not in range", __FILE__, __FUNCTION__, __LINE__);
+    if ((size_t)offset > this->length()) throw IuException("offset not in range", __FILE__, __FUNCTION__, __LINE__);
     return reinterpret_cast<const PixelType*>(&(data_[offset]));
   }
 
