@@ -193,7 +193,7 @@ void PlotGapWidget::addCurve(double* x_values_array, double* y_values_array,
 {
   QwtPlotCurve *curveDual = new QwtPlotCurve(name);
   curveDual->setPen(QPen(color));
-  curveDual->setData(x_values_array, y_values_array, elements_list);
+  curveDual->setSamples(x_values_array, y_values_array, elements_list);
   curveDual->attach(myPlot_);
 
   myPlot_->setAxisAutoScale(QwtPlot::xBottom);

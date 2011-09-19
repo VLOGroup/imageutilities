@@ -24,6 +24,7 @@ IF(QT4_FOUND)
        /usr/include/qwt-qt4
        /usr/include/qwt5
        /usr/include
+       /opt/local/include/qwt #macports path
        $ENV{QWT_DIR}/include
        $ENV{QWT_DIR}/src
        $ENV{QWTDIR}/include
@@ -34,7 +35,7 @@ IF(QT4_FOUND)
        $ENV{QWTROOT}/src
     )
 
-    SET(POTENTIAL_LIBRARY_PATHS /usr/local/qwt/lib /usr/local/lib /usr/lib
+    SET(POTENTIAL_LIBRARY_PATHS /usr/local/qwt/lib /usr/local/lib /usr/lib /opt/local/lib
 	                            $ENV{QWT_DIR}/lib $ENV{QWTDIR}/lib $ENV{QWT_ROOT}/lib $ENV{QWTROOT}/lib)
 								
     SET(QWT_NAMES ${QWT_NAMES} qwt qwt-qt4 qwt5 )
