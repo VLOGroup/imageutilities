@@ -114,7 +114,7 @@ void PlotGapWidget::addCurve(std::list<int> x_values, std::list<double> y_values
   std::list<int>::iterator itx;
   int count = 1;
   for ( itx=x_values.begin() ; itx != x_values.end(); itx++ )
-  {    
+  {
     x_values_array[elements_list-count] = *itx;
     count++;
   }
@@ -193,7 +193,13 @@ void PlotGapWidget::addCurve(double* x_values_array, double* y_values_array,
 {
   QwtPlotCurve *curveDual = new QwtPlotCurve(name);
   curveDual->setPen(QPen(color));
-  curveDual->setSamples(x_values_array, y_values_array, elements_list);
+
+#if QWT_VERSION < 0x060000
+    curveDual->setData(x_values_array, y_values_array, elements_list);
+#else
+    curveDual->setSamples(x_values_array, y_values_array, elements_list);
+#endif
+
   curveDual->attach(myPlot_);
 
   myPlot_->setAxisAutoScale(QwtPlot::xBottom);
