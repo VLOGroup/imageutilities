@@ -100,11 +100,12 @@ inline __host__ __device__ Type sqr(Type a) {return a*a;}
 
 #define IU_CUDA_CHECK() \
 { \
-  do { \
+  do \
+  { \
     cudaThreadSynchronize(); \
     cudaError_t err = cudaGetLastError(); \
     if (err != cudaSuccess) \
-  throw IuCudaException(err, "CUDA ERror - ", __FILE__, __FUNCTION__, __LINE__); \
+      throw IuCudaException(err, "CUDA Error - ", __FILE__, __FUNCTION__, __LINE__); \
   } while(false); \
 }
 
