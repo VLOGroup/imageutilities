@@ -25,7 +25,7 @@
 find_library(CUDA_SPARSE_LIBRARY
   NAMES cusparse
   PATHS "${CUDA_TOOLKIT_ROOT_DIR}"
-  PATH_SUFFIXES "/lib64" "/lib"
+  PATH_SUFFIXES "/lib64" "/lib" "/lib/x86_64-linux-gnu"
   DOC "Location of sparse library"
   NO_DEFAULT_PATH 
 )
