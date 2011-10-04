@@ -260,6 +260,14 @@ struct IuRect
     return IuSize(this->width, this->height);
   }
 
+  void reset()
+  {
+    this->x = 0;
+    this->y = 0;
+    this->width = 0;
+    this->height = 0;
+  }
+
 };
 
 inline bool operator==(const IuRect& a, const IuRect& b)
