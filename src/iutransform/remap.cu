@@ -165,7 +165,39 @@ void cuRemap(iu::ImageGpu_32f_C1* src,
 
 //-----------------------------------------------------------------------------
 // 8u_C1
-__global__ void cuRemapKernel_8u_C1(unsigned char*dst, size_t stride, int width, int height)
+__global__ void cuRemapLinearInterpKernel_8u_C1(unsigned char*dst, size_t stride, int width, int height)
+{
+  const int x = blockIdx.x*blockDim.x + threadIdx.x;
+  const int y = blockIdx.y*blockDim.y + threadIdx.y;
+
+  // texutre coordinates
+  const float xx = x+0.5f;
+  const float yy = y+0.5f;
+  // warped texutre coordinates
+  const float wx = xx + tex2D(tex_remap_dx_32f_C1__, xx, yy);
+  const float wy = yy + tex2D(tex_remap_dy_32f_C1__, xx, yy);
+
+  if (x<width && y<height) // Check if out coordinates lie inside output image
+  {
+    int wx1 = IUMAX(0, static_cast<int>(wx));
+    int wx2 = IUMIN(width, wx1+1);
+    int wy1 = IUMAX(0, static_cast<int>(wy));
+    int wy2 = IUMIN(height, wy1+1);
+    float dxf = wx2-xxf;
+    float dyf = wy2-yyf;
+    float dx = wxx.x - floor(wx);
+    float dy = wyy.y - floor(wy);
+    dst[y*stride+x] = dx*dy*tex2D(tex1_8u_C1__, wx1, wy1.x) +
+        dx*(1-dy)*tex2D(tex1_8u_C1__, wx1, wy2.x) +
+        (1-dx)*dy*tex2D(tex1_8u_C1__, wx2, wy1.x) +
+        (1-dx)*(1-dy)*tex2D(tex1_8u_C1__, wx2, wy2.x);
+    //dst[y*stride+x] = tex2D(tex1_8u_C1__, wx, wy);
+  }
+}
+
+//-----------------------------------------------------------------------------
+// 8u_C1
+__global__ void cuRemapPointInterpKernel_8u_C1(unsigned char*dst, size_t stride, int width, int height)
 {
   const int x = blockIdx.x*blockDim.x + threadIdx.x;
   const int y = blockIdx.y*blockDim.y + threadIdx.y;
@@ -191,7 +223,7 @@ void cuRemap(iu::ImageGpu_8u_C1* src,
   tex1_8u_C1__.addressMode[0] = cudaAddressModeClamp;
   tex1_8u_C1__.addressMode[1] = cudaAddressModeClamp;
   tex1_8u_C1__.normalized = false;
-  tex1_8u_C1__.filterMode = cudaFilterModeLinear;
+  tex1_8u_C1__.filterMode = cudaFilterModePoint;
 
   tex_remap_dx_32f_C1__.addressMode[0] = cudaAddressModeClamp;
   tex_remap_dx_32f_C1__.addressMode[1] = cudaAddressModeClamp;
@@ -228,15 +260,18 @@ void cuRemap(iu::ImageGpu_8u_C1* src,
 //    break;
 //  }
 
-//  switch(interpolation)
-//  {
-//  default:
-//  case IU_INTERPOLATE_NEAREST:
-//  case IU_INTERPOLATE_LINEAR: // fallthrough intended
-    cuRemapKernel_8u_C1 <<< dimGridOut, dimBlock >>> (
+  switch(interpolation)
+  {
+  case IU_INTERPOLATE_LINEAR: // fallthrough intended
+    cuRemapLinearInterpKernel_8u_C1 <<< dimGridOut, dimBlock >>> (
         dst->data(), dst->stride(), dst->width(), dst->height());
-//    break;
-//  }
+    break;
+  default:
+  case IU_INTERPOLATE_NEAREST:
+    cuRemapPointInterpKernel_8u_C1 <<< dimGridOut, dimBlock >>> (
+        dst->data(), dst->stride(), dst->width(), dst->height());
+    break;
+  }
 
   cudaUnbindTexture(&tex1_8u_C1__);
   cudaUnbindTexture(&tex_remap_dx_32f_C1__);
