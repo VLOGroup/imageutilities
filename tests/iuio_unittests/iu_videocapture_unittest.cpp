@@ -50,6 +50,7 @@ int main(int argc, char** argv)
   //    printf("cap image size = %d/%d\n", cap->size().width, cap->size().height);
   iu::ImageCpu_8u_C1 im_8u_C1(cap->size());
   iu::ImageCpu_32f_C1 im_32f_C1(cap->size());
+  iu::ImageGpu_8u_C1 im_gpu_8u_C1(cap->size());
   iu::ImageGpu_32f_C1 im_gpu_32f_C1(cap->size());
 
   for(;;)
@@ -57,20 +58,17 @@ int main(int argc, char** argv)
 
     if(cap->grab())
     {
-//      if(cap->retrieve(&im_8u_C1) == IU_SUCCESS)
-//        iu::imshow(&im_8u_C1, "cpu_8u_C1 image");
-//      else
-//        printf("8u_C1 retrieve failed\n");
+//      cap->retrieve(&im_8u_C1);
+//      iu::imshow(&im_8u_C1, "cpu_8u_C1 image");
 
-//      if(cap->retrieve(&im_32f_C1) == IU_SUCCESS)
-//        iu::imshow(&im_32f_C1, "cpu_32f_C1 image");
-//      else
-//        printf("32f_C1 retrieve failed\n");
+//      cap->retrieve(&im_32f_C1);
+//      iu::imshow(&im_32f_C1, "cpu_32f_C1 image");
 
-      if(cap->retrieve(&im_gpu_32f_C1) == IU_SUCCESS)
-        iu::imshow(&im_gpu_32f_C1, "gpu_32f_C1 image");
-      else
-        printf("32f_C1 retrieve failed\n");
+//      cap->retrieve(&im_gpu_8u_C1);
+//      iu::imshow(&im_gpu_8u_C1, "gpu_8u_C1 image");
+
+      cap->retrieve(&im_gpu_32f_C1);
+      iu::imshow(&im_gpu_32f_C1, "gpu_32f_C1 image");
     }
     //printf("wait\n");
     //cv::waitKey();

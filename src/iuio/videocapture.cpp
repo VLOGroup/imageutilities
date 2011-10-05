@@ -57,12 +57,6 @@ VideoCapture::~VideoCapture()
 {
 }
 
-////-----------------------------------------------------------------------------
-//bool grab()
-//{
-//  return cv::VideoCapture::grab();
-//}
-
 //-----------------------------------------------------------------------------
 bool VideoCapture::retrieve(cv::Mat &image, int channel)
 {
@@ -70,80 +64,65 @@ bool VideoCapture::retrieve(cv::Mat &image, int channel)
 }
 
 //-----------------------------------------------------------------------------
-IuStatus VideoCapture::retrieve(iu::ImageCpu_8u_C1 *image)
+void VideoCapture::retrieve(iu::ImageCpu_8u_C1 *image)
 {
   if (!this->isOpened())
-  {
-    printf("VideoCapture: Capture device not ready.\n");
-    return IU_ERROR;
-  }
-
- /*if (!this->grab())
- {
-   printf("VideoCapture: No more frames available.\n");
-   return IU_ERROR;
- }*/
+    throw IuException("VideoCapture: Capture device not ready.\n",
+                      __FILE__, __FUNCTION__, __LINE__);
 
   if (!this->retrieve(frame_))
-  {
-    printf("VideoCapture: Frame couldn't be retrieved.\n");
-    return IU_ERROR;
-  }
+    throw IuException("VideoCapture: Frame could not be fetched.\n",
+                      __FILE__, __FUNCTION__, __LINE__);
 
-  // TODO: check size of image
+  // check size of image
   if(image->size() != IuSize(frame_.cols, frame_.rows))
-    return IU_ERROR;
+    throw IuException("VideoCapture: Given image size does not match with grabbed frame size. Could not copy data.\n",
+                      __FILE__, __FUNCTION__, __LINE__);
 
   cv::Mat mat_8u(image->height(), image->width(), CV_8UC1, image->data(), image->pitch());
   // convert to grayscale image
   cv::cvtColor(frame_, mat_8u, CV_BGR2GRAY);
-  return IU_SUCCESS;
 }
 
 //-----------------------------------------------------------------------------
-IuStatus VideoCapture::retrieve(iu::ImageCpu_32f_C1 *image)
+void VideoCapture::retrieve(iu::ImageCpu_32f_C1 *image)
 {
   if (!this->isOpened())
-  {
-    printf("VideoCapture: Capture device not ready.\n");
-    return IU_ERROR;
-  }
-
-//  if (!this->grab())
-//  {
-//    printf("VideoCapture: No more frames available.\n");
-//    return IU_ERROR;
-//  }
+    throw IuException("VideoCapture: Capture device not ready.\n",
+                      __FILE__, __FUNCTION__, __LINE__);
 
   if (!this->retrieve(frame_))
-  {
-    printf("VideoCapture: Frame couldn't be retrieved.\n");
-    return IU_ERROR;
-  }
+    throw IuException("VideoCapture: Frame could not be fetched.\n",
+                      __FILE__, __FUNCTION__, __LINE__);
 
-  // TODO: check size of image
+  // check size of image
   if(image->size() != IuSize(frame_.cols, frame_.rows))
-    return IU_ERROR;
+    throw IuException("VideoCapture: Given image size does not match with grabbed frame size. Could not copy data.\n",
+                      __FILE__, __FUNCTION__, __LINE__);
 
   cv::Mat mat_8u;
   // convert to grayscale image
   cv::cvtColor(frame_, mat_8u, CV_BGR2GRAY);
-
   cv::Mat im_mat(image->height(), image->width(), CV_32FC1, image->data(), image->pitch());
   mat_8u.convertTo(im_mat, im_mat.type(), 1.0f/255.0f, 0);
-  return IU_SUCCESS;
 }
 
 //-----------------------------------------------------------------------------
-IuStatus VideoCapture::retrieve(iu::ImageGpu_32f_C1 *image)
+void VideoCapture::retrieve(iu::ImageGpu_8u_C1 *image)
+{
+  IuSize sz = this->size();
+  iu::ImageCpu_8u_C1 cpu_image(sz.width, sz.height);
+  this->retrieve(&cpu_image);
+  iuprivate::copy(&cpu_image, image);
+}
+
+//-----------------------------------------------------------------------------
+void VideoCapture::retrieve(iu::ImageGpu_32f_C1 *image)
 {
   IuSize sz = this->size();
   iu::ImageCpu_32f_C1 cpu_image(sz.width, sz.height);
-  IuStatus status = this->retrieve(&cpu_image);
-  if(status < IU_SUCCESS)
-    return IU_ERROR;
+  this->retrieve(&cpu_image);
   iuprivate::copy(&cpu_image, image);
-  return IU_SUCCESS;
 }
 
 //-----------------------------------------------------------------------------
@@ -196,10 +175,8 @@ IuSize VideoCapture::size()
 int VideoCapture::getFPS()
 {
   if (!this->isOpened())
-  {
-    printf("VideoCapture: Capture device not ready.\n");
-    return 0;
-  }
+    throw IuException("VideoCapture: Capture device not ready.\n",
+                      __FILE__, __FUNCTION__, __LINE__);
 
   return this->get(CV_CAP_PROP_FPS);
 }
@@ -208,10 +185,8 @@ int VideoCapture::getFPS()
 int VideoCapture::setFPS(int fps)
 {
   if (!this->isOpened())
-  {
-    printf("VideoCapture: Capture device not ready.\n");
-    return 0;
-  }
+    throw IuException("VideoCapture: Capture device not ready.\n",
+                      __FILE__, __FUNCTION__, __LINE__);
 
   return this->set(CV_CAP_PROP_FPS, fps);
 }
@@ -220,10 +195,8 @@ int VideoCapture::setFPS(int fps)
 int VideoCapture::getFrameWidth()
 {
   if (!this->isOpened())
-  {
-    printf("VideoCapture: Capture device not ready.\n");
-    return 0;
-  }
+    throw IuException("VideoCapture: Capture device not ready.\n",
+                      __FILE__, __FUNCTION__, __LINE__);
 
   return this->get(CV_CAP_PROP_FRAME_WIDTH);
 }
@@ -232,10 +205,8 @@ int VideoCapture::getFrameWidth()
 int VideoCapture::setFrameWidth(int width)
 {
   if (!this->isOpened())
-  {
-    printf("VideoCapture: Capture device not ready.\n");
-    return 0;
-  }
+    throw IuException("VideoCapture: Capture device not ready.\n",
+                      __FILE__, __FUNCTION__, __LINE__);
 
   return this->set(CV_CAP_PROP_FRAME_WIDTH, width);
 }
@@ -244,10 +215,8 @@ int VideoCapture::setFrameWidth(int width)
 int VideoCapture::getFrameHeight()
 {
   if (!this->isOpened())
-  {
-    printf("VideoCapture: Capture device not ready.\n");
-    return 0;
-  }
+    throw IuException("VideoCapture: Capture device not ready.\n",
+                      __FILE__, __FUNCTION__, __LINE__);
 
   return this->get(CV_CAP_PROP_FRAME_HEIGHT);
 }
@@ -256,10 +225,8 @@ int VideoCapture::getFrameHeight()
 int VideoCapture::setFrameHeight(int height)
 {
   if (!this->isOpened())
-  {
-    printf("VideoCapture: Capture device not ready.\n");
-    return 0;
-  }
+    throw IuException("VideoCapture: Capture device not ready.\n",
+                      __FILE__, __FUNCTION__, __LINE__);
 
   return this->set(CV_CAP_PROP_FRAME_HEIGHT, height);
 }
@@ -268,10 +235,8 @@ int VideoCapture::setFrameHeight(int height)
 int VideoCapture::totalFrameCount()
 {
   if (!this->isOpened())
-  {
-    printf("VideoCapture: Capture device not ready.\n");
-    return 0;
-  }
+    throw IuException("VideoCapture: Capture device not ready.\n",
+                      __FILE__, __FUNCTION__, __LINE__);
 
   return this->get(CV_CAP_PROP_FRAME_COUNT);
 }
@@ -280,10 +245,8 @@ int VideoCapture::totalFrameCount()
 int VideoCapture::frameIdx()
 {
   if (!this->isOpened())
-  {
-    printf("VideoCapture: Capture device not ready.\n");
-    return 0;
-  }
+    throw IuException("VideoCapture: Capture device not ready.\n",
+                      __FILE__, __FUNCTION__, __LINE__);
 
   return this->get(CV_CAP_PROP_POS_FRAMES);
 }
@@ -306,9 +269,9 @@ VideoCapture::~VideoCapture() { delete(vidcap_); }
 
 bool VideoCapture::grab() { return vidcap_->grab(); }
 
-IuStatus VideoCapture::retrieve(iu::ImageCpu_8u_C1 *image) { return vidcap_->retrieve(image); }
-IuStatus VideoCapture::retrieve(iu::ImageCpu_32f_C1 *image) { return vidcap_->retrieve(image); }
-IuStatus VideoCapture::retrieve(iu::ImageGpu_32f_C1 *image) { return vidcap_->retrieve(image); }
+void VideoCapture::retrieve(iu::ImageCpu_8u_C1 *image) { return vidcap_->retrieve(image); }
+void VideoCapture::retrieve(iu::ImageCpu_32f_C1 *image) { return vidcap_->retrieve(image); }
+void VideoCapture::retrieve(iu::ImageGpu_32f_C1 *image) { return vidcap_->retrieve(image); }
 
 IuSize VideoCapture::size() { return vidcap_->size(); }
 int VideoCapture::getFPS() { return vidcap_->getFPS(); }
@@ -318,5 +281,7 @@ int VideoCapture::setFrameWidth(int width) { return vidcap_->setFrameWidth(width
 int VideoCapture::getFrameHeight() { return vidcap_->getFrameHeight(); }int VideoCapture::totalFrameCount() { return vidcap_->totalFrameCount(); }
 int VideoCapture::setFrameHeight(int height) { return vidcap_->setFrameHeight(height); }
 int VideoCapture::frameIdx() { return vidcap_->frameIdx(); }
+double VideoCapture::get(int prop_id)  { return vidcap_->get(prop_id); }
+bool VideoCapture::set(int prop_id, double value) { return vidcap_->set(prop_id, value); }
 
 } // namespace iu

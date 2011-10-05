@@ -53,13 +53,13 @@ public:
   virtual bool grab();
 
   /** Retrieves cpu image (8-bit; 1-channel). */
-  virtual IuStatus retrieve(iu::ImageCpu_8u_C1* image);
+  virtual void retrieve(iu::ImageCpu_8u_C1* image);
 
   /** Retrieves cpu image (32-bit; 1-channel). */
-  virtual IuStatus retrieve(iu::ImageCpu_32f_C1* image);
+  virtual void retrieve(iu::ImageCpu_32f_C1* image);
 
   /** Retrieves gpu image (32-bit; 1-channel). */
-  virtual IuStatus retrieve(iu::ImageGpu_32f_C1* image);
+  virtual void retrieve(iu::ImageGpu_32f_C1* image);
 
   /** Returns the size of the available images. */
   IuSize size();
@@ -88,6 +88,14 @@ public:
 
   /** Returns the frame index of the next frame (0-based) */
   int frameIdx();
+
+  /** Returns the specified VideoCapture property (see OpenCV manual) */
+  double get(int propId);
+
+  /** Sets a property in the VideoCapture (see OpenCV manual) */
+  bool set(int propId, double value);
+
+
 private:
   iuprivate::VideoCapture* vidcap_;
 
