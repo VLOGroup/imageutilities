@@ -52,9 +52,10 @@ class Overlay
 public:
   Overlay(QString& name, iu::Image* constraint_image,
           iu::LinearMemory* lut_values, iu::LinearDeviceMemory_8u_C4* lut_colors,
-          bool active = true) :
+          bool active = true, IuComparisonOperator comp_op = IU_EQUAL) :
     name_(name),
-    active_(active)
+    active_(active),
+    comp_op_(comp_op)
   {
     if (constraint_image == NULL || lut_values == NULL || lut_colors == NULL)
     {
@@ -88,12 +89,14 @@ public:
   inline QString& getName() {return name_;}
   inline bool& isActive() {return active_;}
   inline bool& toogleActive() {active_ = !active_; return active_;}
+  inline IuComparisonOperator& getComparisonOperator() { return comp_op_; }
 
 private:
   OverlayLUT* lut_;
   iu::Image* constraint_image_;
   QString name_;
   bool active_;
+  IuComparisonOperator comp_op_;
 
 };
 

@@ -132,6 +132,16 @@ typedef enum
 
 typedef enum
 {
+  IU_EQUAL,
+  IU_NOT_EQUAL,
+  IU_GREATER,
+  IU_GREATER_EQUAL,
+  IU_LESS,
+  IU_LESS_EQUAL
+} IuComparisonOperator;
+
+typedef enum
+{
   IU_NO  = 0, // no function
   IU_ABS = 1, // abs(x)
   IU_SQR = 2, // x*x

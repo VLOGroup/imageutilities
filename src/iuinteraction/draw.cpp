@@ -2,14 +2,23 @@
 
 namespace iuprivate {
 
-extern IuStatus CUDAdrawLine(iu::ImageGpu_8u_C1 *image, int x_start, int y_start,
-                             int x_end, int y_end, int line_width, unsigned char value);
+extern
+void CUDAdrawLine(iu::Image *image, int x_start, int y_start,
+                  int x_end, int y_end, int line_width, float value);
+
+//extern void CUDAdrawLine(iu::Image *image, int x_start, int y_start,
+//                             int x_end, int y_end, int line_width, unsigned char value);
 
 //-----------------------------------------------------------------------------
-IuStatus drawLine(iu::ImageGpu_8u_C1 *image, int x_start, int y_start,
-                  int x_end, int y_end, int line_width, unsigned char value)
+void drawLine(iu::Image *image, int x_start, int y_start,
+              int x_end, int y_end, int line_width, float value)
 {
-  return CUDAdrawLine(image, x_start, y_start, x_end, y_end, line_width, value);
+  if (image->onDevice())
+    CUDAdrawLine(image, x_start, y_start, x_end, y_end, line_width, value);
+  else
+    throw IuException("Only GPU images supported.", __FILE__, __FUNCTION__, __LINE__);
+
+
 }
 
 }

@@ -77,8 +77,8 @@ __global__ void drawLineKernel(T* input,
 //! @param line_width  Width of the line
 //! @param value       Intensity to draw with
 ////////////////////////////////////////////////////////////////////////////////
-IuStatus CUDAdrawLine(iu::ImageGpu_8u_C1 *image, int x_start, int y_start,
-                      int x_end, int y_end, int line_width, unsigned char value)
+void CUDAdrawLine(iu::Image* image, int x_start, int y_start,
+                  int x_end, int y_end, int line_width, float value)
 {
   // adapt brush size_x
   int brush_size = line_width*line_width;
@@ -96,7 +96,7 @@ IuStatus CUDAdrawLine(iu::ImageGpu_8u_C1 *image, int x_start, int y_start,
   int size_y = max_y - min_y;
 
   if ((size_x == 0) || (size_y == 0))
-    return IU_SUCCESS; // outside
+    return; // outside
 
   // fragmentation
   unsigned int block_size = 16;
@@ -104,14 +104,33 @@ IuStatus CUDAdrawLine(iu::ImageGpu_8u_C1 *image, int x_start, int y_start,
   dim3 dimGrid(iu::divUp(size_x, dimBlock.x), iu::divUp(size_y, dimBlock.y));
 
   // Call drawing algorithm
-  drawLineKernel<<<dimGrid, dimBlock>>>(image->data(),
-                                        x_start, y_start, x_end, y_end,
-                                        min_x, min_y, width, height, image->stride(),
-                                        brush_size, value);
-  // error check
-  return iu::checkCudaErrorState();
+  switch (image->pixelType())
+  {
+  case  IU_8U_C1:
+  {
+    unsigned char val = static_cast<unsigned char>(value);
+    iu::ImageGpu_8u_C1* im = dynamic_cast<iu::ImageGpu_8u_C1*>(image);
+    drawLineKernel<<<dimGrid, dimBlock>>>(im->data(),
+                                          x_start, y_start, x_end, y_end,
+                                          min_x, min_y, width, height, image->stride(),
+                                          brush_size, val);
+    break;
+  }
+  case  IU_32F_C1:
+  {
+    iu::ImageGpu_32f_C1* im = dynamic_cast<iu::ImageGpu_32f_C1*>(image);
+    drawLineKernel <<< dimGrid, dimBlock >>> (im->data(),
+                                              x_start, y_start, x_end, y_end,
+                                              min_x, min_y, width, height, image->stride(),
+                                              brush_size, value);
+    break;
+  }
+  default:
+    throw IuException("Unsupported PixelType.", __FILE__, __FUNCTION__, __LINE__);
+  }
+  IU_CUDA_CHECK();
 }
 
-}
+} // namespace iuprivate
 
 #endif //DRAW_CU

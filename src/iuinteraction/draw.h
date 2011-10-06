@@ -16,8 +16,8 @@
 
 namespace iuprivate {
 
-IuStatus drawLine(iu::ImageGpu_8u_C1 *image, int x_start, int y_start,
-                  int x_end, int y_end, int line_width, unsigned char value);
+void drawLine(iu::Image *image, int x_start, int y_start,
+              int x_end, int y_end, int line_width, float value);
 
 
 } // namespace iuprivate

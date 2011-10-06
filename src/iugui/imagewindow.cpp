@@ -229,9 +229,9 @@ void ImageWindow::setupGeometry()
 //-----------------------------------------------------------------------------
 void ImageWindow::addOverlay(QString name, iu::Image* constraint_image,
                              iu::LinearMemory* lut_values, iu::LinearDeviceMemory_8u_C4* lut_colors,
-                             bool active)
+                             bool active, IuComparisonOperator comp_op)
 {
-  image_gpu_widget_->addOverlay(name, constraint_image, lut_values, lut_colors, active);
+  image_gpu_widget_->addOverlay(name, constraint_image, lut_values, lut_colors, active, comp_op);
 }
 
 

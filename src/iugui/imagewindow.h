@@ -33,7 +33,7 @@ public:
 
   void addOverlay(QString name, iu::Image* constraint_image,
                   iu::LinearMemory* lut_values, iu::LinearDeviceMemory_8u_C4* lut_colors,
-                  bool active = true);
+                  bool active = true, IuComparisonOperator comp_op = IU_EQUAL);
   void update();
   void setCursor(QCursor csr);
 

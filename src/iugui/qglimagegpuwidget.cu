@@ -178,7 +178,8 @@ IuStatus cuCopyImageToPbo(iu::Image* image, unsigned int num_channels,
 /** Kernel to superimpose overlay data onto OpenGL PBO. */
 __global__ void cuCopyOverlayToPboKernel_8u_C1(uchar4* dst,
                                                uchar* lut_values, uchar4* lut_colors,
-                                               int num_constraints, int width, int height)
+                                               int num_constraints, IuComparisonOperator comp_op,
+                                               int width, int height)
 {
   const int x = blockDim.x * blockIdx.x + threadIdx.x;
   const int y = blockDim.y * blockIdx.y + threadIdx.y;
@@ -194,7 +195,34 @@ __global__ void cuCopyOverlayToPboKernel_8u_C1(uchar4* dst,
     // loop over all lookup table values
     for(int i = 0; i<num_constraints; ++i)
     {
-      if(tex2D(tex_qgl_image_8u_C1, xx, yy) == lut_values[i])
+      unsigned char val = tex2D(tex_qgl_image_8u_C1, xx, yy);
+      unsigned char lut_val = lut_values[i];
+      bool mark_pixel = false;
+
+      switch (comp_op)
+      {
+      case IU_NOT_EQUAL:
+        mark_pixel = (val != lut_val);
+        break;
+      case IU_GREATER:
+        mark_pixel = (val > lut_val);
+        break;
+      case IU_GREATER_EQUAL:
+        mark_pixel = (val >= lut_val);
+        break;
+      case IU_LESS:
+        mark_pixel = (val < lut_val);
+        break;
+      case IU_LESS_EQUAL:
+        mark_pixel = (val <= lut_val);
+        break;
+      case IU_EQUAL:
+      default:
+        mark_pixel = (val == lut_val);
+        break;
+      }
+
+      if(mark_pixel)
       {
         uchar4 col = lut_colors[i];
         float alpha = col.w/255.0f;
@@ -212,7 +240,8 @@ __global__ void cuCopyOverlayToPboKernel_8u_C1(uchar4* dst,
 /** Kernel to superimpose overlay data onto OpenGL PBO. */
 __global__ void cuCopyOverlayToPboKernel_32f_C1(uchar4* dst,
                                                 float* lut_values, uchar4* lut_colors,
-                                                int num_constraints, int width, int height)
+                                                int num_constraints, IuComparisonOperator comp_op,
+                                                int width, int height)
 {
   const int x = blockDim.x * blockIdx.x + threadIdx.x;
   const int y = blockDim.y * blockIdx.y + threadIdx.y;
@@ -228,7 +257,34 @@ __global__ void cuCopyOverlayToPboKernel_32f_C1(uchar4* dst,
     // loop over all lookup table values
     for(int i = 0; i<num_constraints; ++i)
     {
-      if(tex2D(tex_qgl_image_32f_C1, xx, yy) == lut_values[i])
+      float val = tex2D(tex_qgl_image_32f_C1, xx, yy);
+      float lut_val = lut_values[i];
+      bool mark_pixel = false;
+
+      switch (comp_op)
+      {
+      case IU_NOT_EQUAL:
+        mark_pixel = (val != lut_val);
+        break;
+      case IU_GREATER:
+        mark_pixel = (val > lut_val);
+        break;
+      case IU_GREATER_EQUAL:
+        mark_pixel = (val >= lut_val);
+        break;
+      case IU_LESS:
+        mark_pixel = (val < lut_val);
+        break;
+      case IU_LESS_EQUAL:
+        mark_pixel = (val <= lut_val);
+        break;
+      case IU_EQUAL:
+      default:
+        mark_pixel = (val == lut_val);
+        break;
+      }
+
+      if (mark_pixel)
       {
         uchar4 col = lut_colors[i];
         float alpha = col.w/255.0f;
@@ -268,7 +324,8 @@ IuStatus cuCopyOverlayToPbo(iuprivate::Overlay* overlay, uchar4 *dst, IuSize siz
     cuCopyOverlayToPboKernel_8u_C1
         <<< dimGrid, dimBlock >>> (dst,
                                    lut_values->data(), overlay->getLUTColors()->data(),
-                                   lut_values->length(), constraints->width(), constraints->height());
+                                   lut_values->length(), overlay->getComparisonOperator(),
+                                   constraints->width(), constraints->height());
 
     cudaUnbindTexture(tex_qgl_image_8u_C1);
   }
@@ -286,7 +343,8 @@ IuStatus cuCopyOverlayToPbo(iuprivate::Overlay* overlay, uchar4 *dst, IuSize siz
                       constraints->width(), constraints->height(), constraints->pitch());
     cuCopyOverlayToPboKernel_32f_C1
         <<< dimGrid, dimBlock >>> (dst, lut_values->data(), overlay->getLUTColors()->data(),
-                                   lut_values->length(), constraints->width(), constraints->height());
+                                   lut_values->length(), overlay->getComparisonOperator(),
+                                   constraints->width(), constraints->height());
     cudaUnbindTexture(tex_qgl_image_32f_C1);
   }
 

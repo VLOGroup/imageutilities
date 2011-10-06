@@ -443,13 +443,13 @@ void QGLImageGpuWidget::setAutoNormalize(bool flag)
 //-----------------------------------------------------------------------------
 void QGLImageGpuWidget::addOverlay(QString name, iu::Image* constraint_image,
                                    iu::LinearMemory* lut_values, iu::LinearDeviceMemory_8u_C4* lut_colors,
-                                   bool active)
+                                   bool active, IuComparisonOperator comp_op)
 {
   if(constraint_image->roi() != image_->roi())
     qFatal("Size (ROI) of rendered image and overlay constraint image do not match.");
 
   iuprivate::Overlay* overlay = new iuprivate::Overlay(name, constraint_image,
-                                                       lut_values, lut_colors, active);
+                                                       lut_values, lut_colors, active, comp_op);
   overlay_list_.append(overlay);
 
   // create action for overlay
