@@ -49,3 +49,18 @@ mark_as_advanced(IU_LIBRARIES)
 
 # set definitions
 add_definitions(${IU_DEFINITIONS})
+
+# set compute capability from environment variable (directly useable as nvcc flag)
+if("$ENV{COMPUTE_CAPABILITY}" MATCHES "1.1")
+  set(IU_NVCC_FLAGS -arch=sm_11)
+elseif("$ENV{COMPUTE_CAPABILITY}" MATCHES "1.2")
+  set(IU_NVCC_FLAGS -arch=sm_12)
+elseif("$ENV{COMPUTE_CAPABILITY}" MATCHES "1.3")
+  set(IU_NVCC_FLAGS -arch=sm_13)
+elseif("$ENV{COMPUTE_CAPABILITY}" MATCHES "2.0")
+  set(IU_NVCC_FLAGS -arch=sm_20)
+elseif("$ENV{COMPUTE_CAPABILITY}" MATCHES "2.1")
+  set(IU_NVCC_FLAGS -arch=sm_21)
+else()
+  set(IU_NVCC_FLAGS -arch=sm_11)
+endif()

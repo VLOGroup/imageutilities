@@ -98,7 +98,26 @@ cuda_include_directories(${CUDA_INCLUDE_DIRS} ${CUDA_CUT_INCLUDE_DIR})
 include_directories(${CUDA_INCLUDE_DIRS} ${CUDA_CUT_INCLUDE_DIR})
 set(IU_IUCORE_LIB_DEPENDENCIES ${IU_IUCORE_LIB_DEPENDENCIES} ${CUDA_LIBRARIES})
 
+# Checking cuda version
+# set defines due to some missing functions in cuda 3.1
+if(CUDA_VERSION_STRING STREQUAL "3.1")
+  # using CUDA 3.1
+  message(STATUS "IU: using CUDA 3.1")
+  add_definitions(-DCUDA_VERSION_31)
+elseif(CUDA_VERSION_STRING STREQUAL "3.2")
+  # using CUDA 3.2
+  message(STATUS "IU: using CUDA 3.2")
+  add_definitions(-DCUDA_VERSION_32)
+elseif(CUDA_VERSION_STRING STREQUAL "4.0")
+  # using CUDA 4.0
+  message(STATUS "IU: using CUDA 4.0")
+  add_definitions(-DCUDA_VERSION_40)
+elseif()
+  message(STATUS "unknown CUDA version. some things might not be tested.")
+endif()
 
+##-----------------------------------------------------------------------------
+# Selection of compute capability via environment variable
 if("$ENV{COMPUTE_CAPABILITY}" MATCHES "1.1")
   message(STATUS "IU: using SM 11")
   set(CUDA_NVCC_FLAGS -arch=sm_11)
@@ -119,23 +138,6 @@ else()
   set(CUDA_NVCC_FLAGS -arch=sm_11)
 endif()
 
-# Checking cuda version
-# set defines due to some missing functions in cuda 3.1
-if(CUDA_VERSION_STRING STREQUAL "3.1")
-  # using CUDA 3.1
-  message(STATUS "IU: using CUDA 3.1")
-  add_definitions(-DCUDA_VERSION_31)
-elseif(CUDA_VERSION_STRING STREQUAL "3.2")
-  # using CUDA 3.2
-  message(STATUS "IU: using CUDA 3.2")
-  add_definitions(-DCUDA_VERSION_32)
-elseif(CUDA_VERSION_STRING STREQUAL "4.0")
-  # using CUDA 4.0
-  message(STATUS "IU: using CUDA 4.0")
-  add_definitions(-DCUDA_VERSION_40)
-elseif()
-  message(STATUS "unknown CUDA version. some things might not be tested.")
-endif()
 
 ##-----------------------------------------------------------------------------
 ## CUDA SPARSE: Sparse Matrix operations using CUDA sparse library

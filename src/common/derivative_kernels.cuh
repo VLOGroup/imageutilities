@@ -160,6 +160,56 @@ inline static __device__ float dp_ad(const texture<float2, 2> tex,
 ////////////////////////////////////////////////////////////////////////////////
 
 //-----------------------------------------------------------------------------
+/* testing */
+/** Calculates gradient with forward differences including zero border handling
+ * @param u input
+ * @param x  x-coordinate
+ * @param y  y-coordinate
+ * @return y derivative calculated with forward differences.
+ */
+inline static __device__ float2 dp(float* u, const int x, const int y, const size_t stride,
+                                   const int width, const int height)
+{
+  float2 grad = make_float2(0.0f, 0.0f);
+  if (x+1 < width)
+    grad.x = u[y*stride+x+1] - u[y*stride+x];
+  if (y+1 < height)
+    grad.y = u[(y+1)*stride+x] - u[y*stride+x];
+  return grad;
+}
+
+//-----------------------------------------------------------------------------
+/* testing */
+/** Calculates the divergence with backward differences including zero border handling
+ * @param p
+ * @param x  x-coordinate
+ * @param y  y-coordinate
+ * @return divergence calculated with backward differences.
+ */
+inline static __device__ float dp_ad(const float2* p,
+                                     const int x, const int y, const size_t stride,
+                                     const int width, const int height)
+{
+  float2 cval = p[y*stride+x];
+  float2 wval = p[y*stride+x-1];
+  float2 nval = p[(y-1)*stride+x];
+
+  if (x == 0)
+    wval.x = 0.0f;
+  else if (x >= width-1)
+    cval.x = 0.0f;
+
+  if (y == 0)
+    nval.y = 0.0f;
+  else if (y >= height-1)
+    cval.y = 0.0f;
+
+  return (cval.x - wval.x + cval.y - nval.y);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//-----------------------------------------------------------------------------
 /* ok */
 /** Calculates gradient with forward differences including zero border handling and edge weighting
  * @param tex  2D texture
