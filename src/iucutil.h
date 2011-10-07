@@ -109,7 +109,7 @@ inline __host__ __device__ Type sqr(Type a) {return a*a;}
   } while(false); \
 }
 
-class IU_DLLAPI IuCudaException : public IuException
+class IuCudaException : public IuException
 {
 public:
   IuCudaException(const cudaError_t cudaErr, const std::string& msg="CUDA Error - ",

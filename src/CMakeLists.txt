@@ -64,9 +64,8 @@ OPTION(VMLIBRARIES_IU_USE_MATLAB "Including Matlab module." ON)
 OPTION(VMLIBRARIES_IU_USE_GUI "Including GUI module." ON)
 OPTION(VMLIBRARIES_IU_USE_IO "Including IO module." ON)
 OPTION(VMLIBRARIES_IU_USE_IOPGM "Including IOPGM module." ON)
-OPTION(VMLIBRARIES_IU_USE_VIDEOCAPTURE "Including VideCapture IO module." OFF)
-OPTION(VMLIBRARIES_IU_USE_PGRCAMERA "Including PointGray IO module." OFF)
-OPTION(VMLIBRARIES_IU_BUILD_COMBINED_LIBRARY "Building a complete library package. This is just for compatibility reasons." OFF)
+# OPTION(VMLIBRARIES_IU_USE_VIDEOCAPTURE "Including VideCapture IO module." OFF)
+# OPTION(VMLIBRARIES_IU_USE_PGRCAMERA "Including PointGray IO module." OFF)
 
 
 ##-----------------------------------------------------------------------------
@@ -299,21 +298,21 @@ if(VMLIBRARIES_IU_USE_GUI AND QT4_FOUND)
   message("[+] ImageUtilities include GUI module")
   include(${QT_USE_FILE})
 
-## Qwt
-find_package(Qwt QUIET)
-if(QWT_FOUND)
-  message(STATUS "QWT found. Building GUI module with QWT support.")
-  include_directories(${QWT_INCLUDE_DIR})
-  add_definitions(-DUSE_QWT)
-  set( IU_QWT_SOURCES
-    ${CMAKE_CURRENT_SOURCE_DIR}/iugui/plotgapwidget.cpp
-    )
-  set( IU_QWT_MOC_HEADERS
-    ${CMAKE_CURRENT_SOURCE_DIR}/iugui/plotgapwidget.h
-    )
-else(QWT_FOUND)
-  message(STATUS "QWT not found. QWT support turned off")
-endif(QWT_FOUND)
+  ## Qwt
+  find_package(Qwt QUIET)
+  if(QWT_FOUND)
+    message(STATUS "QWT found. Building GUI module with QWT support.")
+    include_directories(${QWT_INCLUDE_DIR})
+    add_definitions(-DUSE_QWT)
+    set( IU_QWT_SOURCES
+      ${CMAKE_CURRENT_SOURCE_DIR}/iugui/plotgapwidget.cpp
+      )
+    set( IU_QWT_MOC_HEADERS
+      ${CMAKE_CURRENT_SOURCE_DIR}/iugui/plotgapwidget.h
+      )
+  else(QWT_FOUND)
+    message(STATUS "QWT not found. QWT support turned off")
+  endif(QWT_FOUND)
 
   ## GLEW
   find_package( GLEW )
@@ -457,48 +456,48 @@ else()
 endif()
 
 
-##-----------------------------------------------------------------------------
-## CAMERA/Video IO MODULE: OpenCV IO with Qt threading
-# NOTE: we need qt4 for that (threading, ...)
-# only include if all dependencies were found
-if(VMLIBRARIES_IU_USE_VIDEOCAPTURE AND QT4_FOUND AND OpenCV_INCLUDE_DIRS)
+# ##-----------------------------------------------------------------------------
+# ## CAMERA/Video IO MODULE: OpenCV IO with Qt threading
+# # NOTE: we need qt4 for that (threading, ...)
+# # only include if all dependencies were found
+# if(VMLIBRARIES_IU_USE_VIDEOCAPTURE AND QT4_FOUND AND OpenCV_INCLUDE_DIRS)
 
-  message("[+] ImageUtilities include video/camera module (OpenCV/Qt needed)")
-  include(${QT_USE_FILE})
+#   message("[+] ImageUtilities include video/camera module (OpenCV/Qt needed)")
+#   include(${QT_USE_FILE})
 
-  set( IU_PUBLIC_HEADERS
-    ${IU_PUBLIC_HEADERS}
-    ${CMAKE_CURRENT_SOURCE_DIR}/iuvideocapture.h
+#   set( IU_PUBLIC_HEADERS
+#     ${IU_PUBLIC_HEADERS}
+#     ${CMAKE_CURRENT_SOURCE_DIR}/iuvideocapture.h
 
-    )
+#     )
 
-  set( IU_VIDEOCAPTURE_HEADERS
-    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videocapturethread.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videocapture.h
-    )
+#   set( IU_VIDEOCAPTURE_HEADERS
+#     ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videocapturethread.h
+#     ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videocapture.h
+#     )
 
-  set( IU_VIDEOCAPTURE_SOURCES
-    ${CMAKE_CURRENT_SOURCE_DIR}/iuvideocapture.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videocapturethread.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videocapture.cpp
-    )
+#   set( IU_VIDEOCAPTURE_SOURCES
+#     ${CMAKE_CURRENT_SOURCE_DIR}/iuvideocapture.cpp
+#     ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videocapturethread.cpp
+#     ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videocapture.cpp
+#     )
 
-  set( IU_VIDEOCAPTURE_MOC_HEADERS
-    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videocapturethread.h
-#    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videocapture.h
-    )
+#   set( IU_VIDEOCAPTURE_MOC_HEADERS
+#     ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videocapturethread.h
+# #    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videocapture.h
+#     )
 
-  # compile moc headers
-  QT4_WRAP_CPP (IU_VIDEOCAPTURE_MOC_SOURCES ${IU_VIDEOCAPTURE_MOC_HEADERS})
+#   # compile moc headers
+#   QT4_WRAP_CPP (IU_VIDEOCAPTURE_MOC_SOURCES ${IU_VIDEOCAPTURE_MOC_HEADERS})
 
-else()
-  message("[-] ImageUtilities omitting VIDEOCAPTURE module")
-  set(VMLIBRARIES_IU_USE_VIDEOCAPTURE OFF CACHE PATH "IU: Omit videocapture module." FORCE)
+# else()
+#   message("[-] ImageUtilities omitting VIDEOCAPTURE module")
+#   set(VMLIBRARIES_IU_USE_VIDEOCAPTURE OFF CACHE PATH "IU: Omit videocapture module." FORCE)
 
-  # empty libraries
-  set(FLYCAPTURE2_LIBRARIES "")
+#   # empty libraries
+#   set(FLYCAPTURE2_LIBRARIES "")
 
-endif()
+# endif()
 
 ##-----------------------------------------------------------------------------
 ## IO MODULE: PointGray cameras (flycapture2);
@@ -707,9 +706,9 @@ set( IU_ALL_FILES
   ${IU_GUI_MOC_SOURCES}
   ${IU_IO_HEADERS}
   ${IU_IO_SOURCES}
-  ${IU_VIDEOCAPTURE_HEADERS}
-  ${IU_VIDEOCAPTURE_SOURCES}
-  ${IU_VIDEOCAPTURE_MOC_SOURCES}
+  # ${IU_VIDEOCAPTURE_HEADERS}
+  # ${IU_VIDEOCAPTURE_SOURCES}
+  # ${IU_VIDEOCAPTURE_MOC_SOURCES}
   ${IU_PGRCAMERA_HEADERS}
   ${IU_PGRCAMERA_SOURCES}
   ${IU_PGRCAMERA_MOC_SOURCES}
@@ -729,7 +728,7 @@ set( IU_LIBS "") # variable where all libs that are built are saved
 set(IU_CORE_LIB iucore)
 cuda_add_library( ${IU_CORE_LIB} SHARED ${IU_HEADERS} ${IU_SOURCES})
 set_target_properties(${IU_CORE_LIB} PROPERTIES
-  DEFINE_SYMBOL IU_DLL_EXPORTS
+  DEFINE_SYMBOL IUCORE_DLL_EXPORTS
   VERSION ${IMAGEUTILITIES_VERSION}
   SOVERSION ${IMAGEUTILITIES_SOVERSION}
   PUBLIC_HEADER "${IU_PUBLIC_HEADERS}"
@@ -743,7 +742,7 @@ set(IU_IPP_LIB iuipp)
 if(VMLIBRARIES_IU_USE_IPP)
   cuda_add_library( ${IU_IPP_LIB} SHARED ${IU_IPP_HEADERS} ${IU_IPP_SOURCES})
   set_target_properties(${IU_IPP_LIB} PROPERTIES
-    DEFINE_SYMBOL IU_DLL_EXPORTS
+    DEFINE_SYMBOL IUIPP_DLL_EXPORTS
     VERSION ${IMAGEUTILITIES_VERSION}
     SOVERSION ${IMAGEUTILITIES_SOVERSION}
     )
@@ -753,28 +752,12 @@ if(VMLIBRARIES_IU_USE_IPP)
 endif(VMLIBRARIES_IU_USE_IPP)
 
 ##-----------------------------------------------------------------------------
-## build matlab-based part of library
-set(IU_MATLAB_LIB iumatlab)
-if(VMLIBRARIES_IU_USE_MATLAB)
-  cuda_add_library( ${IU_MATLAB_LIB} SHARED ${IU_MATLAB_HEADERS} ${IU_MATLAB_SOURCES})
-  set_target_properties(${IU_MATLAB_LIB} PROPERTIES
-    DEFINE_SYMBOL IU_DLL_EXPORTS
-    VERSION ${IMAGEUTILITIES_VERSION}
-    SOVERSION ${IMAGEUTILITIES_SOVERSION}
-    )
-  target_link_libraries( ${IU_MATLAB_LIB} ${MATLAB_LIBRARIES} ${CUDA_SPARSE_LIBRARY})
-  set(IU_LIBS ${IU_LIBS} ${IU_MATLAB_LIB})
-
-endif(VMLIBRARIES_IU_USE_MATLAB)
-
-
-##-----------------------------------------------------------------------------
 ## build io library
 set(IU_IO_LIB iuio)
 if(VMLIBRARIES_IU_USE_IO)
   cuda_add_library( ${IU_IO_LIB} SHARED ${IU_IO_HEADERS} ${IU_IO_SOURCES} )
   set_target_properties(${IU_IO_LIB} PROPERTIES
-    DEFINE_SYMBOL IU_DLL_EXPORTS
+    DEFINE_SYMBOL IUIO_DLL_EXPORTS
     VERSION ${IMAGEUTILITIES_VERSION}
     SOVERSION ${IMAGEUTILITIES_SOVERSION}
     )
@@ -785,31 +768,12 @@ if(VMLIBRARIES_IU_USE_IO)
 endif(VMLIBRARIES_IU_USE_IO)
 
 ##-----------------------------------------------------------------------------
-## build gui library
-set(IU_GUI_LIB iugui)
-if(VMLIBRARIES_IU_USE_GUI)
-  cuda_add_library( ${IU_GUI_LIB} SHARED ${IU_GUI_HEADERS} ${IU_GUI_SOURCES} ${IU_GUI_MOC_SOURCES} ${QTRC_SOURCES})
-  set_target_properties(${IU_GUI_LIB} PROPERTIES
-    DEFINE_SYMBOL IU_DLL_EXPORTS
-    VERSION ${IMAGEUTILITIES_VERSION}
-    SOVERSION ${IMAGEUTILITIES_SOVERSION}
-    )
-  target_link_libraries( ${IU_GUI_LIB}
-    ${IU_CORE_LIB} ${IU_IO_LIB} ${CUDA_LIBRARIES}
-    ${QT_LIBRARIES} ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES} ${QWT_LIBRARIES}
-    )
-  set(IU_LIBS ${IU_LIBS} ${IU_GUI_LIB})
-
-endif(VMLIBRARIES_IU_USE_GUI)
-
-
-##-----------------------------------------------------------------------------
 ## build iopgm library
 set(IU_IOPGM_LIB iuiopgm)
 if(VMLIBRARIES_IU_USE_IOPGM)
   cuda_add_library( ${IU_IOPGM_LIB} SHARED ${IU_IOPGM_HEADERS} ${IU_IOPGM_SOURCES} )
   set_target_properties(${IU_IOPGM_LIB} PROPERTIES
-    DEFINE_SYMBOL IU_DLL_EXPORTS
+    DEFINE_SYMBOL IUPGM_DLL_EXPORTS
     VERSION ${IMAGEUTILITIES_VERSION}
     SOVERSION ${IMAGEUTILITIES_SOVERSION}
     )
@@ -821,81 +785,77 @@ if(VMLIBRARIES_IU_USE_IOPGM)
 endif(VMLIBRARIES_IU_USE_IOPGM)
 
 ##-----------------------------------------------------------------------------
-## build VIDEOCAPTURE library
-set(IU_VIDEOCAPTURE_LIB iuvideocapture)
-if(VMLIBRARIES_IU_USE_VIDEOCAPTURE)
-  cuda_add_library( ${IU_VIDEOCAPTURE_LIB} SHARED ${IU_VIDEOCAPTURE_HEADERS} ${IU_VIDEOCAPTURE_SOURCES} ${IU_VIDEOCAPTURE_MOC_SOURCES})
-  set_target_properties(${IU_VIDEOCAPTURE_LIB} PROPERTIES
-    DEFINE_SYMBOL IU_DLL_EXPORTS
+## build gui library
+set(IU_GUI_LIB iugui)
+if(VMLIBRARIES_IU_USE_GUI)
+  cuda_add_library( ${IU_GUI_LIB} SHARED ${IU_GUI_HEADERS} ${IU_GUI_SOURCES} ${IU_GUI_MOC_SOURCES} ${QTRC_SOURCES})
+  set_target_properties(${IU_GUI_LIB} PROPERTIES
+    DEFINE_SYMBOL IUGUI_DLL_EXPORTS
     VERSION ${IMAGEUTILITIES_VERSION}
     SOVERSION ${IMAGEUTILITIES_SOVERSION}
     )
-  target_link_libraries( ${IU_VIDEOCAPTURE_LIB}
-    ${CUDA_LIBRARIES}
-    ${QT_LIBRARIES}  ${OpenCV_LIBS}
+  target_link_libraries( ${IU_GUI_LIB}
+    ${IU_CORE_LIB} ${IU_IO_LIB} ${CUDA_LIBRARIES}
+    ${QT_LIBRARIES} ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES} ${QWT_LIBRARIES}
     )
-  set(IU_LIBS ${IU_LIBS} ${IU_VIDEOCAPTURE_LIB})
-endif(VMLIBRARIES_IU_USE_VIDEOCAPTURE)
+  set(IU_LIBS ${IU_LIBS} ${IU_GUI_LIB})
 
+endif(VMLIBRARIES_IU_USE_GUI)
 
 ##-----------------------------------------------------------------------------
-## build pgrcamera library
-set(IU_PGRCAMERA_LIB iupgrcamera)
-if(VMLIBRARIES_IU_USE_PGRCAMERA)
-  cuda_add_library( ${IU_PGRCAMERA_LIB} SHARED ${IU_PGRCAMERA_HEADERS} ${IU_PGRCAMERA_SOURCES} ${IU_PGRCAMERA_MOC_SOURCES})
-  set_target_properties(${IU_PGRCAMERA_LIB} PROPERTIES
-    DEFINE_SYMBOL IU_DLL_EXPORTS
+## build matlab-based part of library
+set(IU_MATLAB_LIB iumatlab)
+if(VMLIBRARIES_IU_USE_MATLAB)
+  cuda_add_library( ${IU_MATLAB_LIB} SHARED ${IU_MATLAB_HEADERS} ${IU_MATLAB_SOURCES})
+  set_target_properties(${IU_MATLAB_LIB} PROPERTIES
+    DEFINE_SYMBOL IUMATLAB_DLL_EXPORTS
     VERSION ${IMAGEUTILITIES_VERSION}
     SOVERSION ${IMAGEUTILITIES_SOVERSION}
     )
-  target_link_libraries( ${IU_PGRCAMERA_LIB}
-    ${CUDA_LIBRARIES}
-    ${QT_LIBRARIES}
-    ${FLYCAPTURE2_LIBRARIES}
-    )
-  set(IU_LIBS ${IU_LIBS} ${IU_PGRCAMERA_LIB})
+  target_link_libraries( ${IU_MATLAB_LIB} ${MATLAB_LIBRARIES} ${CUDA_SPARSE_LIBRARY})
+  set(IU_LIBS ${IU_LIBS} ${IU_MATLAB_LIB})
 
-endif(VMLIBRARIES_IU_USE_PGRCAMERA)
+endif(VMLIBRARIES_IU_USE_MATLAB)
 
-##-----------------------------------------------------------------------------
-## build combined package (everything included - for compatibility)
-if(VMLIBRARIES_IU_BUILD_COMBINED_LIBRARY)
-  cuda_add_library( iu SHARED ${IU_ALL_FILES} )
-  set_target_properties(iu PROPERTIES
-    DEFINE_SYMBOL IU_DLL_EXPORTS
-    VERSION ${IMAGEUTILITIES_VERSION}
-    SOVERSION ${IMAGEUTILITIES_SOVERSION}
-    )
 
-  if( NOT WIN32 )
-    cuda_add_library( iu_static STATIC ${IU_ALL_FILES} )
-    set_target_properties(iu_static PROPERTIES
-      DEFINE_SYMBOL IU_DLL_EXPORTS
-      VERSION ${IMAGEUTILITIES_VERSION}
-      SOVERSION ${IMAGEUTILITIES_SOVERSION}
-      )
-  endif()
 
-  if( WIN32 )
-    set_target_properties( iu PROPERTIES LINK_FLAGS_RELEASE "/LTCG" )
-  endif( WIN32 )
+# ##-----------------------------------------------------------------------------
+# ## build VIDEOCAPTURE library
+# set(IU_VIDEOCAPTURE_LIB iuvideocapture)
+# if(VMLIBRARIES_IU_USE_VIDEOCAPTURE)
+#   cuda_add_library( ${IU_VIDEOCAPTURE_LIB} SHARED ${IU_VIDEOCAPTURE_HEADERS} ${IU_VIDEOCAPTURE_SOURCES} ${IU_VIDEOCAPTURE_MOC_SOURCES})
+#   set_target_properties(${IU_VIDEOCAPTURE_LIB} PROPERTIES
+#     DEFINE_SYMBOL IU_DLL_EXPORTS
+#     VERSION ${IMAGEUTILITIES_VERSION}
+#     SOVERSION ${IMAGEUTILITIES_SOVERSION}
+#     )
+#   target_link_libraries( ${IU_VIDEOCAPTURE_LIB}
+#     ${CUDA_LIBRARIES}
+#     ${QT_LIBRARIES}  ${OpenCV_LIBS}
+#     )
+#   set(IU_LIBS ${IU_LIBS} ${IU_VIDEOCAPTURE_LIB})
+# endif(VMLIBRARIES_IU_USE_VIDEOCAPTURE)
 
-  set( IU_ALL_SHARED_LIBS
-    ${CUDA_LIBRARIES}
-    ${QT_LIBRARIES} ${OpenCV_LIBS} ${FLYCAPTURE2_LIBRARIES}
-    )
-  TARGET_LINK_LIBRARIES(iu ${IU_ALL_SHARED_LIBS} )
 
-  if( NOT WIN32 )
-    set( IU_ALL_STATIC_LIBS
-      ${CUDA_LIBRARIES}
-      ${QT_LIBRARIES}  ${OpenCV_LIBS} ${FLYCAPTURE2_LIBRARIES}
-      )
-    TARGET_LINK_LIBRARIES(iu_static ${IU_ALL_STATIC_LIBS} )
-  endif()
-  set(IU_LIBS ${IU_LIBS} iu)
+# ##-----------------------------------------------------------------------------
+# ## build pgrcamera library
+# set(IU_PGRCAMERA_LIB iupgrcamera)
+# if(VMLIBRARIES_IU_USE_PGRCAMERA)
+#   cuda_add_library( ${IU_PGRCAMERA_LIB} SHARED ${IU_PGRCAMERA_HEADERS} ${IU_PGRCAMERA_SOURCES} ${IU_PGRCAMERA_MOC_SOURCES})
+#   set_target_properties(${IU_PGRCAMERA_LIB} PROPERTIES
+#     DEFINE_SYMBOL IU_DLL_EXPORTS
+#     VERSION ${IMAGEUTILITIES_VERSION}
+#     SOVERSION ${IMAGEUTILITIES_SOVERSION}
+#     )
+#   target_link_libraries( ${IU_PGRCAMERA_LIB}
+#     ${CUDA_LIBRARIES}
+#     ${QT_LIBRARIES}
+#     ${FLYCAPTURE2_LIBRARIES}
+#     )
+#   set(IU_LIBS ${IU_LIBS} ${IU_PGRCAMERA_LIB})
 
-endif(VMLIBRARIES_IU_BUILD_COMBINED_LIBRARY)
+# endif(VMLIBRARIES_IU_USE_PGRCAMERA)
+
 
 ##-----------------------------------------------------------------------------
 ## Install target

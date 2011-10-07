@@ -10,7 +10,7 @@
 
 namespace iu {
 
-//  Image and Pyramid 'lists' implemented as double-ended queue
+// Image and Pyramid 'lists' implemented as double-ended queue
 typedef std::vector<iu::Image*> ImageVector;
 typedef std::deque<iu::Image*> ImageDeque;
 typedef std::deque<iu::ImagePyramid*> ImagePyramidDeque;

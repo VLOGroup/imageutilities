@@ -46,7 +46,7 @@ namespace iu {
 /** \brief QGLImageGpuWidget: An Qt OpenGL widget for CUDA/GPU memory.
   \ingroup iugui
   */
-class IU_DLLAPI QGLImageGpuWidget : public QGLWidget
+class IUGUI_DLLAPI QGLImageGpuWidget : public QGLWidget
 {
   Q_OBJECT        // must include this if you use Qt signals/slots
 

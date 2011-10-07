@@ -16,8 +16,8 @@ namespace iu {
  * @param value       Intensity to draw with (internally casted to correct datatype when writing -> eg. to unsigned char when image is 8u_C1)
  * @throw IuException
  */
-IU_DLLAPI void drawLine(iu::Image *image, int x_start, int y_start,
-                        int x_end, int y_end, int line_width, float value);
+IUCORE_DLLAPI void drawLine(iu::Image *image, int x_start, int y_start,
+                            int x_end, int y_end, int line_width, float value);
 
 
 } // namespace iu

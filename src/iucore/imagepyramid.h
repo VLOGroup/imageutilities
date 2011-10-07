@@ -32,7 +32,7 @@ namespace iu {
  *
  * :TODO: A longer description
  */
-class IU_DLLAPI ImagePyramid
+class IUCORE_DLLAPI ImagePyramid
 {
 public:
 

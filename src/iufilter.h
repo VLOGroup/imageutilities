@@ -54,7 +54,7 @@ namespace iu {
  * \param dst Destination image [device]
  * \param roi Region of interest in the dsetination image.
  */
-IU_DLLAPI void filterMedian3x3(const ImageGpu_32f_C1* src, ImageGpu_32f_C1* dst, const IuRect& roi);
+IUCORE_DLLAPI void filterMedian3x3(const ImageGpu_32f_C1* src, ImageGpu_32f_C1* dst, const IuRect& roi);
 
 /** Gaussian Convolution
  * \brief Filters a device image using a Gaussian filter
@@ -64,12 +64,12 @@ IU_DLLAPI void filterMedian3x3(const ImageGpu_32f_C1* src, ImageGpu_32f_C1* dst,
  * \param sigma Controls the amount of smoothing
  * \param kernel_size Sets the size of the used Gaussian kernel. If =0 the size is calculated.
  */
-IU_DLLAPI void filterGauss(const ImageGpu_32f_C1* src, ImageGpu_32f_C1* dst, const IuRect& roi,
-                           float sigma, int kernel_size=0);
-IU_DLLAPI void filterGauss(const VolumeGpu_32f_C1* src, VolumeGpu_32f_C1* dst,
-                           float sigma, int kernel_size=0);
-IU_DLLAPI void filterGauss(const ImageGpu_32f_C4* src, ImageGpu_32f_C4* dst, const IuRect& roi,
-                           float sigma, int kernel_size=0);
+IUCORE_DLLAPI void filterGauss(const ImageGpu_32f_C1* src, ImageGpu_32f_C1* dst, const IuRect& roi,
+                               float sigma, int kernel_size=0);
+IUCORE_DLLAPI void filterGauss(const VolumeGpu_32f_C1* src, VolumeGpu_32f_C1* dst,
+                               float sigma, int kernel_size=0);
+IUCORE_DLLAPI void filterGauss(const ImageGpu_32f_C4* src, ImageGpu_32f_C4* dst, const IuRect& roi,
+                               float sigma, int kernel_size=0);
 
 /** @} */ // end of Denoising
 
@@ -79,25 +79,25 @@ IU_DLLAPI void filterGauss(const ImageGpu_32f_C4* src, ImageGpu_32f_C4* dst, con
  * ***************************************************************************/
 
 
-IU_DLLAPI void filterEdge(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C2* dst, const IuRect& roi);
+IUCORE_DLLAPI void filterEdge(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C2* dst, const IuRect& roi);
 
-IU_DLLAPI void filterEdge(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst, const IuRect& roi,
-                          float alpha, float beta, float minval);
+IUCORE_DLLAPI void filterEdge(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst, const IuRect& roi,
+                              float alpha, float beta, float minval);
 
-IU_DLLAPI void filterEdge(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C2* dst, const IuRect& roi,
-                          float alpha, float beta, float minval);
+IUCORE_DLLAPI void filterEdge(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C2* dst, const IuRect& roi,
+                              float alpha, float beta, float minval);
 
-IU_DLLAPI void filterEdge(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C4* dst, const IuRect& roi,
-                          float alpha, float beta, float minval);
+IUCORE_DLLAPI void filterEdge(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C4* dst, const IuRect& roi,
+                              float alpha, float beta, float minval);
 
-IU_DLLAPI void filterEdge(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C1* dst, const IuRect& roi,
-                          float alpha, float beta, float minval);
+IUCORE_DLLAPI void filterEdge(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C1* dst, const IuRect& roi,
+                              float alpha, float beta, float minval);
 
-IU_DLLAPI void filterEdge(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C2* dst, const IuRect& roi,
-                          float alpha, float beta, float minval);
+IUCORE_DLLAPI void filterEdge(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C2* dst, const IuRect& roi,
+                              float alpha, float beta, float minval);
 
-IU_DLLAPI void filterEdge(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst, const IuRect& roi,
-                          float alpha, float beta, float minval);
+IUCORE_DLLAPI void filterEdge(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst, const IuRect& roi,
+                              float alpha, float beta, float minval);
 
 
 
@@ -106,7 +106,7 @@ IU_DLLAPI void filterEdge(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* d
      other filters
  * ***************************************************************************/
 
-IU_DLLAPI void cubicBSplinePrefilter(iu::ImageGpu_32f_C1* srcdst);
+IUCORE_DLLAPI void cubicBSplinePrefilter(iu::ImageGpu_32f_C1* srcdst);
 
 
 /** @} */ // end of Filter Module

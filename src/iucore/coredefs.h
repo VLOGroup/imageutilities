@@ -53,7 +53,7 @@
 
 /** Assertion with additional error information
  */
-class IU_DLLAPI IuException : public std::exception
+class IuException : public std::exception
 {
 public:
   IuException(const std::string& msg, const char* file=NULL, const char* function=NULL, int line=0) throw():

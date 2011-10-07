@@ -11,15 +11,15 @@ namespace iu {
  * \param src  Matlab array containing complete sparse matrix
  * \param dst  Destination sparse matrix on the host.
  */
-IU_DLLAPI IuStatus convertSparseMatrixToCpu(const mxArray* src, iu::SparseMatrixCpu_32f** dst);
+IUMATLAB_DLLAPI IuStatus convertSparseMatrixToCpu(const mxArray* src, iu::SparseMatrixCpu_32f** dst);
 
 /** Converts matlab sparse matrix to iu::SparseMatrixGpu format
  * \param handle Handle to the CUDA Sparse matrix library
  * \param src    Matlab array containing complete sparse matrix
  * \param dst    Destination sparse matrix on the device.
  */
-IU_DLLAPI IuStatus convertSparseMatrixToGpu(cusparseHandle_t* handle, const mxArray* src,
-                                            iu::SparseMatrixGpu_32f** dst);
+IUMATLAB_DLLAPI IuStatus convertSparseMatrixToGpu(cusparseHandle_t* handle, const mxArray* src,
+                                                  iu::SparseMatrixGpu_32f** dst);
 
 } // namespace iu
 

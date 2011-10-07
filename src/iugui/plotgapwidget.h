@@ -20,7 +20,7 @@ class QwtPlot;
 
 namespace iu {
 
-class IU_DLLAPI PlotGapWidget : public QWidget
+class IUGUI_DLLAPI PlotGapWidget : public QWidget
 {
   Q_OBJECT
 

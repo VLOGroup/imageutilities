@@ -58,7 +58,7 @@ namespace iu {
  *
  * \note The bcubic_bspline_prefilter yields sharper results when switched on. Note that this only works nicely with a scale_factor=0.5f.
  */
-IU_DLLAPI void reduce(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
+IUCORE_DLLAPI void reduce(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
                       IuInterpolationType interpolation = IU_INTERPOLATE_LINEAR,
                       bool gauss_prefilter = true, bool bicubic_bspline_prefilter = false);
 
@@ -71,11 +71,11 @@ IU_DLLAPI void reduce(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
  *
  * \note The bcubic_bspline_prefilter yields sharper results when switched on. Note that this only works nicely with a scale_factor=0.5f.
  */
-IU_DLLAPI void prolongate(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
+IUCORE_DLLAPI void prolongate(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
                           IuInterpolationType interpolation = IU_INTERPOLATE_NEAREST);
-IU_DLLAPI void prolongate(const iu::ImageGpu_32f_C2* src, iu::ImageGpu_32f_C2* dst,
+IUCORE_DLLAPI void prolongate(const iu::ImageGpu_32f_C2* src, iu::ImageGpu_32f_C2* dst,
                           IuInterpolationType interpolation = IU_INTERPOLATE_NEAREST);
-IU_DLLAPI void prolongate(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst,
+IUCORE_DLLAPI void prolongate(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst,
                           IuInterpolationType interpolation = IU_INTERPOLATE_NEAREST);
 
 /** Image remapping (warping).
@@ -89,19 +89,19 @@ IU_DLLAPI void prolongate(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* d
  *
  * \note The bcubic_bspline_prefilter yields sharper results when switched on. Note that this only works nicely with a scale_factor=0.5f.
  */
-IU_DLLAPI void remap(iu::ImageGpu_8u_C1* src,
+IUCORE_DLLAPI void remap(iu::ImageGpu_8u_C1* src,
                      iu::ImageGpu_32f_C1* dx_map, iu::ImageGpu_32f_C1* dy_map,
                      iu::ImageGpu_8u_C1* dst,
                      IuInterpolationType interpolation = IU_INTERPOLATE_LINEAR);
-IU_DLLAPI void remap(iu::ImageGpu_32f_C1* src,
+IUCORE_DLLAPI void remap(iu::ImageGpu_32f_C1* src,
                      iu::ImageGpu_32f_C1* dx_map, iu::ImageGpu_32f_C1* dy_map,
                      iu::ImageGpu_32f_C1* dst,
                      IuInterpolationType interpolation = IU_INTERPOLATE_LINEAR);
-//IU_DLLAPI IuStatus remap(iu::ImageGpu_32f_C2* src,
+//IUCORE_DLLAPI IuStatus remap(iu::ImageGpu_32f_C2* src,
 //                     iu::ImageGpu_32f_C1* dx_map, iu::ImageGpu_32f_C1* dy_map,
 //                     iu::ImageGpu_32f_C2* dst,
 //                     IuInterpolationType interpolation = IU_INTERPOLATE_LINEAR);
-//IU_DLLAPI IuStatus remap(iu::ImageGpu_32f_C4* src,
+//IUCORE_DLLAPI IuStatus remap(iu::ImageGpu_32f_C4* src,
 //                     iu::ImageGpu_32f_C1* dx_map, iu::ImageGpu_32f_C1* dy_map,
 //                     iu::ImageGpu_32f_C4* dst,
 //                     IuInterpolationType interpolation = IU_INTERPOLATE_LINEAR);

@@ -40,9 +40,9 @@ namespace iu {
  * @returns loaded image in host memory (ImageCpu).
  * @note The memory is directly converted to either 16-bit or 32-bit images.
  */
-IU_DLLAPI iu::ImageCpu_16u_C1* imread_16u_C1(const std::string& filename);
-IU_DLLAPI iu::ImageCpu_32f_C1* imread_16u32f_C1(const std::string& filename, int max_val=65536);
-IU_DLLAPI iu::ImageGpu_32f_C1* imread_cu16u32f_C1(const std::string& filename, int max_val=65536);
+IUIOPGM_DLLAPI iu::ImageCpu_16u_C1* imread_16u_C1(const std::string& filename);
+IUIOPGM_DLLAPI iu::ImageCpu_32f_C1* imread_16u32f_C1(const std::string& filename, int max_val=65536);
+IUIOPGM_DLLAPI iu::ImageGpu_32f_C1* imread_cu16u32f_C1(const std::string& filename, int max_val=65536);
 
 
 /** @} */ // end of IOPGM

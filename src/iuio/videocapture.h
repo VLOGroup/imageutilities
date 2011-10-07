@@ -33,7 +33,7 @@ class VideoCapture;
 
 namespace iu {
 
-class IU_DLLAPI VideoCapture
+class IUIO_DLLAPI VideoCapture
 {
 public:
 
