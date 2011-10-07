@@ -1335,7 +1335,9 @@ __global__ void  cuColorHistogramKernel(float* hist, int width, int height,
         int hc = bins.x + bins.y*hstrideX + bins.z*hstrideXY;
         histogramAtomicAdd(&hist[hc], 1.0f);
   #else
-  #warning Color Histograms will not work: >= sm_12 needed!
+    #if !WIN32
+      #warning Color Histograms will not work: >= sm_12 needed!
+	#endif
   #endif
 #endif
     }

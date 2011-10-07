@@ -326,12 +326,12 @@ endif(QWT_FOUND)
 
   ## OpenGL
   find_package( OpenGL )
-  if(OPENGL_INCLUDE_DIR)
+  if(OPENGL_gl_LIBRARY)
     include_directories(${OPENGL_INCLUDE_DIR})
-  else(OPENGL_INCLUDE_DIR)
+  else(OPENGL_gl_LIBRARY)
     message("[-] ImageUtilities omitting GUI module (due to missing OpenGL module")
     set(VMLIBRARIES_IU_USE_GUI OFF CACHE PATH "IU: GLEW module not found. Needed for GUI module to build." FORCE)
-  endif(OPENGL_INCLUDE_DIR)
+  endif(OPENGL_gl_LIBRARY)
 
 
   set( IU_PUBLIC_HEADERS
