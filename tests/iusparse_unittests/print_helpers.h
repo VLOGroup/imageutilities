@@ -54,46 +54,46 @@ void printImage(iu::ImageGpu_32f_C2* img_d, string title)
   cout << endl;
 }
 
-void printSparseMatrix(iu::SparseMatrixGpu_32f* mat, string title)
-{
-  iu::LinearHostMemory<int>   row(mat->row()->length());
-  iu::LinearHostMemory<int>   col(mat->col()->length());
-  iu::LinearHostMemory<float> val(mat->value()->length());
-  iu::copy(mat->row(), &row);
-  iu::copy(mat->col(), &col);
-  iu::copy(mat->value(), &val);
+//void printSparseMatrix(iu::SparseMatrixGpu_32f* mat, string title)
+//{
+//  iu::LinearHostMemory<int>   row(mat->row()->length());
+//  iu::LinearHostMemory<int>   col(mat->col()->length());
+//  iu::LinearHostMemory<float> val(mat->value()->length());
+//  iu::copy(mat->row(), &row);
+//  iu::copy(mat->col(), &col);
+//  iu::copy(mat->value(), &val);
 
-  cout << "Sparse Matrix " << title << ": (size=" << mat->n_col() << "x" << mat->n_row() << ")"
-      <<  setprecision(1) << fixed << endl;
-  unsigned int colInd = 0;
-  for (unsigned int r=0; r<mat->n_row(); r++)
-  {
-    unsigned int nRowElem = *row.data(r+1) - *row.data(r);
-    cout << nRowElem << " == ";
-    if (nRowElem > 0)
-    {
-      for (unsigned int c=0; c<mat->n_col(); c++)
-      {
-        unsigned int match = -1;
-        for (unsigned int ci=colInd; ci<colInd+nRowElem; ci++)
-          if (*col.data(ci) == c)
-            match = ci;
+//  cout << "Sparse Matrix " << title << ": (size=" << mat->n_col() << "x" << mat->n_row() << ")"
+//      <<  setprecision(1) << fixed << endl;
+//  unsigned int colInd = 0;
+//  for (unsigned int r=0; r<mat->n_row(); r++)
+//  {
+//    unsigned int nRowElem = *row.data(r+1) - *row.data(r);
+//    cout << nRowElem << " == ";
+//    if (nRowElem > 0)
+//    {
+//      for (unsigned int c=0; c<mat->n_col(); c++)
+//      {
+//        unsigned int match = -1;
+//        for (unsigned int ci=colInd; ci<colInd+nRowElem; ci++)
+//          if (*col.data(ci) == c)
+//            match = ci;
 
-        if (match >= 0)
-          cout << *val.data(match) << " ";
-        else
-          cout << " 0  ";
-      }
-      colInd = colInd+nRowElem;
-    }
-    else
-      for (unsigned int c=0; c<mat->n_col(); c++)
-        cout << " 0  ";
+//        if (match >= 0)
+//          cout << *val.data(match) << " ";
+//        else
+//          cout << " 0  ";
+//      }
+//      colInd = colInd+nRowElem;
+//    }
+//    else
+//      for (unsigned int c=0; c<mat->n_col(); c++)
+//        cout << " 0  ";
 
-    cout << endl;
-  }
-  cout << endl;
-}
+//    cout << endl;
+//  }
+//  cout << endl;
+//}
 
 void printSparseMatrixElements(iu::LinearHostMemory<int>* row, iu::LinearHostMemory<int>* col, iu::LinearHostMemory<float>* val)
 {

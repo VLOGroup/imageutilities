@@ -41,7 +41,7 @@ set(IU_UNITTEST_TARGETS iu_sparse_gpu_unittest)
 cuda_add_executable( iu_sparse_compare iu_sparse_compare.cpp iu_sparse_compare.cu)
 TARGET_LINK_LIBRARIES(iu_sparse_compare ${IU_LIBRARIES})
 add_test(iu_sparse_compare iu_sparse_compare)
-set(IU_UNITTEST_TARGETS iu_sparse_compare)
+set(IU_UNITTEST_TARGETS ${IU_UNITTEST_TARGETS} iu_sparse_compare)
 
 # install targets
 message(STATUS "install targets=${IU_UNITTEST_TARGETS}")
