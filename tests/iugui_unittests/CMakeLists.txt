@@ -24,6 +24,7 @@ cmake_minimum_required(VERSION 2.8)
 ## find iu and set the according libs
 find_package(ImageUtilities COMPONENTS iucore iuio iugui)
 include(${IU_USE_FILE})
+set(CUDA_NVCC_FLAGS ${IU_NVCC_FLAGS})
 
 ## GLUT
 find_package(GLUT)

@@ -14,8 +14,8 @@
 # Language    : CMake
 # Description : CMakeFile for testing the ImageUtilities library
 #
-# Author     : 
-# EMail      : 
+# Author     :
+# EMail      :
 
 project(ImageUtilitiesTests CXX C)
 #set(CMAKE_BUILD_TYPE Debug)
@@ -27,6 +27,7 @@ set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS};-keep;--ptxas-options=-v")
 ## find iu and set the according libs
 find_package(ImageUtilities COMPONENTS iucore iuio)
 include(${IU_USE_FILE})
+set(CUDA_NVCC_FLAGS ${IU_NVCC_FLAGS})
 
 message("IU_LIBRARIES=${IU_LIBRARIES}")
 

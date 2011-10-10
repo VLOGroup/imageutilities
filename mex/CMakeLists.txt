@@ -41,6 +41,7 @@ INCLUDE_DIRECTORIES(${MATLAB_INCLUDE_DIR})
 ## ImageUtilities
 FIND_PACKAGE(ImageUtilities COMPONENTS iucore iumatlab)
 INCLUDE(${IU_USE_FILE})
+set(CUDA_NVCC_FLAGS ${IU_NVCC_FLAGS})
 
 ##-----------------------------------------------------------------------------
 ## Build options

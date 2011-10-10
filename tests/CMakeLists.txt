@@ -62,7 +62,7 @@ IF(WIN32)
 endif(WIN32)
 
 ## test if ipp is available
-find_package(IPP QUIET)
+#find_package(IPP QUIET)
 
 ## combine different tests:
 include(CTest)

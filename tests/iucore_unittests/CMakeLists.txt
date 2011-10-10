@@ -24,8 +24,7 @@ cmake_minimum_required(VERSION 2.8)
 ## find iu and set the according libs
 find_package(ImageUtilities REQUIRED COMPONENTS iucore)
 include(${IU_USE_FILE})
-
-message(IU_LIBRARIES=${IU_LIBRARIES})
+set(CUDA_NVCC_FLAGS ${IU_NVCC_FLAGS})
 
 set(IU_UNITTEST_TARGETS "")
 
