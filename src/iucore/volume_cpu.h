@@ -150,7 +150,7 @@ public:
    */
   PixelType* data(int ox = 0, int oy = 0, int oz = 0)
   {
-    return &data_[oz*stride()*height() + oy*stride() + ox];
+    return &data_[oz*slice_stride() + oy*stride() + ox];
   }
   const PixelType* data(int ox = 0, int oy = 0, int oz = 0) const
   {
@@ -165,7 +165,7 @@ public:
     */
   ImageCpu<PixelType, iuprivate::ImageAllocatorCpu<PixelType>, _pixel_type> getSlice(int oz)
   {
-    return ImageCpu<PixelType, iuprivate::ImageAllocatorCpu<PixelType>, _pixel_type>(&data_[oz*stride()*height()], width(), height(), pitch_, true);
+    return ImageCpu<PixelType, iuprivate::ImageAllocatorCpu<PixelType>, _pixel_type>(&data_[oz*slice_stride()], width(), height(), pitch_, true);
   }
 
 protected:

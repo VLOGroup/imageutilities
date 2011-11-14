@@ -149,12 +149,12 @@ public:
    */
   PixelType* data(int ox = 0, int oy = 0, int oz = 0)
   {
-    return &data_[oz*stride()*height() + oy*stride() + ox];
+    return &data_[oz*slice_stride() + oy*stride() + ox];
   }
   const PixelType* data(int ox = 0, int oy = 0, int oz = 0) const
   {
     return reinterpret_cast<const PixelType*>(
-          &data_[oz*stride()*height() + oy*stride() + ox]);
+          &data_[oz*slice_stride() + oy*stride() + ox]);
   }
 
   /** Returns a volume slice given by a z-offset as ImageGpu
@@ -165,7 +165,7 @@ public:
   ImageGpu<PixelType, iuprivate::ImageAllocatorGpu<PixelType>, _pixel_type> getSlice(int oz)
   {
     return ImageGpu<PixelType, iuprivate::ImageAllocatorGpu<PixelType>, _pixel_type>(
-          &data_[oz*stride()*height()], width(), height(), pitch_, true);
+          &data_[oz*slice_stride()], width(), height(), pitch_, true);
   }
 
 protected:
