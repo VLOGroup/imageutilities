@@ -22,10 +22,23 @@
 
 # FindCUDASparse.cmake
 
+if( CUDA_64_BIT_DEVICE_CODE )
+	set( CUDA_SPARSE_SEARCH_PATH_SUFFIXES
+		/lib64
+		/lib
+		/libx86_64-linux-gnu
+		/lib/x64
+	)
+else()
+	set( CUDA_SPARSE_SEARCH_PATH_SUFFIXES
+		/lib
+		/lib/win32
+	)
+endif()
 find_library(CUDA_SPARSE_LIBRARY
   NAMES cusparse
   PATHS "${CUDA_TOOLKIT_ROOT_DIR}"
-  PATH_SUFFIXES "/lib64" "/lib" "/lib/x86_64-linux-gnu" "lib/x64" "lib/Win32"
+  PATH_SUFFIXES ${CUDA_SPARSE_SEARCH_PATH_SUFFIXES}
   DOC "Location of sparse library"
   NO_DEFAULT_PATH 
 )
