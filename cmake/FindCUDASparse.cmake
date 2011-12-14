@@ -26,7 +26,7 @@ if( CUDA_64_BIT_DEVICE_CODE )
 	set( CUDA_SPARSE_SEARCH_PATH_SUFFIXES
 		/lib64
 		/lib
-		/libx86_64-linux-gnu
+		/lib/x86_64-linux-gnu
 		/lib/x64
 	)
 else()
