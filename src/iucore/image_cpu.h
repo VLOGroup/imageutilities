@@ -90,9 +90,34 @@ public:
     }
   }
 
+  /** Returns a pointer to the pixel data.
+   * The pointer can be offset to position \a (ox/oy).
+   * @param[in] ox Horizontal offset of the pointer array.
+   * @param[in] oy Vertical offset of the pointer array.
+   * @return Pointer to the pixel array.
+   */
+  PixelType* data(int ox = 0, int oy = 0)
+  {
+    return &data_[oy * stride() + ox];
+  }
+  const PixelType* data(int ox = 0, int oy = 0) const
+  {
+    return reinterpret_cast<const PixelType*>(
+          &data_[oy * stride() + ox]);
+  }
+
+  /** Get Pixel value at position x,y. */
   PixelType getPixel(unsigned int x, unsigned int y)
   {
     return *data(x, y);
+  }
+
+  /** Get Pointer to beginning of row \a row (y index).
+   * This enables the usage of [y][x] operator.
+   */
+  PixelType* operator[](unsigned int row)
+  {
+    return data_+row*stride();
   }
 
   // :TODO:
@@ -126,22 +151,6 @@ public:
   virtual bool onDevice() const
   {
     return false;
-  }
-
-  /** Returns a pointer to the pixel data.
-   * The pointer can be offset to position \a (ox/oy).
-   * @param[in] ox Horizontal offset of the pointer array.
-   * @param[in] oy Vertical offset of the pointer array.
-   * @return Pointer to the pixel array.
-   */
-  PixelType* data(int ox = 0, int oy = 0)
-  {
-    return &data_[oy * stride() + ox];
-  }
-  const PixelType* data(int ox = 0, int oy = 0) const
-  {
-    return reinterpret_cast<const PixelType*>(
-          &data_[oy * stride() + ox]);
   }
 
 protected:

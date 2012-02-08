@@ -63,10 +63,14 @@ IuStatus reduce(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
     float x_factor = (float)dst->width() / (float)src->width();
     float y_factor = (float)dst->height() / (float)src->height();
 
-    float sigma =/*0.5774f*/0.3f * sqrtf(0.5f*(x_factor+y_factor));
+    float factor = 0.5f*(x_factor+y_factor);
+    float t=1.0f;
+    //float sigma = 1.0f/sqrt(6.2832*t) * exp(-(factor*factor)/(2.0f*t)); // lindeberg
+    float sigma =/*0.5774f*/0.3f * sqrtf(factor); //hmmm
     //float sigma = 0.1f * sqrtf(0.5f*(x_factor+y_factor));
-    unsigned int kernel_size = 5;
 
+    std::cout << "sigma=" << sigma << std::endl;
+    unsigned int kernel_size = 5;
     iuprivate::filterGauss(src, filtered, src->roi(), sigma, kernel_size);
   }
 
