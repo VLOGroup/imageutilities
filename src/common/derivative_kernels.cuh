@@ -213,6 +213,70 @@ inline static __device__ float dp_ad(const float2* p,
 /* ok */
 /** Calculates gradient with forward differences including zero border handling and edge weighting
  * @param tex  2D texture
+ * @param tex_g 2D edge weight texture
+ * @param x  x-coordinate
+ * @param y  y-coordinate
+ * @return y derivative calculated with forward differences.
+ */
+inline static __device__ float2 dp_weighted(const texture<float, 2> tex,
+                                            const texture<float, 2> tex_g,
+                                            const int x, const int y)
+{
+  const float xx = x+0.5f;
+  const float yy = y+0.5f;
+  float2 grad = make_float2(0.0f, 0.0f);
+  float cval = tex2D(tex, xx, yy);
+
+  // border handling is done via texture
+  float g = tex2D(tex_g, xx, yy);
+  grad.x = g*(tex2D(tex, xx+1.f, yy) - cval);
+  grad.y = g*(tex2D(tex, xx, yy+1.f) - cval);
+
+  return grad;
+}
+
+//-----------------------------------------------------------------------------
+/* ok */
+/** Calculates the divergence with backward differences including zero border handling
+ * @param p  2D texture of p
+ * @param tex_g 2D edge weight texture
+ * @param x  x-coordinate
+ * @param y  y-coordinate
+ * @return divergence calculated with backward differences.
+ */
+inline static __device__ float dp_ad_weighted(const texture<float2, 2> tex,
+                                              const texture<float, 2> tex_g,
+                                              const int x, const int y,
+                                              const int width, const int height)
+{
+  const float xx = x+0.5f;
+  const float yy = y+0.5f;
+  float2 c = tex2D(tex, xx,     yy);
+  float2 w = tex2D(tex, xx-1.f, yy);
+  float2 n = tex2D(tex, xx,     yy-1.f);
+
+  float g =   tex2D(tex_g, xx,     yy);
+  float g_w = tex2D(tex_g, xx-1.f, yy);
+  float g_n = tex2D(tex_g, xx,     yy-1.f);
+
+  if (x == 0)
+    w.x = 0.0f;
+  else if (x >= width-1)
+    c.x = 0.0f;
+  if (y == 0)
+    n.y = 0.0f;
+  else if (y >= height-1)
+    c.y = 0.0f;
+
+  return (c.x*g - w.x*g_w + c.y*g - n.y*g_n);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//-----------------------------------------------------------------------------
+/* ok */
+/** Calculates gradient with forward differences including zero border handling and edge weighting
+ * @param tex  2D texture
  * @param tex_gx 2D x-gradient texture
  * @param tex_gy 2D y-gradient texture
  * @param x  x-coordinate
