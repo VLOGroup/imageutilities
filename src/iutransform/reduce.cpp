@@ -69,7 +69,7 @@ IuStatus reduce(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
     float sigma =/*0.5774f*/0.3f * sqrtf(factor); //hmmm
     //float sigma = 0.1f * sqrtf(0.5f*(x_factor+y_factor));
 
-    std::cout << "sigma=" << sigma << std::endl;
+    //std::cout << "sigma=" << sigma << std::endl;
     unsigned int kernel_size = 5;
     iuprivate::filterGauss(src, filtered, src->roi(), sigma, kernel_size);
   }
