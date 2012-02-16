@@ -198,6 +198,17 @@ struct IuSize
     this->depth = from.depth;
     return *this;
   }
+  
+  
+  IuSize operator/ (const int factor)
+  {
+    return IuSize(this->width / factor, this->height / factor, this->depth / factor);
+  }
+  
+  IuSize operator* (const int factor)
+  {
+    return IuSize(this->width * factor, this->height * factor, this->depth * factor);
+  }
 
 };
 
