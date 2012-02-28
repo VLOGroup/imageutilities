@@ -25,6 +25,7 @@
 #include <iudefs.h>
 #include <iucutil.h>
 #include <iucore/iutextures.cuh>
+#include <common/bind_textures.cuh>
 
 #ifndef IUTRANSFORM_REMAP_CU
 #define IUTRANSFORM_REMAP_CU
@@ -35,9 +36,11 @@ namespace iuprivate {
 texture<float, 2, cudaReadModeElementType> tex_remap_dx_32f_C1__;
 texture<float, 2, cudaReadModeElementType> tex_remap_dy_32f_C1__;
 
-/** Remap input image (tex1) with disparities (tex_remap_dx, tex_remap_dy). */
-// linear interpolation
+///////////////////////////////////////////////////////////////////////////////
+// 32f_C4
+///////////////////////////////////////////////////////////////////////////////
 
+// linear interpolation
 // 32f_C1
 __global__ void cuRemapKernel_32f_C1(float *dst, size_t stride, int width, int height)
 {
@@ -97,8 +100,8 @@ __global__ void cuRemapCubicSplineKernel_32f_C1(float *dst, size_t stride, int w
 
 //-----------------------------------------------------------------------------
 void cuRemap(iu::ImageGpu_32f_C1* src,
-                 iu::ImageGpu_32f_C1* dx_map, iu::ImageGpu_32f_C1* dy_map,
-                 iu::ImageGpu_32f_C1* dst, IuInterpolationType interpolation)
+             iu::ImageGpu_32f_C1* dx_map, iu::ImageGpu_32f_C1* dy_map,
+             iu::ImageGpu_32f_C1* dst, IuInterpolationType interpolation)
 {
   tex1_32f_C1__.addressMode[0] = cudaAddressModeClamp;
   tex1_32f_C1__.addressMode[1] = cudaAddressModeClamp;
@@ -143,21 +146,79 @@ void cuRemap(iu::ImageGpu_32f_C1* src,
   case IU_INTERPOLATE_NEAREST:
   case IU_INTERPOLATE_LINEAR: // fallthrough intended
     cuRemapKernel_32f_C1 <<< dimGridOut, dimBlock >>> (
-        dst->data(), dst->stride(), dst->width(), dst->height());
+                                                      dst->data(), dst->stride(), dst->width(), dst->height());
     break;
   case IU_INTERPOLATE_CUBIC:
     cuRemapCubicKernel_32f_C1 <<< dimGridOut, dimBlock >>> (
-        dst->data(), dst->stride(), dst->width(), dst->height());
+                                                           dst->data(), dst->stride(), dst->width(), dst->height());
     break;
   case IU_INTERPOLATE_CUBIC_SPLINE:
     cuRemapCubicSplineKernel_32f_C1 <<< dimGridOut, dimBlock >>> (
-        dst->data(), dst->stride(), dst->width(), dst->height());
+                                                                 dst->data(), dst->stride(), dst->width(), dst->height());
     break;
   }
 
   cudaUnbindTexture(&tex1_32f_C1__);
   cudaUnbindTexture(&tex_remap_dx_32f_C1__);
   cudaUnbindTexture(&tex_remap_dy_32f_C1__);
+
+  IU_CUDA_CHECK();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// 32f_C4
+///////////////////////////////////////////////////////////////////////////////
+
+// 32f_C1
+__global__ void cuRemapKernel_32f_C4(float4 *dst, size_t stride, int width, int height)
+{
+  const int x = blockIdx.x*blockDim.x + threadIdx.x;
+  const int y = blockIdx.y*blockDim.y + threadIdx.y;
+
+  // texutre coordinates
+  const float xx = x+0.5f;
+  const float yy = y+0.5f;
+  // warped texutre coordinates
+  const float wx = xx + tex2D(tex_remap_dx_32f_C1__, xx, yy);
+  const float wy = yy + tex2D(tex_remap_dy_32f_C1__, xx, yy);
+
+  if (x<width && y<height) // Check if out coordinates lie inside output image
+  {
+    dst[y*stride+x] = tex2D(tex1_32f_C4__, wx, wy);
+  }
+}
+
+//-----------------------------------------------------------------------------
+void cuRemap(iu::ImageGpu_32f_C4* src,
+             iu::ImageGpu_32f_C1* dx_map, iu::ImageGpu_32f_C1* dy_map,
+             iu::ImageGpu_32f_C4* dst, IuInterpolationType interpolation)
+{
+  cudaTextureFilterMode filter_mode = cudaFilterModePoint;
+
+  switch(interpolation)
+  {
+  case IU_INTERPOLATE_LINEAR:
+    filter_mode = cudaFilterModeLinear;
+    break;
+  case IU_INTERPOLATE_NEAREST:
+  default:
+    filter_mode = cudaFilterModePoint;
+    break;
+  }
+
+  // bind src image to texture and use as input for reduction
+  bindTexture(tex1_32f_C4__, src, filter_mode);
+  bindTexture(tex_remap_dx_32f_C1__, dx_map);
+  bindTexture(tex_remap_dy_32f_C1__, dy_map);
+
+  // fragmentation
+  unsigned int block_size = 16;
+  dim3 dimBlock(block_size, block_size);
+  dim3 dimGridOut(iu::divUp(dst->width(), dimBlock.x), iu::divUp(dst->height(), dimBlock.y));
+
+
+    cuRemapKernel_32f_C4
+        <<< dimGridOut, dimBlock >>> (dst->data(), dst->stride(), dst->width(), dst->height());
 
   IU_CUDA_CHECK();
 }
@@ -218,8 +279,8 @@ __global__ void cuRemapPointInterpKernel_8u_C1(unsigned char*dst, size_t stride,
 
 //-----------------------------------------------------------------------------
 void cuRemap(iu::ImageGpu_8u_C1* src,
-                 iu::ImageGpu_32f_C1* dx_map, iu::ImageGpu_32f_C1* dy_map,
-                 iu::ImageGpu_8u_C1* dst, IuInterpolationType interpolation)
+             iu::ImageGpu_32f_C1* dx_map, iu::ImageGpu_32f_C1* dy_map,
+             iu::ImageGpu_8u_C1* dst, IuInterpolationType interpolation)
 {
   tex1_8u_C1__.addressMode[0] = cudaAddressModeClamp;
   tex1_8u_C1__.addressMode[1] = cudaAddressModeClamp;
@@ -249,30 +310,30 @@ void cuRemap(iu::ImageGpu_8u_C1* src,
   dim3 dimBlock(block_size, block_size);
   dim3 dimGridOut(iu::divUp(dst->width(), dimBlock.x), iu::divUp(dst->height(), dimBlock.y));
 
-//  switch(interpolation)
-//  {
-//  case IU_INTERPOLATE_NEAREST:
-//  case IU_INTERPOLATE_CUBIC:
-//  case IU_INTERPOLATE_CUBIC_SPLINE:
-//    tex1_8u_C1__.filterMode = cudaFilterModePoint;
-//    break;
-//  case IU_INTERPOLATE_LINEAR:
-//    tex1_8u_C1__.filterMode = cudaFilterModeLinear;
-//    break;
-//  }
+  //  switch(interpolation)
+  //  {
+  //  case IU_INTERPOLATE_NEAREST:
+  //  case IU_INTERPOLATE_CUBIC:
+  //  case IU_INTERPOLATE_CUBIC_SPLINE:
+  //    tex1_8u_C1__.filterMode = cudaFilterModePoint;
+  //    break;
+  //  case IU_INTERPOLATE_LINEAR:
+  //    tex1_8u_C1__.filterMode = cudaFilterModeLinear;
+  //    break;
+  //  }
 
-//  switch(interpolation)
-//  {
-//  case IU_INTERPOLATE_LINEAR: // fallthrough intended
-//    cuRemapLinearInterpKernel_8u_C1 <<< dimGridOut, dimBlock >>> (
-//        dst->data(), dst->stride(), dst->width(), dst->height());
-//    break;
-//  default:
-//  case IU_INTERPOLATE_NEAREST:
-    cuRemapPointInterpKernel_8u_C1 <<< dimGridOut, dimBlock >>> (
-        dst->data(), dst->stride(), dst->width(), dst->height());
-//    break;
-//  }
+  //  switch(interpolation)
+  //  {
+  //  case IU_INTERPOLATE_LINEAR: // fallthrough intended
+  //    cuRemapLinearInterpKernel_8u_C1 <<< dimGridOut, dimBlock >>> (
+  //        dst->data(), dst->stride(), dst->width(), dst->height());
+  //    break;
+  //  default:
+  //  case IU_INTERPOLATE_NEAREST:
+  cuRemapPointInterpKernel_8u_C1 <<< dimGridOut, dimBlock >>> (
+                                                              dst->data(), dst->stride(), dst->width(), dst->height());
+  //    break;
+  //  }
 
   cudaUnbindTexture(&tex1_8u_C1__);
   cudaUnbindTexture(&tex_remap_dx_32f_C1__);

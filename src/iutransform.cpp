@@ -78,9 +78,10 @@ void remap(iu::ImageGpu_32f_C1* src,
 //           iu::ImageGpu_32f_C2* dst, IuInterpolationType interpolation)
 //{return iuprivate::remap(src, dx_map, dy_map, dst, interpolation);}
 
-//IuStatus remap(iu::ImageGpu_32f_C4* src,
-//           iu::ImageGpu_32f_C1* dx_map, iu::ImageGpu_32f_C1* dy_map,
-//           iu::ImageGpu_32f_C4* dst, IuInterpolationType interpolation)
-//{return iuprivate::remap(src, dx_map, dy_map, dst, interpolation);}
+// 32f_C4
+void remap(iu::ImageGpu_32f_C4* src,
+               iu::ImageGpu_32f_C1* dx_map, iu::ImageGpu_32f_C1* dy_map,
+               iu::ImageGpu_32f_C4* dst, IuInterpolationType interpolation)
+{iuprivate::remap(src, dx_map, dy_map, dst, interpolation);}
 
 } // namespace iu
