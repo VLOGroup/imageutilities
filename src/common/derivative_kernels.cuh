@@ -119,7 +119,8 @@ inline static __device__ PixelType dym(const texture<PixelType, 2> tex, const in
  * @param y  y-coordinate
  * @return y derivative calculated with forward differences.
  */
-inline static __device__ float2 dp(const texture<float, 2> tex, const int x, const int y)
+inline static __device__ float2 dp(const texture<float, 2> tex,
+                                   const int x, const int y)
 {
   float2 grad = make_float2(0.0f, 0.0f);
   float cval = tex2D(tex, x+0.5f, y+0.5f);
