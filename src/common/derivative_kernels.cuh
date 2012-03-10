@@ -168,7 +168,8 @@ inline static __device__ float dp_ad(const texture<float2, 2> tex,
  * @param y  y-coordinate
  * @return y derivative calculated with forward differences.
  */
-inline static __device__ float2 dp(float* u, const int x, const int y, const size_t stride,
+inline static __device__ float2 dp(float* u, const int x, const int y,
+                                   const size_t stride,
                                    const int width, const int height)
 {
   float2 grad = make_float2(0.0f, 0.0f);
