@@ -112,7 +112,6 @@ inline static __device__ PixelType dym(const texture<PixelType, 2> tex, const in
 ////////////////////////////////////////////////////////////////////////////////
 
 //-----------------------------------------------------------------------------
-/* ok */
 /** Calculates gradient with forward differences including zero border handling
  * @param tex  2D texture
  * @param x  x-coordinate
@@ -130,7 +129,6 @@ inline static __device__ float2 dp(const texture<float, 2> tex,
 }
 
 //-----------------------------------------------------------------------------
-/* ok */
 /** Calculates the divergence with backward differences including zero border handling
  * @param p  2D texture of p
  * @param x  x-coordinate
@@ -161,7 +159,6 @@ inline static __device__ float dp_ad(const texture<float2, 2> tex,
 ////////////////////////////////////////////////////////////////////////////////
 
 //-----------------------------------------------------------------------------
-/* testing */
 /** Calculates gradient with forward differences including zero border handling
  * @param u input
  * @param x  x-coordinate
@@ -181,7 +178,6 @@ inline static __device__ float2 dp(float* u, const int x, const int y,
 }
 
 //-----------------------------------------------------------------------------
-/* testing */
 /** Calculates the divergence with backward differences including zero border handling
  * @param p
  * @param x  x-coordinate
@@ -220,7 +216,6 @@ inline static __device__ float dp_ad(const float2* p, const int x, const int y,
 ////////////////////////////////////////////////////////////////////////////////
 
 //-----------------------------------------------------------------------------
-/* ok */
 /** Calculates gradient with forward differences including zero border handling and edge weighting
  * @param tex  2D texture
  * @param tex_g 2D edge weight texture
@@ -246,7 +241,6 @@ inline static __device__ float2 dp_weighted(const texture<float, 2> tex,
 }
 
 //-----------------------------------------------------------------------------
-/* ok */
 /** Calculates the divergence with backward differences including zero border handling
  * @param p  2D texture of p
  * @param tex_g 2D edge weight texture
@@ -284,7 +278,6 @@ inline static __device__ float dp_ad_weighted(const texture<float2, 2> tex,
 ////////////////////////////////////////////////////////////////////////////////
 
 //-----------------------------------------------------------------------------
-/* ok */
 /** Calculates gradient with forward differences including zero border handling and edge weighting
  * @param tex  2D texture
  * @param tex_gx 2D x-gradient texture
@@ -312,7 +305,6 @@ inline static __device__ float2 dp_edges(const texture<float, 2> tex,
 }
 
 //-----------------------------------------------------------------------------
-/* ok */
 /** Calculates the divergence with backward differences including zero border handling
  * @param p  2D texture of p
  * @param x  x-coordinate
@@ -450,7 +442,6 @@ inline static __device__ float dp_ad_edges(const texture<float2, 2> tex,
 ////////////////////////////////////////////////////////////////////////////////
 
 //-----------------------------------------------------------------------------
-/* ok */
 /** Calculates gradient with forward differences including zero border handling and edge weighting
  * @param tex  2D texture
  * @param tex_gx 2D x-gradient texture
@@ -482,7 +473,6 @@ inline static __device__ float2 dp_tensor(const texture<float, 2> tex,
 }
 
 //-----------------------------------------------------------------------------
-/* ok */
 /** Calculates the divergence with backward differences including zero border handling
  * @param p  2D texture of p
  * @param x  x-coordinate
@@ -524,7 +514,6 @@ inline static __device__ float dp_ad_tensor(const texture<float2, 2> tex,
 }
 
 //-----------------------------------------------------------------------------
-/* ok */
 /** Calculates gradient with forward differences including zero border handling for tgv2 model
  * @param tex  2D texture
  * @param x  x-coordinate
@@ -545,7 +534,6 @@ inline static __device__ float4 dp_tgv2(const texture<float2, 2> tex, const int 
 
 
 //-----------------------------------------------------------------------------
-/* ok */
 /** Calculates the divergence with backward differences including zero border handling for tgv2 model
  * @param p  2D texture of p
  * @param x  x-coordinate
