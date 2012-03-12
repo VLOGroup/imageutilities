@@ -173,9 +173,9 @@ inline static __device__ float2 dp(float* u, const int x, const int y,
                                    const int width, const int height)
 {
   float2 grad = make_float2(0.0f, 0.0f);
-  if (x+1 < width)
+  if (x < width-1)
     grad.x = u[y*stride+x+1] - u[y*stride+x];
-  if (y+1 < height)
+  if (y < height-1)
     grad.y = u[(y+1)*stride+x] - u[y*stride+x];
   return grad;
 }
@@ -188,23 +188,31 @@ inline static __device__ float2 dp(float* u, const int x, const int y,
  * @param y  y-coordinate
  * @return divergence calculated with backward differences.
  */
-inline static __device__ float dp_ad(const float2* p,
-                                     const int x, const int y, const size_t stride,
+inline static __device__ float dp_ad(const float2* p, const int x, const int y,
+                                     const size_t stride,
                                      const int width, const int height)
 {
-  float2 cval = p[y*stride+x];
-  float2 wval = p[y*stride+x-1];
-  float2 nval = p[(y-1)*stride+x];
+  float2 cval = make_float2(0.0f);
+  float2 wval = make_float2(0.0f);
+  float2 nval = make_float2(0.0f);
 
-  if (x == 0)
-    wval.x = 0.0f;
-  else if (x >= width-1)
-    cval.x = 0.0f;
+  if (x<width-1 && y<height-1)
+    cval = p[y*stride+x];
 
-  if (y == 0)
-    nval.y = 0.0f;
-  else if (y >= height-1)
-    cval.y = 0.0f;
+  if (y>0)
+    nval = p[(y-1)*stride+x];
+  if (x>0)
+    wval = p[y*stride+x-1];
+
+//  if (x == 0)
+//    wval.x = 0.0f;
+//  else if (x >= width-1)
+//    cval.x = 0.0f;
+
+//  if (y == 0)
+//    nval.y = 0.0f;
+//  else if (y >= height-1)
+//    cval.y = 0.0f;
 
   return (cval.x - wval.x + cval.y - nval.y);
 }
