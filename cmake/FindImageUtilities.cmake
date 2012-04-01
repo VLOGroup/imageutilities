@@ -65,6 +65,7 @@ else(IU_INCLUDE_DIRS AND IU_LIBRARY_DIR)
   ## TODO FIXME
 
   set(VMLIBRARIES_COMMON_INCLUDE_DIR "${VMLIBRARIES_DIR}/common/include" CACHE PATH "Common include dir of the vmlibraries project for small helper functions.")
+  set(VMLIBRARIES_EXTERN_INCLUDE_DIR "${VMLIBRARIES_DIR}/extern/include" "${VMLIBRARIES_DIR}/extern" CACHE PATH "Include dir for external libraries.")
 
   # library path
   set(POTENTIAL_LIBRARY_PATHS

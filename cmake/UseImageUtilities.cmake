@@ -20,8 +20,8 @@ set(IU_LIB_DEPENDENCIES "") # we start with no external dependencies
 include_directories(${IU_INCLUDE_DIRS})
 cuda_include_directories(${IU_INCLUDE_DIRS})
 
-include_directories(${VMLIBRARIES_COMMON_INCLUDE_DIR})
-cuda_include_directories(${VMLIBRARIES_COMMON_INCLUDE_DIR})
+include_directories(${VMLIBRARIES_COMMON_INCLUDE_DIR} ${VMLIBRARIES_EXTERN_INCLUDE_DIR})
+cuda_include_directories(${VMLIBRARIES_COMMON_INCLUDE_DIR} ${VMLIBRARIES_EXTERN_INCLUDE_DIR})
 
 # IU modules
 foreach (module IUCORE IUIPP IUMATLAB IUGUI IUIO IUIOPGM IUVIDEOCAPTURE IUPGRCAMERA)
