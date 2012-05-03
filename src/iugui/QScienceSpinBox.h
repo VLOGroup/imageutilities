@@ -9,7 +9,7 @@
 #include <QtCore/QDebug>
 #include <QtCore/QString>
  
-static bool isIntermediateValueHelper(qint64 num, qint64 minimum, qint64 maximum, qint64 *match = 0);
+bool isIntermediateValueHelper(qint64 num, qint64 minimum, qint64 maximum, qint64 *match = 0);
  
 class QScienceSpinBox : public QDoubleSpinBox
 {

@@ -152,6 +152,7 @@ void copy(const ImageGpu_32f_C4* src, ImageCpu_32f_C4* dst) { iuprivate::copy(sr
 void copy(const VolumeCpu_8u_C1* src, VolumeCpu_8u_C1* dst) { iuprivate::copy(src, dst); }
 void copy(const VolumeCpu_8u_C2* src, VolumeCpu_8u_C2* dst) { iuprivate::copy(src, dst); }
 void copy(const VolumeCpu_8u_C4* src, VolumeCpu_8u_C4* dst) { iuprivate::copy(src, dst); }
+void copy(const VolumeCpu_16u_C1* src, VolumeCpu_16u_C1* dst) { iuprivate::copy(src, dst); }
 void copy(const VolumeCpu_32f_C1* src, VolumeCpu_32f_C1* dst) { iuprivate::copy(src, dst); }
 void copy(const VolumeCpu_32f_C2* src, VolumeCpu_32f_C2* dst) { iuprivate::copy(src, dst); }
 void copy(const VolumeCpu_32f_C4* src, VolumeCpu_32f_C4* dst) { iuprivate::copy(src, dst); }
@@ -160,6 +161,7 @@ void copy(const VolumeCpu_32f_C4* src, VolumeCpu_32f_C4* dst) { iuprivate::copy(
 void copy(const VolumeGpu_8u_C1* src, VolumeGpu_8u_C1* dst) { iuprivate::copy(src, dst); }
 void copy(const VolumeGpu_8u_C2* src, VolumeGpu_8u_C2* dst) { iuprivate::copy(src, dst); }
 void copy(const VolumeGpu_8u_C4* src, VolumeGpu_8u_C4* dst) { iuprivate::copy(src, dst); }
+void copy(const VolumeGpu_16u_C1* src, VolumeGpu_16u_C1* dst) { iuprivate::copy(src, dst); }
 void copy(const VolumeGpu_32f_C1* src, VolumeGpu_32f_C1* dst) { iuprivate::copy(src, dst); }
 void copy(const VolumeGpu_32f_C2* src, VolumeGpu_32f_C2* dst) { iuprivate::copy(src, dst); }
 void copy(const VolumeGpu_32f_C4* src, VolumeGpu_32f_C4* dst) { iuprivate::copy(src, dst); }
@@ -168,6 +170,7 @@ void copy(const VolumeGpu_32f_C4* src, VolumeGpu_32f_C4* dst) { iuprivate::copy(
 void copy(const VolumeCpu_8u_C1* src, VolumeGpu_8u_C1* dst) { iuprivate::copy(src, dst); }
 void copy(const VolumeCpu_8u_C2* src, VolumeGpu_8u_C2* dst) { iuprivate::copy(src, dst); }
 void copy(const VolumeCpu_8u_C4* src, VolumeGpu_8u_C4* dst) { iuprivate::copy(src, dst); }
+void copy(const VolumeCpu_16u_C1* src, VolumeGpu_16u_C1* dst) { iuprivate::copy(src, dst); }
 void copy(const VolumeCpu_32f_C1* src, VolumeGpu_32f_C1* dst) { iuprivate::copy(src, dst); }
 void copy(const VolumeCpu_32f_C2* src, VolumeGpu_32f_C2* dst) { iuprivate::copy(src, dst); }
 void copy(const VolumeCpu_32f_C4* src, VolumeGpu_32f_C4* dst) { iuprivate::copy(src, dst); }
@@ -176,6 +179,7 @@ void copy(const VolumeCpu_32f_C4* src, VolumeGpu_32f_C4* dst) { iuprivate::copy(
 void copy(const VolumeGpu_8u_C1* src, VolumeCpu_8u_C1* dst) { iuprivate::copy(src, dst); }
 void copy(const VolumeGpu_8u_C2* src, VolumeCpu_8u_C2* dst) { iuprivate::copy(src, dst); }
 void copy(const VolumeGpu_8u_C4* src, VolumeCpu_8u_C4* dst) { iuprivate::copy(src, dst); }
+void copy(const VolumeGpu_16u_C1* src, VolumeCpu_16u_C1* dst) { iuprivate::copy(src, dst); }
 void copy(const VolumeGpu_32f_C1* src, VolumeCpu_32f_C1* dst) { iuprivate::copy(src, dst); }
 void copy(const VolumeGpu_32f_C2* src, VolumeCpu_32f_C2* dst) { iuprivate::copy(src, dst); }
 void copy(const VolumeGpu_32f_C4* src, VolumeCpu_32f_C4* dst) { iuprivate::copy(src, dst); }

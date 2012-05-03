@@ -167,6 +167,10 @@ typedef VolumeCpu<unsigned char, iuprivate::VolumeAllocatorCpu<unsigned char>, I
 typedef VolumeCpu<uchar2, iuprivate::VolumeAllocatorCpu<uchar2>, IU_8U_C2> VolumeCpu_8u_C2;
 typedef VolumeCpu<uchar4, iuprivate::VolumeAllocatorCpu<uchar4>, IU_8U_C4> VolumeCpu_8u_C4;
 
+// Cpu Volumes; 16u
+typedef VolumeCpu<unsigned short, iuprivate::VolumeAllocatorCpu<unsigned short>, IU_16U_C1> VolumeCpu_16u_C1;
+
+
 // Cpu Volumes; 32f
 typedef VolumeCpu<float, iuprivate::VolumeAllocatorCpu<float>, IU_32F_C1> VolumeCpu_32f_C1;
 typedef VolumeCpu<float2, iuprivate::VolumeAllocatorCpu<float2>, IU_32F_C2> VolumeCpu_32f_C2;
@@ -179,6 +183,10 @@ typedef VolumeCpu<float4, iuprivate::VolumeAllocatorCpu<float4>, IU_32F_C4> Volu
 typedef VolumeGpu<unsigned char, iuprivate::VolumeAllocatorGpu<unsigned char>, IU_8U_C1> VolumeGpu_8u_C1;
 typedef VolumeGpu<uchar2, iuprivate::VolumeAllocatorGpu<uchar2>, IU_8U_C2> VolumeGpu_8u_C2;
 typedef VolumeGpu<uchar4, iuprivate::VolumeAllocatorGpu<uchar4>, IU_8U_C4> VolumeGpu_8u_C4;
+
+// Gpu Volumes; 16u
+typedef VolumeGpu<unsigned short, iuprivate::VolumeAllocatorGpu<unsigned short>, IU_16U_C1> VolumeGpu_16u_C1;
+
 
 // Gpu Volumes; 32f
 typedef VolumeGpu<float, iuprivate::VolumeAllocatorGpu<float>, IU_32F_C1> VolumeGpu_32f_C1;
