@@ -29,48 +29,53 @@
 
 namespace iuprivate {
 
-// cuda wrapper: median filter; 32-bit; 1-channel
+// median filter; 32-bit; 1-channel
 IuStatus cuFilterMedian3x3(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
                             const IuRect& roi);
 
-// cuda wrapper: Gaussian filter; 32-bit; 1-channel
+// Gaussian filter; 32-bit; 1-channel
 IuStatus cuFilterGauss(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
                         const IuRect& roi, float sigma, int kernel_size);
 
-// cuda wrapper: Gaussian filter; Volume; 32-bit; 1-channel
+// Gaussian filter; Volume; 32-bit; 1-channel
 IuStatus cuFilterGauss(const iu::VolumeGpu_32f_C1* src, iu::VolumeGpu_32f_C1* dst,
                        float sigma, int kernel_size);
 
 
-// cuda wrapper: Cubic bspline coefficients prefilter.
+// Cubic bspline coefficients prefilter.
 IuStatus cuCubicBSplinePrefilter_32f_C1I(iu::ImageGpu_32f_C1 *input);
 
-// cuda wrapper: edge filter
+// edge filter
 IuStatus cuFilterEdge(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C2* dst, const IuRect& roi);
 
-// cuda wrapper: edge filter  + evaluation
+// edge filter  + evaluation
 IuStatus cuFilterEdge(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst, const IuRect& roi,
                       float alpha, float beta, float minval);
 
-// cuda wrapper: edge filter  + evaluation
+// edge filter  + evaluation
 IuStatus cuFilterEdge(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C2* dst, const IuRect& roi,
                       float alpha, float beta, float minval);
 
-// cuda wrapper: edge filter  + evaluation
+// edge filter  + evaluation
 IuStatus cuFilterEdge(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C4* dst, const IuRect& roi,
                       float alpha, float beta, float minval);
 
-// cuda wrapper: edge filter  + evaluation
+// edge filter  + evaluation
 IuStatus cuFilterEdge(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C1* dst, const IuRect& roi,
                       float alpha, float beta, float minval);
 
-// cuda wrapper: edge filter  + evaluation
+// edge filter  + evaluation
 IuStatus cuFilterEdge(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C2* dst, const IuRect& roi,
                       float alpha, float beta, float minval);
 
-// cuda wrapper: edge filter  + evaluation
+// edge filter  + evaluation
 IuStatus cuFilterEdge(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst, const IuRect& roi,
                       float alpha, float beta, float minval);
+
+// bilateral filter
+void cuFilterBilateral(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst, const iu::ImageGpu_32f_C1* prior,
+                       const IuRect& roi, float sigma_spatial, float sigma_range);
+
 
 
 } // namespace iuprivate

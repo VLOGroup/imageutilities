@@ -29,6 +29,7 @@
 #include <iucore/iutextures.cuh>
 #include <iucore/copy.h>
 #include <iucore/setvalue.h>
+#include <common/bind_textures.cuh>
 
 #include "filterbspline_kernels.cu"
 
@@ -1026,6 +1027,22 @@ IuStatus cuFilterEdge(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst, 
 
   // error check
   return iu::checkCudaErrorState();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// ----------------------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////
+
+
+// ----------------------------------------------------------------------------
+// wrapper: bilateral filter
+void cuFilterBilateral(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst, const iu::ImageGpu_32f_C1* prior,
+                       const IuRect& roi, float sigma_spatial, float sigma_range)
+{
+  iu::bindTexture(tex1_32f_C1__, prior);
+
+
+  IU_CUDA_CHECK();
 }
 
 
