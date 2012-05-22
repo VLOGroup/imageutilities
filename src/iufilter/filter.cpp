@@ -27,6 +27,18 @@
 
 namespace iuprivate {
 
+/* ***************************************************************************/
+
+// device; 32-bit; 1-channel
+void filterMedian3x3(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst, const IuRect& roi)
+{
+  IuStatus status = cuFilterMedian3x3(src, dst, roi);
+  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
+}
+
+
+/* ***************************************************************************/
+
 // device; 32-bit; 1-channel
 void filterGauss(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst, const IuRect& roi, float sigma, int kernel_size)
 {
@@ -48,20 +60,63 @@ void filterGauss(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst, const
   if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
 }
 
-// device; 32-bit; 1-channel
-void filterMedian3x3(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst, const IuRect& roi)
+
+/* ***************************************************************************/
+// Bilateral filter
+
+// C1
+void filterBilateral(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst, const IuRect& roi,
+                     const iu::ImageGpu_32f_C1* prior, const int iters,
+                     const float sigma_spatial, const float sigma_range,
+                     const int radius)
 {
-  IuStatus status = cuFilterMedian3x3(src, dst, roi);
-  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
+  try
+  {
+    if (prior == NULL)
+      prior = src;
+    cuFilterBilateral(src, dst, roi, prior, iters, sigma_spatial, sigma_range, radius);
+  }
+  catch (...)
+  {
+    throw IuException("error while calling bilateral filter", __FILE__, __FUNCTION__, __LINE__);
+  }
 }
 
-// device; 32-bit; 1-channel
-void cubicBSplinePrefilter(iu::ImageGpu_32f_C1* srcdst)
+// C1 but C4 prior
+void filterBilateral(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst, const IuRect& roi,
+                     const iu::ImageGpu_32f_C4* prior, const int iters,
+                     const float sigma_spatial, const float sigma_range,
+                     const int radius)
 {
-  IuStatus status = cuCubicBSplinePrefilter_32f_C1I(srcdst);
-  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
+  try
+  {
+    cuFilterBilateral(src, dst, roi, prior, iters, sigma_spatial, sigma_range, radius);
+  }
+  catch (...)
+  {
+    throw IuException("error while calling bilateral filter", __FILE__, __FUNCTION__, __LINE__);
+  }
 }
 
+// C4
+void filterBilateral(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst, const IuRect& roi,
+                     const iu::ImageGpu_32f_C4* prior, const int iters,
+                     const float sigma_spatial, const float sigma_range,
+                     const int radius)
+{
+  try
+  {
+    if (prior == NULL)
+      prior = src;
+    cuFilterBilateral(src, dst, roi, prior, iters, sigma_spatial, sigma_range, radius);
+  }
+  catch (...)
+  {
+    throw IuException("error while calling bilateral filter", __FILE__, __FUNCTION__, __LINE__);
+  }
+}
+
+/* ***************************************************************************/
 
 // edge filter; device; 32-bit; 1-channel
 void filterEdge(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C2* dst, const IuRect& roi)
@@ -117,5 +172,16 @@ void filterEdge(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst, const 
   IuStatus status = cuFilterEdge(src, dst, roi, alpha, beta, minval);
   if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
 }
+
+
+/* ***************************************************************************/
+
+// device; 32-bit; 1-channel
+void cubicBSplinePrefilter(iu::ImageGpu_32f_C1* srcdst)
+{
+  IuStatus status = cuCubicBSplinePrefilter_32f_C1I(srcdst);
+  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
+}
+
 
 } // namespace iuprivate

@@ -35,6 +35,7 @@ namespace iu {
 void filterMedian3x3(const ImageGpu_32f_C1* src, ImageGpu_32f_C1* dst, const IuRect& roi)
 {iuprivate::filterMedian3x3(src, dst, roi);}
 
+/* ***************************************************************************/
 // device; 32-bit; 1-channel
 void filterGauss(const ImageGpu_32f_C1* src, ImageGpu_32f_C1* dst, const IuRect& roi,
                  float sigma, int kernel_size)
@@ -47,6 +48,26 @@ void filterGauss(const VolumeGpu_32f_C1* src, VolumeGpu_32f_C1* dst,
 void filterGauss(const ImageGpu_32f_C4* src, ImageGpu_32f_C4* dst, const IuRect& roi,
                  float sigma, int kernel_size)
 {iuprivate::filterGauss(src, dst, roi, sigma, kernel_size);}
+
+
+/* ***************************************************************************/
+void filterBilateral(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst, const IuRect& roi,
+                     const iu::ImageGpu_32f_C1* prior, const int iters,
+                     const float sigma_spatial, const float sigma_range,
+                     const int radius)
+{ iuprivate::filterBilateral(src, dst, roi, prior, iters, sigma_spatial, sigma_range, radius); }
+
+void filterBilateral(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst, const IuRect& roi,
+                     const iu::ImageGpu_32f_C4* prior, const int iters,
+                     const float sigma_spatial, const float sigma_range,
+                     const int radius)
+{ iuprivate::filterBilateral(src, dst, roi, prior, iters, sigma_spatial, sigma_range, radius); }
+
+void filterBilateral(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst, const IuRect& roi,
+                     const iu::ImageGpu_32f_C4* prior, const int iters,
+                     const float sigma_spatial, const float sigma_range,
+                     const int radius)
+{ iuprivate::filterBilateral(src, dst, roi, prior, iters, sigma_spatial, sigma_range, radius); }
 
 
 /* ***************************************************************************

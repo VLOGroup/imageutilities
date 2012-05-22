@@ -29,10 +29,12 @@
 
 namespace iuprivate {
 
+/* ***************************************************************************/
 // median filter; 32-bit; 1-channel
 IuStatus cuFilterMedian3x3(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
                             const IuRect& roi);
 
+/* ***************************************************************************/
 // Gaussian filter; 32-bit; 1-channel
 IuStatus cuFilterGauss(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
                         const IuRect& roi, float sigma, int kernel_size);
@@ -42,9 +44,11 @@ IuStatus cuFilterGauss(const iu::VolumeGpu_32f_C1* src, iu::VolumeGpu_32f_C1* ds
                        float sigma, int kernel_size);
 
 
+/* ***************************************************************************/
 // Cubic bspline coefficients prefilter.
 IuStatus cuCubicBSplinePrefilter_32f_C1I(iu::ImageGpu_32f_C1 *input);
 
+/* ***************************************************************************/
 // edge filter
 IuStatus cuFilterEdge(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C2* dst, const IuRect& roi);
 
@@ -72,9 +76,12 @@ IuStatus cuFilterEdge(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C2* dst, 
 IuStatus cuFilterEdge(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst, const IuRect& roi,
                       float alpha, float beta, float minval);
 
+/* ***************************************************************************/
 // bilateral filter
-void cuFilterBilateral(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst, const iu::ImageGpu_32f_C1* prior,
-                       const IuRect& roi, float sigma_spatial, float sigma_range);
+void cuFilterBilateral(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst, const IuRect& roi,
+                       const iu::ImageGpu_32f_C1* prior, const int iters,
+                       const float sigma_spatial, const float sigma_range,
+                       const int radius);
 
 
 

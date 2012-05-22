@@ -27,6 +27,7 @@
 #include <float.h>
 #include <iucutil.h>
 #include <iucore/iutextures.cuh>
+#include <iucore/memorydefs.h>
 #include <iucore/copy.h>
 #include <iucore/setvalue.h>
 #include <common/bind_textures.cuh>
@@ -259,6 +260,10 @@ IuStatus cuFilterMedian3x3(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* 
   // error check
   return iu::checkCudaErrorState();
 }
+
+
+
+/* *************************************************************************** */
 
 // ----------------------------------------------------------------------------
 // kernel: Gaussian filter; 32-bit; 1-channel
@@ -612,24 +617,214 @@ IuStatus cuFilterGauss(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst,
   return iu::checkCudaErrorState();
 }
 
-//-----------------------------------------------------------------------------
-// wrapper: cubic bspline coefficients prefilter.
-IuStatus cuCubicBSplinePrefilter_32f_C1I(iu::ImageGpu_32f_C1 *input)
+
+/* *************************************************************************** */
+
+// ----------------------------------------------------------------------------
+// kernel: generate gaussian kernel (1D)
+__global__ void cuGenerateGaussianKernel_32f_C1(float* gauss, const float sigma_spatial,
+                                                const int radius)
 {
-  const unsigned int block_size = 64;
-  const unsigned int width  = input->width();
-  const unsigned int height = input->height();
-
-  dim3 dimBlockX(block_size,1,1);
-  dim3 dimGridX(iu::divUp(height, block_size),1,1);
-  cuSamplesToCoefficients2DX<float> <<< dimGridX, dimBlockX >>> (input->data(), width, height, input->stride());
-
-  dim3 dimBlockY(block_size,1,1);
-  dim3 dimGridY(iu::divUp(width, block_size),1,1);
-  cuSamplesToCoefficients2DY<float> <<< dimGridY, dimBlockY >>> (input->data(), width, height, input->stride());
-
-  return iu::checkCudaErrorState();
+  const int x = threadIdx.x - radius;
+  gauss[threadIdx.x] = expf(-iu::sqr(x)/(2*iu::sqr(sigma_spatial)));
 }
+
+// ----------------------------------------------------------------------------
+// kernel: bilateral filter kernel C1
+__global__ void cuFilterBilateralKernel_32f_C1(const float* src, float* dst,
+                                               const float* prior, const float* gauss,
+                                               const int radius, const float sigma_range,
+                                               const size_t stride,
+                                               const int xoff, const int yoff,
+                                               const int width, const int height)
+{
+  int x = blockIdx.x*blockDim.x + threadIdx.x + xoff;
+  int y = blockIdx.y*blockDim.y + threadIdx.y + yoff;
+
+  int c = y*stride+x;
+  float p = prior[c];
+
+  if(x<width && y<height)
+  {
+    float sum_g = 0.0f;
+    float sum_val = 0.0f;
+
+    for (int l=-radius; l<=radius; ++l)
+    {
+      for (int k=-radius; k<=radius; ++k)
+      {
+        int xx=x+k, yy=y+l;
+        int cc = yy*stride+xx;
+        float g = gauss[k+radius] * gauss[l+radius] *
+            expf(-iu::sqr(p-prior[cc])/(2*iu::sqr(sigma_range)));
+        sum_g += g;
+        sum_val += g*src[cc];
+      }
+    }
+
+    dst[c] = sum_val / sum_g;
+  }
+
+}
+
+// kernel: bilateral filter kernel C1 with C4 prior
+__global__ void cuFilterBilateralKernel_32f_C1C4(const float* src, float* dst,
+                                               const float4* prior, const float* gauss,
+                                               const int radius, const float sigma_range,
+                                               const size_t stride1, const size_t stride4,
+                                               const int xoff, const int yoff,
+                                               const int width, const int height)
+{
+  int x = blockIdx.x*blockDim.x + threadIdx.x + xoff;
+  int y = blockIdx.y*blockDim.y + threadIdx.y + yoff;
+
+  float4 p = prior[y*stride4+x];
+
+  if(x<width && y<height)
+  {
+    float sum_g = 0.0f;
+    float sum_val = 0.0f;
+
+    for (int l=-radius; l<=radius; ++l)
+    {
+      for (int k=-radius; k<=radius; ++k)
+      {
+        float4 diff = p-prior[y*stride4+x];
+        float g = gauss[k+radius] * gauss[l+radius] *
+            expf(-(0.25f*dot(diff,diff))/(2*iu::sqr(sigma_range)));
+        sum_g += g;
+        sum_val += g*src[y*stride1+x];
+      }
+    }
+
+    dst[y*stride1+x] = sum_val / sum_g;
+  }
+}
+
+// kernel: bilateral filter kernel C4
+__global__ void cuFilterBilateralKernel_32f_C4(const float4* src, float4* dst,
+                                               const float4* prior, const float* gauss,
+                                               const int radius, const float sigma_range,
+                                               const size_t stride,
+                                               const int xoff, const int yoff,
+                                               const int width, const int height)
+{
+  int x = blockIdx.x*blockDim.x + threadIdx.x + xoff;
+  int y = blockIdx.y*blockDim.y + threadIdx.y + yoff;
+
+  int c = y*stride+x;
+  float4 p = prior[c];
+
+  if(x<width && y<height)
+  {
+    float sum_g = 0.0f;
+    float4 sum_val = make_float4(0.0f);
+
+    for (int l=-radius; l<=radius; ++l)
+    {
+      for (int k=-radius; k<=radius; ++k)
+      {
+        int xx=x+k, yy=y+l;
+        int cc = yy*stride+xx;
+        float4 diff = p-prior[cc];
+        float g = gauss[k+radius] * gauss[l+radius] *
+            expf(-dot(diff,diff)/(2*iu::sqr(sigma_range)));
+        sum_g += g;
+        sum_val += g*src[cc];
+      }
+    }
+
+    dst[c] = sum_val / sum_g;
+  }
+
+}
+
+
+// ----------------------------------------------------------------------------
+// wrapper: bilateral filter, C1
+void cuFilterBilateral(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst, const IuRect& roi,
+                       const iu::ImageGpu_32f_C1* prior, const int iters,
+                       const float sigma_spatial, const float sigma_range,
+                       const int radius)
+{
+  // generate standard gaussian kernel with given params
+  iu::LinearDeviceMemory_32f_C1 gauss(2*radius + 1);
+  cuGenerateGaussianKernel_32f_C1 <<< 1, gauss.length() >>> (gauss.data(), sigma_spatial, radius);
+
+  // fragmentation
+  unsigned int block_size = 16;
+  dim3 dimBlock(block_size, block_size);
+  dim3 dimGrid(iu::divUp(roi.width, dimBlock.x), iu::divUp(roi.height, dimBlock.y));
+
+  // filter iterations
+  for (int iter=0; iter<iters; ++iter)
+  {
+    cuFilterBilateralKernel_32f_C1
+        <<< dimGrid, dimBlock >>> (src->data(), dst->data(), prior->data(),
+                                   gauss.data(), radius, sigma_range,
+                                   src->stride(), roi.x, roi.y, roi.width, roi.height);
+  }
+
+  IU_CUDA_CHECK();
+}
+
+// wrapper: bilateral filter, C1 and C4 prior
+void cuFilterBilateral(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst, const IuRect& roi,
+                       const iu::ImageGpu_32f_C4* prior, const int iters,
+                       const float sigma_spatial, const float sigma_range,
+                       const int radius)
+{
+  // generate standard gaussian kernel with given params
+  iu::LinearDeviceMemory_32f_C1 gauss(2*radius + 1);
+  cuGenerateGaussianKernel_32f_C1 <<< 1, gauss.length() >>> (gauss.data(), sigma_spatial, radius);
+
+  // fragmentation
+  unsigned int block_size = 16;
+  dim3 dimBlock(block_size, block_size);
+  dim3 dimGrid(iu::divUp(roi.width, dimBlock.x), iu::divUp(roi.height, dimBlock.y));
+
+  // filter iterations
+  for (int iter=0; iter<iters; ++iter)
+  {
+    cuFilterBilateralKernel_32f_C1C4
+        <<< dimGrid, dimBlock >>> (src->data(), dst->data(), prior->data(),
+                                   gauss.data(), radius, sigma_range,
+                                   src->stride(), prior->stride(),
+                                   roi.x, roi.y, roi.width, roi.height);
+  }
+
+  IU_CUDA_CHECK();
+}
+
+// wrapper: bilateral filter, C4
+void cuFilterBilateral(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst, const IuRect& roi,
+                       const iu::ImageGpu_32f_C4* prior, const int iters,
+                       const float sigma_spatial, const float sigma_range,
+                       const int radius)
+{
+  // generate standard gaussian kernel with given params
+  iu::LinearDeviceMemory_32f_C1 gauss(2*radius + 1);
+  cuGenerateGaussianKernel_32f_C1 <<< 1, gauss.length() >>> (gauss.data(), sigma_spatial, radius);
+
+  // fragmentation
+  unsigned int block_size = 16;
+  dim3 dimBlock(block_size, block_size);
+  dim3 dimGrid(iu::divUp(roi.width, dimBlock.x), iu::divUp(roi.height, dimBlock.y));
+
+  // filter iterations
+  for (int iter=0; iter<iters; ++iter)
+  {
+    cuFilterBilateralKernel_32f_C4
+        <<< dimGrid, dimBlock >>> (src->data(), dst->data(), prior->data(),
+                                   gauss.data(), radius, sigma_range,
+                                   src->stride(), roi.x, roi.y, roi.width, roi.height);
+  }
+
+  IU_CUDA_CHECK();
+}
+
+
+/* *************************************************************************** */
 
 
 // -- C1 -> C2 ---------------------------------------------------------------
@@ -1029,20 +1224,25 @@ IuStatus cuFilterEdge(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst, 
   return iu::checkCudaErrorState();
 }
 
-///////////////////////////////////////////////////////////////////////////////
-// ----------------------------------------------------------------------------
-///////////////////////////////////////////////////////////////////////////////
+/* *************************************************************************** */
 
-
-// ----------------------------------------------------------------------------
-// wrapper: bilateral filter
-void cuFilterBilateral(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst, const iu::ImageGpu_32f_C1* prior,
-                       const IuRect& roi, float sigma_spatial, float sigma_range)
+//-----------------------------------------------------------------------------
+// wrapper: cubic bspline coefficients prefilter.
+IuStatus cuCubicBSplinePrefilter_32f_C1I(iu::ImageGpu_32f_C1 *input)
 {
-  iu::bindTexture(tex1_32f_C1__, prior);
+  const unsigned int block_size = 64;
+  const unsigned int width  = input->width();
+  const unsigned int height = input->height();
 
+  dim3 dimBlockX(block_size,1,1);
+  dim3 dimGridX(iu::divUp(height, block_size),1,1);
+  cuSamplesToCoefficients2DX<float> <<< dimGridX, dimBlockX >>> (input->data(), width, height, input->stride());
 
-  IU_CUDA_CHECK();
+  dim3 dimBlockY(block_size,1,1);
+  dim3 dimGridY(iu::divUp(width, block_size),1,1);
+  cuSamplesToCoefficients2DY<float> <<< dimGridY, dimBlockY >>> (input->data(), width, height, input->stride());
+
+  return iu::checkCudaErrorState();
 }
 
 

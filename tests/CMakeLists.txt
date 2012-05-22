@@ -88,6 +88,9 @@ add_subdirectory(iusparse_unittests)
 message(STATUS "iuio unittests:")
 add_subdirectory(iuio_unittests)
 
+message(STATUS "iufilter unittests:")
+add_subdirectory(iufilter_unittests)
+
 message(STATUS "iutransform unittests:")
 add_subdirectory(iutransform_unittests)
 

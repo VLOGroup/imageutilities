@@ -71,6 +71,30 @@ IUCORE_DLLAPI void filterGauss(const VolumeGpu_32f_C1* src, VolumeGpu_32f_C1* ds
 IUCORE_DLLAPI void filterGauss(const ImageGpu_32f_C4* src, ImageGpu_32f_C4* dst, const IuRect& roi,
                                float sigma, int kernel_size=0);
 
+/** Bilateral Filtering
+ * \brief Filters a device image using a Bilateral filter
+ * \param src Source image [device].
+ * \param dst Destination image [device]
+ * \param roi Region of interest in the dsetination image.
+ * \param prior Image to compute the weights to guide the bilat filter (if =0 the src image is used).
+ * \param iters Number of filtering iterations.
+ * \param sigma_spatial Spatial (gaussian) influence.
+ * \param sigma_range Bilat influence.
+ * \param radius Filter radius.
+ */
+IUCORE_DLLAPI void filterBilateral(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst, const IuRect& roi,
+                                   const iu::ImageGpu_32f_C1* prior=NULL, const int iters=1,
+                                   const float sigma_spatial=4.0f, const float sigma_range=0.1f,
+                                   const int radius=5);
+IUCORE_DLLAPI void filterBilateral(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst, const IuRect& roi,
+                                   const iu::ImageGpu_32f_C4* prior, const int iters=1,
+                                   const float sigma_spatial=4.0f, const float sigma_range=0.1f,
+                                   const int radius=5);
+IUCORE_DLLAPI void filterBilateral(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst, const IuRect& roi,
+                                   const iu::ImageGpu_32f_C4* prior=NULL, const int iters=1,
+                                   const float sigma_spatial=4.0f, const float sigma_range=0.1f,
+                                   const int radius=5);
+
 /** @} */ // end of Denoising
 
 
