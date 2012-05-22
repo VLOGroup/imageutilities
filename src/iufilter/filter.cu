@@ -662,7 +662,7 @@ __global__ void cuFilterBilateralKernel_32f_C1(const float* src, float* dst,
       }
     }
 
-    dst[c] = sum_val / sum_g;
+    dst[c] = sum_val / IUMAX(1e-6, sum_g);
   }
 
 }
@@ -697,7 +697,7 @@ __global__ void cuFilterBilateralKernel_32f_C1C4(const float* src, float* dst,
       }
     }
 
-    dst[y*stride1+x] = sum_val / sum_g;
+    dst[y*stride1+x] = sum_val / IUMAX(1e-6, sum_g);
   }
 }
 
@@ -734,7 +734,7 @@ __global__ void cuFilterBilateralKernel_32f_C4(const float4* src, float4* dst,
       }
     }
 
-    dst[c] = sum_val / sum_g;
+    dst[c] = sum_val / IUMAX(1e-6, sum_g);
   }
 
 }
