@@ -136,7 +136,7 @@ void minMax(const iu::ImageGpu_32f_C4 *src, const IuRect &roi, float4& min, floa
 ///////////////////////////////////////////////////////////////////////////////
 
 // [device] find min/max value of volume; 32-bit; 1-channel
-void minMax(iu::VolumeGpu_32f_C1 *src, float& min, float& max)
+void minMax(const iu::VolumeGpu_32f_C1 *src, float& min, float& max)
 {
   IuStatus status;
   status = cuMinMax(src, min, max);
@@ -261,7 +261,7 @@ void summation(iu::VolumeGpu_32f_C1 *src, const IuCube &roi, double &sum)
   double slice_sum = 0.0;
   for (unsigned int oz=0; oz<roi.depth; ++oz)
   {
-    iu::ImageGpu_32f_C1 cur_slice = src->getSlice(oz);
+    const iu::ImageGpu_32f_C1 cur_slice = src->getSlice(oz);
     status = cuSummation(&cur_slice, cur_slice.roi(), slice_sum);
     sum += slice_sum;
   }

@@ -614,7 +614,7 @@ IuStatus cuMinMax(const iu::ImageGpu_32f_C1 *src, const IuRect &roi, float& min_
 // kernel; find min/max; 32f_C1
 __global__ void cuMinMaxXYKernel_32f_C1(float* minim, float* maxim,
                                         int width, int height, int m_stride,
-                                        float* data, int depth, int d_stride,
+                                        const float* data, int depth, int d_stride,
                                         int d_slice_stride)
 {
   const int x = blockIdx.x*blockDim.x + threadIdx.x;
@@ -693,7 +693,7 @@ __global__ void cuMaxXKernel_32f_C1(float* maxim, int width, int height)
 
 
 // wrapper: find min/max; 32f_C1
-IuStatus cuMinMax(iu::VolumeGpu_32f_C1 *src, float& min_C1, float& max_C1)
+IuStatus cuMinMax(const iu::VolumeGpu_32f_C1 *src, float& min_C1, float& max_C1)
 {
   iu::ImageGpu_32f_C1 minim(src->width(), src->height());
   iu::ImageGpu_32f_C1 maxim(src->width(), src->height());
@@ -1337,7 +1337,7 @@ __global__ void  cuColorHistogramKernel(float* hist, int width, int height,
   #else
     #if !WIN32
       #warning Color Histograms will not work: >= sm_12 needed!
-	#endif
+  #endif
   #endif
 #endif
     }

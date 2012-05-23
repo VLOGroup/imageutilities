@@ -32,6 +32,8 @@
 #include <iucore/setvalue.h>
 #include <common/bind_textures.cuh>
 
+#include <iumath.h>
+
 #include "filterbspline_kernels.cu"
 
 #include "filter.cuh"
@@ -621,20 +623,11 @@ IuStatus cuFilterGauss(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst,
 /* *************************************************************************** */
 
 // ----------------------------------------------------------------------------
-// kernel: generate gaussian kernel (1D)
-__global__ void cuGenerateGaussianKernel_32f_C1(float* gauss, const float sigma_spatial,
-                                                const int radius)
-{
-  const int x = threadIdx.x - radius;
-  gauss[threadIdx.x] = expf(-iu::sqr(x)/(2*iu::sqr(sigma_spatial)));
-}
-
-// ----------------------------------------------------------------------------
 // kernel: bilateral filter kernel C1
 __global__ void cuFilterBilateralKernel_32f_C1(const float* src, float* dst,
-                                               const float* prior, const float* gauss,
-                                               const int radius, const float sigma_range,
-                                               const size_t stride,
+                                               const float* prior,
+                                               const float sigma_spatial, const float sigma_range,
+                                               const int radius, const size_t stride,
                                                const int xoff, const int yoff,
                                                const int width, const int height)
 {
@@ -654,26 +647,31 @@ __global__ void cuFilterBilateralKernel_32f_C1(const float* src, float* dst,
       for (int k=-radius; k<=radius; ++k)
       {
         int xx=x+k, yy=y+l;
-        int cc = yy*stride+xx;
-        float g = gauss[k+radius] * gauss[l+radius] *
-            expf(-iu::sqr(p-prior[cc])/(2*iu::sqr(sigma_range)));
-        sum_g += g;
-        sum_val += g*src[cc];
+        if(xx>=0 && yy>=0 && xx<width && yy<height)
+        {
+          int cc = yy*stride+xx;
+          float g = expf(-((iu::sqr(x-xx)+iu::sqr(y-yy))/(2*iu::sqr(sigma_spatial)))
+                         -(iu::sqr(p-prior[cc])/(2*iu::sqr(sigma_range))));
+          sum_g += g;
+          sum_val += g*src[cc];
+        }
       }
     }
 
-    dst[c] = sum_val / IUMAX(1e-6, sum_g);
+    dst[c] = sum_val / IUMAX(1e-6f, sum_g);
   }
 
 }
 
+// ----------------------------------------------------------------------------
 // kernel: bilateral filter kernel C1 with C4 prior
 __global__ void cuFilterBilateralKernel_32f_C1C4(const float* src, float* dst,
-                                               const float4* prior, const float* gauss,
-                                               const int radius, const float sigma_range,
-                                               const size_t stride1, const size_t stride4,
-                                               const int xoff, const int yoff,
-                                               const int width, const int height)
+                                                 const float4* prior,
+                                                 const float sigma_spatial, const float sigma_range,
+                                                 const int radius,
+                                                 const size_t stride1, const size_t stride4,
+                                                 const int xoff, const int yoff,
+                                                 const int width, const int height)
 {
   int x = blockIdx.x*blockDim.x + threadIdx.x + xoff;
   int y = blockIdx.y*blockDim.y + threadIdx.y + yoff;
@@ -689,23 +687,28 @@ __global__ void cuFilterBilateralKernel_32f_C1C4(const float* src, float* dst,
     {
       for (int k=-radius; k<=radius; ++k)
       {
-        float4 diff = p-prior[y*stride4+x];
-        float g = gauss[k+radius] * gauss[l+radius] *
-            expf(-(0.25f*dot(diff,diff))/(2*iu::sqr(sigma_range)));
-        sum_g += g;
-        sum_val += g*src[y*stride1+x];
+        int xx=x+k, yy=y+l;
+        if(xx>=0 && yy>=0 && xx<width && yy<height)
+        {
+          float4 diff = p-prior[yy*stride4+xx];
+          float g = expf(-((iu::sqr(x-xx)+iu::sqr(y-yy))/(2*iu::sqr(sigma_spatial)))
+                         -(dot(diff,diff)/(2*iu::sqr(sigma_range))));
+          sum_g += g;
+          sum_val += g*src[y*stride1+x];
+        }
       }
     }
 
-    dst[y*stride1+x] = sum_val / IUMAX(1e-6, sum_g);
+    dst[y*stride1+x] = sum_val / IUMAX(1e-6f, sum_g);
   }
 }
 
+// ----------------------------------------------------------------------------
 // kernel: bilateral filter kernel C4
 __global__ void cuFilterBilateralKernel_32f_C4(const float4* src, float4* dst,
-                                               const float4* prior, const float* gauss,
-                                               const int radius, const float sigma_range,
-                                               const size_t stride,
+                                               const float4* prior,
+                                               float sigma_spatial, const float sigma_range,
+                                               const int radius, const size_t stride,
                                                const int xoff, const int yoff,
                                                const int width, const int height)
 {
@@ -725,16 +728,19 @@ __global__ void cuFilterBilateralKernel_32f_C4(const float4* src, float4* dst,
       for (int k=-radius; k<=radius; ++k)
       {
         int xx=x+k, yy=y+l;
-        int cc = yy*stride+xx;
-        float4 diff = p-prior[cc];
-        float g = gauss[k+radius] * gauss[l+radius] *
-            expf(-dot(diff,diff)/(2*iu::sqr(sigma_range)));
-        sum_g += g;
-        sum_val += g*src[cc];
+        if(xx>=0 && yy>=0 && xx<width && yy<height)
+        {
+          int cc = yy*stride+xx;
+          float4 diff = p-prior[cc];
+          float g = expf(-((iu::sqr(x-xx)+iu::sqr(y-yy))/(2*iu::sqr(sigma_spatial)))
+                         -(dot(diff,diff)/(2*iu::sqr(sigma_range))));
+          sum_g += g;
+          sum_val += g*src[cc];
+        }
       }
     }
 
-    dst[c] = sum_val / IUMAX(1e-6, sum_g);
+    dst[c] = sum_val / IUMAX(1e-6f, sum_g);
   }
 
 }
@@ -747,9 +753,11 @@ void cuFilterBilateral(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
                        const float sigma_spatial, const float sigma_range,
                        const int radius)
 {
-  // generate standard gaussian kernel with given params
-  iu::LinearDeviceMemory_32f_C1 gauss(2*radius + 1);
-  cuGenerateGaussianKernel_32f_C1 <<< 1, gauss.length() >>> (gauss.data(), sigma_spatial, radius);
+  float min,max;
+  iu::minMax(src, src->roi(), min, max);
+  printf("src min/max=%f/%f\n", min, max);
+  iu::minMax(prior, src->roi(), min, max);
+  printf("prior min/max=%f/%f\n", min, max);
 
   // fragmentation
   unsigned int block_size = 16;
@@ -761,7 +769,7 @@ void cuFilterBilateral(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
   {
     cuFilterBilateralKernel_32f_C1
         <<< dimGrid, dimBlock >>> (src->data(), dst->data(), prior->data(),
-                                   gauss.data(), radius, sigma_range,
+                                   sigma_spatial, sigma_range, radius,
                                    src->stride(), roi.x, roi.y, roi.width, roi.height);
   }
 
@@ -774,10 +782,6 @@ void cuFilterBilateral(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
                        const float sigma_spatial, const float sigma_range,
                        const int radius)
 {
-  // generate standard gaussian kernel with given params
-  iu::LinearDeviceMemory_32f_C1 gauss(2*radius + 1);
-  cuGenerateGaussianKernel_32f_C1 <<< 1, gauss.length() >>> (gauss.data(), sigma_spatial, radius);
-
   // fragmentation
   unsigned int block_size = 16;
   dim3 dimBlock(block_size, block_size);
@@ -788,7 +792,7 @@ void cuFilterBilateral(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
   {
     cuFilterBilateralKernel_32f_C1C4
         <<< dimGrid, dimBlock >>> (src->data(), dst->data(), prior->data(),
-                                   gauss.data(), radius, sigma_range,
+                                   sigma_spatial, sigma_range, radius,
                                    src->stride(), prior->stride(),
                                    roi.x, roi.y, roi.width, roi.height);
   }
@@ -802,10 +806,6 @@ void cuFilterBilateral(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst,
                        const float sigma_spatial, const float sigma_range,
                        const int radius)
 {
-  // generate standard gaussian kernel with given params
-  iu::LinearDeviceMemory_32f_C1 gauss(2*radius + 1);
-  cuGenerateGaussianKernel_32f_C1 <<< 1, gauss.length() >>> (gauss.data(), sigma_spatial, radius);
-
   // fragmentation
   unsigned int block_size = 16;
   dim3 dimBlock(block_size, block_size);
@@ -816,7 +816,7 @@ void cuFilterBilateral(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst,
   {
     cuFilterBilateralKernel_32f_C4
         <<< dimGrid, dimBlock >>> (src->data(), dst->data(), prior->data(),
-                                   gauss.data(), radius, sigma_range,
+                                   sigma_spatial, sigma_range, radius,
                                    src->stride(), roi.x, roi.y, roi.width, roi.height);
   }
 

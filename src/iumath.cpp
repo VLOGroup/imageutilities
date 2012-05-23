@@ -91,7 +91,7 @@ void minMax(const ImageGpu_32f_C4* src, const IuRect& roi, float4& min, float4& 
 {iuprivate::minMax(src, roi, min, max);}
 
 // find min/max; volume; device; 32-bit
-void minMax(VolumeGpu_32f_C1* src, float& min, float& max)
+void minMax(const iu::VolumeGpu_32f_C1* src, float& min, float& max)
 {iuprivate::minMax(src, min, max);}
 
 // find min value and its coordinates; 32-bit

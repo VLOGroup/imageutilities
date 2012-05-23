@@ -153,7 +153,7 @@ IUCORE_DLLAPI void minMax(const ImageGpu_32f_C4* src, const IuRect& roi, float4&
  * \note supported gpu: 32f_C1
  */
 // find min/max; volume; device; 32-bit
-IUCORE_DLLAPI void minMax(VolumeGpu_32f_C1* src, float& min, float& max);
+IUCORE_DLLAPI void minMax(const iu::VolumeGpu_32f_C1* src, float& min, float& max);
 
 
 /** Finds the minimum value of an image in a certain ROI and the minimums coordinates.

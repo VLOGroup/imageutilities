@@ -59,7 +59,7 @@ void minMax(const iu::ImageGpu_32f_C2 *src, const IuRect &roi, float2& min, floa
 void minMax(const iu::ImageGpu_32f_C4 *src, const IuRect &roi, float4& min, float4& max);
 
 // find min/max; volume; device; 32-bit
-void minMax(iu::VolumeGpu_32f_C1 *src, float& min, float& max);
+void minMax(const iu::VolumeGpu_32f_C1 *src, float& min, float& max);
 
 /** Finds the minimum value of an image in a certain ROI and the minimums coordinates.
  * \param src Source image [device]
