@@ -37,6 +37,9 @@ extern IuStatus cuConvert(const iu::ImageGpu_32f_C4* src, const IuRect& src_roi,
 extern IuStatus cuConvert_8u_32f(const iu::ImageGpu_8u_C1* src, const IuRect& src_roi,
                                  iu::ImageGpu_32f_C1* dst, const IuRect& dst_roi,
                                  float mul_constant,  float add_constant);
+extern IuStatus cuConvert_8u_32f_C3C4(const iu::ImageGpu_8u_C3* src, const IuRect& src_roi,
+                                 iu::ImageGpu_32f_C4* dst, const IuRect& dst_roi,
+                                 float mul_constant,  float add_constant);
 extern IuStatus cuConvert_32f_8u(const iu::ImageGpu_32f_C1* src, const IuRect& src_roi,
                                  iu::ImageGpu_8u_C1* dst, const IuRect& dst_roi,
                                  float mul_constant, unsigned char add_constant);
@@ -115,6 +118,16 @@ void convert_8u32f_C1(const iu::ImageGpu_8u_C1* src, const IuRect& src_roi, iu::
   if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
 }
 
+
+//-----------------------------------------------------------------------------
+// [device] conversion 8u_C3 -> 32f_C4
+void convert_8u32f_C3C4(const iu::ImageGpu_8u_C3* src, const IuRect& src_roi, iu::ImageGpu_32f_C4 *dst, const IuRect& dst_roi,
+                      float mul_constant, float add_constant)
+{
+  IuStatus status;
+  status = cuConvert_8u_32f_C3C4(src, src_roi, dst, dst_roi, mul_constant, add_constant);
+  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
+}
 
 //-----------------------------------------------------------------------------
 // [device] conversion 32f_C3 -> 32f_C4

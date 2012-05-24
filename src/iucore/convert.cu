@@ -91,6 +91,25 @@ __global__ void cuConvert8uC1To32fC1Kernel(const unsigned char *src, size_t src_
   }
 }
 
+
+/** convert kernel 8u_C3 -> 32f_C4 (unsigned char -> float)
+ */
+__global__ void cuConvert8uC3To32fC4Kernel(const unsigned char *src, size_t src_pitch, int src_width, int src_height,
+                                           float4* dst, size_t dst_stride, int dst_width, int dst_height, float mul_constant,
+                                           float add_constant)
+{
+  const int x = blockIdx.x*blockDim.x + threadIdx.x;
+  const int y = blockIdx.y*blockDim.y + threadIdx.y;
+  int src_c = y*src_pitch + x*3;
+  int dst_c = y*dst_stride + x;
+
+  if (x<src_width && y<src_height && x<dst_width && y<dst_height)
+  {
+    dst[dst_c] = make_float4(src[src_c]/255.0f, src[src_c+1]/255.0f, src[src_c+2]/255.0f, 1.0f);// * mul_constant + add_constant;
+  }
+}
+
+
 //-----------------------------------------------------------------------------
 /** convert kernel 32f_C1 -> 8u_C1 (float -> unsigned char)
  */
@@ -333,6 +352,27 @@ IuStatus cuConvert_8u_32f(const iu::ImageGpu_8u_C1* src, const IuRect& src_roi,
 
   cuConvert8uC1To32fC1Kernel<<<dimGrid, dimBlock>>>(src->data(src_roi.x, src_roi.y),
                                                     src->stride(), src_roi.width, src_roi.height,
+                                                    dst->data(dst_roi.x, dst_roi.y),
+                                                    dst->stride(), dst_roi.width, dst_roi.height,
+                                                    mul_constant, add_constant);
+
+  IU_CHECK_AND_RETURN_CUDA_ERRORS();
+}
+
+
+//-----------------------------------------------------------------------------
+IuStatus cuConvert_8u_32f_C3C4(const iu::ImageGpu_8u_C3* src, const IuRect& src_roi,
+                          iu::ImageGpu_32f_C4* dst, const IuRect& dst_roi, float mul_constant,
+                          float add_constant)
+{
+  // fragmentation
+  const unsigned int block_size = 16;
+  dim3 dimBlock(block_size, block_size);
+  dim3 dimGrid(iu::divUp(dst_roi.width - dst_roi.x, dimBlock.x),
+               iu::divUp(dst_roi.height - dst_roi.y, dimBlock.y));
+  
+  cuConvert8uC3To32fC4Kernel<<<dimGrid, dimBlock>>>(&(src->data(src_roi.x, src_roi.y)->x),
+                                                    src->pitch(), src_roi.width, src_roi.height,
                                                     dst->data(dst_roi.x, dst_roi.y),
                                                     dst->stride(), dst_roi.width, dst_roi.height,
                                                     mul_constant, add_constant);

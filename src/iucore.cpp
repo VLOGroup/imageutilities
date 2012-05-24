@@ -283,6 +283,11 @@ void convert_8u32f_C1(const iu::ImageGpu_8u_C1* src, const IuRect& src_roi, iu::
                      float mul_constant, float add_constant)
 {iuprivate::convert_8u32f_C1(src, src_roi, dst, dst_roi, mul_constant, add_constant);}
 
+void convert_8u32f_C3C4(const iu::ImageGpu_8u_C3* src, const IuRect& src_roi, iu::ImageGpu_32f_C4* dst, const IuRect& dst_roi,
+                                float mul_constant, float add_constant)
+{iuprivate::convert_8u32f_C3C4(src, src_roi, dst, dst_roi, mul_constant, add_constant);}
+
+
 // [device] 2D Color conversion from RGB to HSV (32-bit 4-channel)
 void convert_RgbHsv(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst, bool normalize)
 {iuprivate::convertRgbHsv(src, dst, normalize);}

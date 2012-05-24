@@ -117,7 +117,10 @@ public:
     return pitch_;
   }
 
-  /** Returns the distnace in pixels between starts of consecutive rows. */
+  /** Returns the distance in pixels between starts of consecutive rows. 
+   * @todo: returned value is invalid if sizeof(PixelType) % 2 != 0, e.g. for *_C3 images. Use
+   * pitch in this case to calculate memory addresses by hand.
+   */
   virtual size_t stride() const
   {
     return pitch_/sizeof(PixelType);

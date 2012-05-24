@@ -397,7 +397,7 @@ IUCORE_DLLAPI void convert_32f8u_C1(const iu::ImageCpu_32f_C1* src, iu::ImageCpu
 IUCORE_DLLAPI void convert_32f8u_C1(const iu::ImageGpu_32f_C1* src, const IuRect& src_roi, iu::ImageGpu_8u_C1* dst, const IuRect& dst_roi,
                                 float mul_constant=255.0f, unsigned char add_constant=0);
 
-/** Converts an 32-bit single-channel image to a 8-bit single-channel image.
+/** Converts an 32-bit 4-channel image to a 8-bit 4-channel image.
  * \params src 4-channel source image [device].
  * \params dst 4-channel destination image [device].
  * \params mul_constant The optional scale factor.
@@ -413,6 +413,16 @@ IUCORE_DLLAPI void convert_32f8u_C4(const iu::ImageGpu_32f_C4* src, const IuRect
  * \params add_constant The optional delta, added to the scaled values.
  */
 IUCORE_DLLAPI void convert_8u32f_C1(const iu::ImageGpu_8u_C1* src, const IuRect& src_roi, iu::ImageGpu_32f_C1* dst, const IuRect& dst_roi,
+                                float mul_constant=1/255.0f, float add_constant=0.0f);
+
+
+/** Converts an 8-bit 3-channel image to a 32-bit 4-channel image.
+ * \params src 3-channel source image [device].
+ * \params dst 4-channel destination image [device].
+ * \params mul_constant The optional scale factor.
+ * \params add_constant The optional delta, added to the scaled values.
+ */
+IUCORE_DLLAPI void convert_8u32f_C3C4(const iu::ImageGpu_8u_C3* src, const IuRect& src_roi, iu::ImageGpu_32f_C4* dst, const IuRect& dst_roi,
                                 float mul_constant=1/255.0f, float add_constant=0.0f);
 
 
