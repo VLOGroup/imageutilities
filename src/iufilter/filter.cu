@@ -650,8 +650,8 @@ __global__ void cuFilterBilateralKernel_32f_C1(const float* src, float* dst,
         if(xx>=0 && yy>=0 && xx<width && yy<height)
         {
           int cc = yy*stride+xx;
-          float g = expf(-((iu::sqr(x-xx)+iu::sqr(y-yy))/(2*iu::sqr(sigma_spatial)))
-                         -(iu::sqr(p-prior[cc])/(2*iu::sqr(sigma_range))));
+          float g = expf(-((iu::sqr(x-xx)+iu::sqr(y-yy))/(2.0f*iu::sqr(sigma_spatial)))
+                         -(iu::sqr(p-prior[cc])/(2.0f*iu::sqr(sigma_range))));
           sum_g += g;
           sum_val += g*src[cc];
         }
