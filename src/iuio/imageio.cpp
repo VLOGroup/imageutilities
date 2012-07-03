@@ -140,6 +140,7 @@ iu::ImageGpu_8u_C1* imread_cu8u_C1(const std::string& filename)
   iu::ImageCpu_8u_C1* im = imread_8u_C1(filename);
   iu::ImageGpu_8u_C1* cu_im = new iu::ImageGpu_8u_C1(im->size());
   iuprivate::copy(im, cu_im);
+  delete im;
   return cu_im;
 }
 
@@ -149,6 +150,7 @@ iu::ImageGpu_8u_C4* imread_cu8u_C4(const std::string& filename)
   iu::ImageCpu_8u_C4* im = imread_8u_C4(filename);
   iu::ImageGpu_8u_C4* cu_im = new iu::ImageGpu_8u_C4(im->size());
   iuprivate::copy(im, cu_im);
+  delete im;
   return cu_im;
 }
 
@@ -158,6 +160,7 @@ iu::ImageGpu_32f_C1* imread_cu32f_C1(const std::string& filename)
   iu::ImageCpu_32f_C1* im = imread_32f_C1(filename);
   iu::ImageGpu_32f_C1* cu_im = new iu::ImageGpu_32f_C1(im->size());
   iuprivate::copy(im, cu_im);
+  delete im;
   return cu_im;
 }
 
@@ -167,6 +170,7 @@ iu::ImageGpu_32f_C4* imread_cu32f_C4(const std::string& filename)
   iu::ImageCpu_32f_C4* im = imread_32f_C4(filename);
   iu::ImageGpu_32f_C4* cu_im = new iu::ImageGpu_32f_C4(im->size());
   iuprivate::copy(im, cu_im);
+  delete im;
   return cu_im;
 }
 

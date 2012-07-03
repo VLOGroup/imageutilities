@@ -78,11 +78,33 @@ IuStatus cuSetValue(const int& value, iu::LinearDeviceMemory_32s_C1* dst)
   // fragmentation
   const unsigned int block_width = 512;
   dim3 dimBlock(block_width, 1, 1);
-  dim3 dimGrid(iu::divUp(dst->length(), dimBlock.x), 1);
 
-  cuSetValueKernel <<< dimGrid, dimBlock >>> (
-      value, dst->data(), dst->length());
-
+  int numChunks = iu::divUp(iu::divUp(dst->length(), dimBlock.x), 65535);
+  if (numChunks > 1)
+  {
+    for (int i=0; i < numChunks-1; i++)
+    {
+      unsigned int globalPos = i*65535*dimBlock.x;        // calculate start index of current chunk
+      dim3 dimGrid(65535, 1);                             // max grid dimension
+    
+      cuSetValueKernel <<< dimGrid, dimBlock >>> (         // kernel writes 65535*dimBlock.x elements
+	value, dst->data(globalPos), 65535*dimBlock.x);
+    }
+    // calculate start index of last chunk
+    unsigned int lastChunkStart = (numChunks-1)*65535*dimBlock.x;
+    
+    // determine grid size
+    dim3 dimGrid(iu::divUp(dst->length()-lastChunkStart, dimBlock.x), 1);
+    cuSetValueKernel <<< dimGrid, dimBlock >>> (       // kernel writes remaining elements
+	value, dst->data(lastChunkStart), dst->length()-lastChunkStart);
+  }
+  else       // memory is smaller than 65535*dimBlock.x elements
+  {
+    dim3 dimGrid(iu::divUp(dst->length(), dimBlock.x), 1);
+    
+    cuSetValueKernel <<< dimGrid, dimBlock >>> (
+	value, dst->data(), dst->length());
+  }
   IU_CHECK_AND_RETURN_CUDA_ERRORS();
 }
 
@@ -97,10 +119,38 @@ IuStatus cuSetValue(const float& value, iu::LinearDeviceMemory_32f_C1* dst)
   // fragmentation
   const unsigned int block_width = 512;
   dim3 dimBlock(block_width, 1, 1);
-  dim3 dimGrid(iu::divUp(dst->length(), dimBlock.x), 1);
-
-  cuSetValueKernel <<< dimGrid, dimBlock >>> (
-      value, dst->data(), dst->length());
+  
+  // FIXXXME: apply this also to the other setValue() functions
+  
+  // if memory is too long to be set with a single kernel calculate number of required
+  // chunks.
+  // Max grid dimension according to cuda pragramming guide: 65535
+  int numChunks = iu::divUp(iu::divUp(dst->length(), dimBlock.x), 65535);
+  if (numChunks > 1)
+  {
+    for (int i=0; i < numChunks-1; i++)
+    {
+      unsigned int globalPos = i*65535*dimBlock.x;        // calculate start index of current chunk
+      dim3 dimGrid(65535, 1);                             // max grid dimension
+    
+      cuSetValueKernel <<< dimGrid, dimBlock >>> (         // kernel writes 65535*dimBlock.x elements
+	value, dst->data(globalPos), 65535*dimBlock.x);
+    }
+    // calculate start index of last chunk
+    unsigned int lastChunkStart = (numChunks-1)*65535*dimBlock.x;
+    
+    // determine grid size
+    dim3 dimGrid(iu::divUp(dst->length()-lastChunkStart, dimBlock.x), 1);
+    cuSetValueKernel <<< dimGrid, dimBlock >>> (       // kernel writes remaining elements
+	value, dst->data(lastChunkStart), dst->length()-lastChunkStart);
+  }
+  else       // memory is smaller than 65535*dimBlock.x elements
+  {
+    dim3 dimGrid(iu::divUp(dst->length(), dimBlock.x), 1);
+    
+    cuSetValueKernel <<< dimGrid, dimBlock >>> (
+	value, dst->data(), dst->length());
+  }
 
   {
     do {

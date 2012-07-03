@@ -152,6 +152,29 @@ IuStatus convertMatlabToGpu(int* matlab_src_buffer, unsigned int width, unsigned
   return IU_NO_ERROR;
 }
 
+
+//-----------------------------------------------------------------------------
+// [device] conversion from matlab to VolumeGpu memory layout
+template<typename PixelType, class Allocator, IuPixelType _pixel_type>
+IuStatus convertMatlabToGpu(double* matlab_src_buffer, unsigned int width, unsigned int height,
+                            unsigned int depth, iu::VolumeGpu<PixelType, Allocator, _pixel_type> *dst)
+{
+  iu::ImageCpu_32f_C1 temp_cpu(width, height);
+
+  for (int i=0; i < dst->depth(); i++)
+  {
+    iu::ImageGpu_32f_C1 slice = dst->getSlice(i);
+    IuStatus status = convertMatlabToCpu((double*)&(matlab_src_buffer[width*height*i]), width, height, &temp_cpu);
+    if(status != IU_SUCCESS)
+      return status;
+
+    iuprivate::copy(&temp_cpu, &slice);
+  }
+  return IU_NO_ERROR;
+}
+
+
+
 //-----------------------------------------------------------------------------
 // [host] conversion from matlab 3-channel to ImageCpu 4-channel memory layout
 IuStatus convertMatlabC3ToCpuC4(double* matlab_src_buffer, unsigned int width, unsigned int height,
@@ -450,6 +473,29 @@ IuStatus convertGpuToMatlab(iu::ImageGpu<PixelType, Allocator, _pixel_type> *src
   return IU_NO_ERROR;
 }
 
+
+//-----------------------------------------------------------------------------
+// [device] conversion from VolumeGpu to matlab
+template<typename PixelType, class Allocator, IuPixelType _pixel_type>
+IuStatus convertGpuToMatlab(iu::VolumeGpu<PixelType, Allocator, _pixel_type> *src,
+                            double* matlab_dst_buffer, unsigned int width, unsigned int height, unsigned int depth)
+{
+  // BUG? ... should this be 32f_C1 ???
+  // We want a double as output!!
+  iu::ImageCpu_32f_C1 tmp_cpu(width, height);
+
+  for (int i=0; i < src->depth(); i++)
+  {
+    iu::ImageGpu_32f_C1 slice = src->getSlice(i);
+    iuprivate::copy(&slice, &tmp_cpu);
+
+    IuStatus status = iuprivate::convertCpuToMatlab(&tmp_cpu, &(matlab_dst_buffer[width*height*i]), width, height);
+      if(status != IU_SUCCESS)
+        return status;
+  }
+
+  return IU_NO_ERROR;
+}
 
 //-----------------------------------------------------------------------------
 // [device] conversion from matlab to ImageGpu memory layout
