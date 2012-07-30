@@ -48,6 +48,10 @@ extern IuStatus cuConvert_32f_8u(const iu::ImageGpu_32f_C4* src, const IuRect& s
                                  float mul_constant, unsigned char add_constant);
 extern IuStatus cuConvert_rgb_to_hsv(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst, bool normalize);
 extern IuStatus cuConvert_hsv_to_rgb(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst, bool denormalize);
+
+extern IuStatus cuConvert_rgb_to_lab(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst, bool isNormalized);
+extern IuStatus cuConvert_lab_to_rgb(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst);
+
 /* ***************************************************************************/
 
 
@@ -164,5 +168,26 @@ void convertHsvRgb(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst, boo
   status = cuConvert_hsv_to_rgb(src, dst, denormalize);
   if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
 }
+
+
+//-----------------------------------------------------------------------------
+// [device] conversion RGB -> CIELAB
+void convertRgbLab(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst, bool isNormalized)
+{
+  IuStatus status;
+  status = cuConvert_rgb_to_lab(src, dst, isNormalized);
+  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
+}
+
+
+//-----------------------------------------------------------------------------
+// [device] conversion CIELAB -> RGB
+void convertLabRgb(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst)
+{
+  IuStatus status;
+  status = cuConvert_lab_to_rgb(src, dst);
+  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
+}
+
 
 } // namespace iuprivate

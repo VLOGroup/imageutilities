@@ -297,5 +297,14 @@ void convert_HsvRgb(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst, bo
 {iuprivate::convertHsvRgb(src, dst, denormalize);}
 
 
+// [device] 2D Color conversion from RGB to CIELAB (32-bit 4-channel)
+void convert_RgbLab(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst, bool isNormalized)
+{ iuprivate::convertRgbLab(src, dst, isNormalized); }
+
+
+// [device] 2D Color conversion from CIELAB to RGB (32-bit 4-channel)
+void convert_LabRgb(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst)
+{ iuprivate::convertLabRgb(src, dst); }
+
 
 } // namespace iu

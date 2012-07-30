@@ -450,6 +450,21 @@ IUCORE_DLLAPI void convert_RgbHsv(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_3
  */
 IUCORE_DLLAPI void convert_HsvRgb(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst, bool denormalize=false);
 
+/** Converts a RGB image to a CIELAB image using D65 (=6500K) white point normalization.
+ * \params src 4-channel source image [device].
+ * \params dst 4-channel destination image [device].
+ * \params isNormalized flag indicating whether the values of src are normalized to [0, 1] or not. Not normalized images are assumed to have values in [0, 255].
+ */
+IUCORE_DLLAPI void convert_RgbLab(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst, bool isNormalized=true);
+
+
+/** Converts a CIELAB image to a RGB image assuming D65 (=6500K) white point.
+ * \params src 4-channel source image [device].
+ * \params dst 4-channel destination image [device].
+ */
+IUCORE_DLLAPI void convert_LabRgb(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst);
+
+
 /** \} */ // end of Conversions
 
 
