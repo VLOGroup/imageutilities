@@ -37,7 +37,7 @@ class ImageIpp : public virtual Image
 {
 public:
   ImageIpp() :
-    Image(_pixel_type, _pixel_type),
+    Image(_pixel_type),
     data_(0), pitch_(0), ext_data_pointer_(false), n_channels_(NumChannels)
   {
   }
