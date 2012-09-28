@@ -42,6 +42,11 @@ void remap(iu::ImageGpu_32f_C4* src,
            iu::ImageGpu_32f_C1* dx_map, iu::ImageGpu_32f_C1* dy_map,
            iu::ImageGpu_32f_C4* dst, IuInterpolationType interpolation);
 
+void remapAffine(iu::ImageGpu_32f_C1* src,
+                 float a1, float a2, float a3, float a4,
+                 float b1, float b2,
+                 iu::ImageGpu_32f_C1* dst);
+
 }  // namespace iuprivate
 
 #endif // IUPRIVATE_REMAP_H

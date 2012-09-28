@@ -106,6 +106,10 @@ IUCORE_DLLAPI void remap(iu::ImageGpu_32f_C4* src,
                          iu::ImageGpu_32f_C4* dst,
                          IuInterpolationType interpolation = IU_INTERPOLATE_LINEAR);
 
+IUCORE_DLLAPI void remapAffine(iu::ImageGpu_32f_C1* src,
+                               float a1, float a2, float a3, float a4, float b1, float b2,
+                               iu::ImageGpu_32f_C1* dst);                               
+
 
 /** @} */ // end of Image Transformations
 

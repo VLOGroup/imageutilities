@@ -396,7 +396,7 @@ endif()
 
 ##-----------------------------------------------------------------------------
 ## IO MODULE: OpenCV for Image I/O
-find_package( OpenCV QUIET )
+find_package( OpenCV )
 # only include if IO module is used and OpenCV found.
 if(VMLIBRARIES_IU_USE_IO AND OpenCV_LIBS)
 
