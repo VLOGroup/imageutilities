@@ -79,6 +79,7 @@ void VideoCapture::retrieve(iu::ImageCpu_8u_C1 *image)
     throw IuException("VideoCapture: Given image size does not match with grabbed frame size. Could not copy data.\n",
                       __FILE__, __FUNCTION__, __LINE__);
 
+
   cv::Mat mat_8u(image->height(), image->width(), CV_8UC1, image->data(), image->pitch());
   // convert to grayscale image
   cv::cvtColor(frame_, mat_8u, CV_BGR2GRAY);
@@ -100,11 +101,23 @@ void VideoCapture::retrieve(iu::ImageCpu_32f_C1 *image)
     throw IuException("VideoCapture: Given image size does not match with grabbed frame size. Could not copy data.\n",
                       __FILE__, __FUNCTION__, __LINE__);
 
-  cv::Mat mat_8u;
-  // convert to grayscale image
-  cv::cvtColor(frame_, mat_8u, CV_BGR2GRAY);
-  cv::Mat im_mat(image->height(), image->width(), CV_32FC1, image->data(), image->pitch());
-  mat_8u.convertTo(im_mat, im_mat.type(), 1.0f/255.0f, 0);
+
+  // cv::Size size = frame_.size();
+  // std::cout << "w = " << size.width << " h = " << size.height << " c = " << frame_.channels() << std::endl;
+
+  cv::Mat im_mat(image->height(), image->width(), CV_32FC1, image->data(), image->pitch());        
+
+  if(frame_.channels() == 3)
+  {
+    cv::Mat mat_8u;
+    // convert to grayscale image
+    cv::cvtColor(frame_, mat_8u, CV_BGR2GRAY);
+    mat_8u.convertTo(im_mat, im_mat.type(), 1.0f/255.0f, 0);
+  }
+  else
+  {
+    frame_.convertTo(im_mat, im_mat.type(), 1.0f/255.0f, 0);
+  }
 }
 
 //-----------------------------------------------------------------------------
