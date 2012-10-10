@@ -64,8 +64,8 @@ OPTION(VMLIBRARIES_IU_USE_MATLAB "Including Matlab module." ON)
 OPTION(VMLIBRARIES_IU_USE_GUI "Including GUI module." ON)
 OPTION(VMLIBRARIES_IU_USE_IO "Including IO module." ON)
 OPTION(VMLIBRARIES_IU_USE_IOPGM "Including IOPGM module." ON)
-# OPTION(VMLIBRARIES_IU_USE_VIDEOCAPTURE "Including VideCapture IO module." OFF)
-# OPTION(VMLIBRARIES_IU_USE_PGRCAMERA "Including PointGray IO module." OFF)
+#OPTION(VMLIBRARIES_IU_USE_VIDEOCAPTURE "Including VideCapture IO module." ON)
+OPTION(VMLIBRARIES_IU_USE_PGRCAMERA "Including PointGray IO module." ON)
 
 
 ##-----------------------------------------------------------------------------
@@ -890,6 +890,7 @@ set( IU_CMAKE_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/../cmake/FindQwt.cmake
   ${CMAKE_CURRENT_SOURCE_DIR}/../cmake/FindImageUtilities.cmake
   ${CMAKE_CURRENT_SOURCE_DIR}/../cmake/UseImageUtilities.cmake
+  ${CMAKE_CURRENT_SOURCE_DIR}/../cmake/FindFlyCapture2.cmake
   )
 
 # install the libraries
