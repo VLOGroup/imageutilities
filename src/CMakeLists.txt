@@ -58,7 +58,7 @@ endif()
 ## Flags if modules are used.
 ## The modules are included per default unless dependencies not found or omitted by the user.
 ## (the core module is always included!)
-OPTION(VMLIBRARIES_IU_USE_SPARSE "Including Sparse Matrix module." ON)
+OPTION(VMLIBRARIES_IU_USE_SPARSE "Including Sparse Matrix module." OFF)
 OPTION(VMLIBRARIES_IU_USE_IPP "Including IPP module." ON)
 OPTION(VMLIBRARIES_IU_USE_MATLAB "Including Matlab module." ON)
 OPTION(VMLIBRARIES_IU_USE_GUI "Including GUI module." ON)
@@ -502,8 +502,8 @@ endif()
 ##-----------------------------------------------------------------------------
 ## IO MODULE: PointGray cameras (flycapture2);
 # NOTE: we need qt4 for that (threading, ...)
-find_package( FlyCapture2 QUIET )
-# only include if PGR specific stuff was found
+find_package( FlyCapture2 )
+# only include if PGR specific stuff was foun
 if(VMLIBRARIES_IU_USE_PGRCAMERA AND QT4_FOUND AND FLYCAPTURE2_FOUND)
 
   message("[+] ImageUtilities include PGRCAMERA module")
@@ -513,27 +513,40 @@ if(VMLIBRARIES_IU_USE_PGRCAMERA AND QT4_FOUND AND FLYCAPTURE2_FOUND)
 
   set( IU_PUBLIC_HEADERS
     ${IU_PUBLIC_HEADERS}
-    ${CMAKE_CURRENT_SOURCE_DIR}/iupgrcamera.h
+    #${CMAKE_CURRENT_SOURCE_DIR}/iupgrcamera.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuvideosource.h
     )
 
-  install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrcamera.h
+  install(FILES #${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrcamera.h
+	      ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videosource.h
+	      ${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrsource.h
+	      ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videofilesource.h
     DESTINATION include/iu/iuio
     COMPONENT Headers)
 
   set( IU_PGRCAMERA_HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrcameradata.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrcameraimagegrabber.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrcamerathreaddata.h
+    #${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrcameraimagegrabber.h
+    #${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrcamerathreaddata.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videosource.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrsource.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videofilesource.h
     )
 
   set( IU_PGRCAMERA_SOURCES
-    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrcamera.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrcameraimageconsumer.cpp
+    #${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrcamera.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrsource.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videofilesource.cpp
+    #${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrcameraimageconsumer.cpp
     )
 
   set( IU_PGRCAMERA_MOC_HEADERS
-    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrcamera.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrcameraimageconsumer.h
+    #${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrcamera.h
+    #${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrcameraimageconsumer.h
+    #${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrcameraimagegrabber.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videosource.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrsource.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videofilesource.h
     )
 
   # compile moc headers
@@ -837,24 +850,24 @@ endif(VMLIBRARIES_IU_USE_MATLAB)
 # endif(VMLIBRARIES_IU_USE_VIDEOCAPTURE)
 
 
-# ##-----------------------------------------------------------------------------
-# ## build pgrcamera library
-# set(IU_PGRCAMERA_LIB iupgrcamera)
-# if(VMLIBRARIES_IU_USE_PGRCAMERA)
-#   cuda_add_library( ${IU_PGRCAMERA_LIB} SHARED ${IU_PGRCAMERA_HEADERS} ${IU_PGRCAMERA_SOURCES} ${IU_PGRCAMERA_MOC_SOURCES})
-#   set_target_properties(${IU_PGRCAMERA_LIB} PROPERTIES
-#     DEFINE_SYMBOL IU_DLL_EXPORTS
-#     VERSION ${IMAGEUTILITIES_VERSION}
-#     SOVERSION ${IMAGEUTILITIES_SOVERSION}
-#     )
-#   target_link_libraries( ${IU_PGRCAMERA_LIB}
-#     ${CUDA_LIBRARIES}
-#     ${QT_LIBRARIES}
-#     ${FLYCAPTURE2_LIBRARIES}
-#     )
-#   set(IU_LIBS ${IU_LIBS} ${IU_PGRCAMERA_LIB})
+##-----------------------------------------------------------------------------
+## build pgrcamera library
+set(IU_PGRCAMERA_LIB iupgrcamera)
+if(VMLIBRARIES_IU_USE_PGRCAMERA)
+  cuda_add_library( ${IU_PGRCAMERA_LIB} SHARED ${IU_PGRCAMERA_HEADERS} ${IU_PGRCAMERA_SOURCES} ${IU_PGRCAMERA_MOC_SOURCES})
+  set_target_properties(${IU_PGRCAMERA_LIB} PROPERTIES
+    DEFINE_SYMBOL IU_DLL_EXPORTS
+    VERSION ${IMAGEUTILITIES_VERSION}
+    SOVERSION ${IMAGEUTILITIES_SOVERSION}
+    )
+  target_link_libraries( ${IU_PGRCAMERA_LIB}
+    ${CUDA_LIBRARIES}
+    ${QT_LIBRARIES}
+    ${FLYCAPTURE2_LIBRARIES}
+    )
+  set(IU_LIBS ${IU_LIBS} ${IU_PGRCAMERA_LIB})
 
-# endif(VMLIBRARIES_IU_USE_PGRCAMERA)
+endif(VMLIBRARIES_IU_USE_PGRCAMERA)
 
 
 ##-----------------------------------------------------------------------------
