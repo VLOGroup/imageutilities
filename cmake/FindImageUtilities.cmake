@@ -39,7 +39,7 @@ endif(NOT VMLIBRARIES_DIR)
 set(IU_USE_FILE ${VMLIBRARIES_CMAKE_ROOT}/UseImageUtilities.cmake CACHE FILEPATH "USE file for including the correct headers and libs.")
 
 # set a variable for all possible modules
-set(IU_MODULES iucore iuipp iumatlab iugui iuio iuiopgm iuvideocapture iupgrcamera)
+set(IU_MODULES iucore iuipp iumatlab iugui iuio iuiopgm iuvideocapture iupgrcamera iuvideosource)
 
 ################################################################################
 #
@@ -195,6 +195,7 @@ else(IU_INCLUDE_DIRS AND IU_LIBRARY_DIR)
   set(IU_IUIOPGM_LIB_DEPENDENCIES "")
   set(IU_IUVIDEOCAPTURE_LIB_DEPENDENCIES "")
   set(IU_IUPGRCAMERA_LIB_DEPENDENCIES "")
+  set(IU_VIDEOSOURCE_LIB_DEPENDENCIES "")
 
   ## CORE module
   if(IU_IUCORE_FOUND)
@@ -340,6 +341,27 @@ else(IU_INCLUDE_DIRS AND IU_LIBRARY_DIR)
 
   endif(IU_IUPGRCAMERA_FOUND)
 
+
+  ## VIDEOSOURCE module
+  if(IU_VIDEOSOURCE_FOUND)
+    # Qt4 (if no gui module is used)
+    if(NOT QT4_FOUND)
+      find_package(Qt4 COMPONENTS QtCore)
+      if(QT4_FOUND)
+        include(${QT_USE_FILE})
+        set(IU_VIDEOSOURCE_LIB_DEPENDENCIES ${IU_VIDEOSOURCE_LIB_DEPENDENCIES} ${QT_LIBRARIES})
+      endif(QT4_FOUND)
+    endif(NOT QT4_FOUND)
+
+    # Flycapture2 (pointgrey stuff)
+    find_package( FLYCAPTURE2 QUIET )
+    if(FLYCAPTURE2_INCLUDE_DIRS)
+      include_directories(${FLYCAPTURE2_INCLUDE_DIRS})
+      set(IU_VIDEOSOURCE_LIB_DEPENDENCIES ${IU_VIDEOSOURCE_LIB_DEPENDENCIES} ${FLYCAPTURE2_LIBRARIES})
+    endif(FLYCAPTURE2_INCLUDE_DIRS)
+
+  endif(IU_VIDEOSOURCE_FOUND)
+
   mark_as_advanced(
     IU_IUCORE_LIB_DEPENDENCIES 
     IU_IUIPP_LIB_DEPENDENCIES 
@@ -349,9 +371,11 @@ else(IU_INCLUDE_DIRS AND IU_LIBRARY_DIR)
     IU_IUIOPGM_LIB_DEPENDENCIES
     IU_IUVIDEOCAPTURE_LIB_DEPENDENCIES
     IU_IUPGRCAMERA_LIB_DEPENDENCIES
+    IU_VIDEOSOURCE_LIB_DEPENDENCIES
     IU_INCLUDE_DIRS 
     IU_LIBRARY_DIR
     IU_DEFINITIONS
+    
     )
 
 endif(IU_INCLUDE_DIRS AND IU_LIBRARY_DIR)
