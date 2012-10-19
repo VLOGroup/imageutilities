@@ -2,7 +2,7 @@
 #define VIDEOSOURCE_H
 
 #include <QObject>
-#include <cv.h>
+#include <opencv2/opencv.hpp>
 
 
 /** Abstract base class for Video Input */

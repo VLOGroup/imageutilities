@@ -28,7 +28,7 @@ VideofileSource::~VideofileSource()
 
 cv::Mat VideofileSource::getImage()
 {
-  if (!videocapture_->read(image_))
+  if (!videocapture_->read(imageBGR_))
   {
     std::cerr << "VideofileSource::getImage(): Error reading image, reached end of file?" << std::endl;
     return cv::Mat::zeros(width_, height_, CV_8UC3);
@@ -36,7 +36,8 @@ cv::Mat VideofileSource::getImage()
 
   frameNr_++;
 
-  return image_;
+  cv::cvtColor(imageBGR_, imageRGB_, CV_BGR2RGB);
+  return imageRGB_;
 }
 
 

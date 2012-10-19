@@ -3,7 +3,7 @@
 
 #include <string>
 #include "videosource.h"
-#include <highgui.h>
+#include <opencv2/highgui/highgui.hpp>
 
 /** A videosource to read images from a video file */
 class VideofileSource : public VideoSource
@@ -35,7 +35,8 @@ private:
 
   unsigned int totalFrames_;
   float fps_;
-  cv::Mat image_;
+  cv::Mat imageBGR_;
+  cv::Mat imageRGB_;
 };
 
 #endif // VIDEOFILESOURCE_H

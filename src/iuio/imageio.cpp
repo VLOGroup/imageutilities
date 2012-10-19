@@ -274,6 +274,7 @@ bool imsave(iu::ImageCpu_32f_C4* image, const std::string& filename, const bool&
     cv::normalize(a, a, 0.0, 1.0, cv::NORM_MINMAX);
   }
   cv::Mat mat_8u(sz.height, sz.width, CV_8UC4);
+  cv::merge(rgba, 4, mat_32f);
   mat_32f.convertTo(mat_8u, mat_8u.type(), 255, 0);
   cv::Mat bgr(sz.height, sz.width, CV_8UC3);
   cv::cvtColor(mat_8u, bgr, CV_RGBA2BGR);
