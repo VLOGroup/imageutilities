@@ -58,7 +58,7 @@ endif()
 ## Flags if modules are used.
 ## The modules are included per default unless dependencies not found or omitted by the user.
 ## (the core module is always included!)
-OPTION(VMLIBRARIES_IU_USE_SPARSE "Including Sparse Matrix module." OFF)
+OPTION(VMLIBRARIES_IU_USE_SPARSE "Including Sparse Matrix module." ON)
 OPTION(VMLIBRARIES_IU_USE_IPP "Including IPP module." ON)
 OPTION(VMLIBRARIES_IU_USE_MATLAB "Including Matlab module." ON)
 OPTION(VMLIBRARIES_IU_USE_GUI "Including GUI module." ON)
@@ -586,6 +586,7 @@ if(VMLIBRARIES_IU_USE_VIDEOSOURCE AND QT4_FOUND AND FLYCAPTURE2_FOUND)
   set( IU_VIDEOSOURCE_HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videosource.h
     ${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrsource.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrcameradata.h
     ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videofilesource.h
     )
 

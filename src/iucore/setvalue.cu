@@ -184,7 +184,7 @@ __global__ void cuSetValueKernel(T value, T* dst, size_t stride,
   x+=xoff;
   y+=yoff;
 
-  if(x>=0 && y>=0 && x<width && y<height)
+  if(x>=0 && y>=0 && x < x+width-1 && y < y+height-1)
   {
     dst[c] = value;
   }
@@ -195,43 +195,91 @@ __global__ void cuSetValueKernel(T value, T* dst, size_t stride,
 template<typename PixelType, class Allocator, IuPixelType _pixel_type>
 IuStatus cuSetValueTemplate(const PixelType &value,
                             iu::ImageGpu<PixelType, Allocator, _pixel_type> *dst,
-                            const IuRect& roi)
+                            const IuRect& roi, bool useMemset = false)
 {
-  // fragmentation
-  const unsigned int block_size = 16;
-  dim3 dimBlock(block_size, block_size);
-  dim3 dimGrid(iu::divUp(roi.width, dimBlock.x),
-               iu::divUp(roi.height, dimBlock.y));
-
-  cuSetValueKernel <<< dimGrid, dimBlock >>> (
-      value, dst->data(roi.x, roi.y), dst->stride(),
-      roi.x, roi.y, roi.width, roi.height);
-
+  if (useMemset && roi.width == dst->width() && roi.height == dst->height() && 
+      roi.x == 0 && roi.y == 0)
+  {
+    // if value = 0 use memset() which is a lot faster than the kernel call
+    cudaMemset2D(dst->data(), dst->pitch(), 0, dst->width(), dst->height());
+  }
+  else
+  {
+    // fragmentation
+    const unsigned int block_size = 16;
+    dim3 dimBlock(block_size, block_size);
+    dim3 dimGrid(iu::divUp(roi.width, dimBlock.x),
+		iu::divUp(roi.height, dimBlock.y));
+  
+    cuSetValueKernel <<< dimGrid, dimBlock >>> (
+	value, dst->data(roi.x, roi.y), dst->stride(),
+	roi.x, roi.y, roi.width, roi.height);
+  }
   IU_CHECK_AND_RETURN_CUDA_ERRORS();
 }
 
 //-----------------------------------------------------------------------------
 // specialized wrapper: set values (single value); 2D; 8-bit;
 IuStatus cuSetValue(const unsigned char& value, iu::ImageGpu_8u_C1 *dst, const IuRect &roi)
-{ return cuSetValueTemplate(value, dst, roi); }
+{ 
+  if (value == 0)
+    return cuSetValueTemplate(value, dst, roi, true);
+  else
+    return cuSetValueTemplate(value, dst, roi);
+}
 IuStatus cuSetValue(const uchar2& value, iu::ImageGpu_8u_C2 *dst, const IuRect &roi)
-{ return cuSetValueTemplate(value, dst, roi); }
+{ 
+  if (value.x == 0 && value.y == 0)
+    return cuSetValueTemplate(value, dst, roi, true);
+  else
+    return cuSetValueTemplate(value, dst, roi); 
+}
 IuStatus cuSetValue(const uchar3& value, iu::ImageGpu_8u_C3 *dst, const IuRect &roi)
-{ return cuSetValueTemplate(value, dst, roi); }
+{ 
+  if (value.x == 0 && value.y == 0 && value.z == 0)
+    return cuSetValueTemplate(value, dst, roi, true);
+  else
+    return cuSetValueTemplate(value, dst, roi); 
+}
 IuStatus cuSetValue(const uchar4& value, iu::ImageGpu_8u_C4 *dst, const IuRect &roi)
-{ return cuSetValueTemplate(value, dst, roi); }
+{ 
+  if (value.x == 0 && value.y == 0 && value.z == 0 && value.w == 0)
+    return cuSetValueTemplate(value, dst, roi, true);
+  else
+    return cuSetValueTemplate(value, dst, roi); 
+}
 // wrapper: set values (single value); 2D; 32-bit;
 IuStatus cuSetValue(const int& value, iu::ImageGpu_32s_C1 *dst, const IuRect &roi)
 { return cuSetValueTemplate(value, dst, roi); }
 // wrapper: set values (single value); 2D; 32-bit;
 IuStatus cuSetValue(const float& value, iu::ImageGpu_32f_C1 *dst, const IuRect &roi)
-{ return cuSetValueTemplate(value, dst, roi); }
+{ 
+  if (value == 0)
+    return cuSetValueTemplate(value, dst, roi, true);
+  else
+    return cuSetValueTemplate(value, dst, roi); 
+}
 IuStatus cuSetValue(const float2& value, iu::ImageGpu_32f_C2 *dst, const IuRect &roi)
-{ return cuSetValueTemplate(value, dst, roi); }
+{ 
+  if (value.x == 0 && value.y == 0)
+    return cuSetValueTemplate(value, dst, roi, true);
+  else
+    return cuSetValueTemplate(value, dst, roi); 
+}
 IuStatus cuSetValue(const float3& value, iu::ImageGpu_32f_C3 *dst, const IuRect &roi)
-{ return cuSetValueTemplate(value, dst, roi); }
+{
+  if (value.x == 0 && value.y == 0 && value.z == 0)
+    return cuSetValueTemplate(value, dst, roi, true);
+  else
+    return cuSetValueTemplate(value, dst, roi); 
+}
 IuStatus cuSetValue(const float4& value, iu::ImageGpu_32f_C4 *dst, const IuRect &roi)
-{ return cuSetValueTemplate(value, dst, roi); }
+{ 
+  if (value.x == 0 && value.y == 0 && value.z == 0 && value.w == 0)
+    return cuSetValueTemplate(value, dst, roi, true);
+  else
+    return cuSetValueTemplate(value, dst, roi); 
+}
 
 
 /* ****************************************************************************
@@ -252,9 +300,9 @@ __global__ void cuSetValueKernel(T value, T* dst, size_t stride, size_t slice_st
   x+=xoff;
   y+=yoff;
 
-  if(x>=0 && y>=0 && x<width && y<height)
+  if(x>=0 && y>=0 && x<x+width && y<y+height)
   {
-    for(int z = -min(0,zoff); z<depth; ++z)
+    for(int z = -min(0,zoff); z<depth; ++z)    // FIXXXME: fix z offset!
       dst[c+z*slice_stride] = value;
   }
 }
