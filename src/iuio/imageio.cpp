@@ -184,7 +184,8 @@ iu::ImageGpu_32f_C4* imread_cu32f_C4(const std::string& filename)
 bool imsave(iu::ImageCpu_8u_C1* image, const std::string& filename, const bool& normalize)
 {
   IuSize sz = image->size();
-  cv::Mat mat_8u(sz.height, sz.width, CV_8UC1, image->data(), image->pitch());
+  cv::Mat mat_imageCpu(sz.height, sz.width, CV_8UC1, image->data(), image->pitch());
+  cv::Mat mat_8u = mat_imageCpu.clone();
   if(normalize)
     cv::normalize(mat_8u, mat_8u, 0, 255, cv::NORM_MINMAX);
   return cv::imwrite(filename, mat_8u);
@@ -195,7 +196,8 @@ bool imsave(iu::ImageCpu_8u_C3* image, const std::string& filename, const bool& 
 {
   // TODO do normalization as in 32f_C3
   IuSize sz = image->size();
-  cv::Mat mat_8u(sz.height, sz.width, CV_8UC3, image->data(), image->pitch());
+  cv::Mat mat_imageCpu(sz.height, sz.width, CV_8UC3, image->data(), image->pitch());
+  cv::Mat mat_8u = mat_imageCpu.clone();
   if(normalize)
     cv::normalize(mat_8u, mat_8u, 0, 255, cv::NORM_MINMAX);
   cv::Mat bgr(sz.height, sz.width, CV_8UC3);
@@ -208,7 +210,8 @@ bool imsave(iu::ImageCpu_8u_C4* image, const std::string& filename, const bool& 
 {
   // TODO do normalization as in 32f_C4
   IuSize sz = image->size();
-  cv::Mat mat_8u(sz.height, sz.width, CV_8UC4, image->data(), image->pitch());
+  cv::Mat mat_imageCpu(sz.height, sz.width, CV_8UC4, image->data(), image->pitch());
+  cv::Mat mat_8u = mat_imageCpu.clone();
   if(normalize)
     cv::normalize(mat_8u, mat_8u, 0, 255, cv::NORM_MINMAX);
   cv::Mat bgr(sz.height, sz.width, CV_8UC3);
@@ -220,7 +223,8 @@ bool imsave(iu::ImageCpu_8u_C4* image, const std::string& filename, const bool& 
 bool imsave(iu::ImageCpu_32f_C1* image, const std::string& filename, const bool& normalize)
 {
   IuSize sz = image->size();
-  cv::Mat mat_32f(sz.height, sz.width, CV_32FC1, image->data(), image->pitch());
+  cv::Mat mat_imageCpu(sz.height, sz.width, CV_32FC1, image->data(), image->pitch());
+  cv::Mat mat_32f = mat_imageCpu.clone();
   if(normalize)
     cv::normalize(mat_32f, mat_32f, 0.0, 1.0, cv::NORM_MINMAX);
   cv::Mat mat_8u(sz.height, sz.width, CV_8UC1);
@@ -232,7 +236,8 @@ bool imsave(iu::ImageCpu_32f_C1* image, const std::string& filename, const bool&
 bool imsave(iu::ImageCpu_32f_C3* image, const std::string& filename, const bool& normalize)
 {
   IuSize sz = image->size();
-  cv::Mat mat_32f(sz.height, sz.width, CV_32FC3, image->data(), image->pitch());
+  cv::Mat mat_imageCpu(sz.height, sz.width, CV_32FC3, image->data(), image->pitch());
+  cv::Mat mat_32f = mat_imageCpu.clone();
   // get/normalize all the channels seperately
   cv::Mat r(mat_32f.rows, mat_32f.cols, CV_32FC1);
   cv::Mat g(mat_32f.rows, mat_32f.cols, CV_32FC1);
@@ -257,7 +262,8 @@ bool imsave(iu::ImageCpu_32f_C3* image, const std::string& filename, const bool&
 bool imsave(iu::ImageCpu_32f_C4* image, const std::string& filename, const bool& normalize)
 {
   IuSize sz = image->size();
-  cv::Mat mat_32f(sz.height, sz.width, CV_32FC4, image->data(), image->pitch());
+  cv::Mat mat_imageCpu(sz.height, sz.width, CV_32FC4, image->data(), image->pitch());
+  cv::Mat mat_32f = mat_imageCpu.clone();
   // get/normalize all the channels seperately
   cv::Mat r(mat_32f.rows, mat_32f.cols, CV_32FC1);
   cv::Mat g(mat_32f.rows, mat_32f.cols, CV_32FC1);

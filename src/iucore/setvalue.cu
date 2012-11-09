@@ -184,7 +184,7 @@ __global__ void cuSetValueKernel(T value, T* dst, size_t stride,
   x+=xoff;
   y+=yoff;
 
-  if(x>=0 && y>=0 && x < x+width-1 && y < y+height-1)
+  if(x>=0 && y>=0 && x < xoff+width-1 && y < yoff+height-1)
   {
     dst[c] = value;
   }
@@ -197,11 +197,11 @@ IuStatus cuSetValueTemplate(const PixelType &value,
                             iu::ImageGpu<PixelType, Allocator, _pixel_type> *dst,
                             const IuRect& roi, bool useMemset = false)
 {
-  if (useMemset && roi.width == dst->width() && roi.height == dst->height() && 
+  if (useMemset && roi.width == dst->width() && roi.height == dst->height() &&
       roi.x == 0 && roi.y == 0)
   {
     // if value = 0 use memset() which is a lot faster than the kernel call
-    cudaMemset2D(dst->data(), dst->pitch(), 0, dst->width(), dst->height());
+    cudaMemset2D(dst->data(), dst->pitch(), 0, dst->width()*sizeof(PixelType), dst->height());
   }
   else
   {
@@ -302,7 +302,7 @@ __global__ void cuSetValueKernel(T value, T* dst, size_t stride, size_t slice_st
 
   if(x>=0 && y>=0 && x<x+width && y<y+height)
   {
-    for(int z = -min(0,zoff); z<depth; ++z)    // FIXXXME: fix z offset!
+    for(int z = zoff; z<zoff+depth-1; ++z)
       dst[c+z*slice_stride] = value;
   }
 }
