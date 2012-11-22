@@ -18,7 +18,7 @@ class QGLImageGpuWidget;
 
 /** class documentation todo
  */
-class ImageWindow : public QWidget
+class IUGUI_DLLAPI ImageWindow : public QWidget
 {
   Q_OBJECT
 public:

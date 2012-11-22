@@ -69,7 +69,7 @@ QGLImageGpuWidget::QGLImageGpuWidget(QWidget *parent) :
   if (status != IU_NO_ERROR)
     fprintf(stderr,"QGLImageGpuWidget::QGLImageGpuWidget: error while init (widget + opengl).\n");
 
-  button_ == Qt::NoButton;
+  button_ = Qt::NoButton;
 
   context_menu_ = new QMenu("Widget properties", this);
   this->createActions();
