@@ -22,6 +22,7 @@
  */
 
 #include <math.h>
+#include <vector>
 #include "coredefs.h"
 #include "memorydefs.h"
 #include "iutransform/reduce.h"
@@ -33,17 +34,17 @@ namespace iu {
 //---------------------------------------------------------------------------
 ImagePyramid::ImagePyramid() :
   images_(0), pixel_type_(IU_UNKNOWN_PIXEL_TYPE), scale_factors_(0), num_levels_(0),
-  max_num_levels_(0), scale_factor_(0.0f), size_bound_(0)
+  max_num_levels_(0), scale_factor_(0.0f), size_bound_(0), adaptiveScale_(false)
 {
 }
 
 //---------------------------------------------------------------------------
 ImagePyramid::ImagePyramid(unsigned int& max_num_levels, const IuSize& size, const float& scale_factor,
-                           unsigned int size_bound) :
+                           unsigned int size_bound, bool adaptiveScale) :
   images_(0), pixel_type_(IU_UNKNOWN_PIXEL_TYPE), scale_factors_(0), num_levels_(0),
-  max_num_levels_(0), scale_factor_(0.0f), size_bound_(0)
+  max_num_levels_(0), scale_factor_(0.0f), size_bound_(0), adaptiveScale_(adaptiveScale)
 {
-  max_num_levels = this->init(max_num_levels, size, scale_factor, size_bound);
+  max_num_levels = this->init(max_num_levels, size, scale_factor, size_bound, adaptiveScale_);
 }
 
 //---------------------------------------------------------------------------
@@ -54,7 +55,7 @@ ImagePyramid::~ImagePyramid()
 
 //---------------------------------------------------------------------------
 unsigned int ImagePyramid::init(unsigned int max_num_levels, const IuSize& size,
-                                const float& scale_factor, unsigned int size_bound)
+                                const float& scale_factor, unsigned int size_bound, bool adaptiveScale)
 {
   if ((scale_factor <= 0) || (scale_factor >=1))
   {
@@ -68,8 +69,10 @@ unsigned int ImagePyramid::init(unsigned int max_num_levels, const IuSize& size,
   num_levels_ = max_num_levels_;
   size_bound_ = IUMAX(1u, size_bound);
 
-  // calculate the maximum number of levels
   unsigned int shorter_side = (size.width<size.height) ? size.width : size.height;
+
+#if 0
+  // calculate the maximum number of levels
   float ratio = static_cast<float>(shorter_side)/static_cast<float>(size_bound_);
   // +1 because the original size is level 0
   unsigned int possible_num_levels = static_cast<int>(
@@ -83,6 +86,57 @@ unsigned int ImagePyramid::init(unsigned int max_num_levels, const IuSize& size,
   {
     scale_factors_[i] = pow(scale_factor, static_cast<float>(i));
   }
+#else
+  // start at level 1, otherwise while loop goes one step too far
+  shorter_side *= scale_factor;
+  int sz = shorter_side;
+  std::vector<float> scales;
+  if (adaptiveScale) assert(sz > 64);
+  while (sz > size_bound_)
+  {
+    // calculate new scale factor
+    if (adaptiveScale)
+    {
+      if (sz >= 512)
+        scales.push_back(pow(scale_factor, scales.size()));
+      else if (sz >= 256)
+      {
+        float ss = scales.empty() ? scale_factor : scales.back();
+        if (scales.empty())
+          scales.push_back(pow(scale_factor, scales.size()));
+        else
+          scales.push_back(ss*IUMAX(0.6f,scale_factor));
+      }
+      else if (sz >= 128)
+      {
+        float ss = scales.empty() ? scale_factor : scales.back();
+        if (scales.empty())
+          scales.push_back(pow(scale_factor, scales.size()));
+        else
+          scales.push_back(ss*IUMAX(0.7f,scale_factor));
+      }
+      else if (sz >= 64)
+      {
+        float ss = scales.empty() ? scale_factor : scales.back();
+        scales.push_back(ss*IUMAX(0.75f,scale_factor));
+      }
+      else if (sz >= 32)
+        scales.push_back(scales.back()*IUMAX(0.8f,scale_factor));
+      else
+        scales.push_back(scales.back()*IUMAX(0.85f,scale_factor));
+    }
+    else
+      scales.push_back(pow(scale_factor, scales.size()));
+
+    // calculate new size
+    sz = static_cast<int>(floor(0.5+static_cast<float>(shorter_side)*scales.back()));
+  }
+
+  num_levels_ = scales.size();
+  scale_factors_ = new float[num_levels_];
+  for (int i=0; i < scales.size(); i++)
+    scale_factors_[i] = scales.at(i);
+#endif
 
   return num_levels_;
 }
