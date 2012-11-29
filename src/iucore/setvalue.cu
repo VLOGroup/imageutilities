@@ -184,7 +184,7 @@ __global__ void cuSetValueKernel(T value, T* dst, size_t stride,
   x+=xoff;
   y+=yoff;
 
-  if(x>=0 && y>=0 && x < xoff+width-1 && y < yoff+height-1)
+  if(x>=0 && y>=0 && x < xoff+width && y < yoff+height)
   {
     dst[c] = value;
   }
@@ -290,19 +290,20 @@ IuStatus cuSetValue(const float4& value, iu::ImageGpu_32f_C4 *dst, const IuRect 
 // kernel: 3D set values; multi-channel
 template<class T>
 __global__ void cuSetValueKernel(T value, T* dst, size_t stride, size_t slice_stride,
-                                 int xoff, int yoff, int zoff, int width, int height, int depth)
+                                 int xoff, int yoff, int zoff, int roi_width, int roi_height,
+                                 int roi_depth, int width, int height, int depth)
 {
   int x = blockIdx.x*blockDim.x + threadIdx.x;
   int y = blockIdx.y*blockDim.y + threadIdx.y;
+
   const int c =  y*stride+x;
 
-  // add xoff for checks after calculating the output pixel location c
   x+=xoff;
   y+=yoff;
 
-  if(x>=0 && y>=0 && x<x+width && y<y+height)
+  if(x>=0 && y>=0 && x<min(width,xoff+roi_width) && y<min(height,yoff+roi_height))
   {
-    for(int z = zoff; z<zoff+depth-1; ++z)
+    for(int z = 0; z<min(depth-zoff, roi_depth); ++z)
       dst[c+z*slice_stride] = value;
   }
 }
@@ -312,7 +313,7 @@ __global__ void cuSetValueKernel(T value, T* dst, size_t stride, size_t slice_st
 template<typename PixelType, class Allocator, IuPixelType _pixel_type>
 IuStatus cuSetValueTemplate(const PixelType &value,
                             iu::VolumeGpu<PixelType, Allocator, _pixel_type> *dst,
-                            const IuCube& roi)
+                            const IuCube& roi, bool useMemset = false)
 {
   // fragmentation
   const unsigned int block_size = 16;
@@ -320,9 +321,22 @@ IuStatus cuSetValueTemplate(const PixelType &value,
   dim3 dimGrid(iu::divUp(roi.width, dimBlock.x),
                iu::divUp(roi.height, dimBlock.y));
 
-  cuSetValueKernel <<< dimGrid, dimBlock >>> (
+  if (useMemset)
+  {
+    // dammit cuda, y u need width in bytes and height & depth in elements???
+    cudaPitchedPtr pp = make_cudaPitchedPtr(dst->data(),
+                                            dst->pitch(), dst->width()*sizeof(PixelType),
+                                            dst->height());
+    cudaExtent ex = make_cudaExtent(roi.width*sizeof(PixelType), roi.height, roi.depth);
+    cudaMemset3D(pp, 0, ex);
+  }
+  else
+  {
+    cuSetValueKernel <<< dimGrid, dimBlock >>> (
       value, dst->data(roi.x, roi.y, roi.z), dst->stride(), dst->slice_stride(),
-      roi.x, roi.y, roi.z, roi.width, roi.height, roi.depth);
+      roi.x, roi.y, roi.z, roi.width, roi.height, roi.depth, dst->width(), dst->height(),
+      dst->depth());
+  }
 
   IU_CHECK_AND_RETURN_CUDA_ERRORS();
 }
@@ -337,7 +351,13 @@ IuStatus cuSetValue(const uchar4& value, iu::VolumeGpu_8u_C4 *dst, const IuCube 
 { return cuSetValueTemplate(value, dst, roi); }
 // wrapper: set values (single value); 3D; 32-bit;
 IuStatus cuSetValue(const float& value, iu::VolumeGpu_32f_C1 *dst, const IuCube &roi)
-{ return cuSetValueTemplate(value, dst, roi); }
+{
+  if (value == 0 && roi.x == 0 && roi.y == 0 && roi.z == 0 && roi.width == dst->width() &&
+      roi.height == dst->height() && roi.depth == dst->depth())
+    return cuSetValueTemplate(value, dst, roi, true);
+  else
+    return cuSetValueTemplate(value, dst, roi);
+}
 IuStatus cuSetValue(const float2& value, iu::VolumeGpu_32f_C2 *dst, const IuCube &roi)
 { return cuSetValueTemplate(value, dst, roi); }
 IuStatus cuSetValue(const float4& value, iu::VolumeGpu_32f_C4 *dst, const IuCube &roi)
