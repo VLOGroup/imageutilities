@@ -202,6 +202,7 @@ IuStatus cuSetValueTemplate(const PixelType &value,
   {
     // if value = 0 use memset() which is a lot faster than the kernel call
     cudaMemset2D(dst->data(), dst->pitch(), 0, dst->width()*sizeof(PixelType), dst->height());
+    //printf("using fast memset\n");
   }
   else
   {
@@ -214,6 +215,7 @@ IuStatus cuSetValueTemplate(const PixelType &value,
     cuSetValueKernel <<< dimGrid, dimBlock >>> (
 	value, dst->data(roi.x, roi.y), dst->stride(),
 	roi.x, roi.y, roi.width, roi.height);
+    //printf("using kernel memset\n");
   }
   IU_CHECK_AND_RETURN_CUDA_ERRORS();
 }
@@ -353,6 +355,54 @@ IuStatus cuSetValue(const uchar4& value, iu::VolumeGpu_8u_C4 *dst, const IuCube 
 IuStatus cuSetValue(const float& value, iu::VolumeGpu_32f_C1 *dst, const IuCube &roi)
 {
   if (value == 0 && roi.x == 0 && roi.y == 0 && roi.z == 0 && roi.width == dst->width() &&
+      roi.height == dst->height() && roi.depth == dst->depth())
+    return cuSetValueTemplate(value, dst, roi, true);
+  else
+    return cuSetValueTemplate(value, dst, roi);
+}
+IuStatus cuSetValue(const unsigned int& value, iu::VolumeGpu_32u_C1 *dst, const IuCube &roi)
+{
+  if (value == 0 && roi.x == 0 && roi.y == 0 && roi.z == 0 && roi.width == dst->width() &&
+      roi.height == dst->height() && roi.depth == dst->depth())
+    return cuSetValueTemplate(value, dst, roi, true);
+  else
+    return cuSetValueTemplate(value, dst, roi);
+}
+IuStatus cuSetValue(const uint2& value, iu::VolumeGpu_32u_C2 *dst, const IuCube &roi)
+{
+  if (value.x == 0 && value.y == 0 &&  roi.x == 0 && roi.y == 0 && roi.z == 0 && roi.width == dst->width() &&
+      roi.height == dst->height() && roi.depth == dst->depth())
+    return cuSetValueTemplate(value, dst, roi, true);
+  else
+    return cuSetValueTemplate(value, dst, roi);
+}
+IuStatus cuSetValue(const uint4& value, iu::VolumeGpu_32u_C4 *dst, const IuCube &roi)
+{
+  if (value.x == 0 && value.y == 0 && value.z == 0 && value.w == 0 && roi.x == 0 && roi.y == 0 && roi.z == 0 && roi.width == dst->width() &&
+      roi.height == dst->height() && roi.depth == dst->depth())
+    return cuSetValueTemplate(value, dst, roi, true);
+  else
+    return cuSetValueTemplate(value, dst, roi);
+}
+IuStatus cuSetValue(const int& value, iu::VolumeGpu_32s_C1 *dst, const IuCube &roi)
+{
+  if (value == 0 && roi.x == 0 && roi.y == 0 && roi.z == 0 && roi.width == dst->width() &&
+      roi.height == dst->height() && roi.depth == dst->depth())
+    return cuSetValueTemplate(value, dst, roi, true);
+  else
+    return cuSetValueTemplate(value, dst, roi);
+}
+IuStatus cuSetValue(const int2& value, iu::VolumeGpu_32s_C2 *dst, const IuCube &roi)
+{
+  if (value.x == 0 && value.y == 0 &&  roi.x == 0 && roi.y == 0 && roi.z == 0 && roi.width == dst->width() &&
+      roi.height == dst->height() && roi.depth == dst->depth())
+    return cuSetValueTemplate(value, dst, roi, true);
+  else
+    return cuSetValueTemplate(value, dst, roi);
+}
+IuStatus cuSetValue(const int4& value, iu::VolumeGpu_32s_C4 *dst, const IuCube &roi)
+{
+  if (value.x == 0 && value.y == 0 && value.z == 0 && value.w == 0 && roi.x == 0 && roi.y == 0 && roi.z == 0 && roi.width == dst->width() &&
       roi.height == dst->height() && roi.depth == dst->depth())
     return cuSetValueTemplate(value, dst, roi, true);
   else

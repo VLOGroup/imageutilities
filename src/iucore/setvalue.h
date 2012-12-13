@@ -61,6 +61,13 @@ extern IuStatus cuSetValue(const uchar4& value, iu::VolumeGpu_8u_C4 *dst, const 
 extern IuStatus cuSetValue(const float& value, iu::VolumeGpu_32f_C1 *dst, const IuCube &roi);
 extern IuStatus cuSetValue(const float2& value, iu::VolumeGpu_32f_C2 *dst, const IuCube &roi);
 extern IuStatus cuSetValue(const float4& value, iu::VolumeGpu_32f_C4 *dst, const IuCube &roi);
+extern IuStatus cuSetValue(const unsigned int& value, iu::VolumeGpu_32u_C1 *dst, const IuCube &roi);
+extern IuStatus cuSetValue(const uint2& value, iu::VolumeGpu_32u_C2 *dst, const IuCube &roi);
+extern IuStatus cuSetValue(const uint4& value, iu::VolumeGpu_32u_C4 *dst, const IuCube &roi);
+extern IuStatus cuSetValue(const int& value, iu::VolumeGpu_32s_C1 *dst, const IuCube &roi);
+extern IuStatus cuSetValue(const int2& value, iu::VolumeGpu_32s_C2 *dst, const IuCube &roi);
+extern IuStatus cuSetValue(const int4& value, iu::VolumeGpu_32s_C4 *dst, const IuCube &roi);
+
 /* ***************************************************************************/
 
 

@@ -202,6 +202,14 @@ IUCORE_DLLAPI void copy(const VolumeCpu_16u_C1* src, VolumeCpu_16u_C1* dst);
 IUCORE_DLLAPI void copy(const VolumeCpu_32f_C1* src, VolumeCpu_32f_C1* dst);
 IUCORE_DLLAPI void copy(const VolumeCpu_32f_C2* src, VolumeCpu_32f_C2* dst);
 IUCORE_DLLAPI void copy(const VolumeCpu_32f_C4* src, VolumeCpu_32f_C4* dst);
+IUCORE_DLLAPI void copy(const VolumeCpu_32u_C1* src, VolumeCpu_32u_C1* dst);
+IUCORE_DLLAPI void copy(const VolumeCpu_32u_C2* src, VolumeCpu_32u_C2* dst);
+IUCORE_DLLAPI void copy(const VolumeCpu_32u_C4* src, VolumeCpu_32u_C4* dst);
+
+IUCORE_DLLAPI void copy(const VolumeCpu_32s_C1* src, VolumeCpu_32s_C1* dst);
+IUCORE_DLLAPI void copy(const VolumeCpu_32s_C2* src, VolumeCpu_32s_C2* dst);
+IUCORE_DLLAPI void copy(const VolumeCpu_32s_C4* src, VolumeCpu_32s_C4* dst);
+
 
 // 3D; copy device -> device;
 /** Copy methods for device to device 3D copy
@@ -215,6 +223,14 @@ IUCORE_DLLAPI void copy(const VolumeGpu_16u_C1* src, VolumeGpu_16u_C1* dst);
 IUCORE_DLLAPI void copy(const VolumeGpu_32f_C1* src, VolumeGpu_32f_C1* dst);
 IUCORE_DLLAPI void copy(const VolumeGpu_32f_C2* src, VolumeGpu_32f_C2* dst);
 IUCORE_DLLAPI void copy(const VolumeGpu_32f_C4* src, VolumeGpu_32f_C4* dst);
+IUCORE_DLLAPI void copy(const VolumeGpu_32u_C1* src, VolumeGpu_32u_C1* dst);
+IUCORE_DLLAPI void copy(const VolumeGpu_32u_C2* src, VolumeGpu_32u_C2* dst);
+IUCORE_DLLAPI void copy(const VolumeGpu_32u_C4* src, VolumeGpu_32u_C4* dst);
+
+IUCORE_DLLAPI void copy(const VolumeGpu_32s_C1* src, VolumeGpu_32s_C1* dst);
+IUCORE_DLLAPI void copy(const VolumeGpu_32s_C2* src, VolumeGpu_32s_C2* dst);
+IUCORE_DLLAPI void copy(const VolumeGpu_32s_C4* src, VolumeGpu_32s_C4* dst);
+
 
 // 3D; copy host -> device;
 /** Copy methods for host to device 3D copy
@@ -228,6 +244,13 @@ IUCORE_DLLAPI void copy(const VolumeCpu_16u_C1* src, VolumeGpu_16u_C1* dst);
 IUCORE_DLLAPI void copy(const VolumeCpu_32f_C1* src, VolumeGpu_32f_C1* dst);
 IUCORE_DLLAPI void copy(const VolumeCpu_32f_C2* src, VolumeGpu_32f_C2* dst);
 IUCORE_DLLAPI void copy(const VolumeCpu_32f_C4* src, VolumeGpu_32f_C4* dst);
+IUCORE_DLLAPI void copy(const VolumeCpu_32u_C1* src, VolumeGpu_32u_C1* dst);
+IUCORE_DLLAPI void copy(const VolumeCpu_32u_C2* src, VolumeGpu_32u_C2* dst);
+IUCORE_DLLAPI void copy(const VolumeCpu_32u_C4* src, VolumeGpu_32u_C4* dst);
+
+IUCORE_DLLAPI void copy(const VolumeCpu_32s_C1* src, VolumeGpu_32s_C1* dst);
+IUCORE_DLLAPI void copy(const VolumeCpu_32s_C2* src, VolumeGpu_32s_C2* dst);
+IUCORE_DLLAPI void copy(const VolumeCpu_32s_C4* src, VolumeGpu_32s_C4* dst);
 
 // 3D; copy device -> host;
 /** Copy methods for device to host 3D copy
@@ -241,6 +264,14 @@ IUCORE_DLLAPI void copy(const VolumeGpu_16u_C1* src, VolumeCpu_16u_C1* dst);
 IUCORE_DLLAPI void copy(const VolumeGpu_32f_C1* src, VolumeCpu_32f_C1* dst);
 IUCORE_DLLAPI void copy(const VolumeGpu_32f_C2* src, VolumeCpu_32f_C2* dst);
 IUCORE_DLLAPI void copy(const VolumeGpu_32f_C4* src, VolumeCpu_32f_C4* dst);
+IUCORE_DLLAPI void copy(const VolumeGpu_32u_C1* src, VolumeCpu_32u_C1* dst);
+IUCORE_DLLAPI void copy(const VolumeGpu_32u_C2* src, VolumeCpu_32u_C2* dst);
+IUCORE_DLLAPI void copy(const VolumeGpu_32u_C4* src, VolumeCpu_32u_C4* dst);
+
+IUCORE_DLLAPI void copy(const VolumeGpu_32s_C1* src, VolumeCpu_32s_C1* dst);
+IUCORE_DLLAPI void copy(const VolumeGpu_32s_C2* src, VolumeCpu_32s_C2* dst);
+IUCORE_DLLAPI void copy(const VolumeGpu_32s_C4* src, VolumeCpu_32s_C4* dst);
+
 
 /** \} */ // end of Copy3D
 
@@ -329,6 +360,14 @@ IUCORE_DLLAPI void setValue(const uchar4& value, VolumeCpu_8u_C4* srcdst, const 
 IUCORE_DLLAPI void setValue(const float& value, VolumeCpu_32f_C1* srcdst, const IuCube& roi);
 IUCORE_DLLAPI void setValue(const float2& value, VolumeCpu_32f_C2* srcdst, const IuCube& roi);
 IUCORE_DLLAPI void setValue(const float4& value, VolumeCpu_32f_C4* srcdst, const IuCube& roi);
+IUCORE_DLLAPI void setValue(const unsigned int& value, VolumeCpu_32u_C1* srcdst, const IuCube& roi);
+IUCORE_DLLAPI void setValue(const uint2& value, VolumeCpu_32u_C2* srcdst, const IuCube& roi);
+IUCORE_DLLAPI void setValue(const uint4& value, VolumeCpu_32u_C4* srcdst, const IuCube& roi);
+
+IUCORE_DLLAPI void setValue(const int& value, VolumeCpu_32s_C1* srcdst, const IuCube& roi);
+IUCORE_DLLAPI void setValue(const int2& value, VolumeCpu_32s_C2* srcdst, const IuCube& roi);
+IUCORE_DLLAPI void setValue(const int4& value, VolumeCpu_32s_C4* srcdst, const IuCube& roi);
+
 // device:
 IUCORE_DLLAPI void setValue(const unsigned char& value, VolumeGpu_8u_C1* srcdst, const IuCube& roi);
 IUCORE_DLLAPI void setValue(const uchar2& value, VolumeGpu_8u_C2* srcdst, const IuCube& roi);
@@ -336,6 +375,13 @@ IUCORE_DLLAPI void setValue(const uchar4& value, VolumeGpu_8u_C4* srcdst, const 
 IUCORE_DLLAPI void setValue(const float& value, VolumeGpu_32f_C1* srcdst, const IuCube& roi);
 IUCORE_DLLAPI void setValue(const float2& value, VolumeGpu_32f_C2* srcdst, const IuCube& roi);
 IUCORE_DLLAPI void setValue(const float4& value, VolumeGpu_32f_C4* srcdst, const IuCube& roi);
+IUCORE_DLLAPI void setValue(const unsigned int& value, VolumeGpu_32u_C1* srcdst, const IuCube& roi);
+IUCORE_DLLAPI void setValue(const uint2& value, VolumeGpu_32u_C2* srcdst, const IuCube& roi);
+IUCORE_DLLAPI void setValue(const uint4& value, VolumeGpu_32u_C4* srcdst, const IuCube& roi);
+
+IUCORE_DLLAPI void setValue(const int& value, VolumeGpu_32s_C1* srcdst, const IuCube& roi);
+IUCORE_DLLAPI void setValue(const int2& value, VolumeGpu_32s_C2* srcdst, const IuCube& roi);
+IUCORE_DLLAPI void setValue(const int4& value, VolumeGpu_32s_C4* srcdst, const IuCube& roi);
 
 /** \} */ // end of Set3D
 
