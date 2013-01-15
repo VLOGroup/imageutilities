@@ -98,12 +98,12 @@ unsigned int ImagePyramid::init(unsigned int max_num_levels, const IuSize& size,
     if (adaptiveScale)
     {
       if (sz >= 512)
-        scales.push_back(pow(scale_factor, scales.size()));
+        scales.push_back(pow(scale_factor, static_cast<float>(scales.size())));
       else if (sz >= 256)
       {
         float ss = scales.empty() ? scale_factor : scales.back();
         if (scales.empty())
-          scales.push_back(pow(scale_factor, scales.size()));
+          scales.push_back(pow(scale_factor, static_cast<float>(scales.size())));
         else
           scales.push_back(ss*IUMAX(0.6f,scale_factor));
       }
@@ -111,7 +111,7 @@ unsigned int ImagePyramid::init(unsigned int max_num_levels, const IuSize& size,
       {
         float ss = scales.empty() ? scale_factor : scales.back();
         if (scales.empty())
-          scales.push_back(pow(scale_factor, scales.size()));
+          scales.push_back(pow(scale_factor, static_cast<float>(scales.size())));
         else
           scales.push_back(ss*IUMAX(0.7f,scale_factor));
       }
@@ -126,7 +126,7 @@ unsigned int ImagePyramid::init(unsigned int max_num_levels, const IuSize& size,
         scales.push_back(scales.back()*IUMAX(0.85f,scale_factor));
     }
     else
-      scales.push_back(pow(scale_factor, scales.size()));
+      scales.push_back(pow(scale_factor, static_cast<float>(scales.size())));
 
     // calculate new size
     sz = static_cast<int>(floor(0.5+static_cast<float>(shorter_side)*scales.back()));
