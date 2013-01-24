@@ -90,8 +90,28 @@ void minMax(const ImageGpu_32f_C2* src, const IuRect& roi, float2& min, float2& 
 void minMax(const ImageGpu_32f_C4* src, const IuRect& roi, float4& min, float4& max)
 {iuprivate::minMax(src, roi, min, max);}
 
+// find min/max; host; 8-bit
+void minMax(const ImageCpu_8u_C1* src, const IuRect& roi, unsigned char& min, unsigned char& max)
+{iuprivate::minMax(src, roi, min, max);}
+void minMax(const ImageCpu_8u_C4* src, const IuRect& roi, uchar4& min, uchar4& max)
+{iuprivate::minMax(src, roi, min, max);}
+
+// find min/max; host; 32-bit
+void minMax(const iu::ImageCpu_32f_C1* src, const IuRect& roi, float& min, float& max)
+{iuprivate::minMax(src, roi, min, max);}
+void minMax(const ImageCpu_32f_C2* src, const IuRect& roi, float2& min, float2& max)
+{iuprivate::minMax(src, roi, min, max);}
+void minMax(const ImageCpu_32f_C4* src, const IuRect& roi, float4& min, float4& max)
+{iuprivate::minMax(src, roi, min, max);}
+
+
+
 // find min/max; volume; device; 32-bit
 void minMax(const iu::VolumeGpu_32f_C1* src, float& min, float& max)
+{iuprivate::minMax(src, min, max);}
+
+// find min/max; volume; host; 32-bit
+void minMax(const iu::VolumeCpu_32f_C4* src, float4& min, float4& max)
 {iuprivate::minMax(src, min, max);}
 
 // find min value and its coordinates; 32-bit

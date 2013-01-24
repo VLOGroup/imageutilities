@@ -21,6 +21,7 @@
  *
  */
 
+#include <iucore/copy.h>
 #include "statistics.cuh"
 #include "statistics.h"
 
@@ -133,6 +134,62 @@ void minMax(const iu::ImageGpu_32f_C4 *src, const IuRect &roi, float4& min, floa
   if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
 }
 
+
+
+// [host] find min/max value of image; 8-bit; 1-channel
+void minMax(const iu::ImageCpu_8u_C1 *src, const IuRect &roi, unsigned char& min, unsigned char& max)
+{
+  IuStatus status;
+  printf("wrapper\n");
+  iu::ImageGpu_8u_C1 temp(src->size());
+  iuprivate::copy(src, &temp);
+  status = cuMinMax(&temp, roi, min, max);
+  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
+}
+
+// [host] find min/max value of image; 8-bit; 4-channel
+void minMax(const iu::ImageCpu_8u_C4 *src, const IuRect &roi, uchar4& min, uchar4& max)
+{
+  IuStatus status;
+  iu::ImageGpu_8u_C4 temp(src->size());
+  iuprivate::copy(src, &temp);
+  status = cuMinMax(&temp, roi, min, max);
+  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+// [host] find min/max value of image; 32-bit; 1-channel
+void minMax(const iu::ImageCpu_32f_C1 *src, const IuRect &roi, float& min, float& max)
+{
+  IuStatus status;
+  iu::ImageGpu_32f_C1 temp(src->size());
+  iuprivate::copy(src, &temp);
+  status = cuMinMax(&temp, roi, min, max);
+  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
+}
+
+// [host] find min/max value of image; 32-bit; 2-channel
+void minMax(const iu::ImageCpu_32f_C2 *src, const IuRect &roi, float2& min, float2& max)
+{
+  IuStatus status;
+  iu::ImageGpu_32f_C2 temp(src->size());
+  iuprivate::copy(src, &temp);
+  status = cuMinMax(&temp, roi, min, max);
+  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
+}
+
+// [host] find min/max value of image; 32-bit; 4-channel
+void minMax(const iu::ImageCpu_32f_C4 *src, const IuRect &roi, float4& min, float4& max)
+{
+  IuStatus status;
+  iu::ImageGpu_32f_C4 temp(src->size());
+  iuprivate::copy(src, &temp);
+  status = cuMinMax(&temp, roi, min, max);
+  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
+}
+
+
 ///////////////////////////////////////////////////////////////////////////////
 
 // [device] find min/max value of volume; 32-bit; 1-channel
@@ -142,6 +199,49 @@ void minMax(const iu::VolumeGpu_32f_C1 *src, float& min, float& max)
   status = cuMinMax(src, min, max);
   if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
 }
+
+// [host] find min/max value of volume; 32-bit; 4-channel
+void minMax(const iu::VolumeCpu_32f_C4 *src, float4& min, float4& max)
+{
+  IuStatus status;
+
+  float4 minTemp = make_float4(1e6f,1e6f,1e6f,1e6f);
+  float4 maxTemp = make_float4(-1e6f,-1e6f,-1e6f,-1e6f);
+
+  for (unsigned int z = 0; z < src->depth(); z++)
+  {
+    for (unsigned int y = 0; y < src->height(); y++)
+    {
+      for (unsigned int x = 0; x < src->width(); x++)
+      {
+        float4 val = *src->data(x,y,z);
+        if (val.x < minTemp.x)
+          minTemp.x = val.x;
+        if (val.y < minTemp.y)
+          minTemp.y = val.y;
+        if (val.z < minTemp.z)
+          minTemp.z = val.z;
+        if (val.w < minTemp.w)
+          minTemp.w = val.w;
+
+        if (val.x > maxTemp.x)
+          maxTemp.x = val.x;
+        if (val.y > maxTemp.y)
+          maxTemp.y = val.y;
+        if (val.z > maxTemp.z)
+          maxTemp.z = val.z;
+        if (val.w > maxTemp.w)
+          maxTemp.w = val.w;
+      }
+    }
+  }
+  min = minTemp;
+  max = maxTemp;
+  status = IU_SUCCESS;
+
+  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
+}
+
 
 
 ///////////////////////////////////////////////////////////////////////////////

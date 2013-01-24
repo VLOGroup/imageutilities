@@ -18,6 +18,7 @@
 # EMail      : werlberger@icg.tugraz.at
 
 PROJECT(imageutilities CXX C)
+cmake_minimum_required(VERSION 2.8)
 add_subdirectory(src)
 add_subdirectory(mex)
 add_subdirectory(tests)

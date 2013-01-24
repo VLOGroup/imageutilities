@@ -144,6 +144,15 @@ IUCORE_DLLAPI void minMax(const ImageGpu_32f_C1* src, const IuRect& roi, float& 
 IUCORE_DLLAPI void minMax(const ImageGpu_32f_C2* src, const IuRect& roi, float2& min, float2& max);
 IUCORE_DLLAPI void minMax(const ImageGpu_32f_C4* src, const IuRect& roi, float4& min, float4& max);
 
+// find min/max; host; 8-bit
+IUCORE_DLLAPI void minMax(const ImageCpu_8u_C1* src, const IuRect& roi, unsigned char& min, unsigned char& max);
+IUCORE_DLLAPI void minMax(const ImageCpu_8u_C4* src, const IuRect& roi, uchar4& min, uchar4& max);
+// find min/max; host; 32-bit
+IUCORE_DLLAPI void minMax(const ImageCpu_32f_C1* src, const IuRect& roi, float& min, float& max);
+IUCORE_DLLAPI void minMax(const ImageCpu_32f_C2* src, const IuRect& roi, float2& min, float2& max);
+IUCORE_DLLAPI void minMax(const ImageCpu_32f_C4* src, const IuRect& roi, float4& min, float4& max);
+
+
 
 /** Finds the minimum and maximum value of a volume.
  * \param src Source image [device]
@@ -154,6 +163,8 @@ IUCORE_DLLAPI void minMax(const ImageGpu_32f_C4* src, const IuRect& roi, float4&
  */
 // find min/max; volume; device; 32-bit
 IUCORE_DLLAPI void minMax(const iu::VolumeGpu_32f_C1* src, float& min, float& max);
+
+IUCORE_DLLAPI void minMax(const iu::VolumeCpu_32f_C4* src, float4& min, float4& max);
 
 
 /** Finds the minimum value of an image in a certain ROI and the minimums coordinates.

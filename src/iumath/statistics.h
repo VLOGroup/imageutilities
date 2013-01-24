@@ -58,8 +58,22 @@ void minMax(const iu::ImageGpu_32f_C1 *src, const IuRect &roi, float& min, float
 void minMax(const iu::ImageGpu_32f_C2 *src, const IuRect &roi, float2& min, float2& max);
 void minMax(const iu::ImageGpu_32f_C4 *src, const IuRect &roi, float4& min, float4& max);
 
+
+// find min/max; host; 8-bit
+void minMax(const iu::ImageCpu_8u_C1 *src, const IuRect &roi, unsigned char& min, unsigned char& max);
+void minMax(const iu::ImageCpu_8u_C4 *src, const IuRect &roi, uchar4& min, uchar4& max);
+
+// find min/max; host; 32-bit
+void minMax(const iu::ImageCpu_32f_C1 *src, const IuRect &roi, float& min, float& max);
+void minMax(const iu::ImageCpu_32f_C2 *src, const IuRect &roi, float2& min, float2& max);
+void minMax(const iu::ImageCpu_32f_C4 *src, const IuRect &roi, float4& min, float4& max);
+
+
 // find min/max; volume; device; 32-bit
 void minMax(const iu::VolumeGpu_32f_C1 *src, float& min, float& max);
+
+// find min/max; volume; host; 32-bit
+void minMax(const iu::VolumeCpu_32f_C4 *src, float4& min, float4& max);
 
 /** Finds the minimum value of an image in a certain ROI and the minimums coordinates.
  * \param src Source image [device]

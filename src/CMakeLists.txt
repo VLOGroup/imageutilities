@@ -19,7 +19,7 @@
 
 project(imageutilities_lib CXX C)
 #set(CMAKE_BUILD_TYPE Debug)
-cmake_minimum_required(VERSION 2.8.0)
+cmake_minimum_required(VERSION 2.8)
 
 # cleanup
 set(${IU_PUBLIC_HEADERS} "")
@@ -58,7 +58,7 @@ endif()
 ## Flags if modules are used.
 ## The modules are included per default unless dependencies not found or omitted by the user.
 ## (the core module is always included!)
-OPTION(VMLIBRARIES_IU_USE_SPARSE "Including Sparse Matrix module." ON)
+OPTION(VMLIBRARIES_IU_USE_SPARSE "Including Sparse Matrix module." OFF)
 OPTION(VMLIBRARIES_IU_USE_IPP "Including IPP module." ON)
 OPTION(VMLIBRARIES_IU_USE_MATLAB "Including Matlab module." ON)
 OPTION(VMLIBRARIES_IU_USE_GUI "Including GUI module." ON)
