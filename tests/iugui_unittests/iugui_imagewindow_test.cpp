@@ -9,11 +9,6 @@
 
 // includes
 #include <cuda_runtime.h>
-#include <cutil_inline.h>
-#include <cutil_gl_inline.h>
-#include <cutil_gl_error.h>
-#include <cuda_gl_interop.h>
-
 
 
 #include <iostream>
@@ -34,7 +29,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 void dumm_display( void ) {}
 
-CUTBoolean initGL(int argc, char **argv)
+bool initGL(int argc, char **argv)
 {
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
@@ -47,7 +42,7 @@ CUTBoolean initGL(int argc, char **argv)
   if (! glewIsSupported("GL_VERSION_2_0 ")) {
     fprintf(stderr, "ERROR: Support for necessary OpenGL extensions missing.");
     fflush(stderr);
-    return CUTFalse;
+    return false;
   }
 
   // default initialization
@@ -62,30 +57,29 @@ CUTBoolean initGL(int argc, char **argv)
   glLoadIdentity();
   gluPerspective(60.0, (GLfloat)10 / (GLfloat) 10, 0.1, 10.0);
 
-  CUT_CHECK_ERROR_GL();
-
+  
   // start gui for the main application
   //cudaError_t error = cudaGLSetGLDevice(0);
   //cutilGLDeviceInit(argc, argv);
   int deviceCount;
-  cutilSafeCallNoSync(cudaGetDeviceCount(&deviceCount));
+  cudaGetDeviceCount(&deviceCount);
   if (deviceCount == 0) {
     fprintf(stderr, "CUTIL CUDA error: no devices supporting CUDA.\n");
     exit(-1);
   }
   int dev = 0;
   cudaDeviceProp deviceProp;
-  cutilSafeCallNoSync(cudaGetDeviceProperties(&deviceProp, dev));
+  cudaGetDeviceProperties(&deviceProp, dev);
   if (deviceProp.major < 1) {
     fprintf(stderr, "cutil error: device does not support CUDA.\n");
     exit(-1);
   }
   printf("gpu=%s\n", deviceProp.name);
-  cutilSafeCall(cudaGLSetGLDevice(dev));
+  cudaGLSetGLDevice(dev);
 
   glutDestroyWindow(bla);
 
-  return CUTTrue;
+  return true;
 }
 
 int main(int argc, char **argv)

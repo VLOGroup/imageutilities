@@ -30,11 +30,11 @@ endif()
 if(HAVE_64_BIT)
   set(CMAKE_LIB_ARCH_APPENDIX 64)
   set(FLYCAPTURE2_POSSIBLE_LIB_DIRS "lib64" "lib" "bin")
-  message( STATUS "FOUND 64 BIT SYSTEM")
+  #message( STATUS "FOUND 64 BIT SYSTEM")
 else()
   set(CMAKE_LIB_ARCH_APPENDIX 32)
   set(FLYCAPTURE2_POSSIBLE_LIB_DIRS "lib" "bin")
-  message( STATUS "FOUND 32 BIT SYSTEM")
+  #message( STATUS "FOUND 32 BIT SYSTEM")
 endif()
 
 # FIND THE FlyCapture2++ include path

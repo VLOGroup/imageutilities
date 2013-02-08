@@ -22,7 +22,7 @@ project(ImageUtilitiesTests CXX C)
 cmake_minimum_required(VERSION 2.8)
 
 ## find iu and set the according libs
-find_package(ImageUtilities COMPONENTS iucore iuio iugui)
+find_package(ImageUtilities COMPONENTS iucore iuio iugui QUIET)
 include(${IU_USE_FILE})
 set(CUDA_NVCC_FLAGS ${IU_NVCC_FLAGS})
 
@@ -32,7 +32,7 @@ include_directories(${GLUT_INCLUDE_DIR})
 #cuda_include_directories(${GLUT_INCLUDE_DIR})
 
 
-message("IU_LIBRARIES=${IU_LIBRARIES}")
+#message("IU_LIBRARIES=${IU_LIBRARIES}")
 
 set(IU_UNITTEST_TARGETS "")
 

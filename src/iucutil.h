@@ -31,7 +31,7 @@
 #endif
 
 //#ifdef __CUDACC__ // only include this include in cuda files (seen by nvcc)
-#include <cutil_math.h>
+#include <helper_math.h>
 //#endif
 
 #include <driver_types.h>

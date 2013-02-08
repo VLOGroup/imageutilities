@@ -24,7 +24,6 @@
 // system includes
 #include <iostream>
 #include <cuda_runtime.h>
-#include <cutil_math.h>
 
 #include <iu/iuipp.h>
 

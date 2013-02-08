@@ -189,7 +189,7 @@ int main(int argc, char *argv[])
   //  // Sparse matrix
   //  cusparseCreate(&handle);
 
-  char* name[] = {"Standard: ", "No Tex:   ", "Shared:   ", "Single:   ", "Single2:  ", "Sparse:   "};
+  //char* name[] = {"Standard: ", "No Tex:   ", "Shared:   ", "Single:   ", "Single2:  ", "Sparse:   "};
   int sizes[] = {256, 1024, 2048};
 
   float lambda    = 5.0f;
@@ -286,7 +286,7 @@ int main(int argc, char *argv[])
   std::cout << std::endl;
   for (int a=0; a<NALG; a++)
   {
-    std::cout << name[a]<< "\t";
+    //std::cout << name[a]<< "\t";
     for(int sz=0; sz<NSIZES; sz++)
     {
       std::cout.width(7);

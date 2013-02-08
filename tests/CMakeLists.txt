@@ -62,7 +62,7 @@ IF(WIN32)
 endif(WIN32)
 
 ## test if ipp is available
-#find_package(IPP QUIET)
+find_package(IPP QUIET)
 
 ## combine different tests:
 include(CTest)
@@ -71,19 +71,19 @@ enable_testing()
 message(STATUS "iucore unittests:")
 add_subdirectory(iucore_unittests)
 
-# if(IPP_FOUND)
-#   message(STATUS "iuipp unittests:")
-#   add_subdirectory(iuipp_unittests)
-# endif(IPP_INCLUDE_DIR)
+ if(IPP_FOUND)
+   message(STATUS "iuipp unittests:")
+   add_subdirectory(iuipp_unittests)
+ endif(IPP_FOUND)
 
 message(STATUS "iumath unittests:")
 add_subdirectory(iumath_unittests)
 
-#message(STATUS "iusparse unittests:")
-#add_subdirectory(iusparse_unittests)
+message(STATUS "iusparse unittests:")
+add_subdirectory(iusparse_unittests)
 
-#message(STATUS "iugui unittests:")
-#add_subdirectory(iugui_unittests)
+message(STATUS "iugui unittests:")
+add_subdirectory(iugui_unittests)
 
 message(STATUS "iuio unittests:")
 add_subdirectory(iuio_unittests)

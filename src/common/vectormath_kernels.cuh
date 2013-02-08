@@ -24,7 +24,7 @@
 #ifndef IU_VECTORMATH_KERNELS_CUH
 #define IU_VECTORMATH_KERNELS_CUH
 
-#include <cutil_math.h>
+#include <helper_math.h>
 
 namespace iu {
 //
@@ -161,12 +161,12 @@ static inline __host__ __device__ bool operator==(float2& a, float2& b)
 }
 
 // float-float2
-#ifdef CUDA_VERSION_31
+/*#ifdef CUDA_VERSION_31
 static inline __host__ __device__ float2 operator-(float a, float2 b)
 {
   return make_float2(a - b.x, a - b.y);
 }
-#endif
+#endif*/
 
 //inline __device__ __host__ float2 iu::sqr(float2 a)
 //{

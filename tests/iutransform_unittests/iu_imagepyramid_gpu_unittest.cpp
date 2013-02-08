@@ -25,7 +25,6 @@
 #include <iostream>
 #include <highgui.h>
 #include <cuda_runtime.h>
-#include <cutil_math.h>
 #include <iu/iudefs.h>
 #include <iu/iucontainers.h>
 #include <iu/iucore.h>

@@ -24,7 +24,7 @@
 #ifndef IUCORE_CONVERT_CU
 #define IUCORE_CONVERT_CU
 
-#include <cutil_math.h>
+#include <helper_math.h>
 #include "coredefs.h"
 #include "memorydefs.h"
 #include "iutextures.cuh"

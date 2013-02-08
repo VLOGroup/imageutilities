@@ -58,7 +58,7 @@ endif()
 ## Flags if modules are used.
 ## The modules are included per default unless dependencies not found or omitted by the user.
 ## (the core module is always included!)
-OPTION(VMLIBRARIES_IU_USE_SPARSE "Including Sparse Matrix module." OFF)
+OPTION(VMLIBRARIES_IU_USE_SPARSE "Including Sparse Matrix module." ON)
 OPTION(VMLIBRARIES_IU_USE_IPP "Including IPP module." ON)
 OPTION(VMLIBRARIES_IU_USE_MATLAB "Including Matlab module." ON)
 OPTION(VMLIBRARIES_IU_USE_GUI "Including GUI module." ON)
@@ -94,27 +94,44 @@ endif(WIN32)
 # CUDA + SDK
 find_package(CUDA 3.1 REQUIRED)
 find_package(CUDASDK REQUIRED)
-cuda_include_directories(${CUDA_INCLUDE_DIRS} ${CUDA_CUT_INCLUDE_DIR})
-include_directories(${CUDA_INCLUDE_DIRS} ${CUDA_CUT_INCLUDE_DIR})
+if(CUDA_VERSION_MAJOR GREATER 4)
+  message("Using CUDA >= 5.0")
+  file(REMOVE "$ENV{VMLIBRARIES_ROOT}/imageutilities/src/helper_math.h" "$ENV{VMLIBRARIES_ROOT}/include/iu/helper_math.h")
+else()
+  message("Using CUDA < 5.0, copy old 'cutil_math.h' to new 'helper_math.h' in imageutilities src dir")
+  file(COPY ${CUDA_SDK_INCLUDE_DIR}/cutil_math.h DESTINATION "$ENV{VMLIBRARIES_ROOT}/imageutilities/src")
+  file(RENAME "$ENV{VMLIBRARIES_ROOT}/imageutilities/src/cutil_math.h" "$ENV{VMLIBRARIES_ROOT}/imageutilities/src/helper_math.h")
+  SET( IU_PUBLIC_HEADERS
+  ${IU_PUBLIC_HEADERS}
+  ${CMAKE_CURRENT_SOURCE_DIR}/helper_math.h
+  )
+  #message("iu include dir: $ENV{VMLIBRARIES_ROOT}/include/iu")
+endif(CUDA_VERSION_MAJOR GREATER 4)
+
+cuda_include_directories(${CUDA_INCLUDE_DIRS} ${CUDA_SDK_INCLUDE_DIR})
+include_directories(${CUDA_INCLUDE_DIRS} ${CUDA_SDK_INCLUDE_DIR})
+message("Cuda include dirs: " ${CUDA_INCLUDE_DIRS})
+message("Cuda sdk dir: " ${CUDA_SDK_ROOT_DIR})
+message("Cuda sdk include dir: " ${CUDA_SDK_INCLUDE_DIR})
 set(IU_IUCORE_LIB_DEPENDENCIES ${IU_IUCORE_LIB_DEPENDENCIES} ${CUDA_LIBRARIES})
 
 # Checking cuda version
 # set defines due to some missing functions in cuda 3.1
-if(CUDA_VERSION_STRING STREQUAL "3.1")
+#if(CUDA_VERSION_STRING STREQUAL "3.1")
   # using CUDA 3.1
-  message(STATUS "IU: using CUDA 3.1")
-  add_definitions(-DCUDA_VERSION_31)
-elseif(CUDA_VERSION_STRING STREQUAL "3.2")
+#  message(STATUS "IU: using CUDA 3.1")
+#  add_definitions(-DCUDA_VERSION_31)
+#elseif(CUDA_VERSION_STRING STREQUAL "3.2")
   # using CUDA 3.2
-  message(STATUS "IU: using CUDA 3.2")
-  add_definitions(-DCUDA_VERSION_32)
-elseif(CUDA_VERSION_STRING STREQUAL "4.0")
+#  message(STATUS "IU: using CUDA 3.2")
+#  add_definitions(-DCUDA_VERSION_32)
+#elseif(CUDA_VERSION_STRING STREQUAL "4.0")
   # using CUDA 4.0
-  message(STATUS "IU: using CUDA 4.0")
-  add_definitions(-DCUDA_VERSION_40)
-elseif()
-  message(STATUS "unknown CUDA version. some things might not be tested.")
-endif()
+#  message(STATUS "IU: using CUDA 4.0")
+#  add_definitions(-DCUDA_VERSION_40)
+#elseif()
+#  message(STATUS "unknown CUDA version. some things might not be tested.")
+#endif()
 
 ##-----------------------------------------------------------------------------
 # Selection of compute capability via environment variable
@@ -302,7 +319,7 @@ if(VMLIBRARIES_IU_USE_GUI AND QT4_FOUND)
   ## Qwt
   find_package(Qwt QUIET)
   if(QWT_FOUND)
-    message(STATUS "QWT found. Building GUI module with QWT support.")
+    message("  [+] Building GUI module with QWT support.")
     include_directories(${QWT_INCLUDE_DIR})
     add_definitions(-DUSE_QWT)
     set( IU_QWT_SOURCES
@@ -312,7 +329,7 @@ if(VMLIBRARIES_IU_USE_GUI AND QT4_FOUND)
       ${CMAKE_CURRENT_SOURCE_DIR}/iugui/plotgapwidget.h
       )
   else(QWT_FOUND)
-    message(STATUS "QWT not found. QWT support turned off")
+    message("  [-] No QWT, disable QWT support in GUI module")
   endif(QWT_FOUND)
 
   ## GLEW
@@ -381,7 +398,7 @@ if(VMLIBRARIES_IU_USE_GUI AND QT4_FOUND)
   # add resources
   qt4_add_resources(QTRC_SOURCES ${IU_GUI_RC_SOURCES})
 
-  message("QTRC_SOURCES = ${QTRC_SOURCES}")
+  message(STATUS "QTRC_SOURCES = ${QTRC_SOURCES}")
 
 else()
   message("[-] ImageUtilities omitting GUI module")

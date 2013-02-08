@@ -39,7 +39,7 @@ INCLUDE_DIRECTORIES(${MATLAB_INCLUDE_DIR})
 
 ##-----------------------------------------------------------------------------
 ## ImageUtilities
-FIND_PACKAGE(ImageUtilities COMPONENTS iucore iumatlab)
+FIND_PACKAGE(ImageUtilities COMPONENTS iucore iumatlab QUIET)
 INCLUDE(${IU_USE_FILE})
 set(CUDA_NVCC_FLAGS ${IU_NVCC_FLAGS})
 
@@ -60,9 +60,9 @@ SET(MEX_FILES    ${CMAKE_CURRENT_SOURCE_DIR}/gpu_memsize_mex.cpp )
 
 ##-----------------------------------------------------------------------------
 ## Create Library
-message(STATUS "MATLAB_LIBRARIES=${MATLAB_LIBRARIES}")
-message(STATUS "IU_LIBRARIES=${IU_LIBRARIES}")
-message(STATUS "IMAGEUTILITIES_LIBRARIES=${IMAGEUTILITIES_LIBRARIES}")
+#message(STATUS "MATLAB_LIBRARIES=${MATLAB_LIBRARIES}")
+#message(STATUS "IU_LIBRARIES=${IU_LIBRARIES}")
+#message(STATUS "IMAGEUTILITIES_LIBRARIES=${IMAGEUTILITIES_LIBRARIES}")
 CUDA_ADD_LIBRARY(gpu_memsize_mex SHARED ${MEX_FILES} )
 TARGET_LINK_LIBRARIES(gpu_memsize_mex ${MATLAB_LIBRARIES} ${IU_LIBRARIES} ${IMAGEUTILITIES_LIBRARIES})
 SET_TARGET_PROPERTIES(gpu_memsize_mex PROPERTIES PREFIX "" LINKER_LANGUAGE CXX)
@@ -88,10 +88,10 @@ else(WIN32)
     endif (CMAKE_SIZEOF_VOID_P MATCHES "8")
   else(APPLE)
     if (CMAKE_SIZEOF_VOID_P MATCHES "8")
-      MESSAGE("Linux 64")
+      #MESSAGE("Linux 64")
       SET_TARGET_PROPERTIES(gpu_memsize_mex PROPERTIES SUFFIX .mexa64)
     else()
-      MESSAGE("Linux 32")
+      #MESSAGE("Linux 32")
       SET_TARGET_PROPERTIES(gpu_memsize_mex PROPERTIES SUFFIX .mexglx)
     endif (CMAKE_SIZEOF_VOID_P MATCHES "8")
   endif(APPLE)
