@@ -96,16 +96,13 @@ find_package(CUDA 3.1 REQUIRED)
 find_package(CUDASDK REQUIRED)
 if(CUDA_VERSION_MAJOR GREATER 4)
   message("Using CUDA >= 5.0")
-  file(REMOVE "$ENV{VMLIBRARIES_ROOT}/imageutilities/src/helper_math.h" "$ENV{VMLIBRARIES_ROOT}/include/iu/helper_math.h")
+  file(REMOVE "$ENV{VMLIBRARIES_ROOT}/include/iu/helper_math.h")
 else()
-  message("Using CUDA < 5.0, copy old 'cutil_math.h' to new 'helper_math.h' in imageutilities src dir")
-  file(COPY ${CUDA_SDK_INCLUDE_DIR}/cutil_math.h DESTINATION "$ENV{VMLIBRARIES_ROOT}/imageutilities/src")
-  file(RENAME "$ENV{VMLIBRARIES_ROOT}/imageutilities/src/cutil_math.h" "$ENV{VMLIBRARIES_ROOT}/imageutilities/src/helper_math.h")
-  SET( IU_PUBLIC_HEADERS
-  ${IU_PUBLIC_HEADERS}
-  ${CMAKE_CURRENT_SOURCE_DIR}/helper_math.h
-  )
-  #message("iu include dir: $ENV{VMLIBRARIES_ROOT}/include/iu")
+  message("Using CUDA < 5.0, copy old 'cutil_math.h' to new 'helper_math.h' imageutlities include dir")
+  file(COPY ${CUDA_SDK_INCLUDE_DIR}/cutil_math.h DESTINATION "$ENV{VMLIBRARIES_ROOT}/include")
+  file(RENAME "$ENV{VMLIBRARIES_ROOT}/include/cutil_math.h" "$ENV{VMLIBRARIES_ROOT}/include/helper_math.h")
+  cuda_include_directories("$ENV{VMLIBRARIES_ROOT}/include/")
+  include_directories("$ENV{VMLIBRARIES_ROOT}/include/")
 endif(CUDA_VERSION_MAJOR GREATER 4)
 
 cuda_include_directories(${CUDA_INCLUDE_DIRS} ${CUDA_SDK_INCLUDE_DIR})
