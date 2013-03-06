@@ -23,6 +23,7 @@
 
 #include "arithmetic.cuh"
 #include "arithmetic.h"
+#include <iucore/copy.h>
 
 namespace iuprivate {
 
@@ -33,9 +34,24 @@ void addWeighted(const iu::ImageGpu_32f_C1* src1, const float& weight1,
                  const iu::ImageGpu_32f_C1* src2, const float& weight2,
                  iu::ImageGpu_32f_C1* dst, const IuRect& roi)
 {
+  cuAddWeighted(src1, weight1, src2, weight2, dst, roi);
+}
+// [host] weighted add; Not-in-place; 32-bit;
+void addWeighted(const iu::ImageCpu_32f_C1* src1, const float& weight1,
+                 const iu::ImageCpu_32f_C1* src2, const float& weight2,
+                 iu::ImageCpu_32f_C1* dst, const IuRect& roi)
+{
   IuStatus status;
-  status = cuAddWeighted(src1, weight1, src2, weight2, dst, roi);
-  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
+  iu::ImageGpu_32f_C1 d_src1(src1->size());
+  iu::ImageGpu_32f_C1 d_src2(src1->size());
+  iu::ImageGpu_32f_C1 d_dst(dst->size());
+
+  iuprivate::copy(src1, &d_src1);
+  iuprivate::copy(src2, &d_src2);
+
+  cuAddWeighted(&d_src1, weight1, &d_src2, weight2, &d_dst, roi);
+
+  iuprivate::copy(&d_dst, dst);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -43,17 +59,17 @@ void addWeighted(const iu::ImageGpu_32f_C1* src1, const float& weight1,
 // [gpu] multiplication with factor; Not-in-place; 8-bit; 1-channel
 void mulC(const iu::ImageGpu_8u_C1* src, const unsigned char& factor, iu::ImageGpu_8u_C1* dst, const IuRect& roi)
 {
-  IuStatus status;
-  status = cuMulC(src, factor, dst, roi);
-  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
+  
+  cuMulC(src, factor, dst, roi);
+
 }
 
 // [gpu] multiplication with factor; Not-in-place; 8-bit; 4-channel
 void mulC(const iu::ImageGpu_8u_C4* src, const uchar4& factor, iu::ImageGpu_8u_C4* dst, const IuRect& roi)
 {
-  IuStatus status;
-  status = cuMulC(src, factor, dst, roi);
-  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
+  
+  cuMulC(src, factor, dst, roi);
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -61,25 +77,25 @@ void mulC(const iu::ImageGpu_8u_C4* src, const uchar4& factor, iu::ImageGpu_8u_C
 // [gpu] multiplication with factor; Not-in-place; 32-bit; 1-channel
 void mulC(const iu::ImageGpu_32f_C1* src, const float& factor, iu::ImageGpu_32f_C1* dst, const IuRect& roi)
 {
-  IuStatus status;
-  status = cuMulC(src, factor, dst, roi);
-  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
+  
+  cuMulC(src, factor, dst, roi);
+
 }
 
 // [gpu] multiplication with factor; Not-in-place; 32-bit; 2-channel
 void mulC(const iu::ImageGpu_32f_C2* src, const float2& factor, iu::ImageGpu_32f_C2* dst, const IuRect& roi)
 {
-  IuStatus status;
-  status = cuMulC(src, factor, dst, roi);
-  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
+  
+  cuMulC(src, factor, dst, roi);
+
 }
 
 // [gpu] multiplication with factor; Not-in-place; 32-bit; 4-channel
 void mulC(const iu::ImageGpu_32f_C4* src, const float4& factor, iu::ImageGpu_32f_C4* dst, const IuRect& roi)
 {
-  IuStatus status;
-  status = cuMulC(src, factor, dst, roi);
-  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
+  
+  cuMulC(src, factor, dst, roi);
+
 }
 
 
@@ -88,9 +104,9 @@ void mulC(const iu::ImageGpu_32f_C4* src, const float4& factor, iu::ImageGpu_32f
 // [gpu] multiplication with factor; Not-in-place; 32-bit; 1-channel
 void mulC(const iu::VolumeGpu_32f_C1* src, const float& factor, iu::VolumeGpu_32f_C1* dst)
 {
-  IuStatus status;
-  status = cuMulC(src, factor, dst);
-  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
+  
+  cuMulC(src, factor, dst);
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -98,17 +114,17 @@ void mulC(const iu::VolumeGpu_32f_C1* src, const float& factor, iu::VolumeGpu_32
 // [gpu] add val; Not-in-place; 8-bit; 1-channel
 void addC(const iu::ImageGpu_8u_C1* src, const unsigned char& val, iu::ImageGpu_8u_C1* dst, const IuRect& roi)
 {
-  IuStatus status;
-  status = cuAddC(src, val, dst, roi);
-  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
+  
+  cuAddC(src, val, dst, roi);
+
 }
 
 // [gpu] add val; Not-in-place; 8-bit; 4-channel
 void addC(const iu::ImageGpu_8u_C4* src, const uchar4& val, iu::ImageGpu_8u_C4* dst, const IuRect& roi)
 {
-  IuStatus status;
-  status = cuAddC(src, val, dst, roi);
-  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
+  
+  cuAddC(src, val, dst, roi);
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -116,25 +132,25 @@ void addC(const iu::ImageGpu_8u_C4* src, const uchar4& val, iu::ImageGpu_8u_C4* 
 // [gpu] add val; Not-in-place; 32-bit; 1-channel
 void addC(const iu::ImageGpu_32f_C1* src, const float& val, iu::ImageGpu_32f_C1* dst, const IuRect& roi)
 {
-  IuStatus status;
-  status = cuAddC(src, val, dst, roi);
-  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
+  
+  cuAddC(src, val, dst, roi);
+
 }
 
 // [gpu] add val; Not-in-place; 32-bit; 2-channel
 void addC(const iu::ImageGpu_32f_C2* src, const float2& val, iu::ImageGpu_32f_C2* dst, const IuRect& roi)
 {
-  IuStatus status;
-  status = cuAddC(src, val, dst, roi);
-  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
+  
+  cuAddC(src, val, dst, roi);
+
 }
 
 // [gpu] add val; Not-in-place; 32-bit; 4-channel
 void addC(const iu::ImageGpu_32f_C4* src, const float4& val, iu::ImageGpu_32f_C4* dst, const IuRect& roi)
 {
-  IuStatus status;
-  status = cuAddC(src, val, dst, roi);
-  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
+  
+  cuAddC(src, val, dst, roi);
+
 }
 
 } // namespace iu

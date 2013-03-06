@@ -59,6 +59,20 @@ IUCORE_DLLAPI void addWeighted(const iu::ImageGpu_32f_C1* src1, const float& wei
                                const iu::ImageGpu_32f_C1* src2, const float& weight2,
                                iu::ImageGpu_32f_C1* dst, const IuRect& roi);
 
+/** Adding an image with an additional weighting factor to another.
+ * \param src1 Source image 1.
+ * \param src2 Source image 2.
+ * \param weight Weighting of image 2 before its added to image 1.
+ * \param dst Result image dst=weight1*src1 + weight1*src2.
+ * \param roi Region of interest in the source and destination image
+ *
+ * \note supported cpu: 32f_C1
+ */
+// [host] weighted add; Not-in-place; 32-bit;
+IUCORE_DLLAPI void addWeighted(const iu::ImageCpu_32f_C1* src1, const float& weight1,
+                               const iu::ImageCpu_32f_C1* src2, const float& weight2,
+                               iu::ImageCpu_32f_C1* dst, const IuRect& roi);
+
 
 /** Multiplication of every pixel with a constant factor. (can be called in-place)
  * \param src Source image.

@@ -57,7 +57,7 @@ __global__ void cuAddWeightedKernel_32f_C1(
 }
 
 // wrapper: weighted add; 32-bit;
-IuStatus cuAddWeighted(const iu::ImageGpu_32f_C1* src1, const float& weight1,
+void cuAddWeighted(const iu::ImageGpu_32f_C1* src1, const float& weight1,
                        const iu::ImageGpu_32f_C1* src2, const float& weight2,
                        iu::ImageGpu_32f_C1* dst, const IuRect& roi)
 {
@@ -81,7 +81,7 @@ IuStatus cuAddWeighted(const iu::ImageGpu_32f_C1* src1, const float& weight1,
   cudaUnbindTexture(&tex2_32f_C1__);
 
   // error check
-  IU_CHECK_AND_RETURN_CUDA_ERRORS();
+  IU_CUDA_CHECK();
 }
 
 /******************************************************************************
@@ -111,7 +111,7 @@ __global__ void  cuMulCKernel(const unsigned char factor, unsigned char* dst, co
 }
 
 // wrapper: multiplication with factor; 8-bit; 1-channel
-IuStatus cuMulC(const iu::ImageGpu_8u_C1* src, const unsigned char& factor, iu::ImageGpu_8u_C1* dst, const IuRect& roi)
+void cuMulC(const iu::ImageGpu_8u_C1* src, const unsigned char& factor, iu::ImageGpu_8u_C1* dst, const IuRect& roi)
 {
   // bind textures
   cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<uchar1>();
@@ -130,7 +130,7 @@ IuStatus cuMulC(const iu::ImageGpu_8u_C1* src, const unsigned char& factor, iu::
   cudaUnbindTexture(&tex1_8u_C1__);
 
   // error check
-  IU_CHECK_AND_RETURN_CUDA_ERRORS();
+  IU_CUDA_CHECK();
 }
 
 // kernel: multiplication with factor; 8-bit; 4-channel
@@ -156,7 +156,7 @@ __global__ void  cuMulCKernel(const uchar4 factor, uchar4* dst, const size_t str
 }
 
 // wrapper: multiplication with factor; 8-bit; 4-channel
-IuStatus cuMulC(const iu::ImageGpu_8u_C4* src, const uchar4& factor, iu::ImageGpu_8u_C4* dst, const IuRect& roi)
+void cuMulC(const iu::ImageGpu_8u_C4* src, const uchar4& factor, iu::ImageGpu_8u_C4* dst, const IuRect& roi)
 {
   // bind textures
   cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<uchar4>();
@@ -177,7 +177,7 @@ IuStatus cuMulC(const iu::ImageGpu_8u_C4* src, const uchar4& factor, iu::ImageGp
   cudaUnbindTexture(&tex1_8u_C4__);
 
   // error check
-  IU_CHECK_AND_RETURN_CUDA_ERRORS();
+  IU_CUDA_CHECK();
 }
 
 // kernel: multiplication with factor; 32-bit; 1-channel
@@ -203,7 +203,7 @@ __global__ void  cuMulCKernel(const float factor, float* dst, const size_t strid
 }
 
 // wrapper: multiplication with factor; 32-bit; 1-channel
-IuStatus cuMulC(const iu::ImageGpu_32f_C1* src, const float& factor, iu::ImageGpu_32f_C1* dst, const IuRect& roi)
+void cuMulC(const iu::ImageGpu_32f_C1* src, const float& factor, iu::ImageGpu_32f_C1* dst, const IuRect& roi)
 {
   // bind textures
   cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<float>();
@@ -224,7 +224,7 @@ IuStatus cuMulC(const iu::ImageGpu_32f_C1* src, const float& factor, iu::ImageGp
   cudaUnbindTexture(&tex1_32f_C1__);
 
   // error check
-  IU_CHECK_AND_RETURN_CUDA_ERRORS();
+  IU_CUDA_CHECK();
 }
 
 // kernel: volume multiplication with factor; 32-bit; 1-channel
@@ -247,7 +247,7 @@ __global__ void  cuVolMulCKernel(const float factor, float* dst, const float*src
 }
 
 // wrapper: volume multiplication with factor; 32-bit; 1-channel
-IuStatus cuMulC(const iu::VolumeGpu_32f_C1* src, const float& factor,
+void cuMulC(const iu::VolumeGpu_32f_C1* src, const float& factor,
                 iu::VolumeGpu_32f_C1* dst)
 {
   // fragmentation
@@ -260,7 +260,7 @@ IuStatus cuMulC(const iu::VolumeGpu_32f_C1* src, const float& factor,
     dst->stride(), dst->slice_stride(), dst->width(), dst->height(), dst->depth());
 
   // error check
-  IU_CHECK_AND_RETURN_CUDA_ERRORS();
+  IU_CUDA_CHECK();
 }
 
 // kernel: multiplication with factor; 32-bit; 2-channel
@@ -286,7 +286,7 @@ __global__ void  cuMulCKernel(const float2 factor, float2* dst, const size_t str
 }
 
 // wrapper: multiplication with factor; 32-bit; 4-channel
-IuStatus cuMulC(const iu::ImageGpu_32f_C2* src, const float2& factor, iu::ImageGpu_32f_C2* dst, const IuRect& roi)
+void cuMulC(const iu::ImageGpu_32f_C2* src, const float2& factor, iu::ImageGpu_32f_C2* dst, const IuRect& roi)
 {
   // bind textures
   cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<float2>();
@@ -307,7 +307,7 @@ IuStatus cuMulC(const iu::ImageGpu_32f_C2* src, const float2& factor, iu::ImageG
   cudaUnbindTexture(&tex1_32f_C2__);
 
   // error check
-  IU_CHECK_AND_RETURN_CUDA_ERRORS();
+  IU_CUDA_CHECK();
 }
 
 
@@ -334,7 +334,7 @@ __global__ void  cuMulCKernel(const float4 factor, float4* dst, const size_t str
 }
 
 // wrapper: multiplication with factor; 32-bit; 4-channel
-IuStatus cuMulC(const iu::ImageGpu_32f_C4* src, const float4& factor, iu::ImageGpu_32f_C4* dst, const IuRect& roi)
+void cuMulC(const iu::ImageGpu_32f_C4* src, const float4& factor, iu::ImageGpu_32f_C4* dst, const IuRect& roi)
 {
   // bind textures
   cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<float4>();
@@ -355,7 +355,7 @@ IuStatus cuMulC(const iu::ImageGpu_32f_C4* src, const float4& factor, iu::ImageG
   cudaUnbindTexture(&tex1_32f_C4__);
 
   // error check
-  IU_CHECK_AND_RETURN_CUDA_ERRORS();
+  IU_CUDA_CHECK();
 }
 
 
@@ -385,7 +385,7 @@ __global__ void  cuAddCKernel(const unsigned char val, unsigned char* dst, const
 }
 
 // wrapper: add val; 8-bit; 1-channel
-IuStatus cuAddC(const iu::ImageGpu_8u_C1* src, const unsigned char& val, iu::ImageGpu_8u_C1* dst, const IuRect& roi)
+void cuAddC(const iu::ImageGpu_8u_C1* src, const unsigned char& val, iu::ImageGpu_8u_C1* dst, const IuRect& roi)
 {
   // bind textures
   cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<uchar1>();
@@ -404,7 +404,7 @@ IuStatus cuAddC(const iu::ImageGpu_8u_C1* src, const unsigned char& val, iu::Ima
   cudaUnbindTexture(&tex1_8u_C1__);
 
   // error check
-  IU_CHECK_AND_RETURN_CUDA_ERRORS();
+  IU_CUDA_CHECK();
 }
 
 // kernel: add val; 8-bit; 4-channel
@@ -434,7 +434,7 @@ __global__ void  cuAddCKernel(const uchar4 val, uchar4* dst, const size_t stride
 }
 
 // wrapper: add val; 8-bit; 4-channel
-IuStatus cuAddC(const iu::ImageGpu_8u_C4* src, const uchar4& val, iu::ImageGpu_8u_C4* dst, const IuRect& roi)
+void cuAddC(const iu::ImageGpu_8u_C4* src, const uchar4& val, iu::ImageGpu_8u_C4* dst, const IuRect& roi)
 {
   // bind textures
   cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<uchar4>();
@@ -455,7 +455,7 @@ IuStatus cuAddC(const iu::ImageGpu_8u_C4* src, const uchar4& val, iu::ImageGpu_8
   cudaUnbindTexture(&tex1_8u_C4__);
 
   // error check
-  IU_CHECK_AND_RETURN_CUDA_ERRORS();
+  IU_CUDA_CHECK();
 }
 
 // kernel: add val; 32-bit; 1-channel
@@ -480,7 +480,7 @@ __global__ void  cuAddCKernel(const float val, float* dst, const size_t stride,
 }
 
 // wrapper: add val; 32-bit; 1-channel
-IuStatus cuAddC(const iu::ImageGpu_32f_C1* src, const float& val, iu::ImageGpu_32f_C1* dst, const IuRect& roi)
+void cuAddC(const iu::ImageGpu_32f_C1* src, const float& val, iu::ImageGpu_32f_C1* dst, const IuRect& roi)
 {
   // bind textures
   cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<float>();
@@ -501,7 +501,7 @@ IuStatus cuAddC(const iu::ImageGpu_32f_C1* src, const float& val, iu::ImageGpu_3
   cudaUnbindTexture(&tex1_32f_C1__);
 
   // error check
-  IU_CHECK_AND_RETURN_CUDA_ERRORS();
+  IU_CUDA_CHECK();
 }
 
 // kernel: add val; 32-bit; 2-channel
@@ -526,7 +526,7 @@ __global__ void  cuAddCKernel(const float2 val, float2* dst, const size_t stride
 }
 
 // wrapper: add val; 32-bit; 4-channel
-IuStatus cuAddC(const iu::ImageGpu_32f_C2* src, const float2& val, iu::ImageGpu_32f_C2* dst, const IuRect& roi)
+void cuAddC(const iu::ImageGpu_32f_C2* src, const float2& val, iu::ImageGpu_32f_C2* dst, const IuRect& roi)
 {
   // bind textures
   cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<float2>();
@@ -547,7 +547,7 @@ IuStatus cuAddC(const iu::ImageGpu_32f_C2* src, const float2& val, iu::ImageGpu_
   cudaUnbindTexture(&tex1_32f_C2__);
 
   // error check
-  IU_CHECK_AND_RETURN_CUDA_ERRORS();
+  IU_CUDA_CHECK();
 }
 
 
@@ -573,7 +573,7 @@ __global__ void  cuAddCKernel(const float4 val, float4* dst, const size_t stride
 }
 
 // wrapper: add val; 32-bit; 4-channel
-IuStatus cuAddC(const iu::ImageGpu_32f_C4* src, const float4& val, iu::ImageGpu_32f_C4* dst, const IuRect& roi)
+void cuAddC(const iu::ImageGpu_32f_C4* src, const float4& val, iu::ImageGpu_32f_C4* dst, const IuRect& roi)
 {
   // bind textures
   cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<float4>();
@@ -594,7 +594,7 @@ IuStatus cuAddC(const iu::ImageGpu_32f_C4* src, const float4& val, iu::ImageGpu_
   cudaUnbindTexture(&tex1_32f_C4__);
 
   // error check
-  IU_CHECK_AND_RETURN_CUDA_ERRORS();
+  IU_CUDA_CHECK();
 }
 
 } // namespace iuprivate

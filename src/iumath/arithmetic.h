@@ -40,6 +40,11 @@ namespace iuprivate {
 void addWeighted(const iu::ImageGpu_32f_C1* src1, const float& weight1,
                  const iu::ImageGpu_32f_C1* src2, const float& weight2,
                  iu::ImageGpu_32f_C1* dst, const IuRect& roi);
+// [host] weighted add; Not-in-place; 32-bit;
+void addWeighted(const iu::ImageCpu_32f_C1* src1, const float& weight1,
+                 const iu::ImageCpu_32f_C1* src2, const float& weight2,
+                 iu::ImageCpu_32f_C1* dst, const IuRect& roi);
+
 
 /** Not-in-place multiplication of every pixel with a constant factor.
  * \param src Source image.

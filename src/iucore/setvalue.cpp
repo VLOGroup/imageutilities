@@ -65,24 +65,21 @@ void setValue(const float& value, iu::LinearHostMemory_32f_C1* srcdst)
 void setValue(const unsigned char& value, iu::LinearDeviceMemory_8u_C1* srcdst)
 {
   // cudaMemset is slow so we are firing up a kernel
-  IuStatus status = cuSetValue(value, srcdst);
-  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
+  cuSetValue(value, srcdst);
 }
 
 // [1D; device] set values; 32-bit
 void setValue(const int& value, iu::LinearDeviceMemory_32s_C1* srcdst)
 {
   // cudaMemset is slow so we are firing up a kernel
-  IuStatus status = cuSetValue(value, srcdst);
-  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
+  cuSetValue(value, srcdst);
 }
 
 // [1D; device] set values; 32-bit
 void setValue(const float& value, iu::LinearDeviceMemory_32f_C1* srcdst)
 {
   // cudaMemset is slow so we are firing up a kernel
-  IuStatus status = cuSetValue(value, srcdst);
-  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
+  cuSetValue(value, srcdst);
 }
 
 } // namespace iuprivate

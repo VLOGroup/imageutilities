@@ -87,7 +87,7 @@ namespace iuprivate {
   }
 
   // Sums up a sparse matrix along the rows
-  IuStatus cuSumRow(iu::SparseMatrixGpu<float>* A, float* dst, float add_const, IuSparseSum function)
+  void cuSumRow(iu::SparseMatrixGpu<float>* A, float* dst, float add_const, IuSparseSum function)
 
   {
     // fragmentation
@@ -103,14 +103,14 @@ namespace iuprivate {
     else if (function == IU_CNT)
       cuSumKernelCNT <<<dimGrid, dimBlock>>> (A->value()->data(), A->row()->data(), dst, add_const, A->n_row());
     else
-      return IU_NOT_SUPPORTED_ERROR;
+	  throw IuException( "Unsupported", __FILE__, __FUNCTION__, __LINE__ );
 
     // error check
-    IU_CHECK_AND_RETURN_CUDA_ERRORS();
+    IU_CUDA_CHECK();
   }
 
   // Sums up a sparse matrix along the columns
-  IuStatus cuSumCol(iu::SparseMatrixGpu<float>* A, float* dst, float add_const, IuSparseSum function)
+  void cuSumCol(iu::SparseMatrixGpu<float>* A, float* dst, float add_const, IuSparseSum function)
   {
     // fragmentation
     dim3 dimBlock(256, 1);
@@ -125,10 +125,10 @@ namespace iuprivate {
     else if (function == IU_CNT)
       cuSumKernelCNT <<<dimGrid, dimBlock>>> (A->value()->data(), A->col()->data(), dst, add_const, A->n_col());
     else
-      return IU_NOT_SUPPORTED_ERROR;
+      throw IuException( "Unsupported", __FILE__, __FUNCTION__, __LINE__ );
 
     // error check
-    IU_CHECK_AND_RETURN_CUDA_ERRORS();
+    IU_CUDA_CHECK();
   }
 
 } // namespace iuprivate

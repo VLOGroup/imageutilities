@@ -61,7 +61,7 @@ public:
   Volume& operator= (const Volume &from)
   {
     // TODO == operator
-
+    this->pixel_type_ = from.pixel_type_;
     this->size_ = from.size_;
     this->roi_ = from.roi_;
     return *this;

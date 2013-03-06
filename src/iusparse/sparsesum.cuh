@@ -31,9 +31,9 @@
 
 namespace iuprivate {
 
-IuStatus cuSumRow(iu::SparseMatrixGpu<float>* A, float* dst, float add_const, IuSparseSum function);
+void cuSumRow(iu::SparseMatrixGpu<float>* A, float* dst, float add_const, IuSparseSum function);
 
-IuStatus cuSumCol(iu::SparseMatrixGpu<float>* A, float* dst, float add_const, IuSparseSum function);
+void cuSumCol(iu::SparseMatrixGpu<float>* A, float* dst, float add_const, IuSparseSum function);
 
 } // namespace iuprivate
 

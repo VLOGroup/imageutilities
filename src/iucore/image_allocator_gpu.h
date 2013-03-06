@@ -42,9 +42,10 @@ public:
     PixelType* buffer = 0;
     cudaError_t status = cudaMallocPitch((void **)&buffer, pitch,
                                          size.width * sizeof(PixelType), size.height);
-    if (buffer == 0) throw std::bad_alloc();
+	if (status == cudaErrorMemoryAllocation  )
+	  throw IuCudaBadAllocException(status, __FILE__, __FUNCTION__, __LINE__ );
     if (status != cudaSuccess)
-      throw IuException("cudaMallocPitch returned error code", __FILE__, __FUNCTION__, __LINE__);
+      throw IuCudaException(status, __FILE__, __FUNCTION__, __LINE__);
 
     return buffer;
   }
@@ -53,7 +54,7 @@ public:
   {
     cudaError_t status = cudaFree((void *)buffer);
     if (status != cudaSuccess)
-      throw IuException("cudaFree returned error code", __FILE__, __FUNCTION__, __LINE__);
+      throw IuCudaException(status, __FILE__, __FUNCTION__, __LINE__);
   }
 
   static void copy(const PixelType *src, size_t src_pitch, PixelType *dst, size_t dst_pitch, IuSize size)
@@ -63,7 +64,7 @@ public:
                           size.width * sizeof(PixelType), size.height,
                           cudaMemcpyDeviceToDevice);
     if (status != cudaSuccess)
-      throw IuException("cudaMemcpy2D returned error code", __FILE__, __FUNCTION__, __LINE__);
+      throw IuCudaException(status, __FILE__, __FUNCTION__, __LINE__);
   }
 };
 

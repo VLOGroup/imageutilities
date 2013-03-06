@@ -236,7 +236,7 @@ __global__ void  cuFilterMedian3x3Kernel_32f_C1(float* dst, const size_t stride,
 
 // ----------------------------------------------------------------------------
 // wrapper: median filter; 32-bit; 1-channel
-IuStatus cuFilterMedian3x3(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst, const IuRect& roi)
+void cuFilterMedian3x3(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst, const IuRect& roi)
 {
   // bind textures
   cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<float>();
@@ -260,7 +260,7 @@ IuStatus cuFilterMedian3x3(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* 
   cudaUnbindTexture(&tex1_32f_C1__);
 
   // error check
-  return iu::checkCudaErrorState();
+  iu::checkCudaErrorState(__FILE__, __FUNCTION__, __LINE__);
 }
 
 
@@ -470,14 +470,14 @@ __global__ void cuFilterGaussKernel_32f_C4(float4* dst, const size_t stride,
 
 // ----------------------------------------------------------------------------
 // wrapper: Gaussian filter; 32-bit; 1-channel
-IuStatus cuFilterGauss(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst, const IuRect& roi, float sigma, int kernel_size)
+void cuFilterGauss(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst, const IuRect& roi, float sigma, int kernel_size)
 {
   if (kernel_size == 0)
     kernel_size = max(5, (unsigned int)ceil(sigma*  3)*  2 + 1);
   if (kernel_size%2 == 0)
     ++kernel_size;
 
-  // temporary variable for filtering (separabed kernel!)
+  // temporary variable for filtering (separabel kernel!)
   iu::ImageGpu_32f_C1 tmp(src->size());
 
   // textures
@@ -508,12 +508,12 @@ IuStatus cuFilterGauss(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
   cudaUnbindTexture(&tex1_32f_C1__);
 
   // error check
-  return iu::checkCudaErrorState();
+  iu::checkCudaErrorState(__FILE__, __FUNCTION__, __LINE__);
 }
 
 // ----------------------------------------------------------------------------
 // wrapper: Gaussian filter; Volume; 32-bit; 1-channel
-IuStatus cuFilterGauss(const iu::VolumeGpu_32f_C1* src, iu::VolumeGpu_32f_C1* dst, float sigma, int kernel_size)
+void cuFilterGauss(const iu::VolumeGpu_32f_C1* src, iu::VolumeGpu_32f_C1* dst, float sigma, int kernel_size)
 {
   if (kernel_size == 0)
     kernel_size = max(5, (unsigned int)ceil(sigma*  3)*  2 + 1);
@@ -574,12 +574,12 @@ IuStatus cuFilterGauss(const iu::VolumeGpu_32f_C1* src, iu::VolumeGpu_32f_C1* ds
 
 
   // error check
-  return iu::checkCudaErrorState();
+  iu::checkCudaErrorState(__FILE__, __FUNCTION__, __LINE__);
 }
 
 // ----------------------------------------------------------------------------
 // wrapper: Gaussian filter; 32-bit; 4-channel
-IuStatus cuFilterGauss(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst, const IuRect& roi, float sigma, int kernel_size)
+void cuFilterGauss(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst, const IuRect& roi, float sigma, int kernel_size)
 {
   if (kernel_size == 0)
     kernel_size = max(5, (unsigned int)ceil(sigma*  3)*  2 + 1);
@@ -616,7 +616,7 @@ IuStatus cuFilterGauss(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst,
   cudaUnbindTexture(&tex1_32f_C4__);
 
   // error check
-  return iu::checkCudaErrorState();
+  iu::checkCudaErrorState(__FILE__, __FUNCTION__, __LINE__);
 }
 
 
@@ -851,7 +851,7 @@ __global__ void  cuFilterEdgeKernel_32f_C1(float2* dst, const size_t stride,
 
 // ----------------------------------------------------------------------------
 // wrapper: edge filter
-IuStatus cuFilterEdge(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C2* dst, const IuRect& roi)
+void cuFilterEdge(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C2* dst, const IuRect& roi)
 {
   // bind textures
   cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<float>();
@@ -874,7 +874,7 @@ IuStatus cuFilterEdge(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C2* dst, 
   cudaUnbindTexture(&tex1_32f_C1__);
 
   // error check
-  return iu::checkCudaErrorState();
+  iu::checkCudaErrorState(__FILE__, __FUNCTION__, __LINE__);
 }
 
 
@@ -905,7 +905,7 @@ __global__ void  cuFilterEdgeKernel_32f_C1(float4* dst, float alpha, float beta,
 
 // ----------------------------------------------------------------------------
 // wrapper: edge filter  + evaluation
-IuStatus cuFilterEdge(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C4* dst,
+void cuFilterEdge(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C4* dst,
                       const IuRect& roi, float alpha, float beta, float minval)
 {
   // bind textures
@@ -930,7 +930,7 @@ IuStatus cuFilterEdge(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C4* dst,
   cudaUnbindTexture(&tex1_32f_C1__);
 
   // error check
-  return iu::checkCudaErrorState();
+  iu::checkCudaErrorState(__FILE__, __FUNCTION__, __LINE__);
 }
 
 
@@ -959,7 +959,7 @@ __global__ void  cuFilterEdgeKernel_32f_C1(float2* dst, float alpha, float beta,
 
 // ----------------------------------------------------------------------------
 // wrapper: edge filter  + evaluation
-IuStatus cuFilterEdge(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C2* dst,
+void cuFilterEdge(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C2* dst,
                       const IuRect& roi, float alpha, float beta, float minval)
 {
   // bind textures
@@ -984,7 +984,7 @@ IuStatus cuFilterEdge(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C2* dst,
   cudaUnbindTexture(&tex1_32f_C1__);
 
   // error check
-  return iu::checkCudaErrorState();
+  iu::checkCudaErrorState(__FILE__, __FUNCTION__, __LINE__);
 }
 
 
@@ -1014,7 +1014,7 @@ __global__ void  cuFilterEdgeKernel_32f_C1(float* dst, float alpha, float beta, 
 
 // ----------------------------------------------------------------------------
 // wrapper: edge filter  + evaluation
-IuStatus cuFilterEdge(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst, const IuRect& roi,
+void cuFilterEdge(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst, const IuRect& roi,
                       float alpha, float beta, float minval)
 {
   // bind textures
@@ -1039,7 +1039,7 @@ IuStatus cuFilterEdge(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst, 
   cudaUnbindTexture(&tex1_32f_C1__);
 
   // error check
-  return iu::checkCudaErrorState();
+  iu::checkCudaErrorState(__FILE__, __FUNCTION__, __LINE__);
 }
 
 
@@ -1073,7 +1073,7 @@ __global__ void  cuFilterEdgeKernel_32f_C4(float* dst, float alpha, float beta, 
 
 // ----------------------------------------------------------------------------
 // wrapper: edge filter  + evaluation
-IuStatus cuFilterEdge(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C1* dst, const IuRect& roi,
+void cuFilterEdge(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C1* dst, const IuRect& roi,
                       float alpha, float beta, float minval)
 {
   // bind textures
@@ -1098,7 +1098,7 @@ IuStatus cuFilterEdge(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C1* dst, 
   cudaUnbindTexture(&tex1_32f_C4__);
 
   // error check
-  return iu::checkCudaErrorState();
+  iu::checkCudaErrorState(__FILE__, __FUNCTION__, __LINE__);
 }
 
 // -- RGB -> C2 - Eval --------------------------------------------------------
@@ -1131,7 +1131,7 @@ __global__ void  cuFilterEdgeKernel_32f_C4(float2* dst, float alpha, float beta,
 
 // ----------------------------------------------------------------------------
 // wrapper: edge filter  + evaluation
-IuStatus cuFilterEdge(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C2* dst, const IuRect& roi,
+void cuFilterEdge(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C2* dst, const IuRect& roi,
                       float alpha, float beta, float minval)
 {
   // bind textures
@@ -1156,7 +1156,7 @@ IuStatus cuFilterEdge(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C2* dst, 
   cudaUnbindTexture(&tex1_32f_C4__);
 
   // error check
-  return iu::checkCudaErrorState();
+  iu::checkCudaErrorState(__FILE__, __FUNCTION__, __LINE__);
 }
 
 
@@ -1196,7 +1196,7 @@ __global__ void  cuFilterEdgeKernel_32f_C4(float4* dst, float alpha, float beta,
 
 // ----------------------------------------------------------------------------
 // wrapper: edge filter  + evaluation
-IuStatus cuFilterEdge(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst, const IuRect& roi,
+void cuFilterEdge(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst, const IuRect& roi,
                       float alpha, float beta, float minval)
 {
   // bind textures
@@ -1221,14 +1221,14 @@ IuStatus cuFilterEdge(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst, 
   cudaUnbindTexture(&tex1_32f_C4__);
 
   // error check
-  return iu::checkCudaErrorState();
+  iu::checkCudaErrorState(__FILE__, __FUNCTION__, __LINE__);
 }
 
 /* *************************************************************************** */
 
 //-----------------------------------------------------------------------------
 // wrapper: cubic bspline coefficients prefilter.
-IuStatus cuCubicBSplinePrefilter_32f_C1I(iu::ImageGpu_32f_C1 *input)
+void cuCubicBSplinePrefilter_32f_C1I(iu::ImageGpu_32f_C1 *input)
 {
   const unsigned int block_size = 64;
   const unsigned int width  = input->width();
@@ -1242,7 +1242,7 @@ IuStatus cuCubicBSplinePrefilter_32f_C1I(iu::ImageGpu_32f_C1 *input)
   dim3 dimGridY(iu::divUp(width, block_size),1,1);
   cuSamplesToCoefficients2DY<float> <<< dimGridY, dimBlockY >>> (input->data(), width, height, input->stride());
 
-  return iu::checkCudaErrorState();
+  iu::checkCudaErrorState(__FILE__, __FUNCTION__, __LINE__);
 }
 
 

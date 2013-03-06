@@ -50,7 +50,7 @@ __global__ void cuMinMaxKernel_32f_C1(float* src1, float* src2, float* minim, fl
 *******************************************************************************/
 
 // wrapper: find min/max; 32f_C1
-IuStatus cuMinMax(iu::LinearDeviceMemory_32f_C1 *src1,  iu::LinearDeviceMemory_32f_C1 *src2,
+void cuMinMax(iu::LinearDeviceMemory_32f_C1 *src1,  iu::LinearDeviceMemory_32f_C1 *src2,
                   iu::LinearDeviceMemory_32f_C1 *minim, iu::LinearDeviceMemory_32f_C1 *maxim)
 {
   dim3 dimBlock(512, 1);
@@ -60,7 +60,7 @@ IuStatus cuMinMax(iu::LinearDeviceMemory_32f_C1 *src1,  iu::LinearDeviceMemory_3
                                                 minim->data(), maxim->data(),
                                                 minim->length());
 
-  return iu::checkCudaErrorState();
+  return iu::checkCudaErrorState(__FILE__, __FUNCTION__, __LINE__);
 }
 
 

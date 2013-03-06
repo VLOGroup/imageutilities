@@ -69,7 +69,7 @@ __global__ void cuClampKernel_32f_C1(T min, T max, T* dst, size_t stride,
 
 ///////////////////////////////////////////////////////////////////////////////
 
-IuStatus cuClamp(const float& min, const float& max,
+void cuClamp(const float& min, const float& max,
                   iu::ImageGpu_32f_C1 *srcdst, const IuRect &roi)
 {
   // bind textures
@@ -86,7 +86,7 @@ IuStatus cuClamp(const float& min, const float& max,
       min, max, srcdst->data(roi.x, roi.y), srcdst->stride(),
       roi.x, roi.y, roi.width, roi.height);
 
-  IU_CHECK_AND_RETURN_CUDA_ERRORS();
+  IU_CUDA_CHECK();
 }
 
 } // namespace iuprivate

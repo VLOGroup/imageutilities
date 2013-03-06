@@ -140,11 +140,7 @@ void rof_primal_dual(iu::ImageGpu_32f_C1* device_f, iu::ImageGpu_32f_C1* device_
     sigma /= theta;
     tau *= theta;
   }
-  IuStatus status = iu::checkCudaErrorState(true);
-  if(status != IU_NO_ERROR)
-  {
-    std::cerr << "An error occured while solving the ROF model." << std::endl;
-  }
+  iu::checkCudaErrorState(__FILE__, __FUNCTION__, __LINE__);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -239,18 +235,13 @@ void rof_primal_dual_notex(iu::ImageGpu_32f_C1* device_f, iu::ImageGpu_32f_C1* d
   float theta;
 
 
-cudaFuncSetCacheConfig("_Z17update_dual_notexP6float2Pffiiii", cudaFuncCachePreferShared);
-IuStatus status = iu::checkCudaErrorState(true);
-if(status != IU_NO_ERROR)
-{
-  std::cerr << "An error occured while solving the ROF model." << std::endl;
-}
-cudaFuncSetCacheConfig("_Z19update_primal_notexPfS_S_P6float2fffiiii", cudaFuncCachePreferShared);
-status = iu::checkCudaErrorState(true);
-if(status != IU_NO_ERROR)
-{
-  std::cerr << "An error occured while solving the ROF model." << std::endl;
-}
+  cudaFuncSetCacheConfig("_Z17update_dual_notexP6float2Pffiiii", cudaFuncCachePreferShared);
+
+  iu::checkCudaErrorState(__FILE__, __FUNCTION__, __LINE__);
+
+  cudaFuncSetCacheConfig("_Z19update_primal_notexPfS_S_P6float2fffiiii", cudaFuncCachePreferShared);
+
+  iu::checkCudaErrorState(__FILE__, __FUNCTION__, __LINE__);
 
   for (int k = 0; k < max_iter; ++k)
   {
@@ -270,11 +261,7 @@ if(status != IU_NO_ERROR)
     sigma /= theta;
     tau *= theta;
   }
-  status = iu::checkCudaErrorState(true);
-  if(status != IU_NO_ERROR)
-  {
-    std::cerr << "An error occured while solving the ROF model." << std::endl;
-  }
+  iu::checkCudaErrorState(__FILE__, __FUNCTION__, __LINE__);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -385,11 +372,7 @@ void rof_primal_dual_sparse(iu::SparseMatrixGpu_32f* G,
     sigma /= theta;
     tau *= theta;
   }
-  IuStatus status = iu::checkCudaErrorState(true);
-  if(status != IU_NO_ERROR)
-  {
-    std::cerr << "An error occured while solving the ROF model." << std::endl;
-  }
+  iu::checkCudaErrorState(__FILE__, __FUNCTION__, __LINE__);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -525,11 +508,7 @@ void rof_primal_dual_shared(iu::ImageGpu_32f_C1* device_f, iu::ImageGpu_32f_C1* 
     sigma /= theta;
     tau *= theta;
   }
-  IuStatus status = iu::checkCudaErrorState(true);
-  if(status != IU_NO_ERROR)
-  {
-    std::cerr << "An error occured while solving the ROF model." << std::endl;
-  }
+  iu::checkCudaErrorState(__FILE__, __FUNCTION__, __LINE__);
 }
 
 
@@ -635,11 +614,7 @@ void rof_primal_dual_shared_single(iu::ImageGpu_32f_C1* device_f, iu::ImageGpu_3
     sigma /= theta;
     tau *= theta;
   }
-  IuStatus status = iu::checkCudaErrorState(true);
-  if(status != IU_NO_ERROR)
-  {
-    std::cerr << "An error occured while solving the ROF model." << std::endl;
-  }
+  iu::checkCudaErrorState(__FILE__, __FUNCTION__, __LINE__);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -777,11 +752,7 @@ void rof_primal_dual_shared_single2(iu::ImageGpu_32f_C1* device_f, iu::ImageGpu_
     sigma /= theta;
     tau *= theta;
   }
-  IuStatus status = iu::checkCudaErrorState(true);
-  if(status != IU_NO_ERROR)
-  {
-    std::cerr << "An error occured while solving the ROF model." << std::endl;
-  }
+  iu::checkCudaErrorState(__FILE__, __FUNCTION__, __LINE__);
 }
 
 #endif // IUSPARSECOMPARE_CU

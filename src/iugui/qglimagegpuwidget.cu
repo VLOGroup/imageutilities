@@ -119,7 +119,7 @@ __global__ void cuCopyImageToPboKernel_32f_C4(uchar4* dst, int width, int height
   }
 }
 
-IuStatus cuCopyImageToPbo(iu::Image* image, unsigned int num_channels,
+void cuCopyImageToPbo(iu::Image* image, unsigned int num_channels,
                           unsigned int bit_depth, uchar4 *dst,
                           float min, float max)
 {
@@ -172,7 +172,7 @@ IuStatus cuCopyImageToPbo(iu::Image* image, unsigned int num_channels,
     }
   }
 
-  return iu::checkCudaErrorState();
+  return iu::checkCudaErrorState(__FILE__, __FUNCTION__, __LINE__);
 }
 
 /** Kernel to superimpose overlay data onto OpenGL PBO. */
@@ -300,7 +300,7 @@ __global__ void cuCopyOverlayToPboKernel_32f_C1(uchar4* dst,
 }
 
 //-----------------------------------------------------------------------------
-IuStatus cuCopyOverlayToPbo(iuprivate::Overlay* overlay, uchar4 *dst, IuSize size)
+void cuCopyOverlayToPbo(iuprivate::Overlay* overlay, uchar4 *dst, IuSize size)
 {
   // device fragmentation
   const unsigned int block_size = 16;
@@ -315,7 +315,7 @@ IuStatus cuCopyOverlayToPbo(iuprivate::Overlay* overlay, uchar4 *dst, IuSize siz
     if(constraints == NULL || lut_values == NULL)
     {
       fprintf(stderr, "unsuported datatype for constraint image or value LUT.\n");
-      return IU_ERROR;
+      return;
     }
     cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<unsigned char>();
     cudaBindTexture2D(0, &tex_qgl_image_8u_C1, constraints->data(), &channel_desc,
@@ -336,7 +336,7 @@ IuStatus cuCopyOverlayToPbo(iuprivate::Overlay* overlay, uchar4 *dst, IuSize siz
     if(constraints == NULL || lut_values == NULL)
     {
       fprintf(stderr, "unsuported datatype for constraint image.\n");
-      return IU_ERROR;
+      return;
     }
     cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<float>();
     cudaBindTexture2D(0, &tex_qgl_image_32f_C1, constraints->data(), &channel_desc,
@@ -348,7 +348,7 @@ IuStatus cuCopyOverlayToPbo(iuprivate::Overlay* overlay, uchar4 *dst, IuSize siz
     cudaUnbindTexture(tex_qgl_image_32f_C1);
   }
 
-  return iu::checkCudaErrorState();
+  return iu::checkCudaErrorState(__FILE__, __FUNCTION__, __LINE__);
 }
 
 

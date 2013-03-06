@@ -25,7 +25,7 @@
 #define IUCORE_VOLUME_CPU_H
 
 #include "volume.h"
-#include "volume_allocator_gpu.h"
+#include "volume_allocator_cpu.h"
 
 namespace iu {
 

@@ -118,7 +118,6 @@ inline static __device__ PixelType dym(const texture<PixelType, 2> tex, const in
  * @param y  y-coordinate
  * @return y derivative calculated with forward differences.
  */
-//template<typename PixelType>
 inline static __device__ float2 dp(const texture<float, 2> tex,
                                    const int x, const int y)
 {
@@ -136,7 +135,6 @@ inline static __device__ float2 dp(const texture<float, 2> tex,
  * @param y  y-coordinate
  * @return divergence calculated with backward differences.
  */
-//template<typename PixelType>
 inline static __device__ float dp_ad(const texture<float2, 2> tex,
                                      const int x, const int y, const int width, const int height)
 {

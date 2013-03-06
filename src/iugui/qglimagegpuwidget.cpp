@@ -34,10 +34,10 @@
 #include "qglimagegpuwidget.h"
 
 namespace iuprivate {
-extern IuStatus cuCopyImageToPbo(iu::Image* image,
+extern void cuCopyImageToPbo(iu::Image* image,
                                  unsigned int num_channels, unsigned int bit_depth,
                                  uchar4 *dst, float min, float max);
-extern IuStatus cuCopyOverlayToPbo(iuprivate::Overlay* overlay, uchar4 *dst, IuSize size);
+extern void cuCopyOverlayToPbo(iuprivate::Overlay* overlay, uchar4 *dst, IuSize size);
 }
 
 namespace iu {
@@ -65,9 +65,7 @@ QGLImageGpuWidget::QGLImageGpuWidget(QWidget *parent) :
   //updateGL();/ // invoke OpenGL initialization
   this->initializeGL();
 
-  IuStatus status = iu::checkCudaErrorState();
-  if (status != IU_NO_ERROR)
-    fprintf(stderr,"QGLImageGpuWidget::QGLImageGpuWidget: error while init (widget + opengl).\n");
+  iu::checkCudaErrorState(__FILE__, __FUNCTION__, __LINE__);
 
   button_ = Qt::NoButton;
 
@@ -829,19 +827,13 @@ bool QGLImageGpuWidget::init()
 
   this->createTexture();
 
-  if (iu::checkCudaErrorState() != IU_NO_ERROR)
-    fprintf(stderr, "error while initializing texture (gl)\n");
-  //  else
-  //    printf("  Texture created.\n");
+  iu::checkCudaErrorState(__FILE__, __FUNCTION__, __LINE__);
 
   this->createPbo();
 
-  if (iu::checkCudaErrorState() != IU_NO_ERROR)
-    fprintf(stderr, "error while initializing pbo (gl)\n");
-  //  else
-  //    printf("  PBO created.\n");
+  iu::checkCudaErrorState(__FILE__, __FUNCTION__, __LINE__);
 
-  return !iu::checkCudaErrorState();
+  return true;
 }
 
 //-----------------------------------------------------------------------------

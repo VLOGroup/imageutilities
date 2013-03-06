@@ -46,7 +46,9 @@ public:
    * @param size_bound Smaller size of coarsest level.
    */
   ImagePyramid(unsigned int& max_num_levels, const IuSize& size, const float& scale_factor,
-               unsigned int size_bound=1, bool adaptiveScale=false);
+               unsigned int size_bound=1);
+
+  ImagePyramid(unsigned int num_levels, const float* scale_factors );
 
   /** Destructor. */
   virtual ~ImagePyramid();
@@ -60,7 +62,9 @@ public:
    * @throw IuException
    */
   unsigned int init(unsigned int max_num_levels, const IuSize& size, const float& scale_factor,
-                    unsigned int size_bound=1, bool adaptiveScale=false);
+                    unsigned int size_bound=1);
+
+  unsigned int init(unsigned int num_levels, const float* scale_factors );
 
   /** Resets the image pyramid. Deletes all the data.
    */
@@ -107,7 +111,8 @@ private:
   unsigned int max_num_levels_; /**< Maximum number of levels set by the user. This is not necessary equal to num_levels_. */
   float scale_factor_;          /**< Scale factor from one level to the next. */
   unsigned int size_bound_;     /**< User set smaller side of coarsest level. */
-  bool adaptiveScale_;          /**< Does this pyramid use an adaptive scale factor? */
+
+  bool adaptive_scale_;          /**< Does this pyramid use an adaptive scale factor? */
 };
 
 } // namespace iu

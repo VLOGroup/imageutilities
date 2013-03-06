@@ -54,7 +54,7 @@ __global__ void cuSetValueKernel(T value, T* dst, int length)
  * \param value The pixel value to be set.
  * \param buffer Pointer to the buffer
  */
-IuStatus cuSetValue(const unsigned char& value, iu::LinearDeviceMemory_8u_C1* dst)
+void cuSetValue(const unsigned char& value, iu::LinearDeviceMemory_8u_C1* dst)
 {
   // fragmentation
   const unsigned int block_width = 512;
@@ -64,7 +64,7 @@ IuStatus cuSetValue(const unsigned char& value, iu::LinearDeviceMemory_8u_C1* ds
   cuSetValueKernel <<< dimGrid, dimBlock >>> (
       value, dst->data(), dst->length());
 
-  IU_CHECK_AND_RETURN_CUDA_ERRORS();
+  IU_CUDA_CHECK();
 }
 
 //-----------------------------------------------------------------------------
@@ -73,7 +73,7 @@ IuStatus cuSetValue(const unsigned char& value, iu::LinearDeviceMemory_8u_C1* ds
  * \param value The pixel value to be set.
  * \param buffer Pointer to the buffer
  */
-IuStatus cuSetValue(const int& value, iu::LinearDeviceMemory_32s_C1* dst)
+void cuSetValue(const int& value, iu::LinearDeviceMemory_32s_C1* dst)
 {
   // fragmentation
   const unsigned int block_width = 512;
@@ -105,7 +105,7 @@ IuStatus cuSetValue(const int& value, iu::LinearDeviceMemory_32s_C1* dst)
     cuSetValueKernel <<< dimGrid, dimBlock >>> (
 	value, dst->data(), dst->length());
   }
-  IU_CHECK_AND_RETURN_CUDA_ERRORS();
+  IU_CUDA_CHECK();
 }
 
 //-----------------------------------------------------------------------------
@@ -114,7 +114,7 @@ IuStatus cuSetValue(const int& value, iu::LinearDeviceMemory_32s_C1* dst)
  * \param value The pixel value to be set.
  * \param buffer Pointer to the buffer
  */
-IuStatus cuSetValue(const float& value, iu::LinearDeviceMemory_32f_C1* dst)
+void cuSetValue(const float& value, iu::LinearDeviceMemory_32f_C1* dst)
 {
   // fragmentation
   const unsigned int block_width = 512;
@@ -152,17 +152,7 @@ IuStatus cuSetValue(const float& value, iu::LinearDeviceMemory_32f_C1* dst)
 	value, dst->data(), dst->length());
   }
 
-  {
-    do {
-      cudaThreadSynchronize();
-      cudaError_t err = cudaGetLastError();
-      if (err != cudaSuccess)
-        throw IuCudaException(err);
-    } while(false);
-  }
-
   IU_CUDA_CHECK();
-  return IU_SUCCESS;
 }
 
 
@@ -193,7 +183,7 @@ __global__ void cuSetValueKernel(T value, T* dst, size_t stride,
 //-----------------------------------------------------------------------------
 // templated wrapper: set value; 2D;
 template<typename PixelType, class Allocator, IuPixelType _pixel_type>
-IuStatus cuSetValueTemplate(const PixelType &value,
+void cuSetValueTemplate(const PixelType &value,
                             iu::ImageGpu<PixelType, Allocator, _pixel_type> *dst,
                             const IuRect& roi, bool useMemset = false)
 {
@@ -217,33 +207,33 @@ IuStatus cuSetValueTemplate(const PixelType &value,
 	roi.x, roi.y, roi.width, roi.height);
     //printf("using kernel memset\n");
   }
-  IU_CHECK_AND_RETURN_CUDA_ERRORS();
+  IU_CUDA_CHECK();
 }
 
 //-----------------------------------------------------------------------------
 // specialized wrapper: set values (single value); 2D; 8-bit;
-IuStatus cuSetValue(const unsigned char& value, iu::ImageGpu_8u_C1 *dst, const IuRect &roi)
+void cuSetValue(const unsigned char& value, iu::ImageGpu_8u_C1 *dst, const IuRect &roi)
 { 
   if (value == 0)
     return cuSetValueTemplate(value, dst, roi, true);
   else
     return cuSetValueTemplate(value, dst, roi);
 }
-IuStatus cuSetValue(const uchar2& value, iu::ImageGpu_8u_C2 *dst, const IuRect &roi)
+void cuSetValue(const uchar2& value, iu::ImageGpu_8u_C2 *dst, const IuRect &roi)
 { 
   if (value.x == 0 && value.y == 0)
     return cuSetValueTemplate(value, dst, roi, true);
   else
     return cuSetValueTemplate(value, dst, roi); 
 }
-IuStatus cuSetValue(const uchar3& value, iu::ImageGpu_8u_C3 *dst, const IuRect &roi)
+void cuSetValue(const uchar3& value, iu::ImageGpu_8u_C3 *dst, const IuRect &roi)
 { 
   if (value.x == 0 && value.y == 0 && value.z == 0)
     return cuSetValueTemplate(value, dst, roi, true);
   else
     return cuSetValueTemplate(value, dst, roi); 
 }
-IuStatus cuSetValue(const uchar4& value, iu::ImageGpu_8u_C4 *dst, const IuRect &roi)
+void cuSetValue(const uchar4& value, iu::ImageGpu_8u_C4 *dst, const IuRect &roi)
 { 
   if (value.x == 0 && value.y == 0 && value.z == 0 && value.w == 0)
     return cuSetValueTemplate(value, dst, roi, true);
@@ -251,31 +241,31 @@ IuStatus cuSetValue(const uchar4& value, iu::ImageGpu_8u_C4 *dst, const IuRect &
     return cuSetValueTemplate(value, dst, roi); 
 }
 // wrapper: set values (single value); 2D; 32-bit;
-IuStatus cuSetValue(const int& value, iu::ImageGpu_32s_C1 *dst, const IuRect &roi)
+void cuSetValue(const int& value, iu::ImageGpu_32s_C1 *dst, const IuRect &roi)
 { return cuSetValueTemplate(value, dst, roi); }
 // wrapper: set values (single value); 2D; 32-bit;
-IuStatus cuSetValue(const float& value, iu::ImageGpu_32f_C1 *dst, const IuRect &roi)
+void cuSetValue(const float& value, iu::ImageGpu_32f_C1 *dst, const IuRect &roi)
 { 
   if (value == 0)
     return cuSetValueTemplate(value, dst, roi, true);
   else
     return cuSetValueTemplate(value, dst, roi); 
 }
-IuStatus cuSetValue(const float2& value, iu::ImageGpu_32f_C2 *dst, const IuRect &roi)
+void cuSetValue(const float2& value, iu::ImageGpu_32f_C2 *dst, const IuRect &roi)
 { 
   if (value.x == 0 && value.y == 0)
     return cuSetValueTemplate(value, dst, roi, true);
   else
     return cuSetValueTemplate(value, dst, roi); 
 }
-IuStatus cuSetValue(const float3& value, iu::ImageGpu_32f_C3 *dst, const IuRect &roi)
+void cuSetValue(const float3& value, iu::ImageGpu_32f_C3 *dst, const IuRect &roi)
 {
   if (value.x == 0 && value.y == 0 && value.z == 0)
     return cuSetValueTemplate(value, dst, roi, true);
   else
     return cuSetValueTemplate(value, dst, roi); 
 }
-IuStatus cuSetValue(const float4& value, iu::ImageGpu_32f_C4 *dst, const IuRect &roi)
+void cuSetValue(const float4& value, iu::ImageGpu_32f_C4 *dst, const IuRect &roi)
 { 
   if (value.x == 0 && value.y == 0 && value.z == 0 && value.w == 0)
     return cuSetValueTemplate(value, dst, roi, true);
@@ -313,7 +303,7 @@ __global__ void cuSetValueKernel(T value, T* dst, size_t stride, size_t slice_st
 //-----------------------------------------------------------------------------
 // templated wrapper: set values (single value); 3D; ...
 template<typename PixelType, class Allocator, IuPixelType _pixel_type>
-IuStatus cuSetValueTemplate(const PixelType &value,
+void cuSetValueTemplate(const PixelType &value,
                             iu::VolumeGpu<PixelType, Allocator, _pixel_type> *dst,
                             const IuCube& roi, bool useMemset = false)
 {
@@ -340,19 +330,19 @@ IuStatus cuSetValueTemplate(const PixelType &value,
       dst->depth());
   }
 
-  IU_CHECK_AND_RETURN_CUDA_ERRORS();
+  IU_CUDA_CHECK();
 }
 
 //-----------------------------------------------------------------------------
 // specialized wrapper: set values (single value); 3D; 8-bit;
-IuStatus cuSetValue(const unsigned char& value, iu::VolumeGpu_8u_C1 *dst, const IuCube &roi)
+void cuSetValue(const unsigned char& value, iu::VolumeGpu_8u_C1 *dst, const IuCube &roi)
 { return cuSetValueTemplate(value, dst, roi); }
-IuStatus cuSetValue(const uchar2& value, iu::VolumeGpu_8u_C2 *dst, const IuCube &roi)
+void cuSetValue(const uchar2& value, iu::VolumeGpu_8u_C2 *dst, const IuCube &roi)
 { return cuSetValueTemplate(value, dst, roi); }
-IuStatus cuSetValue(const uchar4& value, iu::VolumeGpu_8u_C4 *dst, const IuCube &roi)
+void cuSetValue(const uchar4& value, iu::VolumeGpu_8u_C4 *dst, const IuCube &roi)
 { return cuSetValueTemplate(value, dst, roi); }
 // wrapper: set values (single value); 3D; 32-bit;
-IuStatus cuSetValue(const float& value, iu::VolumeGpu_32f_C1 *dst, const IuCube &roi)
+void cuSetValue(const float& value, iu::VolumeGpu_32f_C1 *dst, const IuCube &roi)
 {
   if (value == 0 && roi.x == 0 && roi.y == 0 && roi.z == 0 && roi.width == dst->width() &&
       roi.height == dst->height() && roi.depth == dst->depth())
@@ -360,7 +350,7 @@ IuStatus cuSetValue(const float& value, iu::VolumeGpu_32f_C1 *dst, const IuCube 
   else
     return cuSetValueTemplate(value, dst, roi);
 }
-IuStatus cuSetValue(const unsigned int& value, iu::VolumeGpu_32u_C1 *dst, const IuCube &roi)
+void cuSetValue(const unsigned int& value, iu::VolumeGpu_32u_C1 *dst, const IuCube &roi)
 {
   if (value == 0 && roi.x == 0 && roi.y == 0 && roi.z == 0 && roi.width == dst->width() &&
       roi.height == dst->height() && roi.depth == dst->depth())
@@ -368,7 +358,7 @@ IuStatus cuSetValue(const unsigned int& value, iu::VolumeGpu_32u_C1 *dst, const 
   else
     return cuSetValueTemplate(value, dst, roi);
 }
-IuStatus cuSetValue(const uint2& value, iu::VolumeGpu_32u_C2 *dst, const IuCube &roi)
+void cuSetValue(const uint2& value, iu::VolumeGpu_32u_C2 *dst, const IuCube &roi)
 {
   if (value.x == 0 && value.y == 0 &&  roi.x == 0 && roi.y == 0 && roi.z == 0 && roi.width == dst->width() &&
       roi.height == dst->height() && roi.depth == dst->depth())
@@ -376,7 +366,7 @@ IuStatus cuSetValue(const uint2& value, iu::VolumeGpu_32u_C2 *dst, const IuCube 
   else
     return cuSetValueTemplate(value, dst, roi);
 }
-IuStatus cuSetValue(const uint4& value, iu::VolumeGpu_32u_C4 *dst, const IuCube &roi)
+void cuSetValue(const uint4& value, iu::VolumeGpu_32u_C4 *dst, const IuCube &roi)
 {
   if (value.x == 0 && value.y == 0 && value.z == 0 && value.w == 0 && roi.x == 0 && roi.y == 0 && roi.z == 0 && roi.width == dst->width() &&
       roi.height == dst->height() && roi.depth == dst->depth())
@@ -384,7 +374,7 @@ IuStatus cuSetValue(const uint4& value, iu::VolumeGpu_32u_C4 *dst, const IuCube 
   else
     return cuSetValueTemplate(value, dst, roi);
 }
-IuStatus cuSetValue(const int& value, iu::VolumeGpu_32s_C1 *dst, const IuCube &roi)
+void cuSetValue(const int& value, iu::VolumeGpu_32s_C1 *dst, const IuCube &roi)
 {
   if (value == 0 && roi.x == 0 && roi.y == 0 && roi.z == 0 && roi.width == dst->width() &&
       roi.height == dst->height() && roi.depth == dst->depth())
@@ -392,7 +382,7 @@ IuStatus cuSetValue(const int& value, iu::VolumeGpu_32s_C1 *dst, const IuCube &r
   else
     return cuSetValueTemplate(value, dst, roi);
 }
-IuStatus cuSetValue(const int2& value, iu::VolumeGpu_32s_C2 *dst, const IuCube &roi)
+void cuSetValue(const int2& value, iu::VolumeGpu_32s_C2 *dst, const IuCube &roi)
 {
   if (value.x == 0 && value.y == 0 &&  roi.x == 0 && roi.y == 0 && roi.z == 0 && roi.width == dst->width() &&
       roi.height == dst->height() && roi.depth == dst->depth())
@@ -400,7 +390,7 @@ IuStatus cuSetValue(const int2& value, iu::VolumeGpu_32s_C2 *dst, const IuCube &
   else
     return cuSetValueTemplate(value, dst, roi);
 }
-IuStatus cuSetValue(const int4& value, iu::VolumeGpu_32s_C4 *dst, const IuCube &roi)
+void cuSetValue(const int4& value, iu::VolumeGpu_32s_C4 *dst, const IuCube &roi)
 {
   if (value.x == 0 && value.y == 0 && value.z == 0 && value.w == 0 && roi.x == 0 && roi.y == 0 && roi.z == 0 && roi.width == dst->width() &&
       roi.height == dst->height() && roi.depth == dst->depth())
@@ -408,9 +398,9 @@ IuStatus cuSetValue(const int4& value, iu::VolumeGpu_32s_C4 *dst, const IuCube &
   else
     return cuSetValueTemplate(value, dst, roi);
 }
-IuStatus cuSetValue(const float2& value, iu::VolumeGpu_32f_C2 *dst, const IuCube &roi)
+void cuSetValue(const float2& value, iu::VolumeGpu_32f_C2 *dst, const IuCube &roi)
 { return cuSetValueTemplate(value, dst, roi); }
-IuStatus cuSetValue(const float4& value, iu::VolumeGpu_32f_C4 *dst, const IuCube &roi)
+void cuSetValue(const float4& value, iu::VolumeGpu_32f_C4 *dst, const IuCube &roi)
 { return cuSetValueTemplate(value, dst, roi); }
 
 

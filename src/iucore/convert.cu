@@ -418,7 +418,7 @@ __global__ void cuConvertLABToRGBKernel(const float4* src, float4* dst, size_t s
 //-----------------------------------------------------------------------------
 /** convert kernel 32f_C3 -> 32f_C4 (float3 -> float4)
  */
-IuStatus cuConvert(const iu::ImageGpu_32f_C3* src, const IuRect& src_roi,
+void cuConvert(const iu::ImageGpu_32f_C3* src, const IuRect& src_roi,
                    iu::ImageGpu_32f_C4* dst, const IuRect& dst_roi)
 {
   // fragmentation
@@ -432,13 +432,13 @@ IuStatus cuConvert(const iu::ImageGpu_32f_C3* src, const IuRect& src_roi,
                                                dst->data(dst_roi.x, dst_roi.y), dst->stride(),
                                                dst_roi.width, dst_roi.height);
 
-  IU_CHECK_AND_RETURN_CUDA_ERRORS();
+  IU_CUDA_CHECK();
 }
 
 //-----------------------------------------------------------------------------
 /** convert kernel 32f_C4 -> 32f_C3 (float4 -> float3)
  */
-IuStatus cuConvert(const iu::ImageGpu_32f_C4* src, const IuRect& src_roi,
+void cuConvert(const iu::ImageGpu_32f_C4* src, const IuRect& src_roi,
                    iu::ImageGpu_32f_C3* dst, const IuRect& dst_roi)
 {
   // fragmentation
@@ -452,12 +452,12 @@ IuStatus cuConvert(const iu::ImageGpu_32f_C4* src, const IuRect& src_roi,
                                                dst->data(dst_roi.x, dst_roi.y), dst->stride(),
                                                dst_roi.width, dst_roi.height);
 
-  IU_CHECK_AND_RETURN_CUDA_ERRORS();
+  IU_CUDA_CHECK();
 }
 
 
 //-----------------------------------------------------------------------------
-IuStatus cuConvert_8u_32f(const iu::ImageGpu_8u_C1* src, const IuRect& src_roi,
+void cuConvert_8u_32f(const iu::ImageGpu_8u_C1* src, const IuRect& src_roi,
                           iu::ImageGpu_32f_C1* dst, const IuRect& dst_roi, float mul_constant,
                           float add_constant)
 {
@@ -473,12 +473,12 @@ IuStatus cuConvert_8u_32f(const iu::ImageGpu_8u_C1* src, const IuRect& src_roi,
                                                     dst->stride(), dst_roi.width, dst_roi.height,
                                                     mul_constant, add_constant);
 
-  IU_CHECK_AND_RETURN_CUDA_ERRORS();
+  IU_CUDA_CHECK();
 }
 
 
 //-----------------------------------------------------------------------------
-IuStatus cuConvert_8u_32f_C3C4(const iu::ImageGpu_8u_C3* src, const IuRect& src_roi,
+void cuConvert_8u_32f_C3C4(const iu::ImageGpu_8u_C3* src, const IuRect& src_roi,
                           iu::ImageGpu_32f_C4* dst, const IuRect& dst_roi, float mul_constant,
                           float add_constant)
 {
@@ -494,12 +494,12 @@ IuStatus cuConvert_8u_32f_C3C4(const iu::ImageGpu_8u_C3* src, const IuRect& src_
                                                     dst->stride(), dst_roi.width, dst_roi.height,
                                                     mul_constant, add_constant);
 
-  IU_CHECK_AND_RETURN_CUDA_ERRORS();
+  IU_CUDA_CHECK();
 }
 
 
 //-----------------------------------------------------------------------------
-IuStatus cuConvert_32f_8u(const iu::ImageGpu_32f_C1* src, const IuRect& src_roi,
+void cuConvert_32f_8u(const iu::ImageGpu_32f_C1* src, const IuRect& src_roi,
                           iu::ImageGpu_8u_C1* dst, const IuRect& dst_roi, float mul_constant,
                           unsigned char add_constant)
 {
@@ -515,11 +515,11 @@ IuStatus cuConvert_32f_8u(const iu::ImageGpu_32f_C1* src, const IuRect& src_roi,
                                                     dst->stride(), dst_roi.width, dst_roi.height,
                                                     mul_constant, add_constant);
 
-  IU_CHECK_AND_RETURN_CUDA_ERRORS();
+  IU_CUDA_CHECK();
 }
 
 //-----------------------------------------------------------------------------
-IuStatus cuConvert_32f_8u(const iu::ImageGpu_32f_C4* src, const IuRect& src_roi,
+void cuConvert_32f_8u(const iu::ImageGpu_32f_C4* src, const IuRect& src_roi,
                           iu::ImageGpu_8u_C4* dst, const IuRect& dst_roi, float mul_constant,
                           unsigned char add_constant)
 {
@@ -535,11 +535,11 @@ IuStatus cuConvert_32f_8u(const iu::ImageGpu_32f_C4* src, const IuRect& src_roi,
                                                     dst->stride(), dst_roi.width,
                                                     dst_roi.height, mul_constant, add_constant);
 
-  IU_CHECK_AND_RETURN_CUDA_ERRORS();
+  IU_CUDA_CHECK();
 }
 
 //-----------------------------------------------------------------------------
-IuStatus cuConvert_rgb_to_hsv(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst,
+void cuConvert_rgb_to_hsv(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst,
                               bool normalize)
 {
   // fragmentation
@@ -551,12 +551,11 @@ IuStatus cuConvert_rgb_to_hsv(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C
   cuConvertRGBToHSVKernel<<<dimGrid, dimBlock>>>(src->data(), dst->data(), src->stride(),
                                                  src->width(), src->height(), normalize);
 
-  cudaThreadSynchronize();
-  IU_CHECK_AND_RETURN_CUDA_ERRORS();
+  IU_CUDA_CHECK();
 }
 
 //-----------------------------------------------------------------------------
-IuStatus cuConvert_hsv_to_rgb(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst,
+void cuConvert_hsv_to_rgb(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst,
                               bool denormalize)
 {
   // fragmentation
@@ -568,13 +567,12 @@ IuStatus cuConvert_hsv_to_rgb(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C
   cuConvertHSVToRGBKernel<<<dimGrid, dimBlock>>>(src->data(), dst->data(), src->stride(),
                                                  src->width(), src->height(), denormalize);
 
-  cudaThreadSynchronize();
-  IU_CHECK_AND_RETURN_CUDA_ERRORS();
+  IU_CUDA_CHECK();
 }
 
 
 //-----------------------------------------------------------------------------
-IuStatus cuConvert_rgb_to_lab(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst, bool isNormalized)
+void cuConvert_rgb_to_lab(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst, bool isNormalized)
 {
   // fragmentation
   const unsigned int block_size = 16;
@@ -585,12 +583,11 @@ IuStatus cuConvert_rgb_to_lab(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C
   cuConvertRGBToLABKernel<<<dimGrid, dimBlock>>>(src->data(), dst->data(), src->stride(),
                                                  src->width(), src->height(), isNormalized);
 
-  cudaDeviceSynchronize();
-  IU_CHECK_AND_RETURN_CUDA_ERRORS();
+  IU_CUDA_CHECK();
 }
 
 //-----------------------------------------------------------------------------
-IuStatus cuConvert_lab_to_rgb(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst)
+void cuConvert_lab_to_rgb(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst)
 {
   // fragmentation
   const unsigned int block_size = 16;
@@ -601,8 +598,7 @@ IuStatus cuConvert_lab_to_rgb(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C
   cuConvertLABToRGBKernel<<<dimGrid, dimBlock>>>(src->data(), dst->data(), src->stride(),
                                                  src->width(), src->height());
 
-  cudaDeviceSynchronize();
-  IU_CHECK_AND_RETURN_CUDA_ERRORS();
+  IU_CUDA_CHECK();
 }
 
 

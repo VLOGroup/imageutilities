@@ -19,7 +19,7 @@
 
 project(imageutilities_lib CXX C)
 #set(CMAKE_BUILD_TYPE Debug)
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.0)
 
 # cleanup
 set(${IU_PUBLIC_HEADERS} "")
@@ -58,7 +58,7 @@ endif()
 ## Flags if modules are used.
 ## The modules are included per default unless dependencies not found or omitted by the user.
 ## (the core module is always included!)
-OPTION(VMLIBRARIES_IU_USE_SPARSE "Including Sparse Matrix module." ON)
+OPTION(VMLIBRARIES_IU_USE_SPARSE "Including Sparse Matrix module." OFF)
 OPTION(VMLIBRARIES_IU_USE_IPP "Including IPP module." ON)
 OPTION(VMLIBRARIES_IU_USE_MATLAB "Including Matlab module." ON)
 OPTION(VMLIBRARIES_IU_USE_GUI "Including GUI module." ON)
@@ -114,21 +114,21 @@ set(IU_IUCORE_LIB_DEPENDENCIES ${IU_IUCORE_LIB_DEPENDENCIES} ${CUDA_LIBRARIES})
 
 # Checking cuda version
 # set defines due to some missing functions in cuda 3.1
-#if(CUDA_VERSION_STRING STREQUAL "3.1")
+if(CUDA_VERSION_STRING STREQUAL "3.1")
   # using CUDA 3.1
-#  message(STATUS "IU: using CUDA 3.1")
-#  add_definitions(-DCUDA_VERSION_31)
-#elseif(CUDA_VERSION_STRING STREQUAL "3.2")
+  message(STATUS "IU: using CUDA 3.1")
+  add_definitions(-DCUDA_VERSION_31)
+elseif(CUDA_VERSION_STRING STREQUAL "3.2")
   # using CUDA 3.2
-#  message(STATUS "IU: using CUDA 3.2")
-#  add_definitions(-DCUDA_VERSION_32)
-#elseif(CUDA_VERSION_STRING STREQUAL "4.0")
+  message(STATUS "IU: using CUDA 3.2")
+  add_definitions(-DCUDA_VERSION_32)
+elseif(CUDA_VERSION_STRING STREQUAL "4.0")
   # using CUDA 4.0
-#  message(STATUS "IU: using CUDA 4.0")
-#  add_definitions(-DCUDA_VERSION_40)
-#elseif()
-#  message(STATUS "unknown CUDA version. some things might not be tested.")
-#endif()
+  message(STATUS "IU: using CUDA 4.0")
+  add_definitions(-DCUDA_VERSION_40)
+elseif()
+  message(STATUS "unknown CUDA version. some things might not be tested.")
+endif()
 
 ##-----------------------------------------------------------------------------
 # Selection of compute capability via environment variable
@@ -147,6 +147,9 @@ elseif("$ENV{COMPUTE_CAPABILITY}" MATCHES "2.0")
 elseif("$ENV{COMPUTE_CAPABILITY}" MATCHES "2.1")
   message(STATUS "IU: using SM 21")
   set(CUDA_NVCC_FLAGS -arch=sm_21)
+elseif("$ENV{COMPUTE_CAPABILITY}" MATCHES "3.0")
+  message(STATUS "IU: using SM 30")
+  set(CUDA_NVCC_FLAGS -arch=sm_30)
 else()
   message(STATUS "IU: using SM 11")
   set(CUDA_NVCC_FLAGS -arch=sm_11)

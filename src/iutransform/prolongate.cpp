@@ -32,11 +32,11 @@ namespace iuprivate {
 /* ***************************************************************************
  *  Declaration of CUDA WRAPPERS
  * ***************************************************************************/
-extern IuStatus cuProlongate(iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
+extern void cuProlongate(iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
                              IuInterpolationType interpolation);
-extern IuStatus cuProlongate(iu::ImageGpu_32f_C2* src, iu::ImageGpu_32f_C2* dst,
+extern void cuProlongate(iu::ImageGpu_32f_C2* src, iu::ImageGpu_32f_C2* dst,
                              IuInterpolationType interpolation);
-extern IuStatus cuProlongate(iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst,
+extern void cuProlongate(iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst,
                              IuInterpolationType interpolation);
 
 /* ***************************************************************************/
@@ -47,21 +47,21 @@ extern IuStatus cuProlongate(iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst,
  * ***************************************************************************/
 
 // device; 32-bit; 1-channel
-IuStatus prolongate(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
+void prolongate(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
                     IuInterpolationType interpolation)
 {
   return cuProlongate(const_cast<iu::ImageGpu_32f_C1*>(src), dst, interpolation);
 }
 
 // device; 32-bit; 2-channel
-IuStatus prolongate(const iu::ImageGpu_32f_C2* src, iu::ImageGpu_32f_C2* dst,
+void prolongate(const iu::ImageGpu_32f_C2* src, iu::ImageGpu_32f_C2* dst,
                     IuInterpolationType interpolation)
 {
   return cuProlongate(const_cast<iu::ImageGpu_32f_C2*>(src), dst, interpolation);
 }
 
 // device; 32-bit; 4-channel
-IuStatus prolongate(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst,
+void prolongate(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst,
                     IuInterpolationType interpolation)
 {
   return cuProlongate(const_cast<iu::ImageGpu_32f_C4*>(src), dst, interpolation);

@@ -37,7 +37,7 @@ namespace iuprivate {
  * ***************************************************************************/
 
 //-----------------------------------------------------------------------------
-IuStatus cuProlongate(iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
+void cuProlongate(iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
                       IuInterpolationType interpolation)
 {
   IuSize src_roi = src->size();
@@ -94,11 +94,11 @@ IuStatus cuProlongate(iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
 
   cudaUnbindTexture(&tex1_32f_C1__);
 
-  return iu::checkCudaErrorState();
+  iu::checkCudaErrorState(__FILE__, __FUNCTION__, __LINE__);
 }
 
 //-----------------------------------------------------------------------------
-IuStatus cuProlongate(iu::ImageGpu_32f_C2* src, iu::ImageGpu_32f_C2* dst,
+void cuProlongate(iu::ImageGpu_32f_C2* src, iu::ImageGpu_32f_C2* dst,
                       IuInterpolationType interpolation)
 {
   IuSize src_roi = src->size();
@@ -157,11 +157,11 @@ IuStatus cuProlongate(iu::ImageGpu_32f_C2* src, iu::ImageGpu_32f_C2* dst,
 
   cudaUnbindTexture(&tex1_32f_C2__);
 
-  return iu::checkCudaErrorState();
+  iu::checkCudaErrorState(__FILE__, __FUNCTION__, __LINE__);
 }
 
 //-----------------------------------------------------------------------------
-IuStatus cuProlongate(iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst,
+void cuProlongate(iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst,
                       IuInterpolationType interpolation)
 {
   IuSize src_roi = src->size();
@@ -220,7 +220,7 @@ IuStatus cuProlongate(iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst,
 
   cudaUnbindTexture(&tex1_32f_C4__);
 
-  return iu::checkCudaErrorState();
+  iu::checkCudaErrorState(__FILE__, __FUNCTION__, __LINE__);
 }
 
 } // namespace iuprivate

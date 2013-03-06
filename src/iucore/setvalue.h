@@ -43,30 +43,30 @@ namespace iuprivate {
 /* ***************************************************************************
  *  Declaration of CUDA WRAPPERS
  * ***************************************************************************/
-extern IuStatus cuSetValue(const unsigned char& value, iu::LinearDeviceMemory_8u_C1* dst);
-extern IuStatus cuSetValue(const int& value, iu::LinearDeviceMemory_32s_C1* dst);
-extern IuStatus cuSetValue(const float& value, iu::LinearDeviceMemory_32f_C1* dst);
-extern IuStatus cuSetValue(const unsigned char& value, iu::ImageGpu_8u_C1 *dst, const IuRect &roi);
-extern IuStatus cuSetValue(const uchar2& value, iu::ImageGpu_8u_C2 *dst, const IuRect &roi);
-extern IuStatus cuSetValue(const uchar3& value, iu::ImageGpu_8u_C3 *dst, const IuRect &roi);
-extern IuStatus cuSetValue(const uchar4& value, iu::ImageGpu_8u_C4 *dst, const IuRect &roi);
-extern IuStatus cuSetValue(const int& value, iu::ImageGpu_32s_C1 *dst, const IuRect &roi);
-extern IuStatus cuSetValue(const float& value, iu::ImageGpu_32f_C1 *dst, const IuRect &roi);
-extern IuStatus cuSetValue(const float2& value, iu::ImageGpu_32f_C2 *dst, const IuRect &roi);
-extern IuStatus cuSetValue(const float3& value, iu::ImageGpu_32f_C3 *dst, const IuRect &roi);
-extern IuStatus cuSetValue(const float4& value, iu::ImageGpu_32f_C4 *dst, const IuRect &roi);
-extern IuStatus cuSetValue(const unsigned char& value, iu::VolumeGpu_8u_C1 *dst, const IuCube &roi);
-extern IuStatus cuSetValue(const uchar2& value, iu::VolumeGpu_8u_C2 *dst, const IuCube &roi);
-extern IuStatus cuSetValue(const uchar4& value, iu::VolumeGpu_8u_C4 *dst, const IuCube &roi);
-extern IuStatus cuSetValue(const float& value, iu::VolumeGpu_32f_C1 *dst, const IuCube &roi);
-extern IuStatus cuSetValue(const float2& value, iu::VolumeGpu_32f_C2 *dst, const IuCube &roi);
-extern IuStatus cuSetValue(const float4& value, iu::VolumeGpu_32f_C4 *dst, const IuCube &roi);
-extern IuStatus cuSetValue(const unsigned int& value, iu::VolumeGpu_32u_C1 *dst, const IuCube &roi);
-extern IuStatus cuSetValue(const uint2& value, iu::VolumeGpu_32u_C2 *dst, const IuCube &roi);
-extern IuStatus cuSetValue(const uint4& value, iu::VolumeGpu_32u_C4 *dst, const IuCube &roi);
-extern IuStatus cuSetValue(const int& value, iu::VolumeGpu_32s_C1 *dst, const IuCube &roi);
-extern IuStatus cuSetValue(const int2& value, iu::VolumeGpu_32s_C2 *dst, const IuCube &roi);
-extern IuStatus cuSetValue(const int4& value, iu::VolumeGpu_32s_C4 *dst, const IuCube &roi);
+extern void cuSetValue(const unsigned char& value, iu::LinearDeviceMemory_8u_C1* dst);
+extern void cuSetValue(const int& value, iu::LinearDeviceMemory_32s_C1* dst);
+extern void cuSetValue(const float& value, iu::LinearDeviceMemory_32f_C1* dst);
+extern void cuSetValue(const unsigned char& value, iu::ImageGpu_8u_C1 *dst, const IuRect &roi);
+extern void cuSetValue(const uchar2& value, iu::ImageGpu_8u_C2 *dst, const IuRect &roi);
+extern void cuSetValue(const uchar3& value, iu::ImageGpu_8u_C3 *dst, const IuRect &roi);
+extern void cuSetValue(const uchar4& value, iu::ImageGpu_8u_C4 *dst, const IuRect &roi);
+extern void cuSetValue(const int& value, iu::ImageGpu_32s_C1 *dst, const IuRect &roi);
+extern void cuSetValue(const float& value, iu::ImageGpu_32f_C1 *dst, const IuRect &roi);
+extern void cuSetValue(const float2& value, iu::ImageGpu_32f_C2 *dst, const IuRect &roi);
+extern void cuSetValue(const float3& value, iu::ImageGpu_32f_C3 *dst, const IuRect &roi);
+extern void cuSetValue(const float4& value, iu::ImageGpu_32f_C4 *dst, const IuRect &roi);
+extern void cuSetValue(const unsigned char& value, iu::VolumeGpu_8u_C1 *dst, const IuCube &roi);
+extern void cuSetValue(const uchar2& value, iu::VolumeGpu_8u_C2 *dst, const IuCube &roi);
+extern void cuSetValue(const uchar4& value, iu::VolumeGpu_8u_C4 *dst, const IuCube &roi);
+extern void cuSetValue(const float& value, iu::VolumeGpu_32f_C1 *dst, const IuCube &roi);
+extern void cuSetValue(const float2& value, iu::VolumeGpu_32f_C2 *dst, const IuCube &roi);
+extern void cuSetValue(const float4& value, iu::VolumeGpu_32f_C4 *dst, const IuCube &roi);
+extern void cuSetValue(const unsigned int& value, iu::VolumeGpu_32u_C1 *dst, const IuCube &roi);
+extern void cuSetValue(const uint2& value, iu::VolumeGpu_32u_C2 *dst, const IuCube &roi);
+extern void cuSetValue(const uint4& value, iu::VolumeGpu_32u_C4 *dst, const IuCube &roi);
+extern void cuSetValue(const int& value, iu::VolumeGpu_32s_C1 *dst, const IuCube &roi);
+extern void cuSetValue(const int2& value, iu::VolumeGpu_32s_C2 *dst, const IuCube &roi);
+extern void cuSetValue(const int4& value, iu::VolumeGpu_32s_C4 *dst, const IuCube &roi);
 
 /* ***************************************************************************/
 
@@ -144,9 +144,7 @@ inline void setValue(const PixelType &value,
 template<typename PixelType, class Allocator, IuPixelType _pixel_type>
 void setValue(const PixelType &value, iu::ImageGpu<PixelType, Allocator, _pixel_type> *srcdst, const IuRect& roi)
 {
-  IuStatus status;
-  status = cuSetValue(value, srcdst, roi);
-  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
+  cuSetValue(value, srcdst, roi);
 }
 
 // 3D set pixel value; device;
@@ -155,9 +153,7 @@ void setValue(const PixelType &value,
               iu::VolumeGpu<PixelType, Allocator, _pixel_type> *srcdst,
               const IuCube& roi)
 {
-  IuStatus status;
-  status = cuSetValue(value, srcdst, roi);
-  if (status != IU_SUCCESS) throw IuException("function returned with an error", __FILE__, __FUNCTION__, __LINE__);
+  cuSetValue(value, srcdst, roi);
 }
 
 

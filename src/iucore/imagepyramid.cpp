@@ -34,17 +34,25 @@ namespace iu {
 //---------------------------------------------------------------------------
 ImagePyramid::ImagePyramid() :
   images_(0), pixel_type_(IU_UNKNOWN_PIXEL_TYPE), scale_factors_(0), num_levels_(0),
-  max_num_levels_(0), scale_factor_(0.0f), size_bound_(0), adaptiveScale_(false)
+  max_num_levels_(0), scale_factor_(0.0f), size_bound_(0), adaptive_scale_(false)
 {
 }
 
 //---------------------------------------------------------------------------
 ImagePyramid::ImagePyramid(unsigned int& max_num_levels, const IuSize& size, const float& scale_factor,
-                           unsigned int size_bound, bool adaptiveScale) :
+                           unsigned int size_bound) :
   images_(0), pixel_type_(IU_UNKNOWN_PIXEL_TYPE), scale_factors_(0), num_levels_(0),
-  max_num_levels_(0), scale_factor_(0.0f), size_bound_(0), adaptiveScale_(adaptiveScale)
+  max_num_levels_(0), scale_factor_(0.0f), size_bound_(0), adaptive_scale_(false)
 {
-  max_num_levels = this->init(max_num_levels, size, scale_factor, size_bound, adaptiveScale_);
+  max_num_levels = this->init(max_num_levels, size, scale_factor, size_bound);
+}
+
+//---------------------------------------------------------------------------
+ImagePyramid::ImagePyramid(unsigned int num_levels, const float* scale_factors) :
+  images_(0), pixel_type_(IU_UNKNOWN_PIXEL_TYPE), scale_factors_(0), num_levels_(0),
+  max_num_levels_(0), scale_factor_(0.0f), size_bound_(0), adaptive_scale_(true)
+{
+  this->init(num_levels, scale_factors);
 }
 
 //---------------------------------------------------------------------------
@@ -55,7 +63,7 @@ ImagePyramid::~ImagePyramid()
 
 //---------------------------------------------------------------------------
 unsigned int ImagePyramid::init(unsigned int max_num_levels, const IuSize& size,
-                                const float& scale_factor, unsigned int size_bound, bool adaptiveScale)
+                                const float& scale_factor, unsigned int size_bound)
 {
   if ((scale_factor <= 0) || (scale_factor >=1))
   {
@@ -65,13 +73,13 @@ unsigned int ImagePyramid::init(unsigned int max_num_levels, const IuSize& size,
   if (images_ != 0)
     this->reset();
 
+  adaptive_scale_ = false;
   max_num_levels_ = IUMAX(1u, max_num_levels);
   num_levels_ = max_num_levels_;
   size_bound_ = IUMAX(1u, size_bound);
 
-  unsigned int shorter_side = (size.width<size.height) ? size.width : size.height;
+  unsigned int shorter_side = IUMIN(size.width, size.height);
 
-#if 0
   // calculate the maximum number of levels
   float ratio = static_cast<float>(shorter_side)/static_cast<float>(size_bound_);
   // +1 because the original size is level 0
@@ -86,60 +94,34 @@ unsigned int ImagePyramid::init(unsigned int max_num_levels, const IuSize& size,
   {
     scale_factors_[i] = pow(scale_factor, static_cast<float>(i));
   }
-#else
-  // start at level 1, otherwise while loop goes one step too far
-  shorter_side *= scale_factor;
-  int sz = shorter_side;
-  std::vector<float> scales;
-  if (adaptiveScale) assert(sz > 64);
-  while (sz > size_bound_)
-  {
-    // calculate new scale factor
-    if (adaptiveScale)
-    {
-      if (sz >= 512)
-        scales.push_back(pow(scale_factor, static_cast<float>(scales.size())));
-      else if (sz >= 256)
-      {
-        float ss = scales.empty() ? scale_factor : scales.back();
-        if (scales.empty())
-          scales.push_back(pow(scale_factor, static_cast<float>(scales.size())));
-        else
-          scales.push_back(ss*IUMAX(0.6f,scale_factor));
-      }
-      else if (sz >= 128)
-      {
-        float ss = scales.empty() ? scale_factor : scales.back();
-        if (scales.empty())
-          scales.push_back(pow(scale_factor, static_cast<float>(scales.size())));
-        else
-          scales.push_back(ss*IUMAX(0.7f,scale_factor));
-      }
-      else if (sz >= 64)
-      {
-        float ss = scales.empty() ? scale_factor : scales.back();
-        scales.push_back(ss*IUMAX(0.75f,scale_factor));
-      }
-      else if (sz >= 32)
-        scales.push_back(scales.back()*IUMAX(0.8f,scale_factor));
-      else
-        scales.push_back(scales.back()*IUMAX(0.85f,scale_factor));
-    }
-    else
-      scales.push_back(pow(scale_factor, static_cast<float>(scales.size())));
-
-    // calculate new size
-    sz = static_cast<int>(floor(0.5+static_cast<float>(shorter_side)*scales.back()));
-  }
-
-  num_levels_ = scales.size();
-  scale_factors_ = new float[num_levels_];
-  for (int i=0; i < scales.size(); i++)
-    scale_factors_[i] = scales.at(i);
-#endif
 
   return num_levels_;
 }
+
+unsigned int ImagePyramid::init(unsigned int num_levels, const float* scale_factors)
+{
+
+  if (num_levels < 1) 
+	  throw IuException("num_levels out of range (<1)", __FILE__, __FUNCTION__, __LINE__ );
+
+  for( unsigned int i = 0; i < num_levels; ++i )
+  {
+	if ((scale_factors[i] <= 0) || (scale_factors[i] >1))
+      throw IuException("scale_factor out of range; must be in interval ]0,1[.", __FILE__, __FUNCTION__, __LINE__);
+  }
+
+  if (images_ != 0)
+    this->reset();
+
+  adaptive_scale_ = true;
+  max_num_levels_ = num_levels;
+  num_levels_ = max_num_levels_;
+  scale_factors_ = new float[num_levels_];
+
+  memcpy( scale_factors_, scale_factors, sizeof(float)*num_levels);
+  return num_levels;
+}
+
 
 //---------------------------------------------------------------------------
 /** Resets the image pyramid. Deletes all the data.
@@ -181,6 +163,8 @@ unsigned int ImagePyramid::setImage(iu::Image* image,
         (images_[0]->size() != image->size()) ||
         (images_[0]->pixelType() != image->pixelType()) ))
   {
+	if (this->adaptive_scale_)
+		throw IuException("Scalefactors do not match image size.", __FILE__, __FUNCTION__, __LINE__);
     this->reset();
     this->init(max_num_levels_, image->size(), scale_factor_, size_bound_);
   }
@@ -197,9 +181,7 @@ unsigned int ImagePyramid::setImage(iu::Image* image,
       (*cur_images) = new iu::ImageGpu_32f_C1*[num_levels_];
       for (unsigned int i=0; i<num_levels_; i++)
       {
-        IuSize sz(static_cast<int>(floor(0.5+static_cast<double>(image->width())*static_cast<double>(scale_factors_[i]))),
-                  static_cast<int>(floor(0.5+static_cast<double>(image->height())*static_cast<double>(scale_factors_[i]))));
-        (*cur_images)[i] = new iu::ImageGpu_32f_C1(sz);
+        (*cur_images)[i] = new iu::ImageGpu_32f_C1( image->size() * scale_factors_[i] );
       }
     }
     iuprivate::copy(reinterpret_cast<iu::ImageGpu_32f_C1*>(image), (*cur_images)[0]);

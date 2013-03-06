@@ -29,7 +29,7 @@
 #include <float.h>
 #include <iu/iumath.h>
 
-extern IuStatus cuMinMax(iu::LinearDeviceMemory_32f_C1 *src1,  iu::LinearDeviceMemory_32f_C1 *src2,
+extern void cuMinMax(iu::LinearDeviceMemory_32f_C1 *src1,  iu::LinearDeviceMemory_32f_C1 *src2,
                          iu::LinearDeviceMemory_32f_C1 *minim, iu::LinearDeviceMemory_32f_C1 *maxim);
 
 

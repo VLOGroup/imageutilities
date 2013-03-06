@@ -38,6 +38,13 @@ void addWeighted(const iu::ImageGpu_32f_C1* src1, const float& weight1,
                  iu::ImageGpu_32f_C1* dst, const IuRect& roi)
 {iuprivate::addWeighted(src1, weight1, src2, weight2, dst, roi);}
 
+// [host] weighted add; Not-in-place; 32-bit;
+void addWeighted(const iu::ImageCpu_32f_C1* src1, const float& weight1,
+                 const iu::ImageCpu_32f_C1* src2, const float& weight2,
+                 iu::ImageCpu_32f_C1* dst, const IuRect& roi)
+{iuprivate::addWeighted(src1, weight1, src2, weight2, dst, roi);}
+
+
 // [gpu] multiplication with factor; Not-in-place; 8-bit;
 void mulC(const iu::ImageGpu_8u_C1* src, const unsigned char& factor, iu::ImageGpu_8u_C1* dst, const IuRect& roi)
 {iuprivate::mulC(src, factor, dst, roi);}

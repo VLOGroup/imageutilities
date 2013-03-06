@@ -137,8 +137,8 @@ void PlotGapWidget::addCurve(std::list<int> x_values, std::list<double> y_values
 
   addCurve(x_values_array, y_values_array, elements_list, name, color);
 
-  delete x_values_array;
-  delete y_values_array;
+  delete [] x_values_array;
+  delete [] y_values_array;
 }
 
 
@@ -183,8 +183,8 @@ void PlotGapWidget::addCurve(std::list<double> x_values, std::list<double> y_val
 
   addCurve(x_values_array, y_values_array, elements_list, name, color);
 
-  delete x_values_array;
-  delete y_values_array;
+  delete [] x_values_array;
+  delete [] y_values_array;
 }
 
 //-----------------------------------------------------------------------------
