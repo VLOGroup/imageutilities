@@ -106,8 +106,11 @@ unsigned int ImagePyramid::init(unsigned int num_levels, const float* scale_fact
 
   for( unsigned int i = 0; i < num_levels; ++i )
   {
-	if ((scale_factors[i] <= 0) || (scale_factors[i] >1))
+    if ((scale_factors[i] <= 0) || (scale_factors[i] >1))
+    {
+      printf("Error: Pyramid::Init() level %d\n", i);
       throw IuException("scale_factor out of range; must be in interval ]0,1[.", __FILE__, __FUNCTION__, __LINE__);
+    }
   }
 
   if (images_ != 0)
