@@ -1005,7 +1005,7 @@ __global__ void cuSum_kernel(float* data, int width, int height, int xoff, int y
 
   const int linId = threadIdx.x + threadIdx.y*blockDim.x;
 
-  extern __shared__ float reductionSpace[];
+  extern volatile __shared__ float reductionSpace[];
   const int c = (y+yoff)*stride + (x+xoff);
 
   if (x < width && y < height)
@@ -1015,45 +1015,35 @@ __global__ void cuSum_kernel(float* data, int width, int height, int xoff, int y
       data[0] = 0;
 
   }
-//  else
-//    reductionSpace[linId] = 0;
 
   __syncthreads();
 
 
-    if (linId < 128) { reductionSpace[linId] += reductionSpace[linId+128]; }
-    __syncthreads();
-    if (linId < 64) { reductionSpace[linId] += reductionSpace[linId+64]; }
-    __syncthreads();
+  if (linId < 128) { reductionSpace[linId] += reductionSpace[linId+128]; }
+  __syncthreads();
+  if (linId < 64) { reductionSpace[linId] += reductionSpace[linId+64]; }
+  __syncthreads();
 
-    if (linId < 32)
-    {
-      reductionSpace[linId] += reductionSpace[linId+32];
-      reductionSpace[linId] += reductionSpace[linId+16];
-      reductionSpace[linId] += reductionSpace[linId+8];
-      reductionSpace[linId] += reductionSpace[linId+4];
-      reductionSpace[linId] += reductionSpace[linId+2];
-      reductionSpace[linId] += reductionSpace[linId+1];
-    }
-    __syncthreads();
+  if (linId < 32)
+  {
+    reductionSpace[linId] += reductionSpace[linId+32];
+    reductionSpace[linId] += reductionSpace[linId+16];
+    reductionSpace[linId] += reductionSpace[linId+8];
+    reductionSpace[linId] += reductionSpace[linId+4];
+    reductionSpace[linId] += reductionSpace[linId+2];
+    reductionSpace[linId] += reductionSpace[linId+1];
+  }
+  __syncthreads();
 
-    if (linId == 0)
-      atomicAdd(&data[0], reductionSpace[0]);
-
- //   if (x < width && y < height)
-//  if (linId > 128)
-      data[c] = reductionSpace[linId];
-//  else
-//      data[c] = 0;
-      if (x < 16 && y < 4)
-        printf("thread %d value %f\n", linId, reductionSpace[linId]);
+  if (linId == 0)
+    atomicAdd(&data[0], reductionSpace[0]);
 }
 
 
 // wrapper: compute sum; 32f_C1
 void cuSummation(const iu::ImageGpu_32f_C1 *src, const IuRect &roi, double& sum)
 {
-#if 1
+#if 0
   // prepare and bind texture
   tex1_32f_C1__.filterMode = cudaFilterModePoint;
   tex1_32f_C1__.addressMode[0] = cudaAddressModeClamp;
@@ -1088,19 +1078,17 @@ void cuSummation(const iu::ImageGpu_32f_C1 *src, const IuRect &roi, double& sum)
 
 #else
 
-    // fragmentation
-    dim3 dimBlock(16, 16, 1);
-    dim3 dimGrid(iu::divUp(roi.width, dimBlock.x), iu::divUp(roi.height, dimBlock.y));
-    int sm = dimBlock.y*dimBlock.x*sizeof(float);
-
-    printf("roi x=%d y=%d width=%d height=%d\n",roi.x, roi.y,roi.width,roi.height);
+  // fragmentation
+  dim3 dimBlock(16, 16, 1);
+  dim3 dimGrid(iu::divUp(roi.width, dimBlock.x), iu::divUp(roi.height, dimBlock.y));
+  int sm = dimBlock.y*dimBlock.x*sizeof(float);
 
   cuSum_kernel <<< dimGrid, dimBlock, sm >>> (const_cast<iu::ImageGpu_32f_C1*>(src)->data(), roi.width, roi.height, roi.x, roi.y, src->stride());
   cudaDeviceSynchronize();
 
   float t = 0;
   cudaMemcpy(&t, src->data(), sizeof(float), cudaMemcpyDeviceToHost);
-  sum = t;
+  sum = static_cast<double>(t);
 #endif
 }
 
