@@ -33,6 +33,38 @@ namespace iu {
  *  TODO more detailed docu
  */
 
+
+class IuCudaTimer
+{
+public:
+  IuCudaTimer() {
+    cudaEventCreate(&start_);
+    cudaEventCreate(&stop_);
+  }
+
+  ~IuCudaTimer() {
+    cudaEventDestroy(start_);
+    cudaEventDestroy(stop_);
+  }
+
+  void start() {
+    cudaEventRecord(start_, 0);
+  }
+
+  float elapsed() {
+    cudaEventRecord(stop_);
+    cudaEventSynchronize(stop_);
+    float t = 0;
+    cudaEventElapsedTime(&t, start_, stop_);
+    return t;
+  }
+
+private:
+  cudaEvent_t start_;
+  cudaEvent_t stop_;
+};
+
+
 /* ***************************************************************************
      COPY
  * ***************************************************************************/
@@ -372,6 +404,7 @@ IUCORE_DLLAPI void setValue(const int4& value, VolumeCpu_32s_C4* srcdst, const I
 IUCORE_DLLAPI void setValue(const unsigned char& value, VolumeGpu_8u_C1* srcdst, const IuCube& roi);
 IUCORE_DLLAPI void setValue(const uchar2& value, VolumeGpu_8u_C2* srcdst, const IuCube& roi);
 IUCORE_DLLAPI void setValue(const uchar4& value, VolumeGpu_8u_C4* srcdst, const IuCube& roi);
+IUCORE_DLLAPI void setValue(const unsigned short& value, VolumeGpu_16u_C1* srcdst, const IuCube& roi);
 IUCORE_DLLAPI void setValue(const float& value, VolumeGpu_32f_C1* srcdst, const IuCube& roi);
 IUCORE_DLLAPI void setValue(const float2& value, VolumeGpu_32f_C2* srcdst, const IuCube& roi);
 IUCORE_DLLAPI void setValue(const float4& value, VolumeGpu_32f_C4* srcdst, const IuCube& roi);

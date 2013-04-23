@@ -97,6 +97,11 @@ IUIO_DLLAPI void imshow(iu::ImageGpu_8u_C4* image, const std::string& winname, c
 IUIO_DLLAPI void imshow(iu::ImageGpu_32f_C1* image, const std::string& winname, const bool& normalize=false);
 IUIO_DLLAPI void imshow(iu::ImageGpu_32f_C4* image, const std::string& winname, const bool& normalize=false);
 
+/** Save device memory to a txt file
+ * 
+ * */
+IUIO_DLLAPI void printToFile(iu::ImageGpu_32f_C1 *image, const std::string &name);
+IUIO_DLLAPI void printToFile(iu::ImageGpu_8u_C1 *image, const std::string &name);
 
 /** @} */ // end of IMAGEIO
 

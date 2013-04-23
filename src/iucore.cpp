@@ -270,6 +270,7 @@ void setValue(const int4 &value, VolumeCpu_32s_C4* srcdst, const IuCube& roi) {i
 void setValue(const unsigned char &value, VolumeGpu_8u_C1* srcdst, const IuCube& roi) {iuprivate::setValue(value, srcdst, roi);}
 void setValue(const uchar2 &value, VolumeGpu_8u_C2* srcdst, const IuCube& roi) {iuprivate::setValue(value, srcdst, roi);}
 void setValue(const uchar4 &value, VolumeGpu_8u_C4* srcdst, const IuCube& roi) {iuprivate::setValue(value, srcdst, roi);}
+void setValue(const unsigned short &value, VolumeGpu_16u_C1* srcdst, const IuCube& roi) {iuprivate::setValue(value, srcdst, roi);}
 void setValue(const float &value, VolumeGpu_32f_C1* srcdst, const IuCube& roi) {iuprivate::setValue(value, srcdst, roi);}
 void setValue(const float2 &value, VolumeGpu_32f_C2* srcdst, const IuCube& roi) {iuprivate::setValue(value, srcdst, roi);}
 void setValue(const float4 &value, VolumeGpu_32f_C4* srcdst, const IuCube& roi) {iuprivate::setValue(value, srcdst, roi);}

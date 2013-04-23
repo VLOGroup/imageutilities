@@ -402,6 +402,8 @@ void cuSetValue(const float2& value, iu::VolumeGpu_32f_C2 *dst, const IuCube &ro
 { return cuSetValueTemplate(value, dst, roi); }
 void cuSetValue(const float4& value, iu::VolumeGpu_32f_C4 *dst, const IuCube &roi)
 { return cuSetValueTemplate(value, dst, roi); }
+void cuSetValue(const unsigned short& value, iu::VolumeGpu_16u_C1 *dst, const IuCube &roi)
+{ return cuSetValueTemplate(value, dst, roi); }
 
 
 

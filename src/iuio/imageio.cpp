@@ -21,6 +21,7 @@
  *
  */
 
+#include <stdio.h>
 #include <cv.h>
 #include <highgui.h>
 #include <iucore/copy.h>
@@ -439,6 +440,61 @@ void imshow(iu::ImageGpu_32f_C4* image, const std::string& winname, const bool& 
   iuprivate::copy(image, &cpu_image);
 
   iuprivate::imshow(&cpu_image, winname, normalize);
+}
+
+
+void printToFile(iu::ImageGpu_8u_C1 *image, const std::string &name)
+{
+  iu::ImageCpu_8u_C1 host_image(image->size());
+  iuprivate::copy(image, &host_image);
+
+  printf("Writing file %s\n", name.c_str());
+
+  FILE *fh = fopen(name.c_str(), "w");
+  if (!fh)
+  {
+    printf("Error: Could not open file %s for writing\n", name.c_str());
+    return;
+  }
+
+  fprintf(fh, "%d %d\n", host_image.width(), host_image.height());
+  for (unsigned int y=0; y < host_image.height(); y++)
+  {
+    for (unsigned int x=0; x < host_image.width(); x++)
+    {
+      fprintf(fh, "%.2f ", static_cast<float>(*host_image.data(x,y)));
+    }
+    fprintf(fh, "\n");
+  }
+
+  fclose(fh);
+}
+
+void printToFile(iu::ImageGpu_32f_C1 *image, const std::string &name)
+{
+  iu::ImageCpu_32f_C1 host_image(image->size());
+  iuprivate::copy(image, &host_image);
+
+  printf("Writing file %s\n", name.c_str());
+
+  FILE *fh = fopen(name.c_str(), "w");
+  if (!fh)
+  {
+    printf("Error: Could not open file %s for writing\n", name.c_str());
+    return;
+  }
+
+  fprintf(fh, "%d %d\n", host_image.width(), host_image.height());
+  for (unsigned int y=0; y < host_image.height(); y++)
+  {
+    for (unsigned int x=0; x < host_image.width(); x++)
+    {
+      fprintf(fh, "%.6f ", *host_image.data(x,y));
+    }
+    fprintf(fh, "\n");
+  }
+
+  fclose(fh);
 }
 
 

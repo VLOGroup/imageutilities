@@ -67,6 +67,10 @@ void imshow(iu::ImageGpu_8u_C4* image, const std::string& winname, const bool& n
 void imshow(iu::ImageGpu_32f_C1* image, const std::string& winname, const bool& normalize=false);
 void imshow(iu::ImageGpu_32f_C4* image, const std::string& winname, const bool& normalize=false);
 
+/* Print to file */
+void printToFile(iu::ImageGpu_32f_C1 *image, const std::string &name);
+void printToFile(iu::ImageGpu_8u_C1 *image, const std::string &name);
+
 } // namespace iuprivate
 
 
