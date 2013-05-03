@@ -40,9 +40,10 @@ void filterMedian3x3(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst, c
 /* ***************************************************************************/
 
 // device; 32-bit; 1-channel
-void filterGauss(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst, const IuRect& roi, float sigma, int kernel_size)
+void filterGauss(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst, const IuRect& roi,
+                 float sigma, int kernel_size, iu::ImageGpu_32f_C1 *temp, cudaStream_t stream)
 {
-  cuFilterGauss(src, dst, roi, sigma, kernel_size);
+  cuFilterGauss(src, dst, roi, sigma, kernel_size, temp, stream);
 }
 
 // device; Volume; 32-bit; 1-channel

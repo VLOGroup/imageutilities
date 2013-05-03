@@ -135,11 +135,42 @@ namespace iu {
 /** Check for CUDA error (throws IuCudaException) */
 static inline void checkCudaErrorState( const char* file, const char* function, const int line )
 {
-  cudaThreadSynchronize();
+  cudaDeviceSynchronize();
   cudaError_t err = cudaGetLastError();
   if( err != cudaSuccess )
     throw IuCudaException( err, file, function, line );
 }
+
+static inline float getTotalGPUMemory()
+{
+  size_t total = 0;
+  size_t free = 0;
+  cudaMemGetInfo(&free, &total);
+  return total/(1024.0f*1024.0f);   // return value in Megabytes
+}
+
+static inline float getFreeGPUMemory()
+{
+  size_t total = 0;
+  size_t free = 0;
+  cudaMemGetInfo(&free, &total);
+  return free/(1024.0f*1024.0f);   // return value in Megabytes
+}
+
+static inline void printGPUMemoryUsage()
+{
+  float total = iu::getTotalGPUMemory();
+  float free = iu::getFreeGPUMemory();
+
+  printf("GPU memory usage\n");
+  printf("----------------\n");
+  printf("   Total memory: %.2f MiB\n", total);
+  printf("   Used memory:  %.2f MiB\n", total-free);
+  printf("   Free memory:  %.2f MiB\n", free);
+}
+
+
+
 
 } //namespace iu
 
@@ -157,7 +188,7 @@ static inline void checkCudaErrorState( const char* file, const char* function, 
 #ifdef __IU_CHECK_FOR_CUDA_ERRORS_ENABLED__
 #define IU_CHECK_AND_RETURN_CUDA_ERRORS() \
 { \
-  cudaThreadSynchronize(); \
+  cudaDeviceSynchronize(); \
   if (cudaError_t err = cudaGetLastError()) \
   { \
     fprintf(stderr,"\n\nCUDA Error: %s\n",cudaGetErrorString(err)); \
@@ -172,7 +203,7 @@ static inline void checkCudaErrorState( const char* file, const char* function, 
 
 #define IU_CHECK_CUDA_ERRORS() \
 { \
-  cudaThreadSynchronize(); \
+  cudaDeviceSynchronize(); \
   if (cudaError_t err = cudaGetLastError()) \
   { \
     fprintf(stderr,"\n\nCUDA Error: %s\n",cudaGetErrorString(err)); \
@@ -199,7 +230,7 @@ namespace iu {
 // getTime
 static inline double getTime()
 {
-  cudaThreadSynchronize();
+  cudaDeviceSynchronize();
 #ifdef WIN32
   LARGE_INTEGER current_time,frequency;
   QueryPerformanceCounter (&current_time);

@@ -37,7 +37,8 @@ void cuFilterMedian3x3(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
 /* ***************************************************************************/
 // Gaussian filter; 32-bit; 1-channel
 void cuFilterGauss(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
-                        const IuRect& roi, float sigma, int kernel_size);
+                   const IuRect& roi, float sigma, int kernel_size,
+                   iu::ImageGpu_32f_C1* temp, cudaStream_t stream);
 
 // Gaussian filter; Volume; 32-bit; 4-channel
 void cuFilterGauss(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst, 

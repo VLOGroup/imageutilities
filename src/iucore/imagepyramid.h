@@ -76,7 +76,8 @@ public:
    * @throw IuException
    */
   unsigned int setImage(iu::Image* image,
-                        IuInterpolationType interp_type = IU_INTERPOLATE_LINEAR);
+                        IuInterpolationType interp_type = IU_INTERPOLATE_LINEAR,
+                        cudaStream_t stream=0);
   //---------------------------------------------------------------------------
   // GETTERS / SETTERS
 
@@ -104,6 +105,8 @@ public:
 
 private:
   iu::Image** images_;      /**< Pointer to array of (level+1) layer images (pointers - dynamically allocated). */
+  iu::Image** temp_images_;      /**< Pointer to array of (level+1) layer images (pointers - dynamically allocated). */
+  iu::Image** temp_filter_images_;      /**< Pointer to array of (level+1) layer images (pointers - dynamically allocated). */
   IuPixelType pixel_type_;  /**< The images pixel type. */
   float* scale_factors_;    /**< Pointer to the array of (level+1) ratios of i-th levels to the zero level (rate-i). */
   unsigned int num_levels_; /**< Number of levels in the pyramid. */
@@ -113,6 +116,8 @@ private:
   unsigned int size_bound_;     /**< User set smaller side of coarsest level. */
 
   bool adaptive_scale_;          /**< Does this pyramid use an adaptive scale factor? */
+
+  void alloc(const IuSize &sz, const IuPixelType &type);             /**< Allocate device memory */
 };
 
 } // namespace iu

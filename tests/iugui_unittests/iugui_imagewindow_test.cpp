@@ -188,6 +188,5 @@ int main(int argc, char **argv)
   delete(image_32f_C1);
   delete(image_32f_C4);
 
-  cudaThreadExit();
   return(EXIT_SUCCESS);
 }

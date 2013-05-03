@@ -203,12 +203,12 @@ struct IuSize
   }
   
   
-  IuSize operator* (const double factor)
+  IuSize operator* (const double factor) const
   {
     return IuSize(static_cast<int>(this->width * factor + 0.5f), static_cast<int>(this->height * factor + 0.5f), static_cast<int>(this->depth * factor + 0.5f));
   }
   
-  IuSize operator/ (const double factor)
+  IuSize operator/ (const double factor) const
   {
     IU_ASSERT(factor != 0);
     double invFactor = 1 / factor;

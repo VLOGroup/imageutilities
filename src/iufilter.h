@@ -65,7 +65,7 @@ IUCORE_DLLAPI void filterMedian3x3(const ImageGpu_32f_C1* src, ImageGpu_32f_C1* 
  * \param kernel_size Sets the size of the used Gaussian kernel. If =0 the size is calculated.
  */
 IUCORE_DLLAPI void filterGauss(const ImageGpu_32f_C1* src, ImageGpu_32f_C1* dst, const IuRect& roi,
-                               float sigma, int kernel_size=0);
+                               float sigma, int kernel_size=0, ImageGpu_32f_C1* temp=NULL);
 IUCORE_DLLAPI void filterGauss(const VolumeGpu_32f_C1* src, VolumeGpu_32f_C1* dst,
                                float sigma, int kernel_size=0);
 IUCORE_DLLAPI void filterGauss(const ImageGpu_32f_C4* src, ImageGpu_32f_C4* dst, const IuRect& roi,

@@ -34,6 +34,11 @@ void reduce(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
             IuInterpolationType interpolation = IU_INTERPOLATE_LINEAR,
             bool gauss_prefilter = true, bool bicubic_bspline_prefilter = false);
 
+void reduce(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
+            iu::ImageGpu_32f_C1* temp, iu::ImageGpu_32f_C1* temp_filter, cudaStream_t stream,
+            IuInterpolationType interpolation = IU_INTERPOLATE_LINEAR,
+            bool gauss_prefilter = true, bool bicubic_bspline_prefilter = false);
+
 } // namespace iuprivate
 
 #endif // IUPRIVATE_REDUCE_H

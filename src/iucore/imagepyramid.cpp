@@ -29,12 +29,23 @@
 #include "copy.h"
 #include "imagepyramid.h"
 
+
+// switch pyramid creation scheme
+// 1 - use preallocated device memory for temporary variables in downsampling procedure (gauss filter...)
+// 0 - allocate temporary variables on the fly as needed
+// preallocated memory is quite a bit faster (3ms vs 11.8ms for 640x480, scalefactor 0.85, GTX680),
+// on the downside memory is kept until the end of the pyramid lifecycle.
+// On the fly memory is freed immediately.
+// Uses roughly 2 times pyramid size of memory
+#define FAST_REDUCE 1
+
 namespace iu {
 
 //---------------------------------------------------------------------------
 ImagePyramid::ImagePyramid() :
-  images_(0), pixel_type_(IU_UNKNOWN_PIXEL_TYPE), scale_factors_(0), num_levels_(0),
-  max_num_levels_(0), scale_factor_(0.0f), size_bound_(0), adaptive_scale_(false)
+  images_(0), temp_images_(0), temp_filter_images_(0), pixel_type_(IU_UNKNOWN_PIXEL_TYPE),
+  scale_factors_(0), num_levels_(0), max_num_levels_(0), scale_factor_(0.0f), size_bound_(0),
+  adaptive_scale_(false)
 {
 }
 
@@ -137,12 +148,25 @@ void ImagePyramid::reset()
     for (unsigned int i=0; i<num_levels_; i++)
     {
       delete(images_[i]);
+#if FAST_REDUCE
+      delete(temp_images_[i]);
+      delete(temp_filter_images_[i]);
+      temp_images_[i] = 0;
+      temp_filter_images_[i] = 0;
+#endif
       images_[i] = 0;
     }
   }
 
   delete[] images_;
+#if FAST_REDUCE
+  delete[] temp_images_;
+  temp_images_ = 0;
+  delete[] temp_filter_images_;
+  temp_filter_images_ = 0;
+#endif
   images_ = 0;
+
   pixel_type_ = IU_UNKNOWN_PIXEL_TYPE;
   delete[] scale_factors_;
   scale_factors_ = 0;
@@ -151,7 +175,7 @@ void ImagePyramid::reset()
 
 //---------------------------------------------------------------------------
 unsigned int ImagePyramid::setImage(iu::Image* image,
-                                    IuInterpolationType interp_type)
+                                    IuInterpolationType interp_type, cudaStream_t stream)
 {
   if (image == 0)
   {
@@ -166,8 +190,6 @@ unsigned int ImagePyramid::setImage(iu::Image* image,
         (images_[0]->size() != image->size()) ||
         (images_[0]->pixelType() != image->pixelType()) ))
   {
-	if (this->adaptive_scale_)
-		throw IuException("Scalefactors do not match image size.", __FILE__, __FUNCTION__, __LINE__);
     this->reset();
     this->init(max_num_levels_, image->size(), scale_factor_, size_bound_);
   }
@@ -177,20 +199,24 @@ unsigned int ImagePyramid::setImage(iu::Image* image,
   {
   case IU_32F_C1:
   {
+    if (!images_)
+      this->alloc(image->size(), IU_32F_C1);
+
     // *** needed so that always the same mem is used (if already existent)
     iu::ImageGpu_32f_C1*** cur_images = reinterpret_cast<iu::ImageGpu_32f_C1***>(&images_);
-    if (images_ == 0)
-    {
-      (*cur_images) = new iu::ImageGpu_32f_C1*[num_levels_];
-      for (unsigned int i=0; i<num_levels_; i++)
-      {
-        (*cur_images)[i] = new iu::ImageGpu_32f_C1( image->size() * scale_factors_[i] );
-      }
-    }
+#if FAST_REDUCE
+    iu::ImageGpu_32f_C1*** temp_cimages = reinterpret_cast<iu::ImageGpu_32f_C1***>(&temp_images_);
+    iu::ImageGpu_32f_C1*** temp_filter_cimages = reinterpret_cast<iu::ImageGpu_32f_C1***>(&temp_filter_images_);
+#endif
     iuprivate::copy(reinterpret_cast<iu::ImageGpu_32f_C1*>(image), (*cur_images)[0]);
     for (unsigned int i=1; i<num_levels_; i++)
     {
+#if FAST_REDUCE
+      iuprivate::reduce((*cur_images)[i-1], (*cur_images)[i], (*temp_cimages)[i-1],
+          (*temp_filter_cimages)[i-1], stream, interp_type, 1, 0);
+#else
       iuprivate::reduce((*cur_images)[i-1], (*cur_images)[i], interp_type, 1, 0);
+#endif
     }
     break;
   }
@@ -199,6 +225,39 @@ unsigned int ImagePyramid::setImage(iu::Image* image,
   }
 
   return num_levels_;
+}
+
+
+void ImagePyramid::alloc(const IuSize &sz, const IuPixelType &type)
+{
+  switch(type)
+  {
+  case IU_32F_C1:
+  {
+    iu::ImageGpu_32f_C1*** cur_images = reinterpret_cast<iu::ImageGpu_32f_C1***>(&images_);
+#if FAST_REDUCE
+    iu::ImageGpu_32f_C1*** temp_cimages = reinterpret_cast<iu::ImageGpu_32f_C1***>(&temp_images_);
+    iu::ImageGpu_32f_C1*** temp_filter_cimages = reinterpret_cast<iu::ImageGpu_32f_C1***>(&temp_filter_images_);
+    (*temp_cimages) = new iu::ImageGpu_32f_C1*[num_levels_];
+    (*temp_filter_cimages) = new iu::ImageGpu_32f_C1*[num_levels_];
+#endif
+    (*cur_images) = new iu::ImageGpu_32f_C1*[num_levels_];
+    for (unsigned int i=0; i<num_levels_; i++)
+    {
+      (*cur_images)[i] = new iu::ImageGpu_32f_C1( sz * scale_factors_[i] );
+#if FAST_REDUCE
+      (*temp_cimages)[i] = new iu::ImageGpu_32f_C1( sz * scale_factors_[i] );
+      (*temp_filter_cimages)[i] = new iu::ImageGpu_32f_C1( sz * scale_factors_[i] );
+#endif
+    }
+    break;
+  }
+
+  default:
+    throw IuException("Unsupported pixel type. currently supported: 32f_C1", __FILE__, __FUNCTION__, __LINE__);
+  }
+
+
 }
 
 } // namespace iu

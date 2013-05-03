@@ -86,6 +86,7 @@ signals:
 
 public slots:
   void setZoom(float val);
+  void updateCUDA() { updateCuda_ = true; updateGL(); }
 
 private slots:
   //  /** Invokes timer triggered updates if the autoupdate ability is set. */
@@ -130,7 +131,7 @@ protected:
   bool init();
   //void resizeGL(int w, int h);
   void paintGL();
-  void fillPbo(iu::ImageGpu_8u_C4* output=NULL);
+  bool fillPbo(iu::ImageGpu_8u_C4* output=NULL);
 
   GLuint gl_pbo_; /**< OpenGL PBO name. */
   GLuint gl_tex_; /**< OpenGL texture name. */
@@ -190,6 +191,9 @@ private:
   // Copy and asignment operator intentionally declared private.
   QGLImageGpuWidget(const QGLImageGpuWidget&);
   QGLImageGpuWidget& operator= (const QGLImageGpuWidget&);
+
+  void doCUDA();
+  bool updateCuda_;
 };
 
 } // namespace iu

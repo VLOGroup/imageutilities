@@ -211,7 +211,7 @@ void ImageWindow::update()
     slice_selector_->setMaximum(volume_->roi().depth-1);
   }
 
-  image_gpu_widget_->update();
+  image_gpu_widget_->updateCUDA();
 }
 
 //-----------------------------------------------------------------------------

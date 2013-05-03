@@ -48,7 +48,7 @@ void calcROF(iu::ImageGpu_32f_C1* f, iu::ImageGpu_32f_C1* u,
              float lambda, int max_iter, double* init, double* alg, double* complete,
              bool notex=false)
 {
-  cudaThreadSynchronize();
+  cudaDeviceSynchronize();
   double start = iu::getTime();
 
   iu::ImageGpu_32f_C1 u_(u->size());
@@ -56,7 +56,7 @@ void calcROF(iu::ImageGpu_32f_C1* f, iu::ImageGpu_32f_C1* u,
   iu::ImageGpu_32f_C2 p(u->size());
   iu::setValue(make_float2(0.0f, 0.0f), &p, p.roi());
 
-  cudaThreadSynchronize();
+  cudaDeviceSynchronize();
   double interm = iu::getTime();
   *init = interm - start;
 
@@ -65,7 +65,7 @@ void calcROF(iu::ImageGpu_32f_C1* f, iu::ImageGpu_32f_C1* u,
   else
     rof_primal_dual(f, u, &u_, &p, lambda, max_iter);
 
-  cudaThreadSynchronize();
+  cudaDeviceSynchronize();
   *alg = iu::getTime() - interm;
   *complete = iu::getTime() - start;
 
@@ -76,7 +76,7 @@ void calcROFshared(iu::ImageGpu_32f_C1* f, iu::ImageGpu_32f_C1* u,
                    float lambda, int max_iter, double* init, double* alg, double* complete,
                    bool single=false, int internal=2)
 {
-  cudaThreadSynchronize();
+  cudaDeviceSynchronize();
   double start = iu::getTime();
 
   iu::ImageGpu_32f_C1 u_(u->size());
@@ -84,7 +84,7 @@ void calcROFshared(iu::ImageGpu_32f_C1* f, iu::ImageGpu_32f_C1* u,
   iu::ImageGpu_32f_C2 p(u->size());
   iu::setValue(make_float2(0.0f, 0.0f), &p, p.roi());
 
-  cudaThreadSynchronize();
+  cudaDeviceSynchronize();
   double interm = iu::getTime();
   *init = interm - start;
 
@@ -98,7 +98,7 @@ void calcROFshared(iu::ImageGpu_32f_C1* f, iu::ImageGpu_32f_C1* u,
   else
     rof_primal_dual_shared(f, u, &u_, &p, lambda, max_iter);
 
-  cudaThreadSynchronize();
+  cudaDeviceSynchronize();
   *alg = iu::getTime() - interm;
   *complete = iu::getTime() - start;
 
@@ -113,7 +113,7 @@ void calcROFSparse(iu::ImageGpu_32f_C1* f, iu::ImageGpu_32f_C1* u,
   cusparseHandle_t handle = 0;
   cusparseCreate(&handle);
 
-  cudaThreadSynchronize();
+  cudaDeviceSynchronize();
   double start = iu::getTime();
 
   iu::ImageGpu_32f_C1 u_(u->size());
@@ -167,13 +167,13 @@ void calcROFSparse(iu::ImageGpu_32f_C1* f, iu::ImageGpu_32f_C1* u,
 
   G_d.changeSparseFormat(CSR);
 
-  cudaThreadSynchronize();
+  cudaDeviceSynchronize();
   double interm = iu::getTime();
   *init = interm - start;
 
   rof_primal_dual_sparse(&G_d, f, u, &u_, &p, lambda, max_iter);
 
-  cudaThreadSynchronize();
+  cudaDeviceSynchronize();
   *alg = iu::getTime() - interm;
   *complete = iu::getTime() - start;
 
