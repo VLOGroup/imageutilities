@@ -31,6 +31,9 @@ set( CMAKE_DEBUG_POSTFIX "d" )
 FILE(TO_CMAKE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../cmake" OT_IU_CMAKE_MODULE_PATH)
 SET(CMAKE_MODULE_PATH ${OT_IU_CMAKE_MODULE_PATH})
 
+# convert env variable to internal path to circumvent win32 backslash problems
+FILE(TO_CMAKE_PATH "$ENV{VMLIBRARIES_ROOT}" FL_VMLIBRARIES_ROOT)
+
 ##-----------------------------------------------------------------------------
 ## Current version number:
 ##-----------------------------------------------------------------------------
@@ -96,13 +99,13 @@ find_package(CUDA 3.1 REQUIRED)
 find_package(CUDASDK REQUIRED)
 if(CUDA_VERSION_MAJOR GREATER 4)
   message("Using CUDA >= 5.0")
-  file(REMOVE "$ENV{VMLIBRARIES_ROOT}/include/iu/helper_math.h")
+  file(REMOVE "${FL_VMLIBRARIES_ROOT}/include/iu/helper_math.h")
 else()
-  message("Using CUDA < 5.0, copy old 'cutil_math.h' to new 'helper_math.h' imageutlities include dir")
-  file(COPY ${CUDA_SDK_INCLUDE_DIR}/cutil_math.h DESTINATION "$ENV{VMLIBRARIES_ROOT}/include")
-  file(RENAME "$ENV{VMLIBRARIES_ROOT}/include/cutil_math.h" "$ENV{VMLIBRARIES_ROOT}/include/helper_math.h")
-  cuda_include_directories("$ENV{VMLIBRARIES_ROOT}/include/")
-  include_directories("$ENV{VMLIBRARIES_ROOT}/include/")
+  message("Using CUDA < 5.0, copy old 'cutil_math.h' to new '${FL_VMLIBRARIES_ROOT}/include/helper_math.h'")
+  file(COPY ${CUDA_SDK_INCLUDE_DIR}/cutil_math.h DESTINATION "${FL_VMLIBRARIES_ROOT}/include")
+  file(RENAME "${FL_VMLIBRARIES_ROOT}/include/cutil_math.h" "${FL_VMLIBRARIES_ROOT}/include/helper_math.h")
+  cuda_include_directories("${FL_VMLIBRARIES_ROOT}/include/")
+  include_directories("${FL_VMLIBRARIES_ROOT}/include/")
 endif(CUDA_VERSION_MAJOR GREATER 4)
 
 cuda_include_directories(${CUDA_INCLUDE_DIRS} ${CUDA_SDK_INCLUDE_DIR})
@@ -971,7 +974,7 @@ OPTION(VMLIBRARIES_IU_INSTALL_LOCAL "Installation of the ImageUtilities binaries
 
 if(VMLIBRARIES_IU_INSTALL_LOCAL )
   if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-    set(CMAKE_INSTALL_PREFIX $ENV{VMLIBRARIES_ROOT} CACHE PATH "ImageUtilities install prefix" FORCE)
+    set(CMAKE_INSTALL_PREFIX ${FL_VMLIBRARIES_ROOT} CACHE PATH "ImageUtilities install prefix" FORCE)
   endif(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 endif(VMLIBRARIES_IU_INSTALL_LOCAL)
 
