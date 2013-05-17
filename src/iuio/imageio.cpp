@@ -87,6 +87,8 @@ iu::ImageCpu_8u_C4* imread_8u_C4(const std::string& filename)
 iu::ImageCpu_32f_C1* imread_32f_C1(const std::string& filename)
 {
   cv::Mat mat = cv::imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
+  if (!mat.data)
+    throw IuException("Can't load file", filename.c_str(), __FUNCTION__, __LINE__);
   IuSize sz(mat.cols, mat.rows);
 
   iu::ImageCpu_32f_C1* im = new iu::ImageCpu_32f_C1(sz);
@@ -120,6 +122,8 @@ iu::ImageCpu_32f_C3* imread_32f_C3(const std::string& filename)
 iu::ImageCpu_32f_C4* imread_32f_C4(const std::string& filename)
 {
   cv::Mat mat = cv::imread(filename, CV_LOAD_IMAGE_COLOR);
+  if (!mat.data)
+    throw IuException("Can't load file", filename.c_str(), __FUNCTION__, __LINE__);
   IuSize sz(mat.cols, mat.rows);
 
   cv::Mat mat_32f_C3(mat.rows, mat.cols, CV_32FC3);

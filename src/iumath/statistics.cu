@@ -997,7 +997,11 @@ void cuSummation(const iu::ImageGpu_8u_C1 *src, const IuRect &roi, long& sum)
 
 
 
-
+// compute sum of the array data, the result is saved in data[0]
+// xoff/yoff can be used to specify an arbitrary ROI in the image
+// this kernel needs BLOCKSIZE_X*BLOCKSIZE_Y*sizeof(float) bytes of shared
+// memory allocated upon kernel invocation:
+// cuSum_kernel <<< dimGrid, dimBlock, sm >>> where sm is the size of shared memory in bytes
 __global__ void cuSum_kernel(float* data, int width, int height, int xoff, int yoff, int stride)
 {
   const int x = blockIdx.x*blockDim.x + threadIdx.x;
