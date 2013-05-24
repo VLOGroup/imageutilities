@@ -327,7 +327,7 @@ __global__ void cuMaxXKernel_32f_C1(float* max, float* max_col_idx,
 */
 
 // kernel; compute sum; 8u_C1
-__global__ void cuSumColKernel_8u_C1(unsigned char* sum, int xoff, int yoff, int width, int height)
+__global__ void cuSumColKernel_8u_C1(int* sum, int xoff, int yoff, int width, int height)
 {
   const int x = blockIdx.x*blockDim.x + threadIdx.x;
   const int y = blockIdx.y*blockDim.y + threadIdx.y;
@@ -335,7 +335,7 @@ __global__ void cuSumColKernel_8u_C1(unsigned char* sum, int xoff, int yoff, int
   float xx = x+xoff+0.5f;
   float yy = y+yoff+0.5f;
 
-  float cur_sum = 0.0f;
+  int cur_sum = 0;
 
   // compute sum of each column
   if (xx<width+0.5f)
@@ -958,9 +958,52 @@ void cuMax(const iu::ImageGpu_32f_C1 *src, const IuRect &roi,
   WRAPPERS FOR SUM
 */
 
+__global__ void cuSum_8u_kernel(unsigned char* data, int width, int height, int xoff, int yoff,
+                                int stride, int* sumData)
+{
+  const int x = blockIdx.x*blockDim.x + threadIdx.x;
+  const int y = blockIdx.y*blockDim.y + threadIdx.y;
+
+  const int linId = threadIdx.x + threadIdx.y*blockDim.x;
+
+  extern volatile __shared__ int reductionSpace_32s[];
+  const int c = (y+yoff)*stride + (x+xoff);
+
+  if (x < width && y < height)
+  {
+    reductionSpace_32s[linId] = data[c];
+    if (x == 0 && y == 0)
+      *sumData = 0;
+  }
+
+  __syncthreads();
+
+
+  if (linId < 128) { reductionSpace_32s[linId] += reductionSpace_32s[linId+128]; }
+  __syncthreads();
+  if (linId < 64) { reductionSpace_32s[linId] += reductionSpace_32s[linId+64]; }
+  __syncthreads();
+
+  if (linId < 32)
+  {
+    reductionSpace_32s[linId] += reductionSpace_32s[linId+32];
+    reductionSpace_32s[linId] += reductionSpace_32s[linId+16];
+    reductionSpace_32s[linId] += reductionSpace_32s[linId+8];
+    reductionSpace_32s[linId] += reductionSpace_32s[linId+4];
+    reductionSpace_32s[linId] += reductionSpace_32s[linId+2];
+    reductionSpace_32s[linId] += reductionSpace_32s[linId+1];
+  }
+  __syncthreads();
+
+  if (linId == 0)
+    atomicAdd(sumData, reductionSpace_32s[0]);
+}
+
+
 // wrapper: compute sum; 8u_C1
 void cuSummation(const iu::ImageGpu_8u_C1 *src, const IuRect &roi, long& sum)
 {
+#if 1
   // prepare and bind texture
   tex1_8u_C1__.filterMode = cudaFilterModePoint;
   tex1_8u_C1__.addressMode[0] = cudaAddressModeClamp;
@@ -976,13 +1019,13 @@ void cuSummation(const iu::ImageGpu_8u_C1 *src, const IuRect &roi, long& sum)
 
   // temporary memory for row sums on the host
   int num_col_sums = roi.width;
-  iu::LinearDeviceMemory_8u_C1 col_sums(num_col_sums);
+  iu::LinearDeviceMemory_32s_C1 col_sums(num_col_sums);
 
   cuSumColKernel_8u_C1 <<< dimGridX, dimBlock >>> (
                                                    col_sums.data(), roi.x, roi.y, roi.width, roi.height);
 
   // :TODO: 32f vs 32u?
-  iu::LinearHostMemory_8u_C1 h_col_sums(num_col_sums);
+  iu::LinearHostMemory_32s_C1 h_col_sums(num_col_sums);
   iuprivate::copy(&col_sums, &h_col_sums);
 
   sum = 0;
@@ -993,6 +1036,22 @@ void cuSummation(const iu::ImageGpu_8u_C1 *src, const IuRect &roi, long& sum)
 
   cudaUnbindTexture(&tex1_8u_C1__);
   iu::checkCudaErrorState(__FILE__, __FUNCTION__, __LINE__);
+#else
+
+  // fragmentation
+  dim3 dimBlock(16, 16, 1);
+  dim3 dimGrid(iu::divUp(roi.width, dimBlock.x), iu::divUp(roi.height, dimBlock.y));
+  int sm = dimBlock.y*dimBlock.x*sizeof(int);
+
+  iu::LinearDeviceMemory_32s_C1 sumData(1);
+  cuSum_8u_kernel <<< dimGrid, dimBlock, sm >>> (const_cast<iu::ImageGpu_8u_C1*>(src)->data(), roi.width, roi.height, roi.x, roi.y,
+                                                 src->stride(), sumData.data());
+  cudaDeviceSynchronize();
+
+  unsigned int t = 0;
+  cudaMemcpy(&t, sumData.data(), sizeof(int), cudaMemcpyDeviceToHost);
+  sum = t;
+#endif
 }
 
 
@@ -1002,7 +1061,7 @@ void cuSummation(const iu::ImageGpu_8u_C1 *src, const IuRect &roi, long& sum)
 // this kernel needs BLOCKSIZE_X*BLOCKSIZE_Y*sizeof(float) bytes of shared
 // memory allocated upon kernel invocation:
 // cuSum_kernel <<< dimGrid, dimBlock, sm >>> where sm is the size of shared memory in bytes
-__global__ void cuSum_kernel(float* data, int width, int height, int xoff, int yoff, int stride)
+__global__ void cuSum_32f_kernel(float* data, int width, int height, int xoff, int yoff, int stride)
 {
   const int x = blockIdx.x*blockDim.x + threadIdx.x;
   const int y = blockIdx.y*blockDim.y + threadIdx.y;
@@ -1087,7 +1146,7 @@ void cuSummation(const iu::ImageGpu_32f_C1 *src, const IuRect &roi, double& sum)
   dim3 dimGrid(iu::divUp(roi.width, dimBlock.x), iu::divUp(roi.height, dimBlock.y));
   int sm = dimBlock.y*dimBlock.x*sizeof(float);
 
-  cuSum_kernel <<< dimGrid, dimBlock, sm >>> (const_cast<iu::ImageGpu_32f_C1*>(src)->data(), roi.width, roi.height, roi.x, roi.y, src->stride());
+  cuSum_32f_kernel <<< dimGrid, dimBlock, sm >>> (const_cast<iu::ImageGpu_32f_C1*>(src)->data(), roi.width, roi.height, roi.x, roi.y, src->stride());
   cudaDeviceSynchronize();
 
   float t = 0;
