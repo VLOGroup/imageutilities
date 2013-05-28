@@ -102,6 +102,8 @@ void max(const iu::ImageGpu_32f_C1* src, const IuRect&roi, float& max, int& x, i
  * \param src Source image [device]
  * \param src_roi Region of interest in the source image.
  * \param[out] sum Contains computed sum.
+ * \param[in] sum_temp Temporary memory for the summation. Defaults to NULL. If supplied, a device
+ * allocation/deallocation is saved during execution of the function (speedup)
  *
  * \note supported ipp: 8u_C1, 8u_C3, 8u_C4, 32f_C1, 32f_C3, 32f_C4,
  * \note supported gpu: 8u_C1, 8u_C4, 32f_C1, 32f_C4,
@@ -121,7 +123,8 @@ void summation(const iu::ImageGpu_8u_C1* src, const IuRect& roi, long& sum);
 //void summation(iu::ImageGpu_8u_C4* src, const IuRect& roi, unsigned char sum[4]);
 
 // compute sum; device; 32-bit
-void summation(const iu::ImageGpu_32f_C1* src, const IuRect& roi, double& sum);
+void summation(const iu::ImageGpu_32f_C1* src, const IuRect& roi, double& sum,
+               iu::LinearDeviceMemory_32f_C1* sum_temp);
 //void summation(iu::ImageGpu_32f_C4* src, const IuRect& roi, float sum[4]);
 
 // compute sum; device; 3D; 32-bit

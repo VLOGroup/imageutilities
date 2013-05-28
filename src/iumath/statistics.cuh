@@ -95,7 +95,8 @@ void cuMax(const iu::ImageGpu_32f_C1 *src, const IuRect &roi, float& max, int& m
  */
 void cuSummation(const iu::ImageGpu_8u_C1 *src, const IuRect &roi, long& sum);
 //void cuSummation(const iu::ImageGpu_8u_C4 *src, const IuRect &roi, long sum[4]);
-void cuSummation(const iu::ImageGpu_32f_C1 *src, const IuRect &roi, double& sum);
+void cuSummation(const iu::ImageGpu_32f_C1 *src, const IuRect &roi, double& sum,
+                 iu::LinearDeviceMemory_32f_C1* sum_temp=NULL);
 //void cuSummation(const iu::ImageGpu_32f_C4 *src, const IuRect &roi, double sum[4]);
 
 /* ***************************************************************************

@@ -312,9 +312,10 @@ void summation(const iu::ImageGpu_8u_C1 *src, const IuRect &roi, long& sum)
 ///////////////////////////////////////////////////////////////////////////////
 
 // [device] compute sum of image; 32-bit; 1-channel
-void summation(const iu::ImageGpu_32f_C1 *src, const IuRect &roi, double &sum)
+void summation(const iu::ImageGpu_32f_C1 *src, const IuRect &roi, double &sum,
+               iu::LinearDeviceMemory_32f_C1 *sum_temp)
 {
-  cuSummation(src, roi, sum);
+  cuSummation(src, roi, sum, sum_temp);
 }
 
 // [device] compute sum of volume; 32-bit; 1-channel

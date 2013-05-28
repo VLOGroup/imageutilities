@@ -210,6 +210,8 @@ IUCORE_DLLAPI void max(const iu::ImageGpu_32f_C1* src, const IuRect&roi, float& 
  * \param src Source image [device]
  * \param src_roi Region of interest in the source image.
  * \param[out] sum Contains computed sum.
+ * \param[in] sum_temp Temporary memory for the summation. Defaults to NULL. If supplied, a device
+ * allocation/deallocation is saved during execution of the function (speedup)
  *
  * \note supported gpu: 8u_C1, 8u_C4, 32f_C1, 32f_C4,
  */
@@ -218,7 +220,8 @@ IUCORE_DLLAPI void summation(const ImageGpu_8u_C1* src, const IuRect& roi, long&
 //IUCORE_DLLAPI void summation(const ImageGpu_8u_C4* src, const IuRect& roi, long sum[4]);
 
 // compute sum; device; 32-bit
-IUCORE_DLLAPI void summation(const ImageGpu_32f_C1* src, const IuRect& roi, double& sum);
+IUCORE_DLLAPI void summation(const ImageGpu_32f_C1* src, const IuRect& roi, double& sum,
+                             iu::LinearDeviceMemory_32f_C1* sum_temp=NULL);
 IUCORE_DLLAPI void summation(VolumeGpu_32f_C1* src, const IuCube& roi, double& sum);
 //IUCORE_DLLAPI void summation(const ImageGpu_32f_C4* src, const IuRect& roi, double sum[4]);
 

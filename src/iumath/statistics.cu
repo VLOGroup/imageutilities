@@ -1077,8 +1077,9 @@ __global__ void cuSum_32f_kernel(float* data, int width, int height, int xoff, i
     reductionSpace[linId] = data[c];
     if (x == 0 && y == 0)
       *sum = 0;
-
   }
+  else
+    reductionSpace[linId] = 0;
 
   __syncthreads();
 
@@ -1105,7 +1106,8 @@ __global__ void cuSum_32f_kernel(float* data, int width, int height, int xoff, i
 
 
 // wrapper: compute sum; 32f_C1
-void cuSummation(const iu::ImageGpu_32f_C1 *src, const IuRect &roi, double& sum)
+void cuSummation(const iu::ImageGpu_32f_C1 *src, const IuRect &roi, double& sum,
+                 iu::LinearDeviceMemory_32f_C1 *sum_temp)
 {
 #if 0
   // prepare and bind texture
@@ -1147,15 +1149,25 @@ void cuSummation(const iu::ImageGpu_32f_C1 *src, const IuRect &roi, double& sum)
   dim3 dimGrid(iu::divUp(roi.width, dimBlock.x), iu::divUp(roi.height, dimBlock.y));
   int sm = dimBlock.y*dimBlock.x*sizeof(float);
 
-  iu::LinearDeviceMemory_32f_C1 sum_temp(1);
+  bool delete_sum_temp = false;
+  if (!sum_temp)
+  {
+    sum_temp = new iu::LinearDeviceMemory_32f_C1(1);
+    delete_sum_temp = true;
+  }
+
+  //cudaMemset(sum_temp->data(), 0, sizeof(float));
 
   cuSum_32f_kernel <<< dimGrid, dimBlock, sm >>> (const_cast<iu::ImageGpu_32f_C1*>(src)->data(), roi.width,
-                                                  roi.height, roi.x, roi.y, src->stride(), sum_temp.data());
-  cudaDeviceSynchronize();
+                                                  roi.height, roi.x, roi.y, src->stride(), sum_temp->data());
+  //cudaDeviceSynchronize();
 
   float t = 0;
-  cudaMemcpy(&t, sum_temp.data(), sizeof(float), cudaMemcpyDeviceToHost);
+  cudaMemcpy(&t, sum_temp->data(), sizeof(float), cudaMemcpyDeviceToHost);
   sum = static_cast<double>(t);
+
+  if (delete_sum_temp)
+    delete sum_temp;
 #endif
 }
 

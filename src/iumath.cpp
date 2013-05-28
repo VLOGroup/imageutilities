@@ -135,8 +135,9 @@ void summation(const iu::ImageGpu_8u_C1* src, const IuRect& roi, long& sum)
 //void summation(iu::ImageGpu_8u_C4* src, const IuRect& roi, long sum[4]);
 
 // compute sum; device; 32-bit
-void summation(const iu::ImageGpu_32f_C1* src, const IuRect& roi, double& sum)
-{iuprivate::summation(src, roi, sum);}
+void summation(const iu::ImageGpu_32f_C1* src, const IuRect& roi, double& sum,
+               iu::LinearDeviceMemory_32f_C1* sum_temp)
+{iuprivate::summation(src, roi, sum, sum_temp);}
 //void summation(iu::ImageGpu_32f_C4* src, const IuRect& roi, double sum[4]);
 
 // compute sum; device; 3D; 32-bit
