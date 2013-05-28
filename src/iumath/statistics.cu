@@ -1061,7 +1061,8 @@ void cuSummation(const iu::ImageGpu_8u_C1 *src, const IuRect &roi, long& sum)
 // this kernel needs BLOCKSIZE_X*BLOCKSIZE_Y*sizeof(float) bytes of shared
 // memory allocated upon kernel invocation:
 // cuSum_kernel <<< dimGrid, dimBlock, sm >>> where sm is the size of shared memory in bytes
-__global__ void cuSum_32f_kernel(float* data, int width, int height, int xoff, int yoff, int stride)
+__global__ void cuSum_32f_kernel(float* data, int width, int height, int xoff, int yoff, int stride,
+                                 float* sum)
 {
   const int x = blockIdx.x*blockDim.x + threadIdx.x;
   const int y = blockIdx.y*blockDim.y + threadIdx.y;
@@ -1075,7 +1076,7 @@ __global__ void cuSum_32f_kernel(float* data, int width, int height, int xoff, i
   {
     reductionSpace[linId] = data[c];
     if (x == 0 && y == 0)
-      data[0] = 0;
+      *sum = 0;
 
   }
 
@@ -1099,7 +1100,7 @@ __global__ void cuSum_32f_kernel(float* data, int width, int height, int xoff, i
   __syncthreads();
 
   if (linId == 0)
-    atomicAdd(&data[0], reductionSpace[0]);
+    atomicAdd(sum, reductionSpace[0]);
 }
 
 
@@ -1146,11 +1147,14 @@ void cuSummation(const iu::ImageGpu_32f_C1 *src, const IuRect &roi, double& sum)
   dim3 dimGrid(iu::divUp(roi.width, dimBlock.x), iu::divUp(roi.height, dimBlock.y));
   int sm = dimBlock.y*dimBlock.x*sizeof(float);
 
-  cuSum_32f_kernel <<< dimGrid, dimBlock, sm >>> (const_cast<iu::ImageGpu_32f_C1*>(src)->data(), roi.width, roi.height, roi.x, roi.y, src->stride());
+  iu::LinearDeviceMemory_32f_C1 sum_temp(1);
+
+  cuSum_32f_kernel <<< dimGrid, dimBlock, sm >>> (const_cast<iu::ImageGpu_32f_C1*>(src)->data(), roi.width,
+                                                  roi.height, roi.x, roi.y, src->stride(), sum_temp.data());
   cudaDeviceSynchronize();
 
   float t = 0;
-  cudaMemcpy(&t, src->data(), sizeof(float), cudaMemcpyDeviceToHost);
+  cudaMemcpy(&t, sum_temp.data(), sizeof(float), cudaMemcpyDeviceToHost);
   sum = static_cast<double>(t);
 #endif
 }
