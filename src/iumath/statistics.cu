@@ -1205,7 +1205,7 @@ void cuNormDiffL1(const iu::ImageGpu_32f_C1* src1, const iu::ImageGpu_32f_C1* sr
 
   double sum_squared = 0.0;
   iuprivate::cuSummation(&squared_deviances, roi, sum_squared);
-  norm = sqrtf(sum_squared);
+  norm = sqrt(sum_squared);
 
   iu::checkCudaErrorState(__FILE__, __FUNCTION__, __LINE__);
 }
@@ -1234,7 +1234,7 @@ void cuNormDiffL1(const iu::ImageGpu_32f_C1* src, const float& value, const IuRe
 
   double sum_squared = 0.0;
   iuprivate::cuSummation(&squared_deviances, roi, sum_squared);
-  norm = sqrtf(sum_squared);
+  norm = sqrt(sum_squared);
 
   iu::checkCudaErrorState(__FILE__, __FUNCTION__, __LINE__);
 }
@@ -1269,7 +1269,7 @@ void cuNormDiffL2(const iu::ImageGpu_32f_C1* src1, const iu::ImageGpu_32f_C1* sr
 
   double sum_squared = 0.0;
   iuprivate::cuSummation(&squared_deviances, roi, sum_squared);
-  norm = sqrtf(sum_squared);
+  norm = sqrt(sum_squared);
 
   iu::checkCudaErrorState(__FILE__, __FUNCTION__, __LINE__);
 }
@@ -1298,7 +1298,7 @@ void cuNormDiffL2(const iu::ImageGpu_32f_C1* src, const float& value, const IuRe
 
   double sum_squared = 0.0;
   iuprivate::cuSummation(&squared_deviances, roi, sum_squared);
-  norm = sqrtf(sum_squared);
+  norm = sqrt(sum_squared);
 
   iu::checkCudaErrorState(__FILE__, __FUNCTION__, __LINE__);
 }
