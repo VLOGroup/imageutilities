@@ -975,6 +975,8 @@ __global__ void cuSum_8u_kernel(unsigned char* data, int width, int height, int 
     if (x == 0 && y == 0)
       *sumData = 0;
   }
+  else
+    reductionSpace_32s[linId] = 0;
 
   __syncthreads();
 
@@ -1072,12 +1074,11 @@ __global__ void cuSum_32f_kernel(float* data, int width, int height, int xoff, i
   extern volatile __shared__ float reductionSpace[];
   const int c = (y+yoff)*stride + (x+xoff);
 
+  if (x == 0 && y == 0)
+    *sum = 0;
+
   if (x < width && y < height)
-  {
     reductionSpace[linId] = data[c];
-    if (x == 0 && y == 0)
-      *sum = 0;
-  }
   else
     reductionSpace[linId] = 0;
 
@@ -1101,7 +1102,9 @@ __global__ void cuSum_32f_kernel(float* data, int width, int height, int xoff, i
   __syncthreads();
 
   if (linId == 0)
+  {
     atomicAdd(sum, reductionSpace[0]);
+  }
 }
 
 

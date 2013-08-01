@@ -129,10 +129,21 @@ void imshow(iu::ImageGpu_32f_C1* image, const std::string& winname, const bool& 
 void imshow(iu::ImageGpu_32f_C4* image, const std::string& winname, const bool& normalize)
 { iuprivate::imshow(image, winname, normalize); }
 
+
+/* ***************************************************************************
+     print device memory to file
+ * ***************************************************************************/
+
 void printToFile(iu::ImageGpu_32f_C1 *image, const std::string &name)
 { iuprivate::printToFile(image, name); }
 
 void printToFile(iu::ImageGpu_8u_C1 *image, const std::string &name)
 { iuprivate::printToFile(image, name); }
+
+void printToFile(iu::LinearDeviceMemory_32f_C1 *data, const std::string &name)
+{ iuprivate::printToFile(data, name); }
+
+void printToFile(iu::LinearHostMemory_32f_C1 *data, const std::string &name)
+{ iuprivate::printToFile(data, name); }
 
 } // namespace iu

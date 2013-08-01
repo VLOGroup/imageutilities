@@ -502,4 +502,30 @@ void printToFile(iu::ImageGpu_32f_C1 *image, const std::string &name)
 }
 
 
+void printToFile(iu::LinearDeviceMemory_32f_C1 *data, const std::string &name)
+{
+  iu::LinearHostMemory_32f_C1 host_data(data->length());
+  iuprivate::copy(data, &host_data);
+
+  iuprivate::printToFile(&host_data, name);
+}
+
+void printToFile(iu::LinearHostMemory_32f_C1 *data, const std::string &name)
+{
+  printf("Writing file %s\n", name.c_str());
+
+  FILE *fh = fopen(name.c_str(), "w");
+  if (!fh)
+  {
+    printf("Error: Could not open file %s for writing\n", name.c_str());
+    return;
+  }
+
+  for (unsigned int x=0; x < data->length(); x++)
+    fprintf(fh, "%.6f ", *data->data(x));
+
+  fclose(fh);
+}
+
+
 } // namespace iuprivate
