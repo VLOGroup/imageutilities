@@ -113,6 +113,7 @@ include_directories(${CUDA_INCLUDE_DIRS} ${CUDA_SDK_INCLUDE_DIR})
 message("Cuda include dirs: " ${CUDA_INCLUDE_DIRS})
 message("Cuda sdk dir: " ${CUDA_SDK_ROOT_DIR})
 message("Cuda sdk include dir: " ${CUDA_SDK_INCLUDE_DIR})
+message("Cuda toolkit: " ${CUDA_TOOLKIT_ROOT_DIR})
 set(IU_IUCORE_LIB_DEPENDENCIES ${IU_IUCORE_LIB_DEPENDENCIES} ${CUDA_LIBRARIES})
 
 # Checking cuda version
@@ -600,6 +601,8 @@ if(VMLIBRARIES_IU_USE_VIDEOSOURCE AND QT4_FOUND AND FLYCAPTURE2_FOUND)
         ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videosource.h
         ${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrsource.h
         ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videofilesource.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/iuio/opencvsource.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/iuio/1394source.h
     DESTINATION include/iu/iuio
     COMPONENT Headers)
 
@@ -608,17 +611,25 @@ if(VMLIBRARIES_IU_USE_VIDEOSOURCE AND QT4_FOUND AND FLYCAPTURE2_FOUND)
     ${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrsource.h
     ${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrcameradata.h
     ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videofilesource.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/opencvsource.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/1394source.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/1394camera.h
     )
 
   set( IU_VIDEOSOURCE_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrsource.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videofilesource.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/opencvsource.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/1394source.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/1394camera.cpp
     )
 
   set( IU_VIDEOSOURCE_MOC_HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videosource.h
     ${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrsource.h
     ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videofilesource.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/opencvsource.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/1394source.h
     )
 
   # compile moc headers
