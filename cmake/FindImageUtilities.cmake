@@ -224,12 +224,12 @@ else(IU_INCLUDE_DIRS AND IU_LIBRARY_DIR)
       endif()
 
       # CUDA Sparse
-      find_package(CUDASparse QUIET)
-      if(CUDASparse_FOUND)
-        message("Cuda sparse lib found")
+      #find_package(CUDASparse QUIET)
+      #if(CUDASparse_FOUND)
+      #  message("Cuda sparse lib found")
         #include_directories(${CUDA_INCLUDE_DIRS})
-        set(IU_IUCORE_LIB_DEPENDENCIES ${IU_IUCORE_LIB_DEPENDENCIES} ${CUDA_SPARSE_LIBRARY})
-      endif(CUDASparse_FOUND)
+      #  set(IU_IUCORE_LIB_DEPENDENCIES ${IU_IUCORE_LIB_DEPENDENCIES} ${CUDA_SPARSE_LIBRARY})
+      #endif(CUDASparse_FOUND)
 
     endif(CUDA_FOUND AND CUDASDK_FOUND)
   endif(IU_IUCORE_FOUND)
