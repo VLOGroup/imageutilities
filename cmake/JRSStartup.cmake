@@ -171,8 +171,9 @@ if (${OPTICALFLOW_FOR_JRS} EQUAL 1)
 	
 	if (NOT arg_omit_version_number)		
 		# append version name
+		set (JRS_PROJECT_NAME ${CMAKE_PROJECT_NAME})
 		JRSGetLibName(JRS_OUTPUT_LIBNAME ${CMAKE_PROJECT_NAME} ${TARGET_VERSION_MAJOR} ${TARGET_VERSION_MINOR} )
-		message ("[JRS] Library name: ${JRS_OUTPUT_LIBNAME}")
+		message ("[JRS] Project name: ${JRS_PROJECT_NAME}  -- Library name: ${JRS_OUTPUT_LIBNAME}")
 	endif()
 	# postfix which will be added to name for debug configuration
 	set (JRS_OUTPUT_DEBUG_POSTFIX "d")
