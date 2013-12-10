@@ -31,8 +31,13 @@
 #include "statistics.cuh"
 
 
-#ifdef CUDA_NO_SM12_ATOMIC_INTRINSICS
-#error Compilation target does not support shared-memory atomics
+#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ < 200
+static __inline__ __device__ float atomicAdd(float* address, float value)
+{
+  float old = value;
+  while ((old = atomicExch(address, atomicExch(address, 0.0f)+old))!=0.0f);
+  return old;
+}
 #endif
 
 namespace iuprivate {
