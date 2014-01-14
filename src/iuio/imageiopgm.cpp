@@ -93,17 +93,16 @@ iu::ImageCpu_16u_C1* imread_16u_C1(const std::string& filename)
   skipComment(src);
   src >> width >> height >> maxval;
 
-  int bit_depth;
   if(maxval <= 255)
   {
     std::cout << "Loading 8-bit file..." << std::endl;
     return 0;
-    bit_depth = 8;
+    //bit_depth = 8;
   }
   else if ( (maxval > 255) && (maxval <= 65535) )
   {
 //    std::cout << "Loading 16-bit file..." << std::endl;
-    bit_depth = 16;
+    //bit_depth = 16;
   }
   else
   {

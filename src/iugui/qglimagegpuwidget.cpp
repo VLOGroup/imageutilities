@@ -45,8 +45,8 @@ namespace iu {
 //-----------------------------------------------------------------------------
 QGLImageGpuWidget::QGLImageGpuWidget(QWidget *parent) :
   QGLWidget(parent),
-  gl_pbo_(NULL),
-  gl_tex_(NULL),
+  gl_pbo_(0),
+  gl_tex_(0),
   cuda_pbo_resource_(NULL),
   image_(0),
   num_channels_(0),
@@ -609,7 +609,7 @@ void QGLImageGpuWidget::mouseMoveEvent(QMouseEvent * event)
   mouse_x_old_ = mouse_x_;
   mouse_y_old_ = mouse_y_;
 
-  if ((mouse_x_ > 0) && (mouse_y_>0) && (mouse_x_<image_->width()) && (mouse_y_<image_->height()))
+  if ((mouse_x_ > 0) && (mouse_y_>0) && (mouse_x_<static_cast<int>(image_->width())) && (mouse_y_<static_cast<int>(image_->height())))
   {
     QString text = "Pixel info: (";
     QString xpos;
@@ -781,7 +781,7 @@ void QGLImageGpuWidget::deleteTexture()
   if(gl_tex_)
   {
     glDeleteTextures(1, &gl_tex_);
-    gl_tex_ = NULL;
+    gl_tex_ = 0;
   }
 }
 
@@ -815,7 +815,7 @@ void QGLImageGpuWidget::deletePbo()
     // delete the PBO
     cudaGraphicsUnregisterResource(cuda_pbo_resource_);
     glDeleteBuffers( 1, &gl_pbo_ );
-    gl_pbo_=NULL;
+    gl_pbo_=0;
     cuda_pbo_resource_ = NULL;
   }
 }

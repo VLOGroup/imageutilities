@@ -62,7 +62,7 @@ public:
   static void copy(const Ipp8u *src, size_t src_pitch, Ipp8u *dst, size_t dst_pitch, IuSize size)
   {
     IppStatus status;
-    IppiSize sz = {size.width, size.height};
+    IppiSize sz = {static_cast<int>(size.width), static_cast<int>(size.height)};
     status = ippiCopy_8u_C1R(src, static_cast<int>(src_pitch), dst, static_cast<int>(dst_pitch), sz);
     if (status != ippStsNoErr) throw IuException("ippiCopy returned error code", __FILE__, __FUNCTION__, __LINE__);
   }
@@ -93,7 +93,7 @@ public:
     IppStatus status;
     // ship around 2-channel copy as there is no ippiCopy_8u_C2
     // we simply double the width and use _C1.
-    IppiSize size_C1 = {size.width*2, size.height};
+    IppiSize size_C1 = {static_cast<int>(size.width)*2, static_cast<int>(size.height)};
     status = ippiCopy_8u_C1R(src, static_cast<int>(src_pitch), dst, static_cast<int>(dst_pitch), size_C1);
     if (status != ippStsNoErr) throw IuException("ippiCopy returned error code", __FILE__, __FUNCTION__, __LINE__);
   }
@@ -122,7 +122,7 @@ public:
   static void copy(const Ipp8u *src, size_t src_pitch, Ipp8u *dst, size_t dst_pitch, IuSize size)
   {
     IppStatus status;
-    IppiSize sz = {size.width, size.height};
+    IppiSize sz = {static_cast<int>(size.width), static_cast<int>(size.height)};
     status = ippiCopy_8u_C3R(src, static_cast<int>(src_pitch), dst, static_cast<int>(dst_pitch), sz);
     if (status != ippStsNoErr) throw IuException("ippiCopy returned error code", __FILE__, __FUNCTION__, __LINE__);
   }
@@ -151,7 +151,7 @@ public:
   static void copy(const Ipp8u *src, size_t src_pitch, Ipp8u *dst, size_t dst_pitch, IuSize size)
   {
     IppStatus status;
-    IppiSize sz = {size.width, size.height};
+    IppiSize sz = {static_cast<int>(size.width), static_cast<int>(size.height)};
     status = ippiCopy_8u_C4R(src, static_cast<int>(src_pitch), dst, static_cast<int>(dst_pitch), sz);
     if (status != ippStsNoErr) throw IuException("ippiCopy returned error code", __FILE__, __FUNCTION__, __LINE__);
   }
@@ -180,7 +180,7 @@ public:
   static void copy(const Ipp32f *src, size_t src_pitch, Ipp32f *dst, size_t dst_pitch, IuSize size)
   {
     IppStatus status;
-    IppiSize sz = {size.width, size.height};
+    IppiSize sz = {static_cast<int>(size.width), static_cast<int>(size.height)};
     status = ippiCopy_32f_C1R(src, static_cast<int>(src_pitch), dst, static_cast<int>(dst_pitch), sz);
     if (status != ippStsNoErr) throw IuException("ippiCopy returned error code", __FILE__, __FUNCTION__, __LINE__);
   }
@@ -211,7 +211,7 @@ public:
     IppStatus status;
     // ship around 2-channel copy as there is no ippiCopy_32f_C2
     // we simply double the width and use _C1.
-    IppiSize size_C1 = {size.width*2, size.height};
+    IppiSize size_C1 = {static_cast<int>(size.width)*2, static_cast<int>(size.height)};
     status = ippiCopy_32f_C1R(src, static_cast<int>(src_pitch), dst, static_cast<int>(dst_pitch), size_C1);
     if (status != ippStsNoErr) throw IuException("ippiCopy returned error code", __FILE__, __FUNCTION__, __LINE__);
   }
@@ -240,7 +240,7 @@ public:
   static void copy(const Ipp32f *src, size_t src_pitch, Ipp32f *dst, size_t dst_pitch, IuSize size)
   {
     IppStatus status;
-    IppiSize sz = {size.width, size.height};
+    IppiSize sz = {static_cast<int>(size.width), static_cast<int>(size.height)};
     status = ippiCopy_32f_C3R(src, static_cast<int>(src_pitch), dst, static_cast<int>(dst_pitch), sz);
     if (status != ippStsNoErr) throw IuException("ippiCopy returned error code", __FILE__, __FUNCTION__, __LINE__);
   }
@@ -269,7 +269,7 @@ public:
   static void copy(const Ipp32f *src, size_t src_pitch, Ipp32f *dst, size_t dst_pitch, IuSize size)
   {
     IppStatus status;
-    IppiSize sz = {size.width, size.height};
+    IppiSize sz = {static_cast<int>(size.width), static_cast<int>(size.height)};
     status = ippiCopy_32f_C4R(src, static_cast<int>(src_pitch), dst, static_cast<int>(dst_pitch), sz);
     if (status != ippStsNoErr) throw IuException("ippiCopy returned error code", __FILE__, __FUNCTION__, __LINE__);
   }

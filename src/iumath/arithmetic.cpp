@@ -41,7 +41,6 @@ void addWeighted(const iu::ImageCpu_32f_C1* src1, const float& weight1,
                  const iu::ImageCpu_32f_C1* src2, const float& weight2,
                  iu::ImageCpu_32f_C1* dst, const IuRect& roi)
 {
-  IuStatus status;
   iu::ImageGpu_32f_C1 d_src1(src1->size());
   iu::ImageGpu_32f_C1 d_src2(src1->size());
   iu::ImageGpu_32f_C1 d_dst(dst->size());

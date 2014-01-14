@@ -161,7 +161,7 @@ IuStatus convertMatlabToGpu(double* matlab_src_buffer, unsigned int width, unsig
 {
   iu::ImageCpu_32f_C1 temp_cpu(width, height);
 
-  for (int i=0; i < dst->depth(); i++)
+  for (unsigned int i=0; i < dst->depth(); i++)
   {
     iu::ImageGpu_32f_C1 slice = dst->getSlice(i);
     IuStatus status = convertMatlabToCpu((double*)&(matlab_src_buffer[width*height*i]), width, height, &temp_cpu);
@@ -484,7 +484,7 @@ IuStatus convertGpuToMatlab(iu::VolumeGpu<PixelType, Allocator, _pixel_type> *sr
   // We want a double as output!!
   iu::ImageCpu_32f_C1 tmp_cpu(width, height);
 
-  for (int i=0; i < src->depth(); i++)
+  for (unsigned int i=0; i < src->depth(); i++)
   {
     iu::ImageGpu_32f_C1 slice = src->getSlice(i);
     iuprivate::copy(&slice, &tmp_cpu);

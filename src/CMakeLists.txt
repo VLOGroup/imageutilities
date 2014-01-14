@@ -79,6 +79,7 @@ if(UNIX)
   add_definitions(-Wall)
   # and debug flags
   add_definitions(-g)
+  add_definitions(-Werror)
 
   add_definitions(-fPIC)
 endif()
