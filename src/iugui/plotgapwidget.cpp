@@ -26,9 +26,21 @@ PlotGapWidget::PlotGapWidget(QWidget* parent, bool x_log_scale, bool y_log_scale
 
   myPlot_->setCanvasBackground(QColor(255,255,255));
   if (x_log_scale)
+  {
+#if QWT_VERSION > 0x060000
     myPlot_->setAxisScaleEngine(QwtPlot::xBottom, new QwtLogScaleEngine);
+#else
+      myPlot_->setAxisScaleEngine(QwtPlot::xBottom, new QwtLog10ScaleEngine);
+#endif
+  }
   if (y_log_scale)
+  {
+#if QWT_VERSION > 0x060000
     myPlot_->setAxisScaleEngine(QwtPlot::yLeft, new QwtLogScaleEngine);
+#else
+      myPlot_->setAxisScaleEngine(QwtPlot::yLeft, new QwtLog10ScaleEngine);
+#endif
+  }
 
   QHBoxLayout* controlLayout = new QHBoxLayout(NULL);
 
@@ -208,7 +220,7 @@ void PlotGapWidget::addCurve(double* x_values_array, double* y_values_array,
   myPlot_->replot();
 
 
-#if (QWT_VERSION >= 0x060000)
+#if (QWT_VERSION > 0x060000)
   double xmin = myPlot_->axisScaleDiv(QwtPlot::xBottom).lowerBound();
   double xmax = myPlot_->axisScaleDiv(QwtPlot::xBottom).upperBound();
   double ymin = myPlot_->axisScaleDiv(QwtPlot::yLeft).lowerBound();
@@ -257,7 +269,11 @@ void PlotGapWidget::updateXMax(double value)
 void PlotGapWidget::updateXLog(bool value)
 {
   if (value)
+#if QWT_VERSION > 0x060000
     myPlot_->setAxisScaleEngine(QwtPlot::xBottom, new QwtLogScaleEngine);
+#else
+      myPlot_->setAxisScaleEngine(QwtPlot::xBottom, new QwtLog10ScaleEngine);
+#endif
   else
     myPlot_->setAxisScaleEngine(QwtPlot::xBottom, new QwtLinearScaleEngine);
   myPlot_->replot();
@@ -281,7 +297,11 @@ void PlotGapWidget::updateYMax(double value)
 void PlotGapWidget::updateYLog(bool value)
 {
   if (value)
+#if QWT_VERSION > 0x060000
     myPlot_->setAxisScaleEngine(QwtPlot::yLeft, new QwtLogScaleEngine);
+#else
+      myPlot_->setAxisScaleEngine(QwtPlot::yLeft, new QwtLog10ScaleEngine);
+#endif
   else
     myPlot_->setAxisScaleEngine(QwtPlot::yLeft, new QwtLinearScaleEngine);
   myPlot_->replot();
