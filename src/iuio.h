@@ -102,6 +102,8 @@ IUIO_DLLAPI void imshow(iu::ImageGpu_32f_C4* image, const std::string& winname, 
  * */
 IUIO_DLLAPI void printToFile(iu::ImageGpu_32f_C1 *image, const std::string &name);
 IUIO_DLLAPI void printToFile(iu::ImageGpu_8u_C1 *image, const std::string &name);
+IUIO_DLLAPI void printToFile(iu::ImageCpu_32f_C1 *image, const std::string &name);
+IUIO_DLLAPI void printToFile(iu::ImageCpu_8u_C1 *image, const std::string &name);
 
 IUIO_DLLAPI void printToFile(iu::LinearDeviceMemory_32f_C1 *data, const std::string &name);
 IUIO_DLLAPI void printToFile(iu::LinearHostMemory_32f_C1 *data, const std::string &name);
