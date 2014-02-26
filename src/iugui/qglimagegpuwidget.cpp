@@ -969,6 +969,7 @@ void QGLImageGpuWidget::doCUDA()
     glEnd ();
 #endif
     glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
   }
 
   updateCuda_ = false;
