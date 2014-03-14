@@ -30,12 +30,14 @@ public:
   /** get frames per second */
   float getFPS() { return fps_; }
 
+
 private:
   cv::VideoCapture *videocapture_;
 
   unsigned int totalFrames_;
   float fps_;
   cv::Mat imageBGR_;
+  cv::Mat imageGray_;
   cv::Mat imageRGB_;
 };
 

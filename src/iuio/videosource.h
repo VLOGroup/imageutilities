@@ -12,7 +12,7 @@ class VideoSource : public QObject
 public:
 
   /** Get image data. Has to be implemented in a derived class */
-  virtual cv ::Mat getImage() = 0;
+  virtual cv::Mat getImage() = 0;
 
   /** Get image width. Has to be implemented in a derived class */
   virtual unsigned int getWidth() = 0;
