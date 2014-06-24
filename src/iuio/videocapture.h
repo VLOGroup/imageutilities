@@ -47,7 +47,7 @@ public:
   VideoCapture(int device);
 
   /** Default destructor. */
-  ~VideoCapture();
+  virtual ~VideoCapture();
 
   // grab the next frame
   virtual bool grab();

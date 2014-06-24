@@ -509,7 +509,7 @@ void printToFile(iu::ImageGpu_32f_C1 *image, const std::string &name)
   iu::ImageCpu_32f_C1 host_image(image->size());
   iuprivate::copy(image, &host_image);
 
-
+  printToFile(&host_image, name);
 }
 
 
