@@ -185,6 +185,17 @@ IUMATLAB_DLLAPI IuStatus convertCpuToMatlab(ImageCpu_32f_C1 *src,
 IUMATLAB_DLLAPI IuStatus convertCpuToMatlab(ImageCpu_8u_C1 *src,
                                             unsigned char* matlab_dst_buffer, unsigned int width, unsigned int height);
 
+/** Converts cpu memory layout to matlab memory layout.
+ * \param src CPU data.
+ * \param width Width of the cpu volume.
+ * \param height Height of the cpu volume.
+ * \param depth Depth of the cpu volume.
+ * \param dst Destination matlab data buffer.
+ */
+IUMATLAB_DLLAPI IuStatus convertCpuToMatlab(VolumeCpu_8u_C1 *src,
+                                            unsigned char* matlab_dst_buffer, unsigned int width, unsigned int height, unsigned int depth);
+
+
 /** Converts matlab memory layout to an ImageGpu memory layout.
  * \param matlab_src_buffer Matlab image buffer.
  * \param width Width of the matlab image.

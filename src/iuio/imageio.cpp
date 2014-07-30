@@ -39,7 +39,11 @@ namespace iuprivate {
 //-----------------------------------------------------------------------------
 iu::ImageCpu_8u_C1* imread_8u_C1(const std::string& filename)
 {
-  cv::Mat mat = cv::imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
+//   cv::Mat mat = cv::imread(filename, CV_LOAD_IMAGE_GRAYSCALE);
+  cv::Mat mat = cv::imread(filename);
+  if(mat.channels() > 2)
+    cvtColor(mat, mat, CV_BGR2GRAY);
+      
   IuSize sz(mat.cols, mat.rows);
 
   iu::ImageCpu_8u_C1* im = new iu::ImageCpu_8u_C1(sz);

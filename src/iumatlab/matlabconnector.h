@@ -455,6 +455,28 @@ IuStatus convertCpuToMatlab(iu::ImageCpu<PixelType, Allocator, _pixel_type> *src
 
 
 //-----------------------------------------------------------------------------
+// [host] conversion from VolumeCpu to matlab
+template<typename PixelType, class Allocator, IuPixelType _pixel_type>
+IuStatus convertCpuToMatlab(iu::VolumeCpu<PixelType, Allocator, _pixel_type> *src,
+                            unsigned char* matlab_dst_buffer, unsigned int width, unsigned int height, unsigned int depth)
+{
+
+
+  for (unsigned int i=0; i < src->depth(); i++)
+  {
+    iu::ImageCpu_8u_C1 slice = src->getSlice(i);
+
+    IuStatus status = iuprivate::convertCpuToMatlab(&slice, &(matlab_dst_buffer[width*height*i]), width, height);
+      if(status != IU_SUCCESS)
+        return status;
+  }
+
+  return IU_NO_ERROR;
+}
+
+
+
+//-----------------------------------------------------------------------------
 // [device] conversion from matlab to ImageGpu memory layout
 template<typename PixelType, class Allocator, IuPixelType _pixel_type>
 IuStatus convertGpuToMatlab(iu::ImageGpu<PixelType, Allocator, _pixel_type> *src,
