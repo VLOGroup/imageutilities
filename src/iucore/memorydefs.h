@@ -165,6 +165,7 @@ typedef ImageGpu<float4, iuprivate::ImageAllocatorGpu<float4>, IU_32F_C4> ImageG
 // Cpu Volumes; 8u
 typedef VolumeCpu<unsigned char, iuprivate::VolumeAllocatorCpu<unsigned char>, IU_8U_C1> VolumeCpu_8u_C1;
 typedef VolumeCpu<uchar2, iuprivate::VolumeAllocatorCpu<uchar2>, IU_8U_C2> VolumeCpu_8u_C2;
+typedef VolumeCpu<uchar3, iuprivate::VolumeAllocatorCpu<uchar3>, IU_8U_C3> VolumeCpu_8u_C3;
 typedef VolumeCpu<uchar4, iuprivate::VolumeAllocatorCpu<uchar4>, IU_8U_C4> VolumeCpu_8u_C4;
 
 // Cpu Volumes; 16u
@@ -184,6 +185,7 @@ typedef VolumeCpu<int4, iuprivate::VolumeAllocatorCpu<int4>, IU_32S_C4> VolumeCp
 // Cpu Volumes; 32f
 typedef VolumeCpu<float, iuprivate::VolumeAllocatorCpu<float>, IU_32F_C1> VolumeCpu_32f_C1;
 typedef VolumeCpu<float2, iuprivate::VolumeAllocatorCpu<float2>, IU_32F_C2> VolumeCpu_32f_C2;
+typedef VolumeCpu<float3, iuprivate::VolumeAllocatorCpu<float3>, IU_32F_C3> VolumeCpu_32f_C3;
 typedef VolumeCpu<float4, iuprivate::VolumeAllocatorCpu<float4>, IU_32F_C4> VolumeCpu_32f_C4;
 
 /*
@@ -192,6 +194,7 @@ typedef VolumeCpu<float4, iuprivate::VolumeAllocatorCpu<float4>, IU_32F_C4> Volu
 // Gpu Volumes; 8u
 typedef VolumeGpu<unsigned char, iuprivate::VolumeAllocatorGpu<unsigned char>, IU_8U_C1> VolumeGpu_8u_C1;
 typedef VolumeGpu<uchar2, iuprivate::VolumeAllocatorGpu<uchar2>, IU_8U_C2> VolumeGpu_8u_C2;
+typedef VolumeGpu<uchar3, iuprivate::VolumeAllocatorGpu<uchar3>, IU_8U_C3> VolumeGpu_8u_C3;
 typedef VolumeGpu<uchar4, iuprivate::VolumeAllocatorGpu<uchar4>, IU_8U_C4> VolumeGpu_8u_C4;
 
 // Gpu Volumes; 16u
@@ -211,6 +214,7 @@ typedef VolumeGpu<int4, iuprivate::VolumeAllocatorGpu<int4>, IU_32S_C4> VolumeGp
 // Gpu Volumes; 32f
 typedef VolumeGpu<float, iuprivate::VolumeAllocatorGpu<float>, IU_32F_C1> VolumeGpu_32f_C1;
 typedef VolumeGpu<float2, iuprivate::VolumeAllocatorGpu<float2>, IU_32F_C2> VolumeGpu_32f_C2;
+typedef VolumeGpu<float3, iuprivate::VolumeAllocatorGpu<float3>, IU_32F_C3> VolumeGpu_32f_C3;
 typedef VolumeGpu<float4, iuprivate::VolumeAllocatorGpu<float4>, IU_32F_C4> VolumeGpu_32f_C4;
 
 } // namespace iu
