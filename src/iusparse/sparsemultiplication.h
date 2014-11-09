@@ -19,23 +19,28 @@ namespace iu {
   {
     if (A->sparseFormat() == CSR)
     {
+      float alpha = 1.0f;
+      float beta = 0.0f;
       CUSPARSE_SAFE_CALL_IUSTATUS(cusparseScsrmv(*handle, transpose,
-                                                 A->n_row(), A->n_col(), 1.0f,
+                                                 A->n_row(), A->n_col(), A->value()->length(), &alpha,
                                                  A->mat_descriptor(), A->value()->data(),
                                                  A->row()->data(), A->col()->data(),
-                                                 src, 0.0f, dst));
+                                                 src, &beta, dst));
     }
     else if (A->sparseFormat() == CSC)
     {
+      float alpha = 1.0f;
+      float beta = 0.0f;
+      
       if (transpose == CUSPARSE_OPERATION_NON_TRANSPOSE)
         transpose = CUSPARSE_OPERATION_TRANSPOSE;
       else
         transpose = CUSPARSE_OPERATION_NON_TRANSPOSE;
       CUSPARSE_SAFE_CALL_IUSTATUS(cusparseScsrmv(*handle, transpose,
-                                                 A->n_col(), A->n_row(), 1.0f,
+                                                 A->n_col(), A->n_row(), A->value()->length(), &alpha,
                                                  A->mat_descriptor(), A->value()->data(),
                                                  A->col()->data(), A->row()->data(),
-                                                 src, 0.0f, dst));
+                                                 src, &beta, dst));
     }
     else
     {
@@ -74,7 +79,25 @@ namespace iu {
 
   inline IuStatus sparseMultiplication(cusparseHandle_t* handle,
                                        iu::SparseMatrixGpu<float>* A,
+                                       iu::ImageGpu_32f_C1* src,
+                                       iu::ImageGpu_32f_C4* dst,
+                                       cusparseOperation_t transpose=CUSPARSE_OPERATION_NON_TRANSPOSE)
+  {
+    return sparseMultiplicationCore(handle, A, (float*)src->data(), (float*)dst->data(), transpose);
+  }
+
+  inline IuStatus sparseMultiplication(cusparseHandle_t* handle,
+                                       iu::SparseMatrixGpu<float>* A,
                                        iu::ImageGpu_32f_C2* src,
+                                       iu::ImageGpu_32f_C1* dst,
+                                       cusparseOperation_t transpose=CUSPARSE_OPERATION_NON_TRANSPOSE)
+  {
+    return sparseMultiplicationCore(handle, A, (float*)src->data(), (float*)dst->data(), transpose);
+  }
+
+  inline IuStatus sparseMultiplication(cusparseHandle_t* handle,
+                                       iu::SparseMatrixGpu<float>* A,
+                                       iu::ImageGpu_32f_C4* src,
                                        iu::ImageGpu_32f_C1* dst,
                                        cusparseOperation_t transpose=CUSPARSE_OPERATION_NON_TRANSPOSE)
   {

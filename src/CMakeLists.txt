@@ -61,7 +61,7 @@ endif()
 ## Flags if modules are used.
 ## The modules are included per default unless dependencies not found or omitted by the user.
 ## (the core module is always included!)
-OPTION(VMLIBRARIES_IU_USE_SPARSE "Including Sparse Matrix module." OFF)
+OPTION(VMLIBRARIES_IU_USE_SPARSE "Including Sparse Matrix module." ON)
 OPTION(VMLIBRARIES_IU_USE_IPP "Including IPP module." ON)
 OPTION(VMLIBRARIES_IU_USE_MATLAB "Including Matlab module." ON)
 OPTION(VMLIBRARIES_IU_USE_GUI "Including GUI module." ON)

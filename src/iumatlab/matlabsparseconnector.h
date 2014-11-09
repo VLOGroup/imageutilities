@@ -11,6 +11,7 @@
 // version without notice, or even be removed.
 //
 
+#include <cstdlib>
 #include <iostream>
 #include <iudefs.h>
 #include <iucutil.h>

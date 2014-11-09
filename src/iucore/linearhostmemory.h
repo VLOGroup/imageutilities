@@ -27,6 +27,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include <cstdlib>
+#include <string.h>         // memcpy
 #include "linearmemory.h"
 
 namespace iu {

@@ -33,7 +33,7 @@
 
 namespace iu {
 
-#define CUSPARSE_SAFE_CALL(x)   if ((x) != CUSPARSE_STATUS_SUCCESS) {fprintf( stderr, "CUSPARSE ERROR\n" ); return; }
+#define CUSPARSE_SAFE_CALL(x)   if ((x) != CUSPARSE_STATUS_SUCCESS) {fprintf( stderr, "CUSPARSE ERROR: %d %s %d\n", x, __FUNCTION__,__LINE__ ); return; }
 
   template<typename PixelType>
   class SparseMatrixGpu
@@ -108,8 +108,8 @@ namespace iu {
                     int n_row, int n_col,
                     IuSparseFormat sformat,
                     bool ext_data_pointer = false) :
-    handle_(handle), value_(0), row_(0), col_(0), n_row_(n_row),
-    n_col_(n_col), n_elements_(0), sformat_(sformat), ext_data_pointer_(ext_data_pointer)
+        handle_(handle), n_row_(n_row), n_col_(n_col), n_elements_(0), value_(0), row_(0), col_(0),
+        sformat_(sformat), ext_data_pointer_(ext_data_pointer)
     {
       if(ext_data_pointer_)
       {
@@ -140,8 +140,8 @@ namespace iu {
     SparseMatrixGpu(cusparseHandle_t *handle, LinearDeviceMemory<PixelType>* value,
                     LinearDeviceMemory<int>* row, int n_row,
                     LinearDeviceMemory<int>* col, int n_col) :
-    handle_(handle), value_(0), row_(0), col_(0), n_row_(n_row),
-    n_col_(n_col), n_elements_(value->length()), ext_data_pointer_(false)
+    handle_(handle), n_row_(n_row),
+    n_col_(n_col), n_elements_(value->length()), value_(0), row_(0), col_(0), ext_data_pointer_(false)
     {
       value_ = new LinearDeviceMemory<PixelType>(*value);
       col_ = new LinearDeviceMemory<int>(*col);
@@ -183,6 +183,13 @@ namespace iu {
 
       createMatDescriptor();
     }
+
+//    SparseMatrixGpu(const SparseMatrixGpu<PixelType>& other) :
+//        handle_(NULL), n_row_(0), n_col_(0), n_elements_(0),
+//        value_(0), row_(0), col_(0), ext_data_pointer_(false)
+//    {
+//        printf("sparse matrix copy constructor\n");
+//    }
 
 
     const LinearDeviceMemory<PixelType>* value() const
@@ -228,10 +235,15 @@ namespace iu {
         col_ = new LinearDeviceMemory<int>(n_elements_);
         setValue(0, col_);
 
+//        printf("handle n_col %d n_row %d nnz %d datapointer value %d pointer col %d pointer row %d,"
+//               " val data %d col %d row %d\n", n_col_, n_row_, old_value->length(),
+//               old_value->data(), old_col->data(), old_row->data(),
+//               value_->data(), col_->data(), row_->data());
+
         // Converts matrix in CSC format into matrix in CSR format
-        CUSPARSE_SAFE_CALL(cusparseScsr2csc(*handle_, n_col_, n_row_, old_value->data(),
+        CUSPARSE_SAFE_CALL(cusparseScsr2csc(*handle_, n_col_, n_row_, n_elements_, old_value->data(),
                                             old_col->data(), old_row->data(),
-                                            value_->data(), col_->data(), row_->data(), 1,
+                                            value_->data(), col_->data(), row_->data(), CUSPARSE_ACTION_NUMERIC,
                                             CUSPARSE_INDEX_BASE_ZERO));
 
         delete old_value;
@@ -259,9 +271,9 @@ namespace iu {
         setValue(0, col_);
 
         // Converts matrix in CSR format into matrix in CSC format
-        CUSPARSE_SAFE_CALL(cusparseScsr2csc(*handle_, n_row_, n_col_, old_value->data(),
+        CUSPARSE_SAFE_CALL(cusparseScsr2csc(*handle_, n_row_, n_col_, old_value->length(), old_value->data(),
                                             old_row->data(), old_col->data(),
-                                            value_->data(), row_->data(), col_->data(), 1,
+                                            value_->data(), row_->data(), col_->data(), CUSPARSE_ACTION_NUMERIC,
                                             CUSPARSE_INDEX_BASE_ZERO));
 
         delete old_value;
