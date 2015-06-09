@@ -27,7 +27,9 @@
 #ifdef WIN32
   #undef max
   #undef min
-  #define NOMINMAX
+  #ifndef NOMINMAX
+    #define NOMINMAX
+  #endif
 #endif
 
 //#ifdef __CUDACC__ // only include this include in cuda files (seen by nvcc)
