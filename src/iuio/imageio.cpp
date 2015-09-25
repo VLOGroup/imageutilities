@@ -296,6 +296,22 @@ bool imsave(iu::ImageCpu_32f_C4* image, const std::string& filename, const bool&
   return cv::imwrite(filename, bgr);
 }
 
+
+//-----------------------------------------------------------------------------
+bool imsave(iu::ImageCpu_32s_C1* image, const std::string& filename, const bool& normalize)
+{
+  IuSize sz = image->size();
+  cv::Mat mat_imageCpu(sz.height, sz.width, CV_32SC1, image->data(), image->pitch());
+  cv::Mat mat_32f(sz.height, sz.width, CV_32FC1);
+  mat_imageCpu.convertTo(mat_32f, mat_32f.type());
+  if(normalize)
+    cv::normalize(mat_32f, mat_32f, 0.0, 255.0, cv::NORM_MINMAX);
+  cv::Mat mat_8u(sz.height, sz.width, CV_8UC1);
+  mat_32f.convertTo(mat_8u, mat_8u.type());
+  return cv::imwrite(filename, mat_8u);
+}
+
+
 //-----------------------------------------------------------------------------
 bool imsave(iu::ImageGpu_8u_C1* image, const std::string& filename, const bool& normalize)
 {
@@ -327,6 +343,15 @@ bool imsave(iu::ImageGpu_32f_C4* image, const std::string& filename, const bool&
   iuprivate::copy(image, &cpu_image);
   return iuprivate::imsave(&cpu_image, filename, normalize);
 }
+
+//-----------------------------------------------------------------------------
+bool imsave(iu::ImageGpu_32s_C1* image, const std::string& filename, const bool& normalize)
+{
+  iu::ImageCpu_32s_C1 cpu_image(image->size());
+  iuprivate::copy(image, &cpu_image);
+  return iuprivate::imsave(&cpu_image, filename, normalize);
+}
+
 
 
 /* ****************************************************************************

@@ -77,6 +77,9 @@ bool imsave(iu::ImageCpu_8u_C4* image, const std::string& filename, const bool& 
 bool imsave(iu::ImageCpu_32f_C1* image, const std::string& filename, const bool& normalize)
 { return iuprivate::imsave(image, filename, normalize); }
 
+bool imsave(iu::ImageCpu_32s_C1* image, const std::string& filename, const bool& normalize)
+{ return iuprivate::imsave(image, filename, normalize); }
+
 bool imsave(iu::ImageCpu_32f_C3* image, const std::string& filename, const bool& normalize)
 { return iuprivate::imsave(image, filename, normalize); }
 
@@ -90,6 +93,9 @@ bool imsave(iu::ImageGpu_8u_C4* image, const std::string& filename, const bool& 
 { return iuprivate::imsave(image, filename, normalize); }
 
 bool imsave(iu::ImageGpu_32f_C1* image, const std::string& filename, const bool& normalize)
+{ return iuprivate::imsave(image, filename, normalize); }
+
+bool imsave(iu::ImageGpu_32s_C1* image, const std::string& filename, const bool& normalize)
 { return iuprivate::imsave(image, filename, normalize); }
 
 bool imsave(iu::ImageGpu_32f_C4* image, const std::string& filename, const bool& normalize)

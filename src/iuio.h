@@ -66,6 +66,7 @@ IUIO_DLLAPI bool imsave(iu::ImageCpu_8u_C4* image, const std::string& filename, 
 IUIO_DLLAPI bool imsave(iu::ImageCpu_32f_C1* image, const std::string& filename, const bool& normalize=false);
 IUIO_DLLAPI bool imsave(iu::ImageCpu_32f_C3* image, const std::string& filename, const bool& normalize=false);
 IUIO_DLLAPI bool imsave(iu::ImageCpu_32f_C4* image, const std::string& filename, const bool& normalize=false);
+IUIO_DLLAPI bool imsave(iu::ImageCpu_32s_C1* image, const std::string& filename, const bool& normalize=false);
 
 /** Saves a device image to a file.
  * @param image Pointer to device image (gpu) that should be written to disk.
@@ -76,6 +77,7 @@ IUIO_DLLAPI bool imsave(iu::ImageGpu_8u_C1* image, const std::string& filename, 
 IUIO_DLLAPI bool imsave(iu::ImageGpu_8u_C4* image, const std::string& filename, const bool& normalize=false);
 IUIO_DLLAPI bool imsave(iu::ImageGpu_32f_C1* image, const std::string& filename, const bool& normalize=false);
 IUIO_DLLAPI bool imsave(iu::ImageGpu_32f_C4* image, const std::string& filename, const bool& normalize=false);
+IUIO_DLLAPI bool imsave(iu::ImageGpu_32s_C1* image, const std::string& filename, const bool& normalize=false);
 
 /** Shows the host image in a window using OpenCVs imshow
  * @param image Pointer to host image (cpu) that should be shown.
