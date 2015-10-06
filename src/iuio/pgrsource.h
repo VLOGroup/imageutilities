@@ -14,8 +14,10 @@ class PGRSource : public VideoSource
 {
   Q_OBJECT
 public:
-  /** initialize camera camId */
-  PGRSource(unsigned int camId=0);
+  /** initialize camera camId
+   * if gray is true (default), capture 8-bit grayscale images, otherwise 24-bit rgb
+  */
+  PGRSource(unsigned int camId=0, bool gray=true);
   virtual ~PGRSource();
 
   /** get image from camera */
@@ -39,6 +41,7 @@ private:
   void printError(FlyCapture2::Error* error);
 
   PGRCameraData* data_;
+  bool gray_;
 };
 
 #endif // PGRSOURCE_H

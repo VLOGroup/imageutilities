@@ -38,7 +38,6 @@ public:
       bus_mgr_ = new FlyCapture2::BusManager();
       cam_ = new FlyCapture2::Camera();
       raw_image_ = new FlyCapture2::Image();
-      processed_image_ = new FlyCapture2::Image();
     }
 
 
@@ -47,13 +46,11 @@ public:
       delete(bus_mgr_);
       delete(cam_);
       delete(raw_image_);
-      delete(processed_image_);
     }
 
   FlyCapture2::BusManager* bus_mgr_;
   FlyCapture2::Camera* cam_;
   FlyCapture2::Image* raw_image_;
-  FlyCapture2::Image* processed_image_;
 
   QMutex image_mutex_;
   QWaitCondition no_image_wait_cond_; // Wait condition until an image is available for the consumer.

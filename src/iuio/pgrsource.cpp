@@ -2,9 +2,10 @@
 #include <FlyCapture2.h>
 #include "pgrcameradata.h"
 
-PGRSource::PGRSource(unsigned int camId)
+PGRSource::PGRSource(unsigned int camId, bool gray)
 {
   data_ = new PGRCameraData();
+  gray_ = gray;
 
   // initializes the camera, set width and height member variables
   if (!this->init(camId))
@@ -14,6 +15,7 @@ PGRSource::PGRSource(unsigned int camId)
     std::cerr << "PGRSource: Error initializing camera" << std::endl;
   }
   frameNr_ = 0;
+
 }
 
 PGRSource::~PGRSource()
@@ -57,11 +59,12 @@ bool PGRSource::init(unsigned int camId)
   if (!this->connectToCamera(camId))
     return false;
 
+  // this sets width and height member variables
   if (!this->startCapture())
     return false;
 
-  // this sets width and height member variables
-  this->grab();
+
+  //this->grab();
   return true;
 }
 
@@ -69,9 +72,14 @@ bool PGRSource::init(unsigned int camId)
 cv::Mat PGRSource::getImage()
 {
   this->grab();
-  return cv::Mat(data_->processed_image_->GetRows(), data_->processed_image_->GetCols(),
-                 CV_8UC3, data_->processed_image_->GetData(),
-                 data_->processed_image_->GetStride());
+    if (gray_)
+        return cv::Mat(data_->raw_image_->GetRows(), data_->raw_image_->GetCols(),
+                 CV_8UC1, data_->raw_image_->GetData(),
+                 data_->raw_image_->GetStride());
+    else
+        return cv::Mat(data_->raw_image_->GetRows(), data_->raw_image_->GetCols(),
+                 CV_8UC3, data_->raw_image_->GetData(),
+                 data_->raw_image_->GetStride());
 
 }
 
@@ -88,6 +96,19 @@ bool PGRSource::connectToCamera(unsigned int camId)
   }
 
   error = data_->cam_->Connect(&guid);
+  if (error != FlyCapture2::PGRERROR_OK)
+  {
+    this->printError(&error);
+    return false;
+  }
+
+  // set format & framerate
+  if (gray_)
+      error = data_->cam_->SetVideoModeAndFrameRate(FlyCapture2::VIDEOMODE_640x480Y8, FlyCapture2::FRAMERATE_30);
+  else
+      error = data_->cam_->SetVideoModeAndFrameRate(FlyCapture2::VIDEOMODE_640x480RGB, FlyCapture2::FRAMERATE_30);
+
+
   if (error != FlyCapture2::PGRERROR_OK)
   {
     this->printError(&error);
@@ -124,12 +145,6 @@ void PGRSource::grab()
 {
   // grab camera image
   FlyCapture2::Error error = data_->cam_->RetrieveBuffer(data_->raw_image_);
-  if (error != FlyCapture2::PGRERROR_OK)
-    printf( "PGRSource::grab(): %s\n", error.GetDescription() );
-
-  // convert to rgb, this is the image we'll be using
-  error = data_->raw_image_->Convert( FlyCapture2::PIXEL_FORMAT_RGB8,
-                                      data_->processed_image_ );
   if (error != FlyCapture2::PGRERROR_OK)
     printf( "PGRSource::grab(): %s\n", error.GetDescription() );
 
