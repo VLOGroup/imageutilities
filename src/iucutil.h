@@ -100,14 +100,6 @@ inline __host__ __device__ Type sqr(Type a) {return a*a;}
 
 #define IU_CUDACALL(err) iu::cudaCall(err, __FILE__, __LINE__ );
 
-/** Compile time conditional check for CUDA error (throws IuCudaException).
-    Define IU_CUDA_CHECK_ENABLED to enable it.
- */
-#ifdef IU_CUDA_CHECK_ENABLED
-  #define IU_CUDA_CHECK() checkCudaErrorState(__FILE__, __FUNCTION__, __LINE__)
-#else
-  #define IU_CUDA_CHECK() do{}while(0)
-#endif
 
 class IuCudaException : public IuException
 {
@@ -123,7 +115,7 @@ protected:
   cudaError_t cudaErr_;
 };
 
-class IuCudaBadAllocException : public IuCudaException 
+class IuCudaBadAllocException : public IuCudaException
 {
 public:
   IuCudaBadAllocException(const cudaError_t cudaErr,
@@ -134,6 +126,7 @@ public:
 namespace iu {
 
 
+
 /** Check for CUDA error (throws IuCudaException) */
 static inline void checkCudaErrorState( const char* file, const char* function, const int line )
 {
@@ -142,6 +135,22 @@ static inline void checkCudaErrorState( const char* file, const char* function, 
   if( err != cudaSuccess )
     throw IuCudaException( err, file, function, line );
 }
+
+/** Compile time conditional check for CUDA error (throws IuCudaException).
+    Define IU_CUDA_CHECK_ENABLED to enable it.
+ */
+#ifdef IU_CUDA_CHECK_ENABLED
+  #define IU_CUDA_CHECK() iu::checkCudaErrorState(__FILE__, __FUNCTION__, __LINE__)
+#else
+  #define IU_CUDA_CHECK() do{}while(0)
+#endif
+
+
+
+
+
+
+
 
 static inline float getTotalGPUMemory()
 {

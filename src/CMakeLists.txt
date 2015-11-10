@@ -156,8 +156,8 @@ elseif("$ENV{COMPUTE_CAPABILITY}" MATCHES "3.0")
   message(STATUS "IU: using SM 30")
   set(CUDA_NVCC_FLAGS -arch=sm_30)
 else()
-  message(STATUS "IU: using SM 11")
-  set(CUDA_NVCC_FLAGS -arch=sm_11)
+  message(STATUS "IU: using SM 30")
+  set(CUDA_NVCC_FLAGS -arch=sm_30)
 endif()
 
 

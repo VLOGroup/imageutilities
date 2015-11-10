@@ -239,12 +239,14 @@ __global__ void  cuFilterMedian3x3Kernel_32f_C1(float* dst, const size_t stride,
 void cuFilterMedian3x3(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst, const IuRect& roi)
 {
   // bind textures
-  cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<float>();
-  tex1_32f_C1__.filterMode = cudaFilterModeLinear;
-  tex1_32f_C1__.addressMode[0] = cudaAddressModeClamp;
-  tex1_32f_C1__.addressMode[1] = cudaAddressModeClamp;
-  tex1_32f_C1__.normalized = false;
-  cudaBindTexture2D(0, &tex1_32f_C1__, src->data(), &channel_desc, src->width(), src->height(), src->pitch());
+//  cudaChannelFormatDesc channel_desc = cudaCreateChannelDesc<float>();
+//  tex1_32f_C1__.filterMode = cudaFilterModeLinear;
+//  tex1_32f_C1__.addressMode[0] = cudaAddressModeClamp;
+//  tex1_32f_C1__.addressMode[1] = cudaAddressModeClamp;
+//  tex1_32f_C1__.normalized = false;
+//  cudaBindTexture2D(0, &tex1_32f_C1__, src->data(), &channel_desc, src->width(), src->height(), src->pitch());
+    iu::bindTexture(tex1_32f_C1__, src);
+
 
   // fragmentation
   unsigned int block_size = 16;

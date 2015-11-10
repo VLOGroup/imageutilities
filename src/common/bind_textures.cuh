@@ -30,21 +30,21 @@
 namespace iu {
 #ifdef __CUDACC__ // only include this in cuda files (seen by nvcc)
 
-static const cudaChannelFormatDesc chd_float  = cudaCreateChannelDesc<float>();
-static const cudaChannelFormatDesc chd_float2 = cudaCreateChannelDesc<float2>();
-static const cudaChannelFormatDesc chd_float4 = cudaCreateChannelDesc<float4>();
+const cudaChannelFormatDesc chd_float  = cudaCreateChannelDesc<float>();
+const cudaChannelFormatDesc chd_float2 = cudaCreateChannelDesc<float2>();
+const cudaChannelFormatDesc chd_float4 = cudaCreateChannelDesc<float4>();
 
 //---------------------------------------------------------------------------
 // 2D
 template<typename DataType>
-inline void unbindTexture(texture<DataType, cudaTextureType2D>& tex)
+static inline void unbindTexture(texture<DataType, cudaTextureType2D>& tex)
 {
   cudaUnbindTexture(tex);
 }
 
 //---------------------------------------------------------------------------
 // 2D; 32f_C1
-inline void bindTexture(texture<float, cudaTextureType2D>& tex, const iu::ImageGpu_32f_C1* mem,
+static inline void bindTexture(texture<float, cudaTextureType2D>& tex, const iu::ImageGpu_32f_C1* mem,
                         cudaTextureFilterMode filter_mode=cudaFilterModeLinear)
 {
   tex.addressMode[0] = cudaAddressModeClamp; // Neumann Boundary Conditions
@@ -57,7 +57,7 @@ inline void bindTexture(texture<float, cudaTextureType2D>& tex, const iu::ImageG
 
 //---------------------------------------------------------------------------
 // 2D; 32f_C2
-inline void bindTexture(texture<float2, cudaTextureType2D>& tex, const iu::ImageGpu_32f_C2* mem,
+static inline void bindTexture(texture<float2, cudaTextureType2D>& tex, const iu::ImageGpu_32f_C2* mem,
                         cudaTextureFilterMode filter_mode=cudaFilterModeLinear)
 {
   tex.addressMode[0] = cudaAddressModeClamp; // Neumann Boundary Conditions
@@ -70,7 +70,7 @@ inline void bindTexture(texture<float2, cudaTextureType2D>& tex, const iu::Image
 
 //---------------------------------------------------------------------------
 // 2D; 32f_C4
-inline void bindTexture(texture<float4, cudaTextureType2D>& tex, const iu::ImageGpu_32f_C4* mem,
+static inline void bindTexture(texture<float4, cudaTextureType2D>& tex, const iu::ImageGpu_32f_C4* mem,
                         cudaTextureFilterMode filter_mode=cudaFilterModeLinear)
 {
   tex.addressMode[0] = cudaAddressModeClamp; // Neumann Boundary Conditions
@@ -83,7 +83,7 @@ inline void bindTexture(texture<float4, cudaTextureType2D>& tex, const iu::Image
 
 //---------------------------------------------------------------------------
 // 3D-slice; 32f_C1
-inline void bindTexture(texture<float, cudaTextureType2D>& tex, const iu::VolumeGpu_32f_C1* mem, int slice,
+static inline void bindTexture(texture<float, cudaTextureType2D>& tex, const iu::VolumeGpu_32f_C1* mem, int slice,
                         cudaTextureFilterMode filter_mode=cudaFilterModeLinear)
 {
   tex.addressMode[0] = cudaAddressModeClamp; // Neumann Boundary Conditions
@@ -96,7 +96,7 @@ inline void bindTexture(texture<float, cudaTextureType2D>& tex, const iu::Volume
 
 //---------------------------------------------------------------------------
 // 3D-slice; 32f_C2
-inline void bindTexture(texture<float2, cudaTextureType2D>& tex, const iu::VolumeGpu_32f_C2* mem, int slice,
+static inline void bindTexture(texture<float2, cudaTextureType2D>& tex, const iu::VolumeGpu_32f_C2* mem, int slice,
                         cudaTextureFilterMode filter_mode=cudaFilterModeLinear)
 {
   tex.addressMode[0] = cudaAddressModeClamp; // Neumann Boundary Conditions
@@ -109,7 +109,7 @@ inline void bindTexture(texture<float2, cudaTextureType2D>& tex, const iu::Volum
 
 //---------------------------------------------------------------------------
 // 3D-slice; 32f_C4
-inline void bindTexture(texture<float4, cudaTextureType2D>& tex, const iu::VolumeGpu_32f_C4* mem, int slice,
+static inline void bindTexture(texture<float4, cudaTextureType2D>& tex, const iu::VolumeGpu_32f_C4* mem, int slice,
                         cudaTextureFilterMode filter_mode=cudaFilterModeLinear)
 {
   tex.addressMode[0] = cudaAddressModeClamp; // Neumann Boundary Conditions
