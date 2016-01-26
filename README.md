@@ -19,10 +19,7 @@ Usage:
 ------
 
 In your cmake-based project include the following lines  
-
-`
-set(ImageUtilitiesLight_DIR $ENV{IMAGEUTILITIES_ROOT})
-
+`set(ImageUtilitiesLight_DIR $ENV{IMAGEUTILITIES_ROOT})
 find_package(ImageUtilitiesLight REQUIRED COMPONENTS iucore)
 include_directories(${IMAGEUTILITIESLIGHT_INCLUDE_DIR})
 `
