@@ -8,7 +8,7 @@ Set up environment variable IMAGEUTILITIES_ROOT pointing to the root folder of t
 Set up environment variable COMPUTE_CAPABILITY with the CC of your CUDA-enabled GPU
 
 In the root directory (where this file is):
-$ cd build
+`$ cd build
 $ cmake ..
 $ make
-$ make install
+$ make install`
