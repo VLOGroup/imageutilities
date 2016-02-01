@@ -65,6 +65,105 @@ private:
 };
 
 
+template<typename PixelType, class Allocator, IuPixelType _pixel_type>
+void makeTexture(cudaTextureObject_t& tex, iu::ImageGpu<PixelType, Allocator, _pixel_type>& im)
+{
+    cudaResourceDesc res_descr;
+    cudaTextureDesc tex_descr;
+    memset(&res_descr, 0, sizeof(res_descr));
+    memset(&tex_descr, 0, sizeof(tex_descr));
+
+    res_descr.resType = cudaResourceTypePitch2D;
+    switch (im.pixelType())
+    {
+    case IU_32F_C1:
+        res_descr.res.pitch2D.desc = cudaCreateChannelDesc<float>();
+        break;
+    case IU_32F_C2:
+        res_descr.res.pitch2D.desc = cudaCreateChannelDesc<float2>();
+        break;
+    case IU_32F_C4:
+        res_descr.res.pitch2D.desc = cudaCreateChannelDesc<float4>();
+        break;
+    case IU_8U_C1:
+        res_descr.res.pitch2D.desc = cudaCreateChannelDesc<unsigned char>();
+        break;
+    case IU_8U_C2:
+        res_descr.res.pitch2D.desc = cudaCreateChannelDesc<uchar2>();
+        break;
+    case IU_8U_C4:
+        res_descr.res.pitch2D.desc = cudaCreateChannelDesc<uchar4>();
+        break;
+    case IU_32S_C1:
+        res_descr.res.pitch2D.desc = cudaCreateChannelDesc<int>();
+        break;
+    case IU_32S_C2:
+        res_descr.res.pitch2D.desc = cudaCreateChannelDesc<int2>();
+        break;
+    case IU_32S_C4:
+        res_descr.res.pitch2D.desc = cudaCreateChannelDesc<int4>();
+        break;
+    case IU_8U_C3:
+    case IU_16U_C1:
+    case IU_16U_C2:
+    case IU_16U_C3:
+    case IU_16U_C4:
+    case IU_32U_C1:
+    case IU_32U_C2:
+    case IU_32U_C4:
+    case IU_32S_C3:
+    case IU_32F_C3:
+    case IU_UNKNOWN_PIXEL_TYPE:
+        printf("unsupported pixeltype\n");
+        break;
+    default:
+        printf("unknown pixeltype\n");
+    }
+    res_descr.res.pitch2D.devPtr = (void*)im.data();
+    res_descr.res.pitch2D.height = im.height();
+    res_descr.res.pitch2D.pitchInBytes = im.pitch();
+    res_descr.res.pitch2D.width = im.width();
+
+    tex_descr.addressMode[0] = cudaAddressModeClamp;
+    tex_descr.addressMode[1] = cudaAddressModeClamp;
+
+    switch (im.pixelType())
+    {
+    case IU_32F_C1:    // fallthrough intended
+    case IU_32F_C2:
+    case IU_32F_C4:
+        tex_descr.filterMode = cudaFilterModeLinear;
+        tex_descr.readMode = cudaReadModeElementType;
+        break;
+    case IU_8U_C1:     // fallthrough intended
+    case IU_8U_C2:
+    case IU_8U_C4:
+        tex_descr.filterMode = cudaFilterModeLinear;
+        tex_descr.readMode = cudaReadModeNormalizedFloat;
+        break;
+    case IU_32S_C1:
+    case IU_32S_C2:
+    case IU_32S_C4:
+        tex_descr.filterMode = cudaFilterModePoint;
+        tex_descr.readMode = cudaReadModeElementType;
+        break;
+    case IU_8U_C3:
+    case IU_16U_C1:
+    case IU_16U_C2:
+    case IU_16U_C3:
+    case IU_16U_C4:
+    case IU_32U_C1:
+    case IU_32U_C2:
+    case IU_32U_C4:
+    case IU_32S_C3:
+    case IU_32F_C3:
+    case IU_UNKNOWN_PIXEL_TYPE:
+        printf("unsupported pixeltype\n");
+    }
+
+    cudaCreateTextureObject(&tex, &res_descr, &tex_descr, NULL);
+}
+
 /* ***************************************************************************
      COPY
  * ***************************************************************************/
@@ -310,133 +409,6 @@ IUCORE_DLLAPI void copy(const VolumeGpu_32s_C4* src, VolumeCpu_32s_C4* dst);
 
 /** \} */ // end of Copy3D
 
-
-/* ***************************************************************************
-     SET
- * ***************************************************************************/
-////////////////////////////////////////////////////////////////////////////////
-///** \defgroup Set1D 1D Memory Set
-// * \ingroup Core
-// * Set methods for 1D buffers.
-// * \{
-// */
-
-///** Sets all the pixels in the given buffer to a certain value.
-// * \param value The pixel value to be set.
-// * \param buffer Pointer to the buffer
-// */
-//IUCORE_DLLAPI void setValue(const unsigned char& value, LinearHostMemory_8u_C1* srcdst);
-//IUCORE_DLLAPI void setValue(const int& value, LinearHostMemory_32s_C1* srcdst);
-//IUCORE_DLLAPI void setValue(const float& value, LinearHostMemory_32f_C1* srcdst);
-//IUCORE_DLLAPI void setValue(const unsigned char& value, LinearDeviceMemory_8u_C1* srcdst);
-//IUCORE_DLLAPI void setValue(const int& value, LinearDeviceMemory_32s_C1* srcdst);
-//IUCORE_DLLAPI void setValue(const float& value, LinearDeviceMemory_32f_C1* srcdst);
-
-///** \} */ // end of Set1D
-
-
-////////////////////////////////////////////////////////////////////////////////
-///** \defgroup Set2D 2D Memory Set
-// * \ingroup Core
-// * Set methods for 2D images.
-// * \{
-// */
-
-////TODO this is not shown because signature does not exist. use Qt documentation system??
-///** \fn void setValue(<datatype> value, Image<datatype>* srcdst, const IuRect& roi)
-// * \brief Sets all pixel in the region of interest to a certain value.
-// * \ingroup Set2D
-// * \param value The pixel value to be set.
-// * \param image Pointer to the image.
-// * \param roi Region of interest which should be set.
-// */
-//// host:
-//IUCORE_DLLAPI void setValue(const unsigned char& value, ImageCpu_8u_C1* srcdst, const IuRect& roi);
-//IUCORE_DLLAPI void setValue(const uchar2& value, ImageCpu_8u_C2* srcdst, const IuRect& roi);
-//IUCORE_DLLAPI void setValue(const uchar3& value, ImageCpu_8u_C3* srcdst, const IuRect& roi);
-//IUCORE_DLLAPI void setValue(const uchar4& value, ImageCpu_8u_C4* srcdst, const IuRect& roi);
-//IUCORE_DLLAPI void setValue(const int& value, ImageCpu_32s_C1* srcdst, const IuRect& roi);
-//IUCORE_DLLAPI void setValue(const float& value, ImageCpu_32f_C1* srcdst, const IuRect& roi);
-//IUCORE_DLLAPI void setValue(const float2& value, ImageCpu_32f_C2* srcdst, const IuRect& roi);
-//IUCORE_DLLAPI void setValue(const float3& value, ImageCpu_32f_C3* srcdst, const IuRect& roi);
-//IUCORE_DLLAPI void setValue(const float4& value, ImageCpu_32f_C4* srcdst, const IuRect& roi);
-//// device:
-//IUCORE_DLLAPI void setValue(const unsigned char& value, ImageGpu_8u_C1* srcdst, const IuRect& roi);
-//IUCORE_DLLAPI void setValue(const uchar2& value, ImageGpu_8u_C2* srcdst, const IuRect& roi);
-//IUCORE_DLLAPI void setValue(const uchar3& value, ImageGpu_8u_C3* srcdst, const IuRect& roi);
-//IUCORE_DLLAPI void setValue(const uchar4& value, ImageGpu_8u_C4* srcdst, const IuRect& roi);
-//IUCORE_DLLAPI void setValue(const int& value, ImageGpu_32s_C1* srcdst, const IuRect& roi);
-//IUCORE_DLLAPI void setValue(const float& value, ImageGpu_32f_C1* srcdst, const IuRect& roi);
-//IUCORE_DLLAPI void setValue(const float2& value, ImageGpu_32f_C2* srcdst, const IuRect& roi);
-//IUCORE_DLLAPI void setValue(const float3& value, ImageGpu_32f_C3* srcdst, const IuRect& roi);
-//IUCORE_DLLAPI void setValue(const float4& value, ImageGpu_32f_C4* srcdst, const IuRect& roi);
-
-///** \} */ // end of Set2D
-
-
-////////////////////////////////////////////////////////////////////////////////
-///** \defgroup Set3D 3D Memory Set
-// * \ingroup Core
-// * Set methods for 3D images.
-// * \{
-// */
-
-///** \fn void setValue(<datatype> value, Image<datatype>* srcdst, const IuCube& roi)
-// * \brief Sets all pixel in the region of interest to a certain value.
-// * \ingroup Set3D
-// * \param value The pixel value to be set.
-// * \param image Pointer to the image.
-// * \param roi Region of interest which should be set.
-// */
-//// host:
-//IUCORE_DLLAPI void setValue(const unsigned char& value, VolumeCpu_8u_C1* srcdst, const IuCube& roi);
-//IUCORE_DLLAPI void setValue(const uchar2& value, VolumeCpu_8u_C2* srcdst, const IuCube& roi);
-//IUCORE_DLLAPI void setValue(const uchar4& value, VolumeCpu_8u_C4* srcdst, const IuCube& roi);
-//IUCORE_DLLAPI void setValue(const float& value, VolumeCpu_32f_C1* srcdst, const IuCube& roi);
-//IUCORE_DLLAPI void setValue(const float2& value, VolumeCpu_32f_C2* srcdst, const IuCube& roi);
-//IUCORE_DLLAPI void setValue(const float4& value, VolumeCpu_32f_C4* srcdst, const IuCube& roi);
-//IUCORE_DLLAPI void setValue(const unsigned int& value, VolumeCpu_32u_C1* srcdst, const IuCube& roi);
-//IUCORE_DLLAPI void setValue(const uint2& value, VolumeCpu_32u_C2* srcdst, const IuCube& roi);
-//IUCORE_DLLAPI void setValue(const uint4& value, VolumeCpu_32u_C4* srcdst, const IuCube& roi);
-
-//IUCORE_DLLAPI void setValue(const int& value, VolumeCpu_32s_C1* srcdst, const IuCube& roi);
-//IUCORE_DLLAPI void setValue(const int2& value, VolumeCpu_32s_C2* srcdst, const IuCube& roi);
-//IUCORE_DLLAPI void setValue(const int4& value, VolumeCpu_32s_C4* srcdst, const IuCube& roi);
-
-//// device:
-//IUCORE_DLLAPI void setValue(const unsigned char& value, VolumeGpu_8u_C1* srcdst, const IuCube& roi);
-//IUCORE_DLLAPI void setValue(const uchar2& value, VolumeGpu_8u_C2* srcdst, const IuCube& roi);
-//IUCORE_DLLAPI void setValue(const uchar4& value, VolumeGpu_8u_C4* srcdst, const IuCube& roi);
-//IUCORE_DLLAPI void setValue(const unsigned short& value, VolumeGpu_16u_C1* srcdst, const IuCube& roi);
-//IUCORE_DLLAPI void setValue(const float& value, VolumeGpu_32f_C1* srcdst, const IuCube& roi);
-//IUCORE_DLLAPI void setValue(const float2& value, VolumeGpu_32f_C2* srcdst, const IuCube& roi);
-//IUCORE_DLLAPI void setValue(const float4& value, VolumeGpu_32f_C4* srcdst, const IuCube& roi);
-//IUCORE_DLLAPI void setValue(const unsigned int& value, VolumeGpu_32u_C1* srcdst, const IuCube& roi);
-//IUCORE_DLLAPI void setValue(const uint2& value, VolumeGpu_32u_C2* srcdst, const IuCube& roi);
-//IUCORE_DLLAPI void setValue(const uint4& value, VolumeGpu_32u_C4* srcdst, const IuCube& roi);
-
-//IUCORE_DLLAPI void setValue(const int& value, VolumeGpu_32s_C1* srcdst, const IuCube& roi);
-//IUCORE_DLLAPI void setValue(const int2& value, VolumeGpu_32s_C2* srcdst, const IuCube& roi);
-//IUCORE_DLLAPI void setValue(const int4& value, VolumeGpu_32s_C4* srcdst, const IuCube& roi);
-
-/** \} */ // end of Set3D
-
-//////////////////////////////////////////////////////////////////////////////
-/** \defgroup Clamp
- * \ingroup Core
- * Clamping methods for 2D images.
- * \{
- */
-
-///** Clamps all values of srcdst to the interval min/max.
-// * \param min Minimum value for the clamping.
-// * \param max Maximum value for the clamping.
-// * \param srcdst Image which pixels are clamped.
-// * \param roi Region of interest of processed pixels.
-// */
-//void clamp(const float& min, const float& max, iu::ImageGpu_32f_C1* srcdst, const IuRect& roi);
-
-///** \} */ // end of Clamp
 
 //////////////////////////////////////////////////////////////////////////////
 /** \defgroup Conversions
