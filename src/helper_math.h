@@ -24,6 +24,7 @@
 #define HELPER_MATH_H
 
 #include "cuda_runtime.h"
+#include <ostream>
 
 typedef unsigned int uint;
 typedef unsigned short ushort;
@@ -34,6 +35,7 @@ typedef unsigned short ushort;
 
 #ifndef __CUDACC__
 #include <math.h>
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // host implementations of CUDA functions
@@ -1448,6 +1450,159 @@ inline __device__ __host__ float4 smoothstep(float4 a, float4 b, float4 x)
 {
     float4 y = clamp((x - a) / (b - a), 0.0f, 1.0f);
     return (y*y*(make_float4(3.0f) - (make_float4(2.0f)*y)));
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// comparison ==
+////////////////////////////////////////////////////////////////////////////////
+inline __device__ __host__ bool operator==(const float2& lhs, const float2& rhs)
+{
+  return ((lhs.x == rhs.x) && (lhs.y == rhs.y));
+}
+
+inline __device__ __host__ bool operator==(const int2& lhs, const int2& rhs)
+{
+  return ((lhs.x == rhs.x) && (lhs.y == rhs.y));
+}
+
+inline __device__ __host__ bool operator==(const uint2& lhs, const uint2& rhs)
+{
+  return ((lhs.x == rhs.x) && (lhs.y == rhs.y));
+}
+
+inline __device__ __host__ bool operator==(const float3& lhs, const float3& rhs)
+{
+  return ((lhs.x == rhs.x) && (lhs.y == rhs.y) && (lhs.z == rhs.z));
+}
+
+inline __device__ __host__ bool operator==(const int3& lhs, const int3& rhs)
+{
+  return ((lhs.x == rhs.x) && (lhs.y == rhs.y) && (lhs.z == rhs.z));
+}
+
+inline __device__ __host__ bool operator==(const uint3& lhs, const uint3& rhs)
+{
+  return ((lhs.x == rhs.x) && (lhs.y == rhs.y) && (lhs.z == rhs.z));
+}
+
+inline __device__ __host__ bool operator==(const float4& lhs, const float4& rhs)
+{
+  return ((lhs.x == rhs.x) && (lhs.y == rhs.y) && (lhs.z == rhs.z) && (lhs.w == rhs.w));
+}
+
+inline __device__ __host__ bool operator==(const int4& lhs, const int4& rhs)
+{
+  return ((lhs.x == rhs.x) && (lhs.y == rhs.y) && (lhs.z == rhs.z) && (lhs.w == rhs.w));
+}
+
+inline __device__ __host__ bool operator==(const uint4& lhs, const uint4& rhs)
+{
+  return ((lhs.x == rhs.x) && (lhs.y == rhs.y) && (lhs.z == rhs.z) && (lhs.w == rhs.w));
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// comparison !=
+////////////////////////////////////////////////////////////////////////////////
+inline __device__ __host__ bool operator!=(const float2& lhs, const float2& rhs)
+{
+  return ((lhs.x != rhs.x) || (lhs.y != rhs.y));
+}
+
+inline __device__ __host__ bool operator!=(const int2& lhs, const int2& rhs)
+{
+  return ((lhs.x != rhs.x) || (lhs.y != rhs.y));
+}
+
+inline __device__ __host__ bool operator!=(const uint2& lhs, const uint2& rhs)
+{
+  return ((lhs.x != rhs.x) || (lhs.y != rhs.y));
+}
+
+inline __device__ __host__ bool operator!=(const float3& lhs, const float3& rhs)
+{
+  return ((lhs.x != rhs.x) || (lhs.y != rhs.y) || (lhs.z != rhs.z));
+}
+
+inline __device__ __host__ bool operator!=(const int3& lhs, const int3& rhs)
+{
+  return ((lhs.x != rhs.x) || (lhs.y != rhs.y) || (lhs.z != rhs.z));
+}
+
+inline __device__ __host__ bool operator!=(const uint3& lhs, const uint3& rhs)
+{
+  return ((lhs.x != rhs.x) || (lhs.y != rhs.y) || (lhs.z != rhs.z));
+}
+
+inline __device__ __host__ bool operator!=(const float4& lhs, const float4& rhs)
+{
+  return ((lhs.x != rhs.x) || (lhs.y != rhs.y) || (lhs.z != rhs.z) || (lhs.w != rhs.w));
+}
+
+inline __device__ __host__ bool operator!=(const int4& lhs, const int4& rhs)
+{
+  return ((lhs.x != rhs.x) || (lhs.y != rhs.y) || (lhs.z != rhs.z) || (lhs.w != rhs.w));
+}
+
+inline __device__ __host__ bool operator!=(const uint4& lhs, const uint4& rhs)
+{
+  return ((lhs.x != rhs.x) || (lhs.y != rhs.y) || (lhs.z != rhs.z) || (lhs.w != rhs.w));
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// print various types
+////////////////////////////////////////////////////////////////////////////////
+inline __host__ std::ostream& operator<< (std::ostream & out, float2 const& v)
+{
+    out << "[" << v.x << ", " << v.y << "]";
+    return out;
+}
+
+inline __host__ std::ostream& operator<< (std::ostream & out, int2 const& v)
+{
+    out << "[" << v.x << ", " << v.y << "]";
+    return out;
+}
+
+inline __host__ std::ostream& operator<< (std::ostream & out, uint2 const& v)
+{
+    out << "[" << v.x << ", " << v.y << "]";
+    return out;
+}
+
+inline __host__ std::ostream& operator<< (std::ostream & out, float3 const& v)
+{
+    out << "[" << v.x << ", " << v.y << ", " << v.z << "]";
+    return out;
+}
+
+inline __host__ std::ostream& operator<< (std::ostream & out, int3 const& v)
+{
+    out << "[" << v.x << ", " << v.y << ", " << v.z << "]";
+    return out;
+}
+
+inline __host__ std::ostream& operator<< (std::ostream & out, uint3 const& v)
+{
+    out << "[" << v.x << ", " << v.y << ", " << v.z << "]";
+    return out;
+}
+
+inline __host__ std::ostream& operator<< (std::ostream & out, float4 const& v)
+{
+    out << "[" << v.x << ", " << v.y << ", " << v.z << ", " << v.w << "]";
+    return out;
+}
+
+inline __host__ std::ostream& operator<< (std::ostream & out, int4 const& v)
+{
+    out << "[" << v.x << ", " << v.y << ", " << v.z << ", " << v.w << "]";
+    return out;
+}
+
+inline __host__ std::ostream& operator<< (std::ostream & out, uint4 const& v)
+{
+    out << "[" << v.x << ", " << v.y << ", " << v.z << ", " << v.w << "]";
+    return out;
 }
 
 #endif
