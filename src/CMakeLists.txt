@@ -200,9 +200,9 @@ endif()
 
 ##-----------------------------------------------------------------------------
 ## GUI MODULE: Qt5 for ImagepuWidget
-find_package(Qt5Core)
-find_package(Qt5Widgets)
-find_package(Qt5OpenGL)
+find_package(Qt5Core 5.4)
+find_package(Qt5Widgets 5.4)
+find_package(Qt5OpenGL 5.4)
 find_package(OpenGL)
 if(IU_USE_GUI AND Qt5Widgets_FOUND AND Qt5OpenGL_FOUND)
 
