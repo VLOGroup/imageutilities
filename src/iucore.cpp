@@ -353,5 +353,9 @@ void convert_RgbLab(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst, bo
 void convert_LabRgb(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst)
 { iuprivate::convertLabRgb(src, dst); }
 
+double summation(ImageGpu_32f_C1 *src)
+{
+    return iuprivate::summation(src);
+}
 
 } // namespace iu

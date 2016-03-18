@@ -521,6 +521,7 @@ IUCORE_DLLAPI void convert_LabRgb(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_3
 
 /** \} */ // end of Conversions
 
+IUCORE_DLLAPI double summation(iu::ImageGpu_32f_C1* src);
 
 
 /** \} */ // end of Core module

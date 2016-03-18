@@ -81,6 +81,7 @@ void convertRgbLab(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst, boo
 // [device] 2D Color conversion from CIELAB to RGB (32-bit 4-channel)
 void convertLabRgb(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst);
 
+double summation(iu::ImageGpu_32f_C1* src);
 
 } // namespace iuprivate
 
