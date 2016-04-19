@@ -125,7 +125,7 @@ void OpenEXRInputFile::read_channel(const std::string &name, ImageCpu_32f_C1 &im
 void OpenEXRInputFile::read_attribute(const std::string &name, Eigen::Ref<Eigen::Matrix3f> mat)
 {
     Imf::InputFile file(filename_.c_str());
-    const Imf::M33fAttribute *m33Attr = file.header().findTypedAttribute<Imf::M33fAttribute>(name);
+    const Imf::M33fAttribute *m33Attr = file.header().findTypedAttribute<Imf::M33fAttribute>(name.c_str());
 
     if (!m33Attr)
     {
@@ -142,7 +142,7 @@ void OpenEXRInputFile::read_attribute(const std::string &name, Eigen::Ref<Eigen:
 void OpenEXRInputFile::read_attribute(const std::string &name, Eigen::Ref<Eigen::Matrix4f> mat)
 {
     Imf::InputFile file(filename_.c_str());
-    const Imf::M44fAttribute *m44Attr = file.header().findTypedAttribute<Imf::M44fAttribute>(name);
+    const Imf::M44fAttribute *m44Attr = file.header().findTypedAttribute<Imf::M44fAttribute>(name.c_str());
 
     if (!m44Attr)
     {
@@ -221,7 +221,7 @@ void OpenEXROutputFile::add_attribute(const std::string &name, Eigen::Ref<Eigen:
                      mat(1,0), mat(1,1), mat(1,2),
                      mat(2,0), mat(2,1), mat(2,2));
 
-    header_.insert(name, Imf::M33fAttribute(attr));
+    header_.insert(name.c_str(), Imf::M33fAttribute(attr));
 }
 
 void OpenEXROutputFile::add_attribute(const std::string &name, Eigen::Ref<Eigen::Matrix4f> mat)
@@ -234,7 +234,7 @@ void OpenEXROutputFile::add_attribute(const std::string &name, Eigen::Ref<Eigen:
                      mat(2,0), mat(2,1), mat(2,2), mat(2,3),
                      mat(3,0), mat(3,1), mat(3,2), mat(3,3));
 
-    header_.insert(name, Imf::M44fAttribute(attr));
+    header_.insert(name.c_str(), Imf::M44fAttribute(attr));
 
 }
 #endif

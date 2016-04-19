@@ -190,7 +190,7 @@ if(IU_USE_IO AND OpenCV_LIBS)
   ######################
   # OpenEXR
   ######################
-  find_package(OpenEXR QUIET)
+  find_package(OpenEXR REQUIRED)
   if(OPENEXR_FOUND)
       message("  [+] build io module with OpenEXR support")
       include_directories(${OPENEXR_INCLUDE_DIRS})
