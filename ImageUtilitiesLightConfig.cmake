@@ -182,6 +182,7 @@ endif(NOT ANDROID)
     find_package(OpenEXR QUIET)
     if(OPENEXR_FOUND)
       add_definitions(-DIUIO_EXR)
+      include_directories(${OPENEXR_INCLUDE_DIRS})
 
       find_package(Eigen3 QUIET)
       if(EIGEN3_FOUND)

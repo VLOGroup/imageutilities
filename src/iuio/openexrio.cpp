@@ -22,13 +22,13 @@ OpenEXRInputFile::OpenEXRInputFile(const std::string &filename)
     {
         switch(it.channel().type)
         {
-        case Imf_2_1::UINT:
+        case Imf::UINT:
             channels_.push_back(Channel(it.name(), IU_32U_C1));
             break;
-        case Imf_2_1::HALF:
+        case Imf::HALF:
             printf("OpenEXRFile: encountered channel of dataype HALF in file %s, corresponding datatype (16 bit float) not implemented in imageutilities!\n", it.name());
             break;
-        case Imf_2_1::FLOAT:
+        case Imf::FLOAT:
             channels_.push_back(Channel(it.name(), IU_32F_C1));
             break;
         }
@@ -68,13 +68,13 @@ void OpenEXRInputFile::read_channel(const std::string &name, ImageCpu_32u_C1 &im
         return;
     }
 
-    if (!file.header().channels().findChannel(name))
+    if (!file.header().channels().findChannel(name.c_str()))
     {
         printf("OpenEXRFile get_channel(): couldn't find channel %s in exr file!\n", name.c_str());
         return;
     }
 
-    if (file.header().channels().findChannel(name)->type != Imf::UINT)
+    if (file.header().channels().findChannel(name.c_str())->type != Imf::UINT)
     {
         printf("OpenEXRFile get_channel(): channel %s does not contain UINT data!\n", name.c_str());
         return;
@@ -82,7 +82,7 @@ void OpenEXRInputFile::read_channel(const std::string &name, ImageCpu_32u_C1 &im
 
     Imf::FrameBuffer fb;
 
-    fb.insert(name, Imf::Slice(Imf::UINT, (char*)img.data(0,0), sizeof(unsigned int), img.pitch()));
+    fb.insert(name.c_str(), Imf::Slice(Imf::UINT, (char*)img.data(0,0), sizeof(unsigned int), img.pitch()));
     file.setFrameBuffer(fb);
     file.readPixels(dw.min.y, dw.max.y);
 }
@@ -101,13 +101,13 @@ void OpenEXRInputFile::read_channel(const std::string &name, ImageCpu_32f_C1 &im
         return;
     }
 
-    if (!file.header().channels().findChannel(name))
+    if (!file.header().channels().findChannel(name.c_str()))
     {
         printf("OpenEXRFile read_channel(): couldn't find channel %s in %s!\n", name.c_str(), filename_.c_str());
         return;
     }
 
-    if (file.header().channels().findChannel(name)->type != Imf::FLOAT)
+    if (file.header().channels().findChannel(name.c_str())->type != Imf::FLOAT)
     {
         printf("OpenEXRFile read_channel(): channel %s does not contain FLOAT data!\n", name.c_str());
         return;
@@ -115,7 +115,7 @@ void OpenEXRInputFile::read_channel(const std::string &name, ImageCpu_32f_C1 &im
 
     Imf::FrameBuffer fb;
 
-    fb.insert(name, Imf::Slice(Imf::FLOAT, (char*)img.data(0,0), sizeof(float), img.pitch()));
+    fb.insert(name.c_str(), Imf::Slice(Imf::FLOAT, (char*)img.data(0,0), sizeof(float), img.pitch()));
     file.setFrameBuffer(fb);
     file.readPixels(dw.min.y, dw.max.y);
 
@@ -156,6 +156,7 @@ void OpenEXRInputFile::read_attribute(const std::string &name, Eigen::Ref<Eigen:
             mat(i,j) = m44Attr->value().x[i][j];
 
 }
+#endif
 
 OpenEXROutputFile::OpenEXROutputFile(const std::string &filename, IuSize size)
 {
@@ -174,7 +175,7 @@ void OpenEXROutputFile::add_channel(const std::string &name, ImageCpu_8u_C1 &img
     if (!check_channel_name(name))
         return;
 
-    header_.channels().insert(name, Imf::Channel(Imf::UINT));
+    header_.channels().insert(name.c_str(), Imf::Channel(Imf::UINT));
 
     iu::ImageCpu_32u_C1 temp(img.size());
     for (int y=0; y < img.height(); y++)
@@ -184,7 +185,7 @@ void OpenEXROutputFile::add_channel(const std::string &name, ImageCpu_8u_C1 &img
             *temp.data(x,y) = *img.data(x,y);
         }
     }
-    fb_.insert(name, Imf::Slice(Imf::UINT, (char*)temp.data(0,0), sizeof(unsigned int), temp.pitch()));
+    fb_.insert(name.c_str(), Imf::Slice(Imf::UINT, (char*)temp.data(0,0), sizeof(unsigned int), temp.pitch()));
 }
 
 
@@ -194,8 +195,8 @@ void OpenEXROutputFile::add_channel(const std::string &name, ImageCpu_32u_C1 &im
     if (!check_channel_name(name))
         return;
 
-    header_.channels().insert(name, Imf::Channel(Imf::UINT));
-    fb_.insert(name, Imf::Slice(Imf::UINT, (char*)img.data(0,0), sizeof(unsigned int), img.pitch()));
+    header_.channels().insert(name.c_str(), Imf::Channel(Imf::UINT));
+    fb_.insert(name.c_str(), Imf::Slice(Imf::UINT, (char*)img.data(0,0), sizeof(unsigned int), img.pitch()));
 }
 
 
@@ -205,8 +206,8 @@ void OpenEXROutputFile::add_channel(const std::string &name, ImageCpu_32f_C1 &im
     if (!check_channel_name(name))
         return;
 
-    header_.channels().insert(name, Imf::Channel(Imf::FLOAT));
-    fb_.insert(name, Imf::Slice(Imf::FLOAT, (char*)img.data(0,0), sizeof(float), img.pitch()));
+    header_.channels().insert(name.c_str(), Imf::Channel(Imf::FLOAT));
+    fb_.insert(name.c_str(), Imf::Slice(Imf::FLOAT, (char*)img.data(0,0), sizeof(float), img.pitch()));
 }
 
 
@@ -254,7 +255,7 @@ void OpenEXROutputFile::write()
 
 bool OpenEXROutputFile::check_channel_name(const std::string &name)
 {
-    if (header_.channels().findChannel(name))
+    if (header_.channels().findChannel(name.c_str()))
     {
         printf("OpenEXR: channel %s already exists in %s!\n", name.c_str(), filename_.c_str());
         return false;
@@ -266,7 +267,7 @@ bool OpenEXROutputFile::check_attachement_name(const std::string &name)
 {
     try
     {
-        header_[name];
+        header_[name.c_str()];
     }
     catch (Iex::ArgExc)
     {
@@ -275,8 +276,6 @@ bool OpenEXROutputFile::check_attachement_name(const std::string &name)
     printf("OpenEXR: attachement %s already exists in %s!\n", name.c_str(), filename_.c_str());
     return false;
 }
-
-#endif
 
 
 } // namespace iu
