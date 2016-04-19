@@ -68,8 +68,17 @@ public:
     Image(from), data_(0), pitch_(0),
     ext_data_pointer_(false)
   {
-    data_ = Allocator::alloc(width(), height(), &pitch_);
-    Allocator::copy(from.data(), from.pitch(), data_, pitch_, this->size());
+      if (from.ext_data_pointer_)      // external image stays external when copied
+      {
+          data_ = from.data_;
+          pitch_ = from.pitch_;
+          ext_data_pointer_ = from.ext_data_pointer_;
+      }
+      else
+      {
+          data_ = Allocator::alloc(width(), height(), &pitch_);
+          Allocator::copy(from.data(), from.pitch(), data_, pitch_, this->size());
+      }
   }
 
   ImageCpu(PixelType* _data, unsigned int _width, unsigned int _height,

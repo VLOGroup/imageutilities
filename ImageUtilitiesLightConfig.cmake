@@ -172,6 +172,22 @@ endif(NOT ANDROID)
     if(NOT OpenCV_FOUND)
       message(FATAL_ERROR "OpenCV not found (required by Imageutilities iuio")
     endif()
+
+    set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_LIST_DIR}/cmake/)
+    find_package(FlyCapture2 QUIET)
+    if(FLYCAPTURE2_FOUND)
+      add_definitions(-DIUIO_PGR)
+    endif(FLYCAPTURE2_FOUND)
+    
+    find_package(OpenEXR QUIET)
+    if(OPENEXR_FOUND)
+      add_definitions(-DIUIO_EXR)
+
+      find_package(Eigen3 QUIET)
+      if(EIGEN3_FOUND)
+          add_definitions(-DIUIO_EIGEN3)
+      endif(EIGEN3_FOUND)
+    endif(OPENEXR_FOUND)
       
     set(IMAGEUTILITIES_LIBRARY ${IMAGEUTILITIES_LIBRARY} ${OpenCV_LIBS})
   endif()

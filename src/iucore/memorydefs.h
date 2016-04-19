@@ -121,6 +121,12 @@ typedef ImageCpu<int2, iuprivate::ImageAllocatorCpu<int2>, IU_32S_C2> ImageCpu_3
 typedef ImageCpu<int3, iuprivate::ImageAllocatorCpu<int3>, IU_32S_C3> ImageCpu_32s_C3;
 typedef ImageCpu<int4, iuprivate::ImageAllocatorCpu<int4>, IU_32S_C4> ImageCpu_32s_C4;
 
+// Cpu Images; 32u
+typedef ImageCpu<unsigned int, iuprivate::ImageAllocatorCpu<unsigned int>, IU_32U_C1> ImageCpu_32u_C1;
+typedef ImageCpu<uint2, iuprivate::ImageAllocatorCpu<uint2>, IU_32U_C2> ImageCpu_32u_C2;
+typedef ImageCpu<uint4, iuprivate::ImageAllocatorCpu<uint4>, IU_32U_C4> ImageCpu_32u_C4;
+
+
 // Cpu Images; 32f
 typedef ImageCpu<float, iuprivate::ImageAllocatorCpu<float>, IU_32F_C1> ImageCpu_32f_C1;
 typedef ImageCpu<float2, iuprivate::ImageAllocatorCpu<float2>, IU_32F_C2> ImageCpu_32f_C2;
@@ -147,6 +153,12 @@ typedef ImageGpu<int, iuprivate::ImageAllocatorGpu<int>, IU_32S_C1> ImageGpu_32s
 typedef ImageGpu<int2, iuprivate::ImageAllocatorGpu<int2>, IU_32S_C2> ImageGpu_32s_C2;
 typedef ImageGpu<int3, iuprivate::ImageAllocatorGpu<int3>, IU_32S_C3> ImageGpu_32s_C3;
 typedef ImageGpu<int4, iuprivate::ImageAllocatorGpu<int4>, IU_32S_C4> ImageGpu_32s_C4;
+
+// Gpu Images; 32u
+typedef ImageGpu<unsigned int, iuprivate::ImageAllocatorGpu<unsigned int>, IU_32U_C1> ImageGpu_32u_C1;
+typedef ImageGpu<uint2, iuprivate::ImageAllocatorGpu<uint2>, IU_32U_C2> ImageGpu_32u_C2;
+typedef ImageGpu<uint4, iuprivate::ImageAllocatorGpu<uint4>, IU_32U_C4> ImageGpu_32u_C4;
+
 
 // Gpu Images; 32f
 typedef ImageGpu<float, iuprivate::ImageAllocatorGpu<float>, IU_32F_C1> ImageGpu_32f_C1;

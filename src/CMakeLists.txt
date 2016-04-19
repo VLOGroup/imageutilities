@@ -166,6 +166,7 @@ if(IU_USE_IO AND OpenCV_LIBS)
   find_package(FlyCapture2 QUIET)
   if(FLYCAPTURE2_FOUND)
     message("  [+] build io module with Flycapture2/Pointgrey support")
+    add_definitions(-DIUIO_PGR)
     include_directories(${FLYCAPTURE2_INCLUDE_DIR})
 
     set( IU_IO_HEADERS ${IU_IO_HEADERS}
@@ -185,6 +186,41 @@ if(IU_USE_IO AND OpenCV_LIBS)
     message("  [-] build io module without Flycapture2/Pointgrey support")
     set(ADDITIONAL_IUIO_DEPENDENCIES "")
   endif(FLYCAPTURE2_FOUND)
+
+  ######################
+  # OpenEXR
+  ######################
+  find_package(OpenEXR QUIET)
+  if(OPENEXR_FOUND)
+      message("  [+] build io module with OpenEXR support")
+      include_directories(${OPENEXR_INCLUDE_DIRS})
+      add_definitions(-DIUIO_EXR)
+
+      find_package(Eigen3 QUIET)
+      if(EIGEN3_FOUND)
+          add_definitions(-DIUIO_EIGEN3)
+      endif(EIGEN3_FOUND)
+
+
+      set( IU_IO_HEADERS ${IU_IO_HEADERS}
+        ${CMAKE_CURRENT_SOURCE_DIR}/iuio/openexrio.h
+       )
+      set(IU_PUBLIC_IO_HEADERS ${IU_PUBLIC_IO_HEADERS}
+        ${CMAKE_CURRENT_SOURCE_DIR}/iuio/openexrio.h
+        )
+      set( IU_IO_SOURCES ${IU_IO_SOURCES}
+        ${CMAKE_CURRENT_SOURCE_DIR}/iuio/openexrio.cpp
+       )
+
+      set(ADDITIONAL_IUIO_DEPENDENCIES ${ADDITIONAL_IUIO_DEPENDENCIES}
+          ${OPENEXR_LIBRARIES}
+        )
+
+  else(OPENEXR_FOUND)
+      message("  [-] build io module without OpenEXR support")
+  endif(OPENEXR_FOUND)
+
+
 
 
 else()
@@ -368,6 +404,7 @@ target_link_libraries( ${IU_CORE_LIB} ${CUDA_LIBRARIES})
 set(IU_LIBS ${IU_LIBS} ${IU_CORE_LIB})
 
 
+message("additional iuio libs: ${ADDITIONAL_IUIO_DEPENDENCIES}")
 ##-----------------------------------------------------------------------------
 ## build io library
 set(IU_IO_LIB iuio)
