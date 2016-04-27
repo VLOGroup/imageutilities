@@ -190,36 +190,38 @@ if(IU_USE_IO AND OpenCV_LIBS)
   ######################
   # OpenEXR
   ######################
-  find_package(OpenEXR REQUIRED)
-  if(OPENEXR_FOUND)
-      message("  [+] build io module with OpenEXR support")
-      include_directories(${OPENEXR_INCLUDE_DIRS})
-      add_definitions(-DIUIO_EXR)
-
-      find_package(Eigen3 QUIET)
-      if(EIGEN3_FOUND)
-          add_definitions(-DIUIO_EIGEN3)
-      endif(EIGEN3_FOUND)
-
-
-      set( IU_IO_HEADERS ${IU_IO_HEADERS}
-        ${CMAKE_CURRENT_SOURCE_DIR}/iuio/openexrio.h
-       )
-      set(IU_PUBLIC_IO_HEADERS ${IU_PUBLIC_IO_HEADERS}
-        ${CMAKE_CURRENT_SOURCE_DIR}/iuio/openexrio.h
-        )
-      set( IU_IO_SOURCES ${IU_IO_SOURCES}
-        ${CMAKE_CURRENT_SOURCE_DIR}/iuio/openexrio.cpp
-       )
-
-      set(ADDITIONAL_IUIO_DEPENDENCIES ${ADDITIONAL_IUIO_DEPENDENCIES}
-          ${OPENEXR_LIBRARIES}
-        )
-
+  option(WITH_OPENEXR "Build with OpenEXR" ON)
+  if(WITH_OPENEXR)
+      find_package(OpenEXR REQUIRED)
+      if(OPENEXR_FOUND)
+          message("  [+] build io module with OpenEXR support")
+          include_directories(${OPENEXR_INCLUDE_DIRS})
+          add_definitions(-DIUIO_EXR)
+    
+          find_package(Eigen3 QUIET)
+          if(EIGEN3_FOUND)
+              add_definitions(-DIUIO_EIGEN3)
+          endif(EIGEN3_FOUND)
+    
+    
+          set( IU_IO_HEADERS ${IU_IO_HEADERS}
+            ${CMAKE_CURRENT_SOURCE_DIR}/iuio/openexrio.h
+           )
+          set(IU_PUBLIC_IO_HEADERS ${IU_PUBLIC_IO_HEADERS}
+            ${CMAKE_CURRENT_SOURCE_DIR}/iuio/openexrio.h
+            )
+          set( IU_IO_SOURCES ${IU_IO_SOURCES}
+            ${CMAKE_CURRENT_SOURCE_DIR}/iuio/openexrio.cpp
+           )
+    
+          set(ADDITIONAL_IUIO_DEPENDENCIES ${ADDITIONAL_IUIO_DEPENDENCIES}
+              ${OPENEXR_LIBRARIES}
+            )
+                
   else(OPENEXR_FOUND)
       message("  [-] build io module without OpenEXR support")
   endif(OPENEXR_FOUND)
-
+endif(WITH_OPENEXR)
 
 
 
@@ -306,6 +308,8 @@ SET( IU_PUBLIC_CORE_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/linearmemory.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/linearhostmemory.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/lineardevicememory.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/tensor_cpu.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/tensor_gpu.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/image.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/image_allocator_cpu.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/image_cpu.h
