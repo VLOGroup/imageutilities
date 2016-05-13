@@ -73,17 +73,23 @@ public:
 	//struct KernelData
 	{
 		PixelType* data_;
-		int length_;
-		int stride0;
-		int stride1;
-		int stride2;
+		unsigned int length_;
+		unsigned int stride0;
+		unsigned int stride1;
+		unsigned int stride2;
 
-		__device__ PixelType& operator()(int pos0, int pos1, int pos2, int pos3)
+		unsigned short N;
+		unsigned short C;
+		unsigned short H;
+		unsigned short W;
+
+
+		__device__ PixelType& operator()(short pos0, short pos1, short pos2, short pos3)
 		{
 			return data_[pos0 * stride0 + pos1 * stride1 + pos2 * stride2 + pos3];
 		}
 
-		__device__ void coords(int linearIdx, int *dim0, int *dim1, int *dim2, int *dim3)
+		__device__ void coords(unsigned int linearIdx, short *dim0, short *dim1, short *dim2, short *dim3)
 		{
 			*dim0 = linearIdx / stride0;
 			*dim1 = (linearIdx % stride0) / stride1;
@@ -93,7 +99,8 @@ public:
 
 		__host__ TensorKernelData(const TensorGpu<PixelType> &tensor) :
 		//__host__ KernelData(const TensorGpu<PixelType> &tensor) :
-				data_(const_cast<PixelType*>(tensor.data())), length_(tensor.length())
+				data_(const_cast<PixelType*>(tensor.data())), length_(tensor.length()), N(tensor.samples()), C(tensor.channels()),
+				H(tensor.height()), W(tensor.width())
 		{
 			if (tensor.memoryLayout() == NCHW)
 			{
