@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cuda_runtime_api.h>
+//#include <cuda_runtime_api.h>
 #include "lineardevicememory.h"
 
 namespace iu
@@ -10,8 +10,14 @@ template<typename PixelType>
 class TensorGpu: public LinearDeviceMemory<PixelType>
 {
 public:
-	TensorGpu() :
-			LinearDeviceMemory<PixelType>(), samples_(0), channels_(0), height_(0), width_(0)
+	enum MemoryLayout
+	{
+		NCHW, NHWC
+	};
+
+	TensorGpu(MemoryLayout memoryLayout=NCHW) :
+			LinearDeviceMemory<PixelType>(), samples_(0), channels_(0), height_(0), width_(0), memoryLayout_(
+					memoryLayout)
 	{
 	}
 
@@ -19,21 +25,22 @@ public:
 	{
 	}
 
-	TensorGpu(const unsigned int N, const unsigned int C, const unsigned int H, const unsigned int W) :
-			LinearDeviceMemory<PixelType>(N * C * H * W), samples_(N), channels_(C), height_(H), width_(W)
+	TensorGpu(const unsigned int N, const unsigned int C, const unsigned int H, const unsigned int W, MemoryLayout memoryLayout = NCHW) :
+			LinearDeviceMemory<PixelType>(N * C * H * W), samples_(N), channels_(C), height_(H), width_(W), memoryLayout_(
+					memoryLayout)
 	{
 	}
 
 	TensorGpu(const TensorGpu<PixelType>& from) :
-			LinearHostMemory<PixelType>(from), samples_(from.samples_), channels_(from.channels_), height_(from.height_), width_(
-					from.width_)
+			LinearHostMemory<PixelType>(from), samples_(from.samples_), channels_(from.channels_), height_(
+					from.height_), width_(from.width_), memoryLayout_(from.memoryLayout_)
 	{
 	}
 
 	TensorGpu(PixelType* device_data, const unsigned int N, const unsigned int C, const unsigned int H,
-			const unsigned int W, bool ext_data_pointer = false) :
-			LinearDeviceMemory<PixelType>(device_data, N * C * H * W, ext_data_pointer), samples_(N), channels_(C), height_(H), width_(
-					W)
+			const unsigned int W, bool ext_data_pointer = false, MemoryLayout memoryLayout = NCHW) :
+			LinearDeviceMemory<PixelType>(device_data, N * C * H * W, ext_data_pointer), samples_(N), channels_(C), height_(
+					H), width_(W), memoryLayout_(memoryLayout)
 	{
 	}
 
@@ -57,11 +64,59 @@ public:
 		return width_;
 	}
 
+	MemoryLayout memoryLayout() const
+	{
+		return memoryLayout_;
+	}
+
+	struct TensorKernelData
+	//struct KernelData
+	{
+		PixelType* data_;
+		int length_;
+		int stride0;
+		int stride1;
+		int stride2;
+
+		__device__ PixelType& operator()(int pos0, int pos1, int pos2, int pos3)
+		{
+			return data_[pos0 * stride0 + pos1 * stride1 + pos2 * stride2 + pos3];
+		}
+
+		__device__ void coords(int linearIdx, int *dim0, int *dim1, int *dim2, int *dim3)
+		{
+			*dim0 = linearIdx / stride0;
+			*dim1 = (linearIdx % stride0) / stride1;
+			*dim2 = ((linearIdx % stride0) % stride1) / stride2;
+			*dim3 = ((linearIdx % stride0) % stride1) % stride2;
+		}
+
+		__host__ TensorKernelData(const TensorGpu<PixelType> &tensor) :
+		//__host__ KernelData(const TensorGpu<PixelType> &tensor) :
+				data_(const_cast<PixelType*>(tensor.data())), length_(tensor.length())
+		{
+			if (tensor.memoryLayout() == NCHW)
+			{
+				stride0 = tensor.channels() * tensor.height() * tensor.width();
+				stride1 = tensor.height() * tensor.width();
+				stride2 = tensor.width();
+			}
+			else if (tensor.memoryLayout() == NHWC)
+			{
+				stride0 = tensor.height() * tensor.width() * tensor.channels();
+				stride1 = tensor.width() * tensor.channels();
+				stride2 = tensor.channels();
+			}
+		}
+	};
+
 private:
 	unsigned int samples_;
 	unsigned int channels_;
 	unsigned int height_;
 	unsigned int width_;
+
+	MemoryLayout memoryLayout_;
 
 };
 
