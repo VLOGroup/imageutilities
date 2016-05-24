@@ -555,6 +555,10 @@ install(FILES ${IU_PUBLIC_GUI_HEADERS}
   DESTINATION include/iu/iugui
   COMPONENT Headers
   )
+install(FILES ${IU_PUBLIC_HEADERS}
+  DESTINATION include/iu
+  COMPONENT Headers
+  )
 
 
 # install(FILES ${IU_IPP_INSTALL_HEADERS}
