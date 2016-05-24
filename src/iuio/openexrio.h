@@ -46,6 +46,8 @@ public:
     void read_channel(const std::string& name, ImageCpu_32u_C1 &img);
     void read_channel(const std::string& name, ImageCpu_32f_C1 &img);
 
+    void read_channel(const std::string& name, ImageGpu_32f_C1 &img);
+
     #ifdef IUIO_EIGEN3
     void read_attribute(const std::string& name, Eigen::Ref<Eigen::Matrix3f> mat);
     void read_attribute(const std::string& name, Eigen::Ref<Eigen::Matrix4f> mat);
@@ -73,6 +75,14 @@ public:
     void add_channel(const std::string& name, iu::ImageCpu_8u_C1& img);
     void add_channel(const std::string& name, iu::ImageCpu_32u_C1& img);
     void add_channel(const std::string& name, iu::ImageCpu_32f_C1& img);
+    void add_channel(const std::string& name1, const std::string& name2, iu::ImageCpu_32f_C2& img);
+    void add_channel(const std::string& name1, const std::string& name2,
+                     const std::string& name3, const std::string& name4, iu::ImageCpu_32f_C4& img);
+
+    void add_channel(const std::string& name, iu::ImageGpu_32f_C1& img);
+    void add_channel(const std::string& name1, const std::string& name2, iu::ImageGpu_32f_C2& img);
+    void add_channel(const std::string& name1, const std::string& name2,
+                     const std::string& name3, const std::string& name4, iu::ImageGpu_32f_C4& img);
 
     #ifdef IUIO_EIGEN3
     void add_attribute(const std::string& name, Eigen::Ref<Eigen::Matrix3f> mat);
@@ -90,6 +100,14 @@ private:
 
     Imf::Header header_;
     Imf::FrameBuffer fb_;
+
+    // temporary memory for calling add_channel with gpu images
+    // cannot use local ImageCpu* copy in add_channel, because data is accessed
+    // only when write() is called, at that point a local copy in add_channel is not
+    // available any more...
+    std::vector<iu::ImageCpu_32f_C1*> pool_32f_C1_;
+    std::vector<iu::ImageCpu_32f_C2*> pool_32f_C2_;
+    std::vector<iu::ImageCpu_32f_C4*> pool_32f_C4_;
 };
 
 } // namespace iu
