@@ -121,6 +121,15 @@ void OpenEXRInputFile::read_channel(const std::string &name, ImageCpu_32f_C1 &im
 
 }
 
+
+void OpenEXRInputFile::read_channel(const std::string& name, ImageGpu_32f_C1 &img)
+{
+    iu::ImageCpu_32f_C1 h_img(img.size());
+    this->read_channel(name, h_img);
+    iu::copy(&h_img, &img);
+}
+
+
 #ifdef IUIO_EIGEN3
 void OpenEXRInputFile::read_attribute(const std::string &name, Eigen::Ref<Eigen::Matrix3f> mat)
 {
@@ -163,10 +172,27 @@ OpenEXROutputFile::OpenEXROutputFile(const std::string &filename, IuSize size)
     filename_ = filename;
     sz_ = size;
     header_ = Imf::Header(sz_.width, sz_.height);
+    pool_32f_C1_.clear();
+    pool_32f_C2_.clear();
+    pool_32f_C4_.clear();
 }
 
 OpenEXROutputFile::~OpenEXROutputFile()
 {
+//    for (iu::ImageCpu_32f_C1* img : pool_32f_C1_)
+//        delete img;
+//    for (iu::ImageCpu_32f_C2* img : pool_32f_C2_)
+//        delete img;
+    for (int i=0; i < pool_32f_C1_.size(); i++)
+        delete pool_32f_C1_.at(i);
+    for (int i=0; i < pool_32f_C2_.size(); i++)
+        delete pool_32f_C2_.at(i);
+    for (int i=0; i < pool_32f_C4_.size(); i++)
+        delete pool_32f_C4_.at(i);
+
+    pool_32f_C1_.clear();
+    pool_32f_C2_.clear();
+    pool_32f_C4_.clear();
 }
 
 
@@ -209,6 +235,74 @@ void OpenEXROutputFile::add_channel(const std::string &name, ImageCpu_32f_C1 &im
     header_.channels().insert(name.c_str(), Imf::Channel(Imf::FLOAT));
     fb_.insert(name.c_str(), Imf::Slice(Imf::FLOAT, (char*)img.data(0,0), sizeof(float), img.pitch()));
 }
+
+
+
+void OpenEXROutputFile::add_channel(const std::string &name1, const std::string &name2, ImageCpu_32f_C2 &img)
+{
+    if ( !(check_channel_name(name1) && check_channel_name(name2)) )
+        return;
+
+    header_.channels().insert(name1.c_str(), Imf::Channel(Imf::FLOAT));
+    header_.channels().insert(name2.c_str(), Imf::Channel(Imf::FLOAT));
+
+    fb_.insert(name1.c_str(), Imf::Slice(Imf::FLOAT, (char*)&(img.data(0,0)->x), sizeof(float2), img.pitch()));
+    fb_.insert(name2.c_str(), Imf::Slice(Imf::FLOAT, (char*)&(img.data(0,0)->y), sizeof(float2), img.pitch()));
+}
+
+void OpenEXROutputFile::add_channel(const std::string &name1, const std::string &name2,
+                                    const std::string &name3, const std::string &name4, ImageCpu_32f_C4 &img)
+{
+    if ( !(check_channel_name(name1) && check_channel_name(name2) &&
+           check_channel_name(name3) && check_channel_name(name4)) )
+        return;
+
+    header_.channels().insert(name1.c_str(), Imf::Channel(Imf::FLOAT));
+    header_.channels().insert(name2.c_str(), Imf::Channel(Imf::FLOAT));
+    header_.channels().insert(name3.c_str(), Imf::Channel(Imf::FLOAT));
+    header_.channels().insert(name4.c_str(), Imf::Channel(Imf::FLOAT));
+
+    fb_.insert(name1.c_str(), Imf::Slice(Imf::FLOAT, (char*)&(img.data(0,0)->x), sizeof(float4), img.pitch()));
+    fb_.insert(name2.c_str(), Imf::Slice(Imf::FLOAT, (char*)&(img.data(0,0)->y), sizeof(float4), img.pitch()));
+    fb_.insert(name3.c_str(), Imf::Slice(Imf::FLOAT, (char*)&(img.data(0,0)->z), sizeof(float4), img.pitch()));
+    fb_.insert(name4.c_str(), Imf::Slice(Imf::FLOAT, (char*)&(img.data(0,0)->w), sizeof(float4), img.pitch()));
+}
+
+
+
+
+void OpenEXROutputFile::add_channel(const std::string &name, ImageGpu_32f_C1 &img)
+{
+    iu::ImageCpu_32f_C1 *h_img = new iu::ImageCpu_32f_C1(img.size());
+    iu::copy(&img, h_img);
+    pool_32f_C1_.push_back(h_img);
+    this->add_channel(name, *h_img);
+}
+
+
+
+void OpenEXROutputFile::add_channel(const std::string &name1, const std::string &name2, ImageGpu_32f_C2 &img)
+{
+    iu::ImageCpu_32f_C2 *h_img = new iu::ImageCpu_32f_C2(img.size());
+    iu::copy(&img, h_img);
+    pool_32f_C2_.push_back(h_img);
+    this->add_channel(name1, name2, *h_img);
+}
+
+
+
+void OpenEXROutputFile::add_channel(const std::string &name1, const std::string &name2,
+                                    const std::string &name3, const std::string &name4, ImageGpu_32f_C4 &img)
+{
+    iu::ImageCpu_32f_C4 *h_img = new iu::ImageCpu_32f_C4(img.size());
+    iu::copy(&img, h_img);
+    pool_32f_C4_.push_back(h_img);
+    this->add_channel(name1, name2, name3, name4, *h_img);
+
+}
+
+
+
 
 
 #ifdef IUIO_EIGEN3
