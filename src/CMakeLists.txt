@@ -62,11 +62,15 @@ endif()
 if(ANDROID)
 option(IU_USE_IO "Including IO module." ON)
 option(IU_USE_GUI "Including GUI module." OFF)
+option(WITH_FLYCAPTURE2 "Use FlyCapture2." OFF)
+option(WITH_OPENEXR "Use OpenEXR." OFF)
 set(ANDROID_TOOLCHAIN_NAME arm-linux-androideabi-4.6)
 set(CUDA_PROPAGATE_HOST_FLAGS OFF)
 else(ANDROID)
 option(IU_USE_IO "Including IO module." ON)
 option(IU_USE_GUI "Including GUI module." ON)
+option(WITH_FLYCAPTURE2 "Use FlyCapture2." ON)
+option(WITH_OPENEXR "Use OpenEXR." ON)
 endif(ANDROID)
 
 ##-----------------------------------------------------------------------------
@@ -163,64 +167,66 @@ if(IU_USE_IO AND OpenCV_LIBS)
   ######################
   # Flycapture2 for pointgrey cameras
   ######################
-  find_package(FlyCapture2 QUIET)
-  if(FLYCAPTURE2_FOUND)
-    message("  [+] build io module with Flycapture2/Pointgrey support")
-    add_definitions(-DIUIO_PGR)
-    include_directories(${FLYCAPTURE2_INCLUDE_DIR})
+  if(WITH_FLYCAPTURE2)
+    find_package(FlyCapture2 QUIET)
+    if(FLYCAPTURE2_FOUND)
+      message("  [+] build io module with Flycapture2/Pointgrey support")
+      add_definitions(-DIUIO_PGR)
+      include_directories(${FLYCAPTURE2_INCLUDE_DIR})
 
-    set( IU_IO_HEADERS ${IU_IO_HEADERS}
-      ${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrsource.h
-     )
-    set(IU_PUBLIC_IO_HEADERS ${IU_PUBLIC_IO_HEADERS}
-      ${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrsource.h
-      )
-    set( IU_IO_SOURCES ${IU_IO_SOURCES}
-      ${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrsource.cpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrcameradata.h
-     )
-    set(ADDITIONAL_IUIO_DEPENDENCIES
-       ${FLYCAPTURE2_LIBRARIES}
-      )
-  else(FLYCAPTURE2_FOUND)
-    message("  [-] build io module without Flycapture2/Pointgrey support")
-    set(ADDITIONAL_IUIO_DEPENDENCIES "")
-  endif(FLYCAPTURE2_FOUND)
+      set( IU_IO_HEADERS ${IU_IO_HEADERS}
+        ${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrsource.h
+       )
+      set(IU_PUBLIC_IO_HEADERS ${IU_PUBLIC_IO_HEADERS}
+        ${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrsource.h
+        )
+      set( IU_IO_SOURCES ${IU_IO_SOURCES}
+        ${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrsource.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrcameradata.h
+       )
+      set(ADDITIONAL_IUIO_DEPENDENCIES
+         ${FLYCAPTURE2_LIBRARIES}
+        )
+    else(FLYCAPTURE2_FOUND)
+      message("  [-] build io module without Flycapture2/Pointgrey support")
+      set(ADDITIONAL_IUIO_DEPENDENCIES "")
+    endif(FLYCAPTURE2_FOUND)
+  endif(WITH_FLYCAPTURE2)
 
   ######################
   # OpenEXR
   ######################
-  find_package(OpenEXR QUIET)
-  if(OPENEXR_FOUND)
-      message("  [+] build io module with OpenEXR support")
-      include_directories(${OPENEXR_INCLUDE_DIRS})
-      add_definitions(-DIUIO_EXR)
+  if(WITH_OPENEXR)
+    find_package(OpenEXR REQUIRED)
+    if(OPENEXR_FOUND)
+        message("  [+] build io module with OpenEXR support")
+        include_directories(${OPENEXR_INCLUDE_DIRS})
+        add_definitions(-DIUIO_EXR)
 
-      find_package(Eigen3 QUIET)
-      if(EIGEN3_FOUND)
-          add_definitions(-DIUIO_EIGEN3)
-      endif(EIGEN3_FOUND)
-
-
-      set( IU_IO_HEADERS ${IU_IO_HEADERS}
-        ${CMAKE_CURRENT_SOURCE_DIR}/iuio/openexrio.h
-       )
-      set(IU_PUBLIC_IO_HEADERS ${IU_PUBLIC_IO_HEADERS}
-        ${CMAKE_CURRENT_SOURCE_DIR}/iuio/openexrio.h
-        )
-      set( IU_IO_SOURCES ${IU_IO_SOURCES}
-        ${CMAKE_CURRENT_SOURCE_DIR}/iuio/openexrio.cpp
-       )
-
-      set(ADDITIONAL_IUIO_DEPENDENCIES ${ADDITIONAL_IUIO_DEPENDENCIES}
-          ${OPENEXR_LIBRARIES}
-        )
-
-  else(OPENEXR_FOUND)
-      message("  [-] build io module without OpenEXR support")
-  endif(OPENEXR_FOUND)
+        find_package(Eigen3 QUIET)
+        if(EIGEN3_FOUND)
+            add_definitions(-DIUIO_EIGEN3)
+        endif(EIGEN3_FOUND)
 
 
+        set( IU_IO_HEADERS ${IU_IO_HEADERS}
+          ${CMAKE_CURRENT_SOURCE_DIR}/iuio/openexrio.h
+         )
+        set(IU_PUBLIC_IO_HEADERS ${IU_PUBLIC_IO_HEADERS}
+          ${CMAKE_CURRENT_SOURCE_DIR}/iuio/openexrio.h
+          )
+        set( IU_IO_SOURCES ${IU_IO_SOURCES}
+          ${CMAKE_CURRENT_SOURCE_DIR}/iuio/openexrio.cpp
+         )
+
+        set(ADDITIONAL_IUIO_DEPENDENCIES ${ADDITIONAL_IUIO_DEPENDENCIES}
+            ${OPENEXR_LIBRARIES}
+          )
+
+    else(OPENEXR_FOUND)
+        message("  [-] build io module without OpenEXR support")
+    endif(OPENEXR_FOUND)
+  endif(WITH_OPENEXR)
 
 
 else()
@@ -306,6 +312,8 @@ SET( IU_PUBLIC_CORE_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/linearmemory.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/linearhostmemory.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/lineardevicememory.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/tensor_cpu.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/tensor_gpu.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/image.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/image_allocator_cpu.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/image_cpu.h
@@ -345,6 +353,8 @@ SET( IU_SOURCES
 #  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/setvalue.cu
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/convert.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/convert.cu
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/copy.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/copy.cu
   ${CMAKE_CURRENT_SOURCE_DIR}/iufilter.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/iufilter/filter.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/iufilter/filter.cu
@@ -387,6 +397,7 @@ SET( IU_SOURCES
 
 
 set(IU_LIBS "") # variable where all libs that are built are saved
+set(IU_LIBS_STATIC "") # variable where all libs that are built are saved
 message("Compiler Flags NVCC: " ${CUDA_NVCC_FLAGS})
 
 
@@ -395,6 +406,7 @@ message("Compiler Flags NVCC: " ${CUDA_NVCC_FLAGS})
 ## build core library
 set(IU_CORE_LIB iucore)
 cuda_add_library( ${IU_CORE_LIB} SHARED ${IU_HEADERS} ${IU_SOURCES})
+cuda_add_library( ${IU_CORE_LIB}_static STATIC ${IU_HEADERS} ${IU_SOURCES})
 set_target_properties(${IU_CORE_LIB} PROPERTIES
   DEFINE_SYMBOL IUCORE_DLL_EXPORTS
   VERSION ${IMAGEUTILITIES_VERSION}
@@ -402,7 +414,8 @@ set_target_properties(${IU_CORE_LIB} PROPERTIES
   PUBLIC_HEADER "${IU_PUBLIC_HEADERS}"
   )
 target_link_libraries( ${IU_CORE_LIB} ${CUDA_LIBRARIES})
-set(IU_LIBS ${IU_LIBS} ${IU_CORE_LIB})
+target_link_libraries( ${IU_CORE_LIB}_static ${CUDA_LIBRARIES})
+set(IU_LIBS_STATIC ${IU_LIBS_STATIC} ${IU_CORE_LIB}_static)
 
 
 message("additional iuio libs: ${ADDITIONAL_IUIO_DEPENDENCIES}")
@@ -411,6 +424,7 @@ message("additional iuio libs: ${ADDITIONAL_IUIO_DEPENDENCIES}")
 set(IU_IO_LIB iuio)
 if(IU_USE_IO)
   cuda_add_library( ${IU_IO_LIB} SHARED ${IU_IO_HEADERS} ${IU_IO_SOURCES} )
+  cuda_add_library( ${IU_IO_LIB}_static STATIC ${IU_IO_HEADERS} ${IU_IO_SOURCES} )
   set_target_properties(${IU_IO_LIB} PROPERTIES
     DEFINE_SYMBOL IUIO_DLL_EXPORTS
     VERSION ${IMAGEUTILITIES_VERSION}
@@ -419,7 +433,11 @@ if(IU_USE_IO)
   target_link_libraries( ${IU_IO_LIB}
     ${CUDA_LIBRARIES} ${OpenCV_LIBS} ${ADDITIONAL_IUIO_DEPENDENCIES}
     )
+  target_link_libraries( ${IU_IO_LIB}_static
+    ${CUDA_LIBRARIES} ${OpenCV_LIBS} ${ADDITIONAL_IUIO_DEPENDENCIES}
+    )
   set(IU_LIBS ${IU_LIBS} ${IU_IO_LIB})
+  set(IU_LIBS_STATIC ${IU_LIBS_STATIC} ${IU_IO_LIB}_static)
 endif(IU_USE_IO)
 
 
@@ -428,19 +446,20 @@ endif(IU_USE_IO)
 set(IU_GUI_LIB iugui)
 if(IU_USE_GUI)
   cuda_add_library( ${IU_GUI_LIB} SHARED ${IU_GUI_HEADERS} ${IU_GUI_SOURCES})
+  cuda_add_library( ${IU_GUI_LIB}_static STATIC ${IU_GUI_HEADERS} ${IU_GUI_SOURCES})
   set_target_properties(${IU_GUI_LIB} PROPERTIES
     DEFINE_SYMBOL IUGUI_DLL_EXPORTS
     VERSION ${IMAGEUTILITIES_VERSION}
     SOVERSION ${IMAGEUTILITIES_SOVERSION}
     )
   target_link_libraries( ${IU_GUI_LIB}
-    #${IU_CORE_LIB}
-    #${IU_IO_LIB} ${CUDA_LIBRARIES}
-    #${QT_LIBRARIES} ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES} ${QWT_LIBRARIES}
+    Qt5::Widgets Qt5::OpenGL ${CUDA_LIBRARIES} ${OPENGL_LIBRARIES}
+    )
+  target_link_libraries( ${IU_GUI_LIB}_static
     Qt5::Widgets Qt5::OpenGL ${CUDA_LIBRARIES} ${OPENGL_LIBRARIES}
     )
   set(IU_LIBS ${IU_LIBS} ${IU_GUI_LIB})
-
+  set(IU_LIBS_STATIC ${IU_LIBS_STATIC} ${IU_GUI_LIB}_static)
 endif(IU_USE_GUI)
 
 ###-----------------------------------------------------------------------------
@@ -500,14 +519,14 @@ message("install: ${CMAKE_INSTALL_PREFIX}")
 
 # install the libraries
 if(ANDROID)
-install( TARGETS ${IU_LIBS}
+install( TARGETS ${IU_LIBS} ${IU_LIBS_STATIC}
   RUNTIME         DESTINATION   binARM
   ARCHIVE         DESTINATION   libARM
   LIBRARY         DESTINATION   libARM
   PUBLIC_HEADER   DESTINATION   include/iu
   )
 else(ANDROID)
-install( TARGETS ${IU_LIBS}
+install( TARGETS ${IU_LIBS} ${IU_LIBS_STATIC}
   RUNTIME         DESTINATION   bin
   ARCHIVE         DESTINATION   lib
   LIBRARY         DESTINATION   lib
@@ -535,6 +554,10 @@ install(FILES ${IU_PUBLIC_IO_HEADERS}
   )
 install(FILES ${IU_PUBLIC_GUI_HEADERS}
   DESTINATION include/iu/iugui
+  COMPONENT Headers
+  )
+install(FILES ${IU_PUBLIC_HEADERS}
+  DESTINATION include/iu
   COMPONENT Headers
   )
 

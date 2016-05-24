@@ -216,7 +216,11 @@ void copy(const VolumeGpu_32s_C2* src, VolumeCpu_32s_C2* dst) { iuprivate::copy(
 void copy(const VolumeGpu_32s_C4* src, VolumeCpu_32s_C4* dst) { iuprivate::copy(src, dst); }
 
 
+void copy(const ImageCpu_8u_C1 *src, LinearHostMemory_8u_C1 *dst) { iuprivate::copy(src, dst); }
+void copy(const ImageCpu_16u_C1 *src, LinearHostMemory_16u_C1 *dst) { iuprivate::copy(src, dst); }
+void copy(const ImageCpu_32f_C1 *src, LinearHostMemory_32f_C1 *dst) { iuprivate::copy(src, dst); }
 
+void copy(const ImageGpu_32f_C1* src, LinearDeviceMemory_32f_C1* dst) { iuprivate::copy(src, dst); }
 /* ***************************************************************************
      SET
  * ***************************************************************************/
@@ -296,7 +300,6 @@ void copy(const VolumeGpu_32s_C4* src, VolumeCpu_32s_C4* dst) { iuprivate::copy(
 /* ***************************************************************************
  *  MEMORY CONVERSIONS
  * ***************************************************************************/
-
 // conversion; device; 32-bit 3-channel -> 32-bit 4-channel
 void convert(const ImageGpu_32f_C3* src, ImageGpu_32f_C4* dst)
 {iuprivate::convert(src, dst);}

@@ -174,6 +174,22 @@ void copy(const iu::VolumeGpu<PixelType, AllocatorGpu, _pixel_type> *src,
   if (status != cudaSuccess) throw IuException("cudaMemcpy2D returned error code", __FILE__, __FUNCTION__, __LINE__);
 }
 
+template<typename PixelType, class AllocatorCpu, IuPixelType _pixel_type>
+void copy(const iu::ImageCpu<PixelType, AllocatorCpu, _pixel_type> *src, iu::LinearHostMemory<PixelType> *dst)
+{
+	PixelType *dstData = dst->data();
+	for(int y = 0; y < src->height(); ++y)
+	{
+		for(int x = 0; x < src->width(); ++x)
+		{
+			dstData[x + y * src->width()] = *(src->data(x, y));
+		}
+	}
+}
+
+// only declaration
+void copy(const iu::ImageGpu_32f_C1* src, iu::LinearDeviceMemory_32f_C1* dst);
+
 
 } // namespace iuprivate
 

@@ -13,7 +13,7 @@
 #define GL_CHECK_ERROR() do { \
     GLenum err = glGetError(); \
     if(err != GL_NO_ERROR)     \
-        printf("OpenGL error: %s\n File: %s\n Function: %s\n Line: %d\n", gluErrorString(err), __FILE__, __FUNCTION__, __LINE__); \
+        printf("OpenGL error: \n File: %s\n Function: %s\n Line: %d\n", __FILE__, __FUNCTION__, __LINE__); \
     } while(0)
 
 // CUDA error check macro
