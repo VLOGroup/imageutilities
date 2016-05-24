@@ -87,6 +87,7 @@ endif(NOT ANDROID)
 
   set(QUERY_STRING_STATIC_LIB "_static")
   set(QUERY_STRING_DEBUG_LIB "d")
+  set(IMAGEUTILITIESLIGHT_PREFER_SHARED_LIBRARIES true)
 
   foreach(module ${IU_MODULES})
 
