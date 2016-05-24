@@ -37,6 +37,9 @@
 #include "volume_allocator_gpu.h"
 #include "volume_gpu.h"
 
+#include "tensor_cpu.h"
+#include "tensor_gpu.h"
+
 /* ***************************************************************************
  *  explicit type definitions for template classes
  * ***************************************************************************/
@@ -228,6 +231,30 @@ typedef VolumeGpu<float, iuprivate::VolumeAllocatorGpu<float>, IU_32F_C1> Volume
 typedef VolumeGpu<float2, iuprivate::VolumeAllocatorGpu<float2>, IU_32F_C2> VolumeGpu_32f_C2;
 typedef VolumeGpu<float3, iuprivate::VolumeAllocatorGpu<float3>, IU_32F_C3> VolumeGpu_32f_C3;
 typedef VolumeGpu<float4, iuprivate::VolumeAllocatorGpu<float4>, IU_32F_C4> VolumeGpu_32f_C4;
+
+
+/* ****************************************************************************
+ *  4D Tensor
+ * ****************************************************************************/
+
+/*
+  Host
+*/
+typedef TensorCpu<unsigned char> TensorCpu_8u;
+typedef TensorCpu<unsigned short> TensorCpu_16u;
+typedef TensorCpu<float> TensorCpu_32f;
+typedef TensorCpu<int> TensorCpu_32s;
+typedef TensorCpu<double> TensorCpu_64f;
+
+/*
+  Device
+*/
+// 8-bit
+typedef TensorGpu<unsigned char> TensorGpu_8u;
+typedef TensorGpu<unsigned short> TensorGpu_16u;
+typedef TensorGpu<float> TensorGpu_32f;
+typedef TensorGpu<int> TensorGpu_32s;
+typedef TensorGpu<double> TensorGpu_64f;
 
 } // namespace iu
 

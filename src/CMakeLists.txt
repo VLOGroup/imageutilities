@@ -229,8 +229,6 @@ if(IU_USE_IO AND OpenCV_LIBS)
   endif(WITH_OPENEXR)
 
 
-
-
 else()
   message("[-] ImageUtilities omitting IO module")
   set(IU_USE_IO OFF CACHE PATH "IU: Omit IO module." FORCE)
@@ -314,6 +312,8 @@ SET( IU_PUBLIC_CORE_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/linearmemory.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/linearhostmemory.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/lineardevicememory.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/tensor_cpu.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/tensor_gpu.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/image.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/image_allocator_cpu.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/image_cpu.h
@@ -353,6 +353,8 @@ SET( IU_SOURCES
 #  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/setvalue.cu
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/convert.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/convert.cu
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/copy.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/copy.cu
   ${CMAKE_CURRENT_SOURCE_DIR}/iufilter.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/iufilter/filter.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/iufilter/filter.cu

@@ -26,6 +26,7 @@
 
 #include <cuda_runtime_api.h>
 #include "linearmemory.h"
+#include <thrust/device_ptr.h>
 
 namespace iu {
 
@@ -107,6 +108,16 @@ public:
   {
     if (offset > (int)this->length()) throw IuException("offset not in range", __FILE__, __FUNCTION__, __LINE__);
     return reinterpret_cast<const PixelType*>(&(data_[offset]));
+  }
+
+  thrust::device_ptr<PixelType> begin(void)
+  {
+      return thrust::device_ptr<PixelType>(data());
+  }
+
+  thrust::device_ptr<PixelType> end(void)
+  {
+      return thrust::device_ptr<PixelType>(data() + length());
   }
 
   /** Returns the total amount of bytes saved in the data buffer. */
