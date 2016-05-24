@@ -168,7 +168,7 @@ if(IU_USE_IO AND OpenCV_LIBS)
   # Flycapture2 for pointgrey cameras
   ######################
   if(WITH_FLYCAPTURE2)
-    find_package(FlyCapture2 QUIET)
+    find_package(FlyCapture2 REQUIRED)
     if(FLYCAPTURE2_FOUND)
       message("  [+] build io module with Flycapture2/Pointgrey support")
       add_definitions(-DIUIO_PGR)
@@ -187,10 +187,11 @@ if(IU_USE_IO AND OpenCV_LIBS)
       set(ADDITIONAL_IUIO_DEPENDENCIES
          ${FLYCAPTURE2_LIBRARIES}
         )
-    else(FLYCAPTURE2_FOUND)
+    
+    endif(FLYCAPTURE2_FOUND)
+  else(WITH_FLYCAPTURE2)
       message("  [-] build io module without Flycapture2/Pointgrey support")
       set(ADDITIONAL_IUIO_DEPENDENCIES "")
-    endif(FLYCAPTURE2_FOUND)
   endif(WITH_FLYCAPTURE2)
 
   ######################
@@ -223,9 +224,10 @@ if(IU_USE_IO AND OpenCV_LIBS)
             ${OPENEXR_LIBRARIES}
           )
 
-    else(OPENEXR_FOUND)
-        message("  [-] build io module without OpenEXR support")
+    
     endif(OPENEXR_FOUND)
+  else(WITH_OPENEXR)
+        message("  [-] build io module without OpenEXR support")
   endif(WITH_OPENEXR)
 
 
