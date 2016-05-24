@@ -187,6 +187,10 @@ void copy(const iu::ImageCpu<PixelType, AllocatorCpu, _pixel_type> *src, iu::Lin
 	}
 }
 
+// only declaration
+void copy(const iu::ImageGpu_32f_C1* src, iu::LinearDeviceMemory_32f_C1* dst);
+
+
 } // namespace iuprivate
 
 #endif // IUCORE_COPY_H

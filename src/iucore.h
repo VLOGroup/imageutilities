@@ -408,9 +408,11 @@ IUCORE_DLLAPI void copy(const VolumeGpu_32s_C4* src, VolumeCpu_32s_C4* dst);
 
 
 // convert to linear (contiguous) memory
-IUCORE_DLLAPI void copy11(const ImageCpu_8u_C1* src, LinearHostMemory_8u_C1* dst);
-IUCORE_DLLAPI void copy11(const ImageCpu_16u_C1* src, LinearHostMemory_16u_C1* dst);
-IUCORE_DLLAPI void copy11(const ImageCpu_32f_C1* src, LinearHostMemory_32f_C1* dst);
+IUCORE_DLLAPI void copy(const ImageCpu_8u_C1* src, LinearHostMemory_8u_C1* dst);
+IUCORE_DLLAPI void copy(const ImageCpu_16u_C1* src, LinearHostMemory_16u_C1* dst);
+IUCORE_DLLAPI void copy(const ImageCpu_32f_C1* src, LinearHostMemory_32f_C1* dst);
+
+IUCORE_DLLAPI void copy(const ImageGpu_32f_C1* src, LinearDeviceMemory_32f_C1* dst);
 
 /** \} */ // end of Copy3D
 
