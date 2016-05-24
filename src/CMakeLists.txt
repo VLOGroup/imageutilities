@@ -415,6 +415,7 @@ set_target_properties(${IU_CORE_LIB} PROPERTIES
   )
 target_link_libraries( ${IU_CORE_LIB} ${CUDA_LIBRARIES})
 target_link_libraries( ${IU_CORE_LIB}_static ${CUDA_LIBRARIES})
+set(IU_LIBS ${IU_LIBS} ${IU_CORE_LIB})
 set(IU_LIBS_STATIC ${IU_LIBS_STATIC} ${IU_CORE_LIB}_static)
 
 
