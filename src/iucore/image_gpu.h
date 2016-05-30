@@ -189,29 +189,6 @@ public:
       return thrust::device_ptr<PixelType>(data()+stride()*height());
   }
 
-//    void getCudaTextureObject(cudaTextureObject_t &cudaTexObj, cudaTextureReadMode readMode = cudaReadModeElementType,
-//                              cudaTextureFilterMode filterMode = cudaFilterModeLinear,
-//                              cudaTextureAddressMode addressMode = cudaAddressModeClamp)
-//	{
-//		struct cudaResourceDesc resDesc;
-//		memset(&resDesc, 0, sizeof(resDesc));
-//		resDesc.resType = cudaResourceTypePitch2D;
-//		resDesc.res.pitch2D.devPtr = data();
-//		resDesc.res.pitch2D.pitchInBytes = pitch();
-//		resDesc.res.pitch2D.width = width();
-//		resDesc.res.pitch2D.height = height();
-//		resDesc.res.pitch2D.desc = cudaCreateChannelDesc<PixelType>();
-
-//		cudaTextureDesc texDesc;
-//		memset(&texDesc, 0, sizeof(texDesc));
-//		texDesc.readMode = readMode;
-//		texDesc.normalizedCoords = false;
-//		texDesc.addressMode[0] = addressMode;
-//		texDesc.addressMode[1] = addressMode;
-//		texDesc.filterMode = filterMode;
-
-//		cudaCreateTextureObject(&cudaTexObj, &resDesc, &texDesc, NULL);
-//	}
 
   void prepareTexture(cudaTextureReadMode readMode = cudaReadModeElementType,
                       cudaTextureFilterMode filterMode = cudaFilterModeLinear,
