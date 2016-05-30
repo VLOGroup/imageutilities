@@ -36,7 +36,7 @@ class ImageGpu : public Image
 public:
   ImageGpu() :
     Image(_pixel_type),
-    data_(0), pitch_(0), ext_data_pointer_(false)
+    data_(0), pitch_(0), ext_data_pointer_(false), texture_(0)
   {
   }
 
@@ -49,25 +49,28 @@ public:
       data_ = 0;
     }
     pitch_ = 0;
+
+    if (texture_)
+        cudaDestroyTextureObject(texture_);
   }
 
   ImageGpu(unsigned int _width, unsigned int _height) :
       Image(_pixel_type, _width, _height), data_(0), pitch_(0),
-      ext_data_pointer_(false)
+      ext_data_pointer_(false), texture_(0)
   {
     data_ = Allocator::alloc(this->size(), &pitch_);
   }
 
   ImageGpu(const IuSize& size) :
       Image(_pixel_type, size), data_(0), pitch_(0),
-      ext_data_pointer_(false)
+      ext_data_pointer_(false), texture_(0)
   {
     data_ = Allocator::alloc(size, &pitch_);
   }
 
   ImageGpu(const ImageGpu<PixelType, Allocator, _pixel_type>& from) :
       Image(from), data_(0), pitch_(0),
-      ext_data_pointer_(false)
+      ext_data_pointer_(false), texture_(0)
   {
       if (from.ext_data_pointer_)  // external image stays external when copied
       {
@@ -84,7 +87,7 @@ public:
 
   ImageGpu(PixelType* _data, unsigned int _width, unsigned int _height,
            size_t _pitch, bool ext_data_pointer = false) :
-      Image(_pixel_type, _width, _height), data_(0), pitch_(0), ext_data_pointer_(ext_data_pointer)
+      Image(_pixel_type, _width, _height), data_(0), pitch_(0), ext_data_pointer_(ext_data_pointer), texture_(0)
   {
     if(ext_data_pointer_)
     {
@@ -112,6 +115,7 @@ public:
 		cudaMemcpy2D(data_, pitch_, from.data(), from.pitch(), from.width(), from.height(), cudaMemcpyDeviceToDevice);
 		// pitch_ = from.pitch(); // handled by allocator
 		this->ext_data_pointer_ = false; 
+        this->texture_ = 0;
 		return *this;
 	}
 
@@ -185,27 +189,79 @@ public:
       return thrust::device_ptr<PixelType>(data()+stride()*height());
   }
 
-	void getCudaTextureObject(cudaTextureObject_t &cudaTexObj, cudaTextureReadMode readMode = cudaReadModeElementType, cudaTextureFilterMode filterMode = cudaFilterModeLinear, cudaTextureAddressMode addressMode = cudaAddressModeClamp)
-	{
-		struct cudaResourceDesc resDesc;
-		memset(&resDesc, 0, sizeof(resDesc));
-		resDesc.resType = cudaResourceTypePitch2D;
-		resDesc.res.pitch2D.devPtr = data();
-		resDesc.res.pitch2D.pitchInBytes = pitch();
-		resDesc.res.pitch2D.width = width();
-		resDesc.res.pitch2D.height = height();
-		resDesc.res.pitch2D.desc = cudaCreateChannelDesc<PixelType>();
+//    void getCudaTextureObject(cudaTextureObject_t &cudaTexObj, cudaTextureReadMode readMode = cudaReadModeElementType,
+//                              cudaTextureFilterMode filterMode = cudaFilterModeLinear,
+//                              cudaTextureAddressMode addressMode = cudaAddressModeClamp)
+//	{
+//		struct cudaResourceDesc resDesc;
+//		memset(&resDesc, 0, sizeof(resDesc));
+//		resDesc.resType = cudaResourceTypePitch2D;
+//		resDesc.res.pitch2D.devPtr = data();
+//		resDesc.res.pitch2D.pitchInBytes = pitch();
+//		resDesc.res.pitch2D.width = width();
+//		resDesc.res.pitch2D.height = height();
+//		resDesc.res.pitch2D.desc = cudaCreateChannelDesc<PixelType>();
 
-		cudaTextureDesc texDesc;
-		memset(&texDesc, 0, sizeof(texDesc));
-		texDesc.readMode = readMode;
-		texDesc.normalizedCoords = false;
-		texDesc.addressMode[0] = addressMode;
-		texDesc.addressMode[1] = addressMode;
-		texDesc.filterMode = filterMode;
+//		cudaTextureDesc texDesc;
+//		memset(&texDesc, 0, sizeof(texDesc));
+//		texDesc.readMode = readMode;
+//		texDesc.normalizedCoords = false;
+//		texDesc.addressMode[0] = addressMode;
+//		texDesc.addressMode[1] = addressMode;
+//		texDesc.filterMode = filterMode;
 
-		cudaCreateTextureObject(&cudaTexObj, &resDesc, &texDesc, NULL);
-	}
+//		cudaCreateTextureObject(&cudaTexObj, &resDesc, &texDesc, NULL);
+//	}
+
+  void prepareTexture(cudaTextureReadMode readMode = cudaReadModeElementType,
+                      cudaTextureFilterMode filterMode = cudaFilterModeLinear,
+                      cudaTextureAddressMode addressMode = cudaAddressModeClamp)
+  {
+      if (texture_)             // delete if already exists
+          cudaDestroyTextureObject(texture_);
+
+      cudaResourceDesc resDesc;
+      memset(&resDesc, 0, sizeof(resDesc));
+
+      cudaTextureDesc texDesc;
+      memset(&texDesc, 0, sizeof(texDesc));
+
+      resDesc.resType = cudaResourceTypePitch2D;
+      resDesc.res.pitch2D.devPtr = data();
+      resDesc.res.pitch2D.pitchInBytes = pitch();
+      resDesc.res.pitch2D.width = width();
+      resDesc.res.pitch2D.height = height();
+      resDesc.res.pitch2D.desc = cudaCreateChannelDesc<PixelType>();
+
+      texDesc.readMode = readMode;
+      texDesc.normalizedCoords = (addressMode == cudaAddressModeClamp) ? false : true;
+      texDesc.addressMode[0] = addressMode;
+      texDesc.addressMode[1] = addressMode;
+      texDesc.filterMode = filterMode;
+
+      cudaCreateTextureObject(&texture_, &resDesc, &texDesc, NULL);
+  }
+
+  cudaTextureObject_t getTexture()
+  {
+      if (!texture_)        // create texture object implicitly
+          this->prepareTexture();
+
+      return texture_;
+  }
+
+  // Use case: ImageGPU is passed as const into a function and the method getTexture() is used as
+  // a parameter in a cuda kernel call. In that case the user has to explicitly call prepareTexture()
+  // in advance such that the texture object exists, because an implicit call to prepareTexture()
+  // here would obviously violate method constness
+  cudaTextureObject_t getTexture() const
+  {
+      if (!texture_)
+          throw IuException("Warning: getTexture() on const image requires explicit call to prepareTexture(),"
+                            " returned cudaTextureObject will be invalid\n", __FILE__, __FUNCTION__, __LINE__);
+
+      return texture_;
+  }
 
   struct KernelData
   {
@@ -231,6 +287,8 @@ protected:
   PixelType* data_;
   size_t pitch_;
   bool ext_data_pointer_; /**< Flag if data pointer is handled outside the image class. */
+
+  cudaTextureObject_t texture_;
 };
 
 } // namespace iuprivate
