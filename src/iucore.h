@@ -200,6 +200,11 @@ IUCORE_DLLAPI void copy(const ImageCpu_8u_C2* src, ImageGpu_8u_C2* dst);
 IUCORE_DLLAPI void copy(const ImageCpu_8u_C3* src, ImageGpu_8u_C3* dst);
 IUCORE_DLLAPI void copy(const ImageCpu_8u_C4* src, ImageGpu_8u_C4* dst);
 IUCORE_DLLAPI void copy(const ImageCpu_32s_C1* src, ImageGpu_32s_C1* dst);
+IUCORE_DLLAPI void copy(const ImageCpu_32s_C2* src, ImageGpu_32s_C2* dst);
+IUCORE_DLLAPI void copy(const ImageCpu_32s_C4* src, ImageGpu_32s_C4* dst);
+IUCORE_DLLAPI void copy(const ImageCpu_32u_C1* src, ImageGpu_32u_C1* dst);
+IUCORE_DLLAPI void copy(const ImageCpu_32u_C2* src, ImageGpu_32u_C2* dst);
+IUCORE_DLLAPI void copy(const ImageCpu_32u_C4* src, ImageGpu_32u_C4* dst);
 IUCORE_DLLAPI void copy(const ImageCpu_32f_C1* src, ImageGpu_32f_C1* dst);
 IUCORE_DLLAPI void copy(const ImageCpu_32f_C2* src, ImageGpu_32f_C2* dst);
 IUCORE_DLLAPI void copy(const ImageCpu_32f_C3* src, ImageGpu_32f_C3* dst);
@@ -215,6 +220,11 @@ IUCORE_DLLAPI void copy(const ImageGpu_8u_C2* src, ImageCpu_8u_C2* dst);
 IUCORE_DLLAPI void copy(const ImageGpu_8u_C3* src, ImageCpu_8u_C3* dst);
 IUCORE_DLLAPI void copy(const ImageGpu_8u_C4* src, ImageCpu_8u_C4* dst);
 IUCORE_DLLAPI void copy(const ImageGpu_32s_C1* src, ImageCpu_32s_C1* dst);
+IUCORE_DLLAPI void copy(const ImageGpu_32s_C2* src, ImageCpu_32s_C2* dst);
+IUCORE_DLLAPI void copy(const ImageGpu_32s_C4* src, ImageCpu_32s_C4* dst);
+IUCORE_DLLAPI void copy(const ImageGpu_32u_C1* src, ImageCpu_32u_C1* dst);
+IUCORE_DLLAPI void copy(const ImageGpu_32u_C2* src, ImageCpu_32u_C2* dst);
+IUCORE_DLLAPI void copy(const ImageGpu_32u_C4* src, ImageCpu_32u_C4* dst);
 IUCORE_DLLAPI void copy(const ImageGpu_32f_C1* src, ImageCpu_32f_C1* dst);
 IUCORE_DLLAPI void copy(const ImageGpu_32f_C2* src, ImageCpu_32f_C2* dst);
 IUCORE_DLLAPI void copy(const ImageGpu_32f_C3* src, ImageCpu_32f_C3* dst);
@@ -376,6 +386,25 @@ IUCORE_DLLAPI void convert_32f8u_C4(const iu::ImageGpu_32f_C4* src, iu::ImageGpu
  */
 IUCORE_DLLAPI void convert_8u32f_C1(const iu::ImageGpu_8u_C1* src, iu::ImageGpu_32f_C1* dst,
                                 float mul_constant=1/255.0f, float add_constant=0.0f);
+
+/** Converts a 32-bit single-channel uint image to a 32-bit single-channel float image.
+ * \param src 1-channel source image [device].
+ * \param dst 1-channel destination image [device].
+ * \param mul_constant The optional scale factor.
+ * \param add_constant The optional delta, added to the scaled values.
+ */
+IUCORE_DLLAPI void convert_32u32f_C1(const iu::ImageGpu_32u_C1* src, iu::ImageGpu_32f_C1* dst,
+                                float mul_constant, float add_constant=0.0f);
+
+
+/** Converts a 32-bit single-channel uint image to a 32-bit single-channel float image.
+ * \param src 1-channel source image [host].
+ * \param dst 1-channel destination image [host].
+ * \param mul_constant The optional scale factor.
+ * \param add_constant The optional delta, added to the scaled values.
+ */
+IUCORE_DLLAPI void convert_32u32f_C1(const iu::ImageCpu_32u_C1* src, iu::ImageCpu_32f_C1* dst,
+                                float mul_constant, float add_constant=0.0f);
 
 
 /** Converts an 8-bit 3-channel image to a 32-bit 4-channel image.

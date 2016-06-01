@@ -45,8 +45,12 @@ public:
 
     void read_channel(const std::string& name, ImageCpu_32u_C1 &img);
     void read_channel(const std::string& name, ImageCpu_32f_C1 &img);
+    void read_channel_32f(const std::string& name, ImageCpu_32f_C1 &img);
 
+    void read_channel(const std::string& name, ImageGpu_32u_C1 &img);
     void read_channel(const std::string& name, ImageGpu_32f_C1 &img);
+    void read_channel_32f(const std::string& name, ImageGpu_32f_C1 &img);
+
 
     #ifdef IUIO_EIGEN3
     void read_attribute(const std::string& name, Eigen::Ref<Eigen::Matrix3f> mat);
