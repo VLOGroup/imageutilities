@@ -127,6 +127,11 @@ void copy(const ImageCpu_8u_C2* src, ImageGpu_8u_C2* dst) { iuprivate::copy(src,
 void copy(const ImageCpu_8u_C3* src, ImageGpu_8u_C3* dst) { iuprivate::copy(src, dst); }
 void copy(const ImageCpu_8u_C4* src, ImageGpu_8u_C4* dst) { iuprivate::copy(src, dst); }
 void copy(const ImageCpu_32s_C1* src, ImageGpu_32s_C1* dst) { iuprivate::copy(src, dst); }
+void copy(const ImageCpu_32s_C2* src, ImageGpu_32s_C2* dst) { iuprivate::copy(src, dst); }
+void copy(const ImageCpu_32s_C4* src, ImageGpu_32s_C4* dst) { iuprivate::copy(src, dst); }
+void copy(const ImageCpu_32u_C1* src, ImageGpu_32u_C1* dst) { iuprivate::copy(src, dst); }
+void copy(const ImageCpu_32u_C2* src, ImageGpu_32u_C2* dst) { iuprivate::copy(src, dst); }
+void copy(const ImageCpu_32u_C4* src, ImageGpu_32u_C4* dst) { iuprivate::copy(src, dst); }
 void copy(const ImageCpu_32f_C1* src, ImageGpu_32f_C1* dst) { iuprivate::copy(src, dst); }
 void copy(const ImageCpu_32f_C2* src, ImageGpu_32f_C2* dst) { iuprivate::copy(src, dst); }
 void copy(const ImageCpu_32f_C3* src, ImageGpu_32f_C3* dst) { iuprivate::copy(src, dst); }
@@ -138,6 +143,11 @@ void copy(const ImageGpu_8u_C2* src, ImageCpu_8u_C2* dst) { iuprivate::copy(src,
 void copy(const ImageGpu_8u_C3* src, ImageCpu_8u_C3* dst) { iuprivate::copy(src, dst); }
 void copy(const ImageGpu_8u_C4* src, ImageCpu_8u_C4* dst) { iuprivate::copy(src, dst); }
 void copy(const ImageGpu_32s_C1* src, ImageCpu_32s_C1* dst) { iuprivate::copy(src, dst); }
+void copy(const ImageGpu_32s_C2* src, ImageCpu_32s_C2* dst) { iuprivate::copy(src, dst); }
+void copy(const ImageGpu_32s_C4* src, ImageCpu_32s_C4* dst) { iuprivate::copy(src, dst); }
+void copy(const ImageGpu_32u_C1* src, ImageCpu_32u_C1* dst) { iuprivate::copy(src, dst); }
+void copy(const ImageGpu_32u_C2* src, ImageCpu_32u_C2* dst) { iuprivate::copy(src, dst); }
+void copy(const ImageGpu_32u_C4* src, ImageCpu_32u_C4* dst) { iuprivate::copy(src, dst); }
 void copy(const ImageGpu_32f_C1* src, ImageCpu_32f_C1* dst) { iuprivate::copy(src, dst); }
 void copy(const ImageGpu_32f_C2* src, ImageCpu_32f_C2* dst) { iuprivate::copy(src, dst); }
 void copy(const ImageGpu_32f_C3* src, ImageCpu_32f_C3* dst) { iuprivate::copy(src, dst); }
@@ -332,6 +342,21 @@ void convert_32f8u_C4(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_8u_C4* dst,
 void convert_8u32f_C1(const iu::ImageGpu_8u_C1* src, iu::ImageGpu_32f_C1* dst,
                      float mul_constant, float add_constant)
 {iuprivate::convert_8u32f_C1(src, dst, mul_constant, add_constant);}
+
+// [device] 2D bit depth conversion: 32u_C1 -> 32f_C1
+void convert_32u32f_C1(const iu::ImageGpu_32u_C1* src, iu::ImageGpu_32f_C1* dst,
+                                float mul_constant, float add_constant)
+{
+    iuprivate::convert_32u32f_C1(src, dst, mul_constant, add_constant);
+}
+
+// [host] 2D bit depth conversion: 32u_C1 -> 32f_C1
+void convert_32u32f_C1(const iu::ImageCpu_32u_C1* src, iu::ImageCpu_32f_C1* dst,
+                                float mul_constant, float add_constant)
+{
+    iuprivate::convert_32u32f_C1(src, dst, mul_constant, add_constant);
+}
+
 
 void convert_8u32f_C3C4(const iu::ImageGpu_8u_C3* src, iu::ImageGpu_32f_C4* dst,
                                 float mul_constant, float add_constant)

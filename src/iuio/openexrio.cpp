@@ -121,13 +121,66 @@ void OpenEXRInputFile::read_channel(const std::string &name, ImageCpu_32f_C1 &im
 
 }
 
-
-void OpenEXRInputFile::read_channel(const std::string& name, ImageGpu_32f_C1 &img)
+void OpenEXRInputFile::read_channel_32f(const std::string &name, ImageCpu_32f_C1 &img)
 {
-    iu::ImageCpu_32f_C1 h_img(img.size());
+    Imf::InputFile file(filename_.c_str());
+    Imath::Box2i dw = file.header().dataWindow();
+
+    int width = dw.max.x - dw.min.x + 1;
+    int height = dw.max.y - dw.min.y + 1;
+
+    if (img.width() != width || img.height() != height)
+    {
+        printf("OpenEXRFile read_channel(): image sizes do not match!\n");
+        return;
+    }
+
+    if (!file.header().channels().findChannel(name.c_str()))
+    {
+        printf("OpenEXRFile read_channel(): couldn't find channel %s in %s!\n", name.c_str(), filename_.c_str());
+        return;
+    }
+
+    if (file.header().channels().findChannel(name.c_str())->type == Imf::UINT)
+    {
+        iu::ImageCpu_32u_C1 h_img32u(img.size());
+        this->read_channel(name, h_img32u);
+        iu::convert_32u32f_C1(&h_img32u, &img, 1);
+        return;
+    }
+    else if (file.header().channels().findChannel(name.c_str())->type == Imf::FLOAT)
+    {
+        Imf::FrameBuffer fb;
+        fb.insert(name.c_str(), Imf::Slice(Imf::FLOAT, (char*)img.data(0,0), sizeof(float), img.pitch()));
+        file.setFrameBuffer(fb);
+        file.readPixels(dw.min.y, dw.max.y);
+    }
+}
+
+
+void OpenEXRInputFile::read_channel(const std::string &name, ImageGpu_32u_C1 &img)
+{
+    ImageCpu_32u_C1 h_img(img.size());
     this->read_channel(name, h_img);
     iu::copy(&h_img, &img);
 }
+
+
+
+void OpenEXRInputFile::read_channel(const std::string& name, ImageGpu_32f_C1 &img)
+{
+    ImageCpu_32f_C1 h_img(img.size());
+    this->read_channel(name, h_img);
+    iu::copy(&h_img, &img);
+}
+
+void OpenEXRInputFile::read_channel_32f(const std::string &name, ImageGpu_32f_C1 &img)
+{
+    ImageCpu_32f_C1 h_img(img.size());
+    this->read_channel_32f(name, h_img);
+    iu::copy(&h_img, &img);
+}
+
 
 
 #ifdef IUIO_EIGEN3

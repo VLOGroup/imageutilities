@@ -37,6 +37,9 @@ extern void cuConvert(const iu::ImageGpu_32f_C4* src,
 extern void cuConvert_8u_32f(const iu::ImageGpu_8u_C1* src,
                                  iu::ImageGpu_32f_C1* dst,
                                  float mul_constant,  float add_constant);
+extern void cuConvert_32u_32f(const iu::ImageGpu_32u_C1* src,
+                                 iu::ImageGpu_32f_C1* dst,
+                                 float mul_constant,  float add_constant);
 extern void cuConvert_8u_32f_C3C4(const iu::ImageGpu_8u_C3* src,
                                  iu::ImageGpu_32f_C4* dst,
                                  float mul_constant,  float add_constant);
@@ -119,10 +122,34 @@ void convert_32f8u_C4(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_8u_C4 *dst,
 void convert_8u32f_C1(const iu::ImageGpu_8u_C1* src, iu::ImageGpu_32f_C1 *dst,
                       float mul_constant, float add_constant)
 {
-  
   cuConvert_8u_32f(src, dst, mul_constant, add_constant);
-
 }
+
+
+//-----------------------------------------------------------------------------
+// [device] conversion 32u_C1 -> 32f_C1
+void convert_32u32f_C1(const iu::ImageGpu_32u_C1* src, iu::ImageGpu_32f_C1 *dst,
+                       float mul_constant, float add_constant)
+{
+    cuConvert_32u_32f(src, dst, mul_constant, add_constant);
+}
+
+
+//-----------------------------------------------------------------------------
+// [host] conversion 32u_C1 -> 32f_C1
+void convert_32u32f_C1(const iu::ImageCpu_32u_C1* src, iu::ImageCpu_32f_C1 *dst,
+                       float mul_constant, float add_constant)
+{
+    for (unsigned int x=0; x<dst->width(); x++)
+    {
+      for (unsigned int y=0; y<dst->height(); y++)
+      {
+        unsigned short val = *src->data(x,y); //((*src->data(x,y) & 0x00ffU) << 8) | ((*src->data(x,y) & 0xff00U) >> 8);
+        *dst->data(x,y) = mul_constant*(float)val + add_constant;
+      }
+    }
+}
+
 
 
 //-----------------------------------------------------------------------------
