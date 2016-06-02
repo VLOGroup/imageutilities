@@ -1,3 +1,7 @@
+job:
+  tags:
+    - cuda-7.5
+
 stages:
   - build
 
