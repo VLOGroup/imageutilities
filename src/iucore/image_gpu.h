@@ -231,7 +231,7 @@ public:
   // a parameter in a cuda kernel call. In that case the user has to explicitly call prepareTexture()
   // in advance such that the texture object exists, because an implicit call to prepareTexture()
   // here would obviously violate method constness
-  cudaTextureObject_t getTexture() const
+  inline cudaTextureObject_t getTexture() const
   {
       if (!texture_)
           throw IuException("Warning: getTexture() on const image requires explicit call to prepareTexture(),"

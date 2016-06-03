@@ -24,6 +24,7 @@
 #ifndef IMAGE_CPU_H
 #define IMAGE_CPU_H
 
+#include <thrust/memory.h>
 #include "image.h"
 #include "image_allocator_cpu.h"
 
@@ -174,6 +175,16 @@ public:
   virtual unsigned int bitDepth() const
   {
     return 8*sizeof(PixelType);
+  }
+
+  thrust::pointer<PixelType, thrust::host_system_tag> begin(void)
+  {
+      return thrust::pointer<PixelType, thrust::host_system_tag>(data());
+  }
+
+  thrust::pointer<PixelType, thrust::host_system_tag> end(void)
+  {
+      return thrust::pointer<PixelType, thrust::host_system_tag>(data()+stride()*height());
   }
 
   /** Returns flag if the image data resides on the device/GPU (TRUE) or host/GPU (FALSE) */

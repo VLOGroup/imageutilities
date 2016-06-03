@@ -22,6 +22,7 @@ cmake_minimum_required(VERSION 2.8)
 
 # cleanup
 set(${IU_PUBLIC_HEADERS} "")
+set(IU_BUILD_STATIC OFF)
 
 # general settings
 #set(CMAKE_DEBUG_POSTFIX "d")
@@ -397,6 +398,11 @@ SET( IU_SOURCES
 #   ${IU_IO_SOURCES}
 # )
 
+if(IU_BUILD_STATIC)
+  message("[+] building static library")
+else(IU_BUILD_STATIC)
+  message("[-] do not build static library")
+endif(IU_BUILD_STATIC)
 
 set(IU_LIBS "") # variable where all libs that are built are saved
 set(IU_LIBS_STATIC "") # variable where all libs that are built are saved
@@ -408,7 +414,6 @@ message("Compiler Flags NVCC: " ${CUDA_NVCC_FLAGS})
 ## build core library
 set(IU_CORE_LIB iucore)
 cuda_add_library( ${IU_CORE_LIB} SHARED ${IU_HEADERS} ${IU_SOURCES})
-cuda_add_library( ${IU_CORE_LIB}_static STATIC ${IU_HEADERS} ${IU_SOURCES})
 set_target_properties(${IU_CORE_LIB} PROPERTIES
   DEFINE_SYMBOL IUCORE_DLL_EXPORTS
   VERSION ${IMAGEUTILITIES_VERSION}
@@ -416,9 +421,14 @@ set_target_properties(${IU_CORE_LIB} PROPERTIES
   PUBLIC_HEADER "${IU_PUBLIC_HEADERS}"
   )
 target_link_libraries( ${IU_CORE_LIB} ${CUDA_LIBRARIES})
-target_link_libraries( ${IU_CORE_LIB}_static ${CUDA_LIBRARIES})
 set(IU_LIBS ${IU_LIBS} ${IU_CORE_LIB})
-set(IU_LIBS_STATIC ${IU_LIBS_STATIC} ${IU_CORE_LIB}_static)
+
+if(IU_BUILD_STATIC)
+  cuda_add_library( ${IU_CORE_LIB}_static STATIC ${IU_HEADERS} ${IU_SOURCES})
+  target_link_libraries( ${IU_CORE_LIB}_static ${CUDA_LIBRARIES})
+  set(IU_LIBS_STATIC ${IU_LIBS_STATIC} ${IU_CORE_LIB}_static)
+endif(IU_BUILD_STATIC)
+
 
 
 message("additional iuio libs: ${ADDITIONAL_IUIO_DEPENDENCIES}")
@@ -427,7 +437,6 @@ message("additional iuio libs: ${ADDITIONAL_IUIO_DEPENDENCIES}")
 set(IU_IO_LIB iuio)
 if(IU_USE_IO)
   cuda_add_library( ${IU_IO_LIB} SHARED ${IU_IO_HEADERS} ${IU_IO_SOURCES} )
-  cuda_add_library( ${IU_IO_LIB}_static STATIC ${IU_IO_HEADERS} ${IU_IO_SOURCES} )
   set_target_properties(${IU_IO_LIB} PROPERTIES
     DEFINE_SYMBOL IUIO_DLL_EXPORTS
     VERSION ${IMAGEUTILITIES_VERSION}
@@ -436,11 +445,16 @@ if(IU_USE_IO)
   target_link_libraries( ${IU_IO_LIB}
     ${CUDA_LIBRARIES} ${OpenCV_LIBS} ${ADDITIONAL_IUIO_DEPENDENCIES}
     )
-  target_link_libraries( ${IU_IO_LIB}_static
+  set(IU_LIBS ${IU_LIBS} ${IU_IO_LIB})
+  
+
+  if(IU_BUILD_STATIC)
+    cuda_add_library( ${IU_IO_LIB}_static STATIC ${IU_IO_HEADERS} ${IU_IO_SOURCES} )
+    target_link_libraries( ${IU_IO_LIB}_static
     ${CUDA_LIBRARIES} ${OpenCV_LIBS} ${ADDITIONAL_IUIO_DEPENDENCIES}
     )
-  set(IU_LIBS ${IU_LIBS} ${IU_IO_LIB})
-  set(IU_LIBS_STATIC ${IU_LIBS_STATIC} ${IU_IO_LIB}_static)
+    set(IU_LIBS_STATIC ${IU_LIBS_STATIC} ${IU_IO_LIB}_static)
+  endif(IU_BUILD_STATIC)
 endif(IU_USE_IO)
 
 
@@ -449,7 +463,6 @@ endif(IU_USE_IO)
 set(IU_GUI_LIB iugui)
 if(IU_USE_GUI)
   cuda_add_library( ${IU_GUI_LIB} SHARED ${IU_GUI_HEADERS} ${IU_GUI_SOURCES})
-  cuda_add_library( ${IU_GUI_LIB}_static STATIC ${IU_GUI_HEADERS} ${IU_GUI_SOURCES})
   set_target_properties(${IU_GUI_LIB} PROPERTIES
     DEFINE_SYMBOL IUGUI_DLL_EXPORTS
     VERSION ${IMAGEUTILITIES_VERSION}
@@ -458,11 +471,16 @@ if(IU_USE_GUI)
   target_link_libraries( ${IU_GUI_LIB}
     Qt5::Widgets Qt5::OpenGL ${CUDA_LIBRARIES} ${OPENGL_LIBRARIES}
     )
-  target_link_libraries( ${IU_GUI_LIB}_static
+  set(IU_LIBS ${IU_LIBS} ${IU_GUI_LIB})
+  
+
+  if(IU_BUILD_STATIC)
+    cuda_add_library( ${IU_GUI_LIB}_static STATIC ${IU_GUI_HEADERS} ${IU_GUI_SOURCES})
+    target_link_libraries( ${IU_GUI_LIB}_static
     Qt5::Widgets Qt5::OpenGL ${CUDA_LIBRARIES} ${OPENGL_LIBRARIES}
     )
-  set(IU_LIBS ${IU_LIBS} ${IU_GUI_LIB})
-  set(IU_LIBS_STATIC ${IU_LIBS_STATIC} ${IU_GUI_LIB}_static)
+    set(IU_LIBS_STATIC ${IU_LIBS_STATIC} ${IU_GUI_LIB}_static)
+  endif(IU_BUILD_STATIC)
 endif(IU_USE_GUI)
 
 ###-----------------------------------------------------------------------------
