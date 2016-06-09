@@ -32,7 +32,7 @@ public:
 	}
 
 	TensorGpu(const TensorGpu<PixelType>& from) :
-			LinearHostMemory<PixelType>(from), samples_(from.samples_), channels_(from.channels_), height_(
+            LinearDeviceMemory<PixelType>(from), samples_(from.samples_), channels_(from.channels_), height_(
 					from.height_), width_(from.width_), memoryLayout_(from.memoryLayout_)
 	{
 	}

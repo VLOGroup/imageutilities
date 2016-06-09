@@ -22,7 +22,7 @@ cmake_minimum_required(VERSION 2.8)
 
 # cleanup
 set(${IU_PUBLIC_HEADERS} "")
-set(IU_BUILD_STATIC OFF)
+option(IU_BUILD_STATIC "Build static libs too." OFF)
 
 # general settings
 #set(CMAKE_DEBUG_POSTFIX "d")
