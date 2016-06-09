@@ -74,6 +74,11 @@ typedef LinearHostMemory<int2> LinearHostMemory_32s_C2;
 typedef LinearHostMemory<int3> LinearHostMemory_32s_C3;
 typedef LinearHostMemory<int4> LinearHostMemory_32s_C4;
 
+typedef LinearHostMemory<unsigned int> LinearHostMemory_32u_C1;
+typedef LinearHostMemory<uint2> LinearHostMemory_32u_C2;
+typedef LinearHostMemory<uint4> LinearHostMemory_32u_C4;
+
+
 /*
   Device
 */
@@ -97,6 +102,11 @@ typedef LinearDeviceMemory<int> LinearDeviceMemory_32s_C1;
 typedef LinearDeviceMemory<int2> LinearDeviceMemory_32s_C2;
 typedef LinearDeviceMemory<int3> LinearDeviceMemory_32s_C3;
 typedef LinearDeviceMemory<int4> LinearDeviceMemory_32s_C4;
+
+typedef LinearDeviceMemory<unsigned int> LinearDeviceMemory_32u_C1;
+typedef LinearDeviceMemory<uint2> LinearDeviceMemory_32u_C2;
+typedef LinearDeviceMemory<uint4> LinearDeviceMemory_32u_C4;
+
 
 
 /* ****************************************************************************
