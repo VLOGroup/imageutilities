@@ -29,13 +29,62 @@ private:
 /**
  * @brief getPyArrayFromPyObject get a PyArray from a generic PyObject. The memory referenced by the numpy array must be c-contiguous
  * @param obj a PyObject* wrapped in boost::python
- * @param kind datatype kind. <b>ool, <i>nt (signed) <u>int, <f>loat, <c>omplex... See numpy C-API
- * @param type <i>int, <f>loat, <d>ouble... See numpy C-API
+ * @param kind datatype kind. <b>ool, <i>nt (signed) <u>int, <f>loat, <c>omplex... See numpy C-API. Default 'x' = disable check
+ * @param type <b>yte, <i>int, <f>loat, <d>ouble... See numpy C-API. Default 'x' = disable check
  * @param writeable bool to indicate writable
  * @return a PyArrayObject pointer
  */
-PyArrayObject* getPyArrayFromPyObject(bp::object& obj, char kind = 'f', char type = 'f', bool writeable = true)
+PyArrayObject* getPyArrayFromPyObject(const bp::object& obj, char kind = 'x', char type = 'x', bool writeable = true)
 {
+    // from: https://github.com/numpy/numpy/blob/master/numpy/core/include/numpy/ndarraytypes.h
+//    enum NPY_TYPECHAR {
+//        NPY_BOOLLTR = '?',
+//        NPY_BYTELTR = 'b',
+//        NPY_UBYTELTR = 'B',
+//        NPY_SHORTLTR = 'h',
+//        NPY_USHORTLTR = 'H',
+//        NPY_INTLTR = 'i',
+//        NPY_UINTLTR = 'I',
+//        NPY_LONGLTR = 'l',
+//        NPY_ULONGLTR = 'L',
+//        NPY_LONGLONGLTR = 'q',
+//        NPY_ULONGLONGLTR = 'Q',
+//        NPY_HALFLTR = 'e',
+//        NPY_FLOATLTR = 'f',
+//        NPY_DOUBLELTR = 'd',
+//        NPY_LONGDOUBLELTR = 'g',
+//        NPY_CFLOATLTR = 'F',
+//        NPY_CDOUBLELTR = 'D',
+//        NPY_CLONGDOUBLELTR = 'G',
+//        NPY_OBJECTLTR = 'O',
+//        NPY_STRINGLTR = 'S',
+//        NPY_STRINGLTR2 = 'a',
+//        NPY_UNICODELTR = 'U',
+//        NPY_VOIDLTR = 'V',
+//        NPY_DATETIMELTR = 'M',
+//        NPY_TIMEDELTALTR = 'm',
+//        NPY_CHARLTR = 'c',
+
+//        /*
+//             * No Descriptor, just a define -- this let's
+//             * Python users specify an array of integers
+//             * large enough to hold a pointer on the
+//             * platform
+//             */
+//        NPY_INTPLTR = 'p',
+//        NPY_UINTPLTR = 'P',
+
+//        /*
+//             * These are for dtype 'kinds', not dtype 'typecodes'
+//             * as the above are for.
+//             */
+//        NPY_GENBOOLLTR ='b',
+//        NPY_SIGNEDLTR = 'i',
+//        NPY_UNSIGNEDLTR = 'u',
+//        NPY_FLOATINGLTR = 'f',
+//        NPY_COMPLEXLTR = 'c'
+//   };
+
     if (!PyArray_Check(obj.ptr()))
         throw Exc("Argument is not a numpy array");
 
@@ -66,7 +115,7 @@ PyArrayObject* getPyArrayFromPyObject(bp::object& obj, char kind = 'f', char typ
 
 
 template<typename PixelType, class Allocator, IuPixelType _pixel_type>
-void imageCpu_from_PyArray(bp::object& py_arr,
+void imageCpu_from_PyArray(const bp::object& py_arr,
                            iu::ImageCpu<PixelType, Allocator, _pixel_type> &img)
 {
     PyArrayObject* py_img = getPyArrayFromPyObject(py_arr, 'f', 'f', false);
@@ -86,7 +135,7 @@ void imageCpu_from_PyArray(bp::object& py_arr,
  * @param py_arr numpy array (must contain floating point data, double will be cast to float)
  * @param m Matrix3f to fill
  */
-void Matrix3f_from_PyArray(bp::object& py_arr, Eigen::Ref<Eigen::Matrix3f> m)
+void Matrix3f_from_PyArray(const bp::object& py_arr, Eigen::Ref<Eigen::Matrix3f> m)
 {
     // don't care if float or double
     PyArrayObject* arr = getPyArrayFromPyObject(py_arr, 'f', 'x', false);
@@ -94,8 +143,8 @@ void Matrix3f_from_PyArray(bp::object& py_arr, Eigen::Ref<Eigen::Matrix3f> m)
     if (ndim != 2)
         throw Exc("Expected a 2d numpy array");
     npy_intp* dims = PyArray_DIMS(arr);
-    if (dims[0] < 3 || dims[1] < 3)
-        throw Exc("numpy array must be at least 3x3");
+    if (dims[0] != 3 || dims[1] != 3)
+        throw Exc("numpy array must be 3x3");
 
     void* data;
     PyArray_Descr* dtype = PyArray_DTYPE(arr);
@@ -120,15 +169,15 @@ void Matrix3f_from_PyArray(bp::object& py_arr, Eigen::Ref<Eigen::Matrix3f> m)
  * @param py_arr numpy array (must contain floating point data, double will be cast to float)
  * @param m Matrix4f to fill
  */
-void Matrix4f_from_PyArray(bp::object& py_arr, Eigen::Ref<Eigen::Matrix4f> m)
+void Matrix4f_from_PyArray(const bp::object& py_arr, Eigen::Ref<Eigen::Matrix4f> m)
 {
     PyArrayObject* arr = getPyArrayFromPyObject(py_arr, 'f', 'x', false);
     int ndim = PyArray_NDIM(arr);
     if (ndim != 2)
         throw Exc("Expected a 2d numpy array");
     npy_intp* dims = PyArray_DIMS(arr);
-    if (dims[0] < 4 || dims[1] < 4)
-        throw Exc("numpy array must be at least 4x4");
+    if (dims[0] != 4 || dims[1] != 4)
+        throw Exc("numpy array must be 4x4");
 
     void* data;
     PyArray_Descr* dtype = PyArray_DTYPE(arr);
