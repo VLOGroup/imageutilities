@@ -66,6 +66,14 @@ public:
   /** Returns flag if the image data resides on the device/GPU (TRUE) or host/GPU (FALSE) */
   virtual bool onDevice() const {return false;}
 
+  /** Operator<< overloading. Output of Image class. */
+  friend std::ostream& operator<<(std::ostream & out,
+                                  LinearMemory const& linmem)
+  {
+    out << "LinearMemory: length=" << linmem.length() << " onDevice=" << linmem.onDevice();
+    return out;
+  }
+
 private:
   unsigned int length_;
 

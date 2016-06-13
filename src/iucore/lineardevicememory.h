@@ -27,6 +27,7 @@
 #include <cuda_runtime_api.h>
 #include "linearmemory.h"
 #include <thrust/device_ptr.h>
+#include "../iucutil.h"
 
 namespace iu {
 
@@ -44,7 +45,7 @@ public:
   {
     if((!ext_data_pointer_) && (data_!=NULL))
     {
-      cudaFree(data_);
+      IU_CUDA_SAFE_CALL(cudaFree(data_));
       data_ = 0;
     }
   }
@@ -53,7 +54,7 @@ public:
     LinearMemory(length),
     data_(0), ext_data_pointer_(false)
   {
-    cudaMalloc((void**)&data_, this->length()*sizeof(PixelType));
+    IU_CUDA_SAFE_CALL(cudaMalloc((void**)&data_, this->length()*sizeof(PixelType)));
     if (data_ == 0) throw std::bad_alloc();
   }
 
@@ -62,9 +63,9 @@ public:
     data_(0), ext_data_pointer_(false)
   {
     if (from.data_==0) throw IuException("input data not valid", __FILE__, __FUNCTION__, __LINE__);
-    cudaMalloc((void**)&data_, this->length()*sizeof(PixelType));
+    IU_CUDA_SAFE_CALL(cudaMalloc((void**)&data_, this->length()*sizeof(PixelType)));
     if (data_ == 0) throw std::bad_alloc();
-    cudaMemcpy(data_, from.data_, this->length() * sizeof(PixelType), cudaMemcpyDeviceToDevice);
+    IU_CUDA_SAFE_CALL(cudaMemcpy(data_, from.data_, this->length() * sizeof(PixelType), cudaMemcpyDeviceToDevice));
   }
 
   LinearDeviceMemory(PixelType* device_data, const unsigned int& length, bool ext_data_pointer = false) :
@@ -80,9 +81,9 @@ public:
     else
     {
       // allocates an internal data pointer and copies the external data onto it.
-      cudaMalloc((void**)&data_, this->length()*sizeof(PixelType));
+      IU_CUDA_SAFE_CALL(cudaMalloc((void**)&data_, this->length()*sizeof(PixelType)));
       if (data_ == 0) throw std::bad_alloc();
-      cudaMemcpy(data_, device_data, this->length() * sizeof(PixelType), cudaMemcpyHostToDevice);
+      IU_CUDA_SAFE_CALL(cudaMemcpy(data_, device_data, this->length() * sizeof(PixelType), cudaMemcpyHostToDevice));
     }
   }
 

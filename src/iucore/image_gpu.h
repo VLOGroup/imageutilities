@@ -51,7 +51,7 @@ public:
     pitch_ = 0;
 
     if (texture_)
-        cudaDestroyTextureObject(texture_);
+      IU_CUDA_SAFE_CALL(cudaDestroyTextureObject(texture_));
   }
 
   ImageGpu(unsigned int _width, unsigned int _height) :
@@ -112,7 +112,7 @@ public:
 //		this->roi_ = from.roi();
 		this->pixel_type_ = from.pixelType();
 		this->data_ = Allocator::alloc(from.size(), &(this->pitch_));
-		cudaMemcpy2D(data_, pitch_, from.data(), from.pitch(), from.width(), from.height(), cudaMemcpyDeviceToDevice);
+		IU_CUDA_SAFE_CALL(cudaMemcpy2D(data_, pitch_, from.data(), from.pitch(), from.width(), from.height(), cudaMemcpyDeviceToDevice));
 		// pitch_ = from.pitch(); // handled by allocator
 		this->ext_data_pointer_ = false; 
         this->texture_ = 0;
@@ -122,8 +122,8 @@ public:
   PixelType getPixel(unsigned int x, unsigned int y)
   {
     PixelType value;
-    cudaMemcpy2D(&value, sizeof(PixelType), &data_[y*stride()+x], pitch_,
-                 sizeof(PixelType), 1, cudaMemcpyDeviceToHost);
+    IU_CUDA_SAFE_CALL(cudaMemcpy2D(&value, sizeof(PixelType), &data_[y*stride()+x], pitch_,
+                 sizeof(PixelType), 1, cudaMemcpyDeviceToHost));
     return value;
   }
 
@@ -195,7 +195,7 @@ public:
                       cudaTextureAddressMode addressMode = cudaAddressModeClamp)
   {
       if (texture_)             // delete if already exists
-          cudaDestroyTextureObject(texture_);
+        IU_CUDA_SAFE_CALL(cudaDestroyTextureObject(texture_));
 
       cudaResourceDesc resDesc;
       memset(&resDesc, 0, sizeof(resDesc));
@@ -216,7 +216,7 @@ public:
       texDesc.addressMode[1] = addressMode;
       texDesc.filterMode = filterMode;
 
-      cudaCreateTextureObject(&texture_, &resDesc, &texDesc, NULL);
+      IU_CUDA_SAFE_CALL(cudaCreateTextureObject(&texture_, &resDesc, &texDesc, NULL));
   }
 
   cudaTextureObject_t getTexture()

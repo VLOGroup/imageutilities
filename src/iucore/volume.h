@@ -28,6 +28,8 @@
 #include "globaldefs.h"
 #include "coredefs.h"
 
+#include <ostream>
+
 namespace iu{
 
 //! \todo We maybe do not want to have the Volume class in the public dll interface??
@@ -105,14 +107,27 @@ public:
   /** Returns the distance in bytes between starts of consecutive rows. */
   virtual size_t pitch() const {return 0;};
 
-  /** Returns the distnace in pixels between starts of consecutive rows. */
+  /** Returns the distance in pixels between starts of consecutive rows. */
   virtual size_t stride() const {return 0;};
+
+  /** Returns the distance in pixels between starts of consecutive slices. */
+  virtual size_t slice_stride() const {return 0;};
 
   /** Returns the bit depth of the data pointer. */
   virtual unsigned int bitDepth() const {return 0;};
 
   /** Returns flag if the Volume data resides on the device/GPU (TRUE) or host/GPU (FALSE) */
   virtual bool onDevice() const {return false;};
+
+  /** Operator<< overloading. Output of Volume class. */
+  friend std::ostream& operator<<(std::ostream & out,
+                                  Volume const& volume)
+  {
+    out << "Volume: " << volume.size() << " stride="
+        << volume.stride() << " slice_stride=" << volume.slice_stride()
+        << " onDevice=" << volume.onDevice();
+    return out;
+  }
 
 private:
   IuPixelType pixel_type_;

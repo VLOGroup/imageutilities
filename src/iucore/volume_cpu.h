@@ -138,7 +138,7 @@ public:
   /** Returns flag if the volume data resides on the device/GPU (TRUE) or host/GPU (FALSE) */
   virtual bool onDevice() const
   {
-    return true;
+    return false;
   }
 
 

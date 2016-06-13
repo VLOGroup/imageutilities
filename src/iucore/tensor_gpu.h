@@ -69,6 +69,21 @@ public:
 		return memoryLayout_;
 	}
 
+  /** Operator<< overloading. Output of TensorGpu class. */
+  friend std::ostream& operator<<(std::ostream & out,
+                                  TensorGpu const& tensor)
+  {
+    out << "Tensor: height=" << tensor.height() << " width="
+        << tensor.width() << " samples="  << tensor.samples() << " channels="
+        << tensor.channels();
+    if (tensor.memoryLayout() == NCHW)
+      out << " memory_layout=NCHW";
+    else if(tensor.memoryLayout() == NHWC)
+      out << " memory_layout=NHWC";
+    out << " onDevice=" << tensor.onDevice();
+    return out;
+  }
+
 	struct TensorKernelData
 	//struct KernelData
 	{

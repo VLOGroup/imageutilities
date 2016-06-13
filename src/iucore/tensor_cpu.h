@@ -64,6 +64,16 @@ public:
 		return width_;
 	}
 
+  /** Operator<< overloading. Output of TensorCpu class. */
+  friend std::ostream& operator<<(std::ostream & out,
+                                  TensorCpu const& tensor)
+  {
+    out << "Tensor: height=" << tensor.height() << " width="
+        << tensor.width() << " samples="  << tensor.samples() << " channels="
+        << tensor.channels() << " onDevice=" << tensor.onDevice();
+    return out;
+  }
+
 private:
 	unsigned int samples_;
 	unsigned int channels_;

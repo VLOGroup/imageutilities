@@ -26,7 +26,8 @@
 
 #include <assert.h>
 #include <cuda_runtime.h>
-//#include "../iucutil.h"
+#include "../iucutil.h"
+
 #include "coredefs.h"
 
 namespace iuprivate {
@@ -40,31 +41,21 @@ public:
   {
     if ((size.width == 0) || (size.height == 0)) throw IuException("width or height is 0", __FILE__, __FUNCTION__, __LINE__);
     PixelType* buffer = 0;
-    cudaError_t status = cudaMallocPitch((void **)&buffer, pitch,
-                                         size.width * sizeof(PixelType), size.height);
-	if (status == cudaErrorMemoryAllocation  )
-      throw IuException("ImageAllocatorGPU Bad Alloc", __FILE__, __FUNCTION__, __LINE__ );
-    if (status != cudaSuccess)
-      throw IuException("ImageAllocatorGPU Error", __FILE__, __FUNCTION__, __LINE__);
-
+    IU_CUDA_SAFE_CALL(cudaMallocPitch((void **)&buffer, pitch,
+                                         size.width * sizeof(PixelType), size.height));
     return buffer;
   }
 
   static void free(PixelType *buffer)
   {
-    cudaError_t status = cudaFree((void *)buffer);
-    if (status != cudaSuccess)
-      throw IuException("ImageAllocatorGPU Error", __FILE__, __FUNCTION__, __LINE__);
+    IU_CUDA_SAFE_CALL(cudaFree((void *)buffer));
   }
 
   static void copy(const PixelType *src, size_t src_pitch, PixelType *dst, size_t dst_pitch, IuSize size)
   {
-    cudaError_t status;
-    status = cudaMemcpy2D(dst, dst_pitch, src, src_pitch,
+    IU_CUDA_SAFE_CALL(cudaMemcpy2D(dst, dst_pitch, src, src_pitch,
                           size.width * sizeof(PixelType), size.height,
-                          cudaMemcpyDeviceToDevice);
-    if (status != cudaSuccess)
-      throw IuException("ImageAllocatorGPU Error", __FILE__, __FUNCTION__, __LINE__);
+                          cudaMemcpyDeviceToDevice));
   }
 };
 

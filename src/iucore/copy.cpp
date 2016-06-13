@@ -18,6 +18,7 @@ extern void cuCopy(const iu::ImageGpu_32f_C1* src, iu::LinearDeviceMemory_32f_C1
 //-----------------------------------------------------------------------------
 void copy(const iu::ImageGpu_32f_C1 *src, iu::LinearDeviceMemory_32f_C1 *dst)
 {
+    IU_SIZE_CHECK(src, dst);
     cuCopy(src, dst);
 }
 

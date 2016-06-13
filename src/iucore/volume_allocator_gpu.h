@@ -27,6 +27,7 @@
 #include <assert.h>
 #include <cuda_runtime.h>
 #include "coredefs.h"
+#include "../iucutil.h"
 
 namespace iuprivate {
 
@@ -50,18 +51,14 @@ public:
 
   static void free(PixelType *buffer)
   {
-    cudaError_t status = cudaFree((void *)buffer);
-    if (status != cudaSuccess)
-      throw IuException("cudaFree returned error code", __FILE__, __FUNCTION__, __LINE__);
+    IU_CUDA_SAFE_CALL(cudaFree((void *)buffer));
   }
 
   static void copy(const PixelType *src, size_t src_pitch, PixelType *dst, size_t dst_pitch, IuSize size)
   {
-    cudaError_t status = cudaMemcpy2D(dst, dst_pitch, src, src_pitch,
+    IU_CUDA_SAFE_CALL(cudaMemcpy2D(dst, dst_pitch, src, src_pitch,
                                       size.width * sizeof(PixelType), size.height*size.depth,
-                                      cudaMemcpyDeviceToDevice);
-    if (status != cudaSuccess)
-      throw IuException("cudaMemcpy2D returned error code", __FILE__, __FUNCTION__, __LINE__);
+                                      cudaMemcpyDeviceToDevice));
   }
 };
 
