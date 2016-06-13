@@ -121,13 +121,13 @@ protected:
   cudaError_t cudaErr_;
 };
 
-class IuCudaBadAllocException : public IuCudaException 
-{
-public:
-  IuCudaBadAllocException(const cudaError_t cudaErr,
-                  const char* file=NULL, const char* function=NULL, int line=0) throw() :
-    IuCudaException(cudaErr, file, function, line) {}
-};
+//class IuCudaBadAllocException : public IuCudaException
+//{
+//public:
+//  IuCudaBadAllocException(const cudaError_t cudaErr,
+//                  const char* file=NULL, const char* function=NULL, int line=0) throw() :
+//    IuCudaException(cudaErr, file, function, line) {}
+//};
 
 namespace iu {
 
@@ -140,6 +140,17 @@ static inline void checkCudaErrorState( const char* file, const char* function, 
   if( err != cudaSuccess )
     throw IuCudaException( err, file, function, line );
 }
+
+/** Check for CUDA error (throws IuCudaException) */
+static inline void checkCudaErrorState(cudaError_t err, const char *file, const char* function,
+                         const int line)
+{
+  if (cudaSuccess != err)
+  {
+    throw IuCudaException(err, file, function, line);
+  }
+}
+
 
 static inline float getTotalGPUMemory()
 {
@@ -176,8 +187,11 @@ static inline void printGPUMemoryUsage()
 
 //#ifdef __CUDACC__ // only include this error check in cuda files (seen by nvcc)
 
-//// MACROS
-////
+// MACROS
+
+#define IU_CUDA_CHECK         iu::checkCudaErrorState(__FILE__, __FUNCTION__, __LINE__)
+#define IU_CUDA_SAFE_CALL(fun)       iu::checkCudaErrorState(fun, __FILE__, __FUNCTION__, __LINE__)
+
 
 ////-----------------------------------------------------------------------------
 //#define __IU_CHECK_FOR_CUDA_ERRORS_ENABLED__ // enables checking for cuda errors

@@ -266,6 +266,59 @@ typedef TensorGpu<float> TensorGpu_32f;
 typedef TensorGpu<int> TensorGpu_32s;
 typedef TensorGpu<double> TensorGpu_64f;
 
+
+/* ****************************************************************************
+ *  Define size checks
+ * ****************************************************************************/
+static inline void checkSize(const iu::Volume *volume1, const iu::Volume *volume2,
+               const char* file, const char* function, const int line)
+{
+  if (volume1->size() != volume2->size())
+  {
+    std::stringstream msg;
+    msg << "Size mismatch! Size of first Volume is " << volume1->size() << ". ";
+    msg << "Size of second Volume is " << volume2->size();
+    throw IuException(msg.str(), file, function, line);
+  }
+}
+
+static inline void checkSize(const iu::Image *image1, const iu::Image *image2,
+               const char* file, const char* function, const int line)
+{
+  if (image1->size() != image2->size())
+  {
+    std::stringstream msg;
+    msg << "Size mismatch! Size of first Image is " << image1->size() << ". ";
+    msg << "Size of second Image is " << image2->size();
+    throw IuException(msg.str(), file, function, line);
+  }
+}
+
+static inline void checkSize(const iu::LinearMemory *linmem1, const iu::LinearMemory *linmem2,
+               const char* file, const char* function, const int line)
+{
+  if (linmem1->length() != linmem2->length())
+  {
+    std::stringstream msg;
+    msg << "Size mismatch! Length of first LinearMemory is " << linmem1->length() << ". ";
+    msg << "Length of second LinearMemory is " << linmem2->length();
+    throw IuException(msg.str(), file, function, line);
+  }
+}
+
+static inline void checkSize(const iu::Image *image, const iu::LinearMemory *linmem,
+               const char* file, const char* function, const int line)
+{
+  if (image->size().width*image->size().height != linmem->length())
+  {
+    std::stringstream msg;
+    msg << "Size mismatch! Number of elements in Image is " << image->size().width*image->size().height << ". ";
+    msg << "Length of LinearMemory is " << linmem->length();
+    throw IuException(msg.str(), file, function, line);
+  }
+}
+
+#define IU_SIZE_CHECK(variable1, variable2)  checkSize(variable1, variable2, __FILE__, __FUNCTION__, __LINE__)
 } // namespace iu
 
 #endif // IUCORE_MEMORYDEFS_H

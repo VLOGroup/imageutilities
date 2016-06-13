@@ -35,6 +35,7 @@
 
 #include "coredefs.h"
 #include "memorydefs.h"
+#include "../iucutil.h"
 
 namespace iuprivate {
 
@@ -48,6 +49,7 @@ namespace iuprivate {
 template <typename PixelType>
 void copy(const iu::LinearHostMemory<PixelType> *src, iu::LinearHostMemory<PixelType> *dst)
 {
+  IU_SIZE_CHECK(src, dst);
   memcpy(dst->data(), src->data(), dst->length() * sizeof(PixelType));
 }
 
@@ -55,27 +57,24 @@ void copy(const iu::LinearHostMemory<PixelType> *src, iu::LinearHostMemory<Pixel
 template <typename PixelType>
 void copy(const iu::LinearDeviceMemory<PixelType> *src, iu::LinearDeviceMemory<PixelType> *dst)
 {
-  cudaError_t status;
-  status = cudaMemcpy(dst->data(), src->data(), dst->length() * sizeof(PixelType), cudaMemcpyDeviceToDevice);
-  if (status != cudaSuccess) throw IuException("cudaMemcpy returned error code", __FILE__, __FUNCTION__, __LINE__);
+  IU_SIZE_CHECK(src, dst);
+  IU_CUDA_SAFE_CALL(cudaMemcpy(dst->data(), src->data(), dst->length() * sizeof(PixelType), cudaMemcpyDeviceToDevice));
 }
 
 // 1D; copy host -> device
 template <typename PixelType>
 void copy(const iu::LinearHostMemory<PixelType> *src, iu::LinearDeviceMemory<PixelType> *dst)
 {
-  cudaError_t status;
-  status = cudaMemcpy(dst->data(), src->data(), dst->length() * sizeof(PixelType), cudaMemcpyHostToDevice);
-  if (status != cudaSuccess) throw IuException("cudaMemcpy returned error code", __FILE__, __FUNCTION__, __LINE__);
+  IU_SIZE_CHECK(src, dst);
+  IU_CUDA_SAFE_CALL(cudaMemcpy(dst->data(), src->data(), dst->length() * sizeof(PixelType), cudaMemcpyHostToDevice));
 }
 
 // 1D; copy device -> host
 template <typename PixelType>
 void copy(const iu::LinearDeviceMemory<PixelType> *src, iu::LinearHostMemory<PixelType> *dst)
 {
-  cudaError_t status;
-  status = cudaMemcpy(dst->data(), src->data(), dst->length() * sizeof(PixelType), cudaMemcpyDeviceToHost);
-  if (status != cudaSuccess) throw IuException("cudaMemcpy returned error code", __FILE__, __FUNCTION__, __LINE__);
+  IU_SIZE_CHECK(src, dst);
+  IU_CUDA_SAFE_CALL(cudaMemcpy(dst->data(), src->data(), dst->length() * sizeof(PixelType), cudaMemcpyDeviceToHost));
 }
 
 /* ****************************************************************************
@@ -89,6 +88,7 @@ template<typename PixelType, class Allocator, IuPixelType _pixel_type>
 void copy(const iu::ImageCpu<PixelType, Allocator, _pixel_type> *src,
           iu::ImageCpu<PixelType, Allocator, _pixel_type> *dst)
 {
+  IU_SIZE_CHECK(src, dst);
   Allocator::copy(src->data(), src->pitch(), dst->data(), dst->pitch(), dst->size());
 }
 
@@ -97,6 +97,7 @@ template<typename PixelType, class Allocator, IuPixelType _pixel_type>
 void copy(const iu::ImageGpu<PixelType, Allocator, _pixel_type> *src,
           iu::ImageGpu<PixelType, Allocator, _pixel_type> *dst)
 {
+  IU_SIZE_CHECK(src, dst);
   Allocator::copy(src->data(), src->pitch(), dst->data(), dst->pitch(), dst->size());
 }
 
@@ -105,12 +106,11 @@ template<typename PixelType, class AllocatorCpu, class AllocatorGpu, IuPixelType
 void copy(const iu::ImageCpu<PixelType, AllocatorCpu, _pixel_type> *src,
           iu::ImageGpu<PixelType, AllocatorGpu, _pixel_type> *dst)
 {
-  cudaError_t status;
-  status = cudaMemcpy2D(dst->data(), dst->pitch(),
+  IU_SIZE_CHECK(src, dst);
+  IU_CUDA_SAFE_CALL(cudaMemcpy2D(dst->data(), dst->pitch(),
                         src->data(), src->pitch(),
                         src->width() * sizeof(PixelType), src->height(),
-                        cudaMemcpyHostToDevice);
-  if (status != cudaSuccess) throw IuException("cudaMemcpy2D returned error code", __FILE__, __FUNCTION__, __LINE__);
+                        cudaMemcpyHostToDevice));
 }
 
 // 2D; copy device -> host
@@ -118,12 +118,11 @@ template<typename PixelType, class AllocatorGpu, class AllocatorCpu, IuPixelType
 void copy(const iu::ImageGpu<PixelType, AllocatorGpu, _pixel_type> *src,
           iu::ImageCpu<PixelType, AllocatorCpu, _pixel_type> *dst)
 {
-  cudaError_t status;
-  status = cudaMemcpy2D(dst->data(), dst->pitch(),
+  IU_SIZE_CHECK(src, dst);
+  IU_CUDA_SAFE_CALL(cudaMemcpy2D(dst->data(), dst->pitch(),
                         src->data(), src->pitch(),
                         src->width() * sizeof(PixelType), src->height(),
-                        cudaMemcpyDeviceToHost);
-  if (status != cudaSuccess) throw IuException("cudaMemcpy2D returned error code", __FILE__, __FUNCTION__, __LINE__);
+                        cudaMemcpyDeviceToHost));
 }
 
 /* ****************************************************************************
@@ -137,6 +136,7 @@ template<typename PixelType, class Allocator, IuPixelType _pixel_type>
 void copy(const iu::VolumeCpu<PixelType, Allocator, _pixel_type> *src,
           iu::VolumeCpu<PixelType, Allocator, _pixel_type> *dst)
 {
+  IU_SIZE_CHECK(src, dst);
   Allocator::copy(src->data(), src->pitch(), dst->data(), dst->pitch(), dst->size());
 }
 
@@ -145,6 +145,7 @@ template<typename PixelType, class Allocator, IuPixelType _pixel_type>
 void copy(const iu::VolumeGpu<PixelType, Allocator, _pixel_type> *src,
           iu::VolumeGpu<PixelType, Allocator, _pixel_type> *dst)
 {
+  IU_SIZE_CHECK(src, dst);
   Allocator::copy(src->data(), src->pitch(), dst->data(), dst->pitch(), dst->size());
 }
 
@@ -153,12 +154,11 @@ template<typename PixelType, class AllocatorCpu, class AllocatorGpu, IuPixelType
 void copy(const iu::VolumeCpu<PixelType, AllocatorCpu, _pixel_type> *src,
           iu::VolumeGpu<PixelType, AllocatorGpu, _pixel_type> *dst)
 {
-  cudaError_t status;
-  status = cudaMemcpy2D(dst->data(), dst->pitch(),
+  IU_SIZE_CHECK(src, dst);
+  IU_CUDA_SAFE_CALL(cudaMemcpy2D(dst->data(), dst->pitch(),
                         src->data(), src->pitch(),
                         src->width() * sizeof(PixelType), src->height()*src->depth(),
-                        cudaMemcpyHostToDevice);
-  if (status != cudaSuccess) throw IuException("cudaMemcpy2D returned error code", __FILE__, __FUNCTION__, __LINE__);
+                        cudaMemcpyHostToDevice));
 }
 
 // 3D; copy device -> host
@@ -166,17 +166,17 @@ template<typename PixelType, class AllocatorGpu, class AllocatorCpu, IuPixelType
 void copy(const iu::VolumeGpu<PixelType, AllocatorGpu, _pixel_type> *src,
           iu::VolumeCpu<PixelType, AllocatorCpu, _pixel_type> *dst)
 {
-  cudaError_t status;
-  status = cudaMemcpy2D(dst->data(), dst->pitch(),
+  IU_SIZE_CHECK(src, dst);
+  IU_CUDA_SAFE_CALL(cudaMemcpy2D(dst->data(), dst->pitch(),
                         src->data(), src->pitch(),
                         src->width() * sizeof(PixelType), src->height()*src->depth(),
-                        cudaMemcpyDeviceToHost);
-  if (status != cudaSuccess) throw IuException("cudaMemcpy2D returned error code", __FILE__, __FUNCTION__, __LINE__);
+                        cudaMemcpyDeviceToHost));
 }
 
 template<typename PixelType, class AllocatorCpu, IuPixelType _pixel_type>
 void copy(const iu::ImageCpu<PixelType, AllocatorCpu, _pixel_type> *src, iu::LinearHostMemory<PixelType> *dst)
 {
+  IU_SIZE_CHECK(src, dst);
 	PixelType *dstData = dst->data();
 	for(int y = 0; y < src->height(); ++y)
 	{

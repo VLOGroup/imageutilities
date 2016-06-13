@@ -212,6 +212,12 @@ struct IuSize
     return IuSize(this->width, this->height, this->depth) * invFactor;
   }
 
+  friend std::ostream& operator<<(std::ostream & out, IuSize const& size)
+  {
+    out << "size=[" << size.width << ", " << size.height << ", " << size.depth << "]";
+    return out;
+  }
+
 };
 
 inline bool operator==(const IuSize& lhs, const IuSize& rhs)

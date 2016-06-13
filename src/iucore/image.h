@@ -28,6 +28,8 @@
 #include "globaldefs.h"
 #include "coredefs.h"
 
+#include <ostream>
+
 namespace iu{
 
 //! \todo We maybe do not want to have the Image class in the public dll interface??
@@ -101,7 +103,7 @@ public:
   /** Returns the distance in bytes between starts of consecutive rows. */
   virtual size_t pitch() const {return 0;};
 
-  /** Returns the distnace in pixels between starts of consecutive rows. */
+  /** Returns the distance in pixels between starts of consecutive rows. */
   virtual size_t stride() const {return 0;};
 
   /** Returns the bit depth of the data pointer. */
@@ -109,6 +111,15 @@ public:
 
   /** Returns flag if the image data resides on the device/GPU (TRUE) or host/GPU (FALSE) */
   virtual bool onDevice() const {return false;};
+
+  /** Operator<< overloading. Output of Image class. */
+  friend std::ostream& operator<<(std::ostream & out,
+                                  Image const& image)
+  {
+    out << "Image: " << image.size() << " stride="
+        << image.stride() << " onDevice=" << image.onDevice();
+    return out;
+  }
 
 protected:
   IuPixelType pixel_type_;
