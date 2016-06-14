@@ -443,7 +443,7 @@ if(IU_USE_IO)
     VERSION ${IMAGEUTILITIES_VERSION}
     SOVERSION ${IMAGEUTILITIES_SOVERSION}
     )
-  target_link_libraries( ${IU_IO_LIB}
+  target_link_libraries( ${IU_IO_LIB} iucore
     ${CUDA_LIBRARIES} ${OpenCV_LIBS} ${ADDITIONAL_IUIO_DEPENDENCIES}
     )
   set(IU_LIBS ${IU_LIBS} ${IU_IO_LIB})
@@ -615,6 +615,10 @@ SET(CPACK_PACKAGE_VERSION_MAJOR "${IMAGEUTILITIES_VERSION_MAJOR}")
 SET(CPACK_PACKAGE_VERSION_MINOR "${IMAGEUTILITIES_VERSION_MINOR}")
 SET(CPACK_PACKAGE_VERSION_PATCH "${IMAGEUTILITIES_VERSION_PATH}")
 SET(CPACK_PACKAGE_INSTALL_DIRECTORY "ImageUtilities ${IMAGEUTILITIES_VERSION_MAJOR}.${IMAGEUTILITIES_VERSION_MINOR}")
+
+##-----------------------------------------------------------------------------
+## TESTS
+add_subdirectory(tests)
 
 # IF(WIN32 AND NOT UNIX)
 #   # There is a bug in NSI that does not handle full unix paths properly. Make
