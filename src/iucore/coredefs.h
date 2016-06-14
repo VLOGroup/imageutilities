@@ -181,7 +181,7 @@ struct IuSize
   {
   }
 
-  IuSize(unsigned int _width, unsigned int _height, unsigned int _depth = 1) :
+  IuSize(unsigned int _width, unsigned int _height, unsigned int _depth = 0) :
       width(_width), height(_height), depth(_depth)
   {
   }
