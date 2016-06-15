@@ -114,9 +114,9 @@ PyArrayObject* getPyArrayFromPyObject(const bp::object& obj, char kind = 'x', ch
 }
 
 
-template<typename PixelType, class Allocator, IuPixelType _pixel_type>
+template<typename PixelType, class Allocator >
 void imageCpu_from_PyArray(const bp::object& py_arr,
-                           iu::ImageCpu<PixelType, Allocator, _pixel_type> &img)
+                           iu::ImageCpu<PixelType, Allocator > &img)
 {
     PyArrayObject* py_img = getPyArrayFromPyObject(py_arr, 'f', 'f', false);
     int ndim = PyArray_NDIM(py_img);
@@ -126,7 +126,7 @@ void imageCpu_from_PyArray(const bp::object& py_arr,
 
     float* data = static_cast<float*>(PyArray_DATA(py_img));          // get data pointer
 
-    img = iu::ImageCpu<PixelType, Allocator, _pixel_type>(data, dims[1], dims[0], dims[1]*sizeof(float), true);  // wrap it in imagecpu
+    img = iu::ImageCpu<PixelType, Allocator >(data, dims[1], dims[0], dims[1]*sizeof(float), true);  // wrap it in imagecpu
 }
 
 
