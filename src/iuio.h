@@ -106,8 +106,8 @@ IUIO_DLLAPI void imshow(iu::ImageGpu_32f_C4* image, const std::string& winname, 
   * The ImageCpu is NOT a deep copy, it just uses the data pointer from the Mat, i.e.
   * it wraps the memory from the Mat in an ImageCpu.
   */
-template<typename PixelType, class Allocator, IuPixelType _pixel_type>
-IUIO_DLLAPI void imageCpu_from_Mat(cv::Mat& mat, iu::ImageCpu<PixelType, Allocator, _pixel_type> &img)
+template<typename PixelType, class Allocator >
+IUIO_DLLAPI void imageCpu_from_Mat(cv::Mat& mat, iu::ImageCpu<PixelType, Allocator> &img)
 {
     IuSize mat_sz(mat.cols, mat.rows);
 
@@ -117,49 +117,49 @@ IUIO_DLLAPI void imageCpu_from_Mat(cv::Mat& mat, iu::ImageCpu<PixelType, Allocat
 //    if (mat_sz != img.size())
 //        throw IuException("Conversion from cv::Mat to iu::ImageCpu: size mismatch", __FILE__, __FUNCTION__, __LINE__);
 
-    int type = mat.type();
-    switch (type)
-    {
-    case CV_8UC1:
-        if (img.pixelType() != IU_8U_C1)
-            throw IuException("Conversion from cv::Mat to iu::ImageCpu: type mismatch", __FILE__, __FUNCTION__, __LINE__);
-        break;
-    case CV_8UC2:
-        if (img.pixelType() != IU_8U_C2)
-            throw IuException("Conversion from cv::Mat to iu::ImageCpu: type mismatch", __FILE__, __FUNCTION__, __LINE__);
-        break;
-    case CV_8UC3:
-        if (img.pixelType() != IU_8U_C3)
-            throw IuException("Conversion from cv::Mat to iu::ImageCpu: type mismatch", __FILE__, __FUNCTION__, __LINE__);
-        break;
-    case CV_8UC4:
-        if (img.pixelType() != IU_8U_C4)
-            throw IuException("Conversion from cv::Mat to iu::ImageCpu: type mismatch", __FILE__, __FUNCTION__, __LINE__);
-        break;
-    case CV_32FC1:
-        if (img.pixelType() != IU_32F_C1)
-            throw IuException("Conversion from cv::Mat to iu::ImageCpu: type mismatch", __FILE__, __FUNCTION__, __LINE__);
-        break;
-    case CV_32FC2:
-        if (img.pixelType() != IU_32F_C2)
-            throw IuException("Conversion from cv::Mat to iu::ImageCpu: type mismatch", __FILE__, __FUNCTION__, __LINE__);
-        break;
-    case CV_32FC3:
-        if (img.pixelType() != IU_32F_C3)
-            throw IuException("Conversion from cv::Mat to iu::ImageCpu: type mismatch", __FILE__, __FUNCTION__, __LINE__);
-        break;
-    case CV_32FC4:
-        if (img.pixelType() != IU_32F_C4)
-            throw IuException("Conversion from cv::Mat to iu::ImageCpu: type mismatch", __FILE__, __FUNCTION__, __LINE__);
-        break;
-    default:
-        printf("Conversion from cv::Mat to iu::ImageCpu: Error, type not implemented");
-        return;
-    }
+//    int type = mat.type();
+//    switch (type)
+//    {
+//    case CV_8UC1:
+//        if (img.pixelType() != IU_8U_C1)
+//            throw IuException("Conversion from cv::Mat to iu::ImageCpu: type mismatch", __FILE__, __FUNCTION__, __LINE__);
+//        break;
+//    case CV_8UC2:
+//        if (img.pixelType() != IU_8U_C2)
+//            throw IuException("Conversion from cv::Mat to iu::ImageCpu: type mismatch", __FILE__, __FUNCTION__, __LINE__);
+//        break;
+//    case CV_8UC3:
+//        if (img.pixelType() != IU_8U_C3)
+//            throw IuException("Conversion from cv::Mat to iu::ImageCpu: type mismatch", __FILE__, __FUNCTION__, __LINE__);
+//        break;
+//    case CV_8UC4:
+//        if (img.pixelType() != IU_8U_C4)
+//            throw IuException("Conversion from cv::Mat to iu::ImageCpu: type mismatch", __FILE__, __FUNCTION__, __LINE__);
+//        break;
+//    case CV_32FC1:
+//        if (img.pixelType() != IU_32F_C1)
+//            throw IuException("Conversion from cv::Mat to iu::ImageCpu: type mismatch", __FILE__, __FUNCTION__, __LINE__);
+//        break;
+//    case CV_32FC2:
+//        if (img.pixelType() != IU_32F_C2)
+//            throw IuException("Conversion from cv::Mat to iu::ImageCpu: type mismatch", __FILE__, __FUNCTION__, __LINE__);
+//        break;
+//    case CV_32FC3:
+//        if (img.pixelType() != IU_32F_C3)
+//            throw IuException("Conversion from cv::Mat to iu::ImageCpu: type mismatch", __FILE__, __FUNCTION__, __LINE__);
+//        break;
+//    case CV_32FC4:
+//        if (img.pixelType() != IU_32F_C4)
+//            throw IuException("Conversion from cv::Mat to iu::ImageCpu: type mismatch", __FILE__, __FUNCTION__, __LINE__);
+//        break;
+//    default:
+//        printf("Conversion from cv::Mat to iu::ImageCpu: Error, type not implemented");
+//        return;
+//    }
 
     // The assignment operator will involve a temporary copy and destruction of img, but we don't care since we made
     // sure that the img is empty -> img destructor will not free any data
-    img = iu::ImageCpu<PixelType, Allocator, _pixel_type>((PixelType*)mat.data, mat_sz.width, mat_sz.height, mat.step, true);
+    img = iu::ImageCpu<PixelType, Allocator>((PixelType*)mat.data, mat_sz.width, mat_sz.height, mat.step, true);
 }
 
 /** @} */ // end of IMAGEIO

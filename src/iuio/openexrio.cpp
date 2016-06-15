@@ -23,13 +23,13 @@ OpenEXRInputFile::OpenEXRInputFile(const std::string &filename)
         switch(it.channel().type)
         {
         case Imf::UINT:
-            channels_.push_back(Channel(it.name(), IU_32U_C1));
+            channels_.push_back(Channel(it.name()));
             break;
         case Imf::HALF:
             printf("OpenEXRFile: encountered channel of dataype HALF in file %s, corresponding datatype (16 bit float) not implemented in imageutilities!\n", it.name());
             break;
         case Imf::FLOAT:
-            channels_.push_back(Channel(it.name(), IU_32F_C1));
+            channels_.push_back(Channel(it.name()));
             break;
         }
     }

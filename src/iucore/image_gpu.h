@@ -30,12 +30,12 @@
 
 namespace iu {
 
-template<typename PixelType, class Allocator, IuPixelType _pixel_type>
+template<typename PixelType, class Allocator>
 class ImageGpu : public Image
 {
 public:
   ImageGpu() :
-    Image(_pixel_type),
+    Image(),
     data_(0), pitch_(0), ext_data_pointer_(false), texture_(0)
   {
   }
@@ -55,20 +55,20 @@ public:
   }
 
   ImageGpu(unsigned int _width, unsigned int _height) :
-      Image(_pixel_type, _width, _height), data_(0), pitch_(0),
+      Image(_width, _height), data_(0), pitch_(0),
       ext_data_pointer_(false), texture_(0)
   {
     data_ = Allocator::alloc(this->size(), &pitch_);
   }
 
   ImageGpu(const IuSize& size) :
-      Image(_pixel_type, size), data_(0), pitch_(0),
+      Image(size), data_(0), pitch_(0),
       ext_data_pointer_(false), texture_(0)
   {
     data_ = Allocator::alloc(size, &pitch_);
   }
 
-  ImageGpu(const ImageGpu<PixelType, Allocator, _pixel_type>& from) :
+  ImageGpu(const ImageGpu<PixelType, Allocator>& from) :
       Image(from), data_(0), pitch_(0),
       ext_data_pointer_(false), texture_(0)
   {
@@ -87,7 +87,7 @@ public:
 
   ImageGpu(PixelType* _data, unsigned int _width, unsigned int _height,
            size_t _pitch, bool ext_data_pointer = false) :
-      Image(_pixel_type, _width, _height), data_(0), pitch_(0), ext_data_pointer_(ext_data_pointer), texture_(0)
+      Image(_width, _height), data_(0), pitch_(0), ext_data_pointer_(ext_data_pointer), texture_(0)
   {
     if(ext_data_pointer_)
     {
@@ -106,11 +106,10 @@ public:
     }
   }
 
-	ImageGpu& operator= (const ImageGpu<PixelType, Allocator, _pixel_type> &from)
+    ImageGpu& operator= (const ImageGpu<PixelType, Allocator> &from)
 	{
 		this->size_ = from.size();
 //		this->roi_ = from.roi();
-		this->pixel_type_ = from.pixelType();
 		this->data_ = Allocator::alloc(from.size(), &(this->pitch_));
 		IU_CUDA_SAFE_CALL(cudaMemcpy2D(data_, pitch_, from.data(), from.pitch(), from.width(), from.height(), cudaMemcpyDeviceToDevice));
 		// pitch_ = from.pitch(); // handled by allocator
@@ -254,7 +253,7 @@ public:
 
 
 
-      __host__ KernelData(const ImageGpu<PixelType, Allocator, _pixel_type> &im)
+      __host__ KernelData(const ImageGpu<PixelType, Allocator> &im)
           : data_(const_cast<PixelType*>(im.data())), width_(im.width()), height_(im.height()),
             stride_(im.stride())
       { }

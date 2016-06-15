@@ -29,12 +29,12 @@
 
 namespace iu {
 
-template<typename PixelType, class Allocator, IuPixelType _pixel_type>
+template<typename PixelType, class Allocator>
 class VolumeCpu : public Volume
 {
 public:
   VolumeCpu() :
-    Volume(_pixel_type),
+    Volume(),
     data_(0), pitch_(0), ext_data_pointer_(false)
   {
   }
@@ -51,7 +51,7 @@ public:
   }
 
   VolumeCpu(unsigned int _width, unsigned int _height, unsigned int _depth) :
-    Volume(_pixel_type, _width, _height, _depth),
+    Volume(_width, _height, _depth),
     data_(0), pitch_(0),
     ext_data_pointer_(false)
   {
@@ -59,13 +59,13 @@ public:
   }
 
   VolumeCpu(const IuSize& size) :
-    Volume(_pixel_type, size), data_(0), pitch_(0),
+    Volume(size), data_(0), pitch_(0),
     ext_data_pointer_(false)
   {
     data_ = Allocator::alloc(size.width, size.height, size.depth, &pitch_);
   }
 
-  VolumeCpu(const VolumeCpu<PixelType, Allocator, _pixel_type>& from) :
+  VolumeCpu(const VolumeCpu<PixelType, Allocator>& from) :
     Volume(from),
     data_(0), pitch_(0), ext_data_pointer_(false)
   {
@@ -76,7 +76,7 @@ public:
 
   VolumeCpu(PixelType* _data, unsigned int _width, unsigned int _height, unsigned int _depth,
             size_t _pitch, bool ext_data_pointer = false) :
-    Volume(_pixel_type, _width, _height, _depth),
+    Volume(_width, _height, _depth),
     data_(0), pitch_(0), ext_data_pointer_(ext_data_pointer)
   {
     if(ext_data_pointer_)
@@ -163,9 +163,9 @@ public:
     * @return volume slice at depth z as ImageCpu. Note, the ImageCpu merely holds a pointer to the volume data at depth z,
     * i.e. it does not manage its own data -> changes to the Image are transparent to the volume and vice versa.
     */
-  ImageCpu<PixelType, iuprivate::ImageAllocatorCpu<PixelType>, _pixel_type> getSlice(int oz)
+  ImageCpu<PixelType, iuprivate::ImageAllocatorCpu<PixelType> > getSlice(int oz)
   {
-    return ImageCpu<PixelType, iuprivate::ImageAllocatorCpu<PixelType>, _pixel_type>(&data_[oz*slice_stride()], width(), height(), pitch_, true);
+    return ImageCpu<PixelType, iuprivate::ImageAllocatorCpu<PixelType> >(&data_[oz*slice_stride()], width(), height(), pitch_, true);
   }
   
   /** Get Pixel value at position x,y,z. */

@@ -31,12 +31,10 @@ public:
 
     struct Channel
     {
-        Channel(const std::string& name, IuPixelType type) {
+        Channel(const std::string& name) {
             name_ = name;
-            type_ = type;
         }
         std::string name_;
-        IuPixelType type_;
     };
 
     IuSize get_size() { return sz_; }
