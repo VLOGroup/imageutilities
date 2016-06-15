@@ -59,7 +59,7 @@ public:
   }
 
   ImageCpu(const IuSize& size) :
-    Image(_pixel_type, size.width, size.height), data_(0), pitch_(0),
+    Image(_pixel_type, size), data_(0), pitch_(0),
     ext_data_pointer_(false)
   {
     data_ = Allocator::alloc(size.width, size.height, &pitch_);
@@ -103,14 +103,11 @@ public:
   ImageCpu& operator=(const ImageCpu<PixelType, Allocator, _pixel_type>& from)
   {
       // destructor of ImageCpu does not free data in case ext_data_pointer_ is true.
-      // We support assignment of ImageCpu that wrap external memory by simply copying the data pointer. Reasoning: can have
+      // We support assignment operator of ImageCpu that wrap external memory by simply copying the data pointer. Reasoning: can have
       // as many ImageCpu's referencing the external memory as we like, since we are not responsible for that data.
-      // Support of assignment for non external data would require deep copy or reference counting.
+      // Support of assignment operator for non external data would require deep copy or reference counting.
       if (!(from.ext_data_pointer_))
-      {
-          printf("Error: ImageCpu supports assignment operator only for externally handled data\n");
           throw IuException("ImageCpu supports assignment operator only for externally handled data");
-      }
 
       Image::operator=(from);
       data_ = from.data_;      // copy external (!) data pointer

@@ -9,11 +9,11 @@ set(HEADRES
 	#test.cuh
 )
 
-include_directories(
-	${CMAKE_CURRENT_SOURCE_DIR}
-)
+#include_directories(
+#	${CMAKE_CURRENT_SOURCE_DIR}
+#)
 
 cuda_add_executable(ioTest main.cpp)
-iu_add_test(ioTest iucore iuio)
 target_link_libraries(ioTest iucore iuio) 
-
+iu_add_test(ioTest)
+#add_dependencies(ioTest iucore)
