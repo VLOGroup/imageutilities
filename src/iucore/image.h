@@ -36,8 +36,8 @@ namespace iu{
 class Image
 {
 public:
-  Image(IuPixelType pixel_type) :
-    pixel_type_(pixel_type), size_(0,0)
+  Image() :
+   size_(0,0)
   {
   }
 
@@ -46,33 +46,25 @@ public:
   }
 
   Image(const Image &from) :
-    pixel_type_(from.pixelType()), size_(from.size_)
+    size_(from.size_)
   {
   }
 
-  Image(IuPixelType pixel_type, unsigned int width, unsigned int height) :
-      pixel_type_(pixel_type), size_(width, height)
+  Image( unsigned int width, unsigned int height) :
+       size_(width, height)
   {
   }
 
-  Image(IuPixelType pixel_type, const IuSize &size) :
-      pixel_type_(pixel_type), size_(size)
+  Image( const IuSize &size) :
+      size_(size)
   {
   }
 
   Image& operator= (const Image &from)
   {
     // TODO == operator
-    this->pixel_type_ = from.pixel_type_;
     this->size_ = from.size_;
     return *this;
-  }
-
-
-  /** Returns the element types. */
-  IuPixelType pixelType() const
-  {
-    return pixel_type_;
   }
 
   IuSize size() const
@@ -122,7 +114,6 @@ public:
   }
 
 protected:
-  IuPixelType pixel_type_;
   IuSize size_;
 };
 

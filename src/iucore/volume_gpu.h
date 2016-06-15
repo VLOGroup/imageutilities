@@ -29,12 +29,12 @@
 #include <thrust/device_ptr.h>
 namespace iu {
 
-template<typename PixelType, class Allocator, IuPixelType _pixel_type>
+template<typename PixelType, class Allocator>
 class VolumeGpu : public Volume
 {
 public:
   VolumeGpu() :
-    Volume(_pixel_type),
+    Volume(),
     data_(0), pitch_(0), ext_data_pointer_(false)
   {
   }
@@ -51,20 +51,20 @@ public:
   }
 
   VolumeGpu(unsigned int _width, unsigned int _height, unsigned int _depth) :
-    Volume(_pixel_type, _width, _height, _depth), data_(0), pitch_(0),
+    Volume(_width, _height, _depth), data_(0), pitch_(0),
     ext_data_pointer_(false)
   {
     data_ = Allocator::alloc(this->size(), &pitch_);
   }
 
   VolumeGpu(const IuSize& size) :
-    Volume(_pixel_type, size), data_(0), pitch_(0),
+    Volume(size), data_(0), pitch_(0),
     ext_data_pointer_(false)
   {
     data_ = Allocator::alloc(this->size(), &pitch_);
   }
 
-  VolumeGpu(const VolumeGpu<PixelType, Allocator, _pixel_type>& from) :
+  VolumeGpu(const VolumeGpu<PixelType, Allocator>& from) :
     Volume(from), data_(0), pitch_(0),
     ext_data_pointer_(false)
   {
@@ -75,7 +75,7 @@ public:
 
   VolumeGpu(PixelType* _data, unsigned int _width, unsigned int _height, unsigned int _depth,
             size_t _pitch, bool ext_data_pointer = false) :
-    Volume(_pixel_type, _width, _height, _depth), data_(0), pitch_(0),
+    Volume(_width, _height, _depth), data_(0), pitch_(0),
     ext_data_pointer_(ext_data_pointer)
   {
     if(ext_data_pointer_)
@@ -162,9 +162,9 @@ public:
     * @return volume slice at depth z as ImageGpu. Note, the ImageGpu merely holds a pointer to the volume data at depth z,
     * i.e. it does not manage its own data -> changes to the Image are transparent to the volume and vice versa.
     */
-  ImageGpu<PixelType, iuprivate::ImageAllocatorGpu<PixelType>, _pixel_type> getSlice(int oz)
+  ImageGpu<PixelType, iuprivate::ImageAllocatorGpu<PixelType> > getSlice(int oz)
   {
-    return ImageGpu<PixelType, iuprivate::ImageAllocatorGpu<PixelType>, _pixel_type>(
+    return ImageGpu<PixelType, iuprivate::ImageAllocatorGpu<PixelType> >(
           &data_[oz*slice_stride()], width(), height(), pitch_, true);
   }
 
@@ -194,7 +194,7 @@ public:
 
 
 
-      __host__ KernelData(const VolumeGpu<PixelType, Allocator, _pixel_type> &vol)
+      __host__ KernelData(const VolumeGpu<PixelType, Allocator> &vol)
           : data_(const_cast<PixelType*>(vol.data())), width_(vol.width()), height_(vol.height()),
             depth_(vol.depth()), stride_(vol.stride())
       { }

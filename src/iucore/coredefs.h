@@ -109,55 +109,6 @@ public:
 
 //} IuStatus;
 
-typedef enum
-{
-  IU_UNKNOWN_PIXEL_TYPE = -1,
-  IU_8U_C1,
-  IU_8U_C2,
-  IU_8U_C3,
-  IU_8U_C4,
-  IU_16U_C1,
-  IU_16U_C2,
-  IU_16U_C3,
-  IU_16U_C4,
-  IU_32U_C1,
-  IU_32U_C2,
-  IU_32U_C4,
-  IU_32S_C1,
-  IU_32S_C2,
-  IU_32S_C3,
-  IU_32S_C4,
-  IU_32F_C1,
-  IU_32F_C2,
-  IU_32F_C3,
-  IU_32F_C4
-} IuPixelType;
-
-//typedef enum
-//{
-//  IU_EQUAL,
-//  IU_NOT_EQUAL,
-//  IU_GREATER,
-//  IU_GREATER_EQUAL,
-//  IU_LESS,
-//  IU_LESS_EQUAL
-//} IuComparisonOperator;
-
-//typedef enum
-//{
-//  IU_NO  = 0, // no function
-//  IU_ABS = 1, // abs(x)
-//  IU_SQR = 2, // x*x
-//  IU_CNT = 3  // 1 if neq 0
-//} IuSparseSum;
-
-//typedef enum
-//{
-//  COO = 0, // uncompressed sparse format
-//  CSR = 1, // compressed rows
-//  CSC = 2  // compressed columns
-//} IuSparseFormat;
-
 /** Interpolation types. */
 typedef enum
 {

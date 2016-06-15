@@ -36,8 +36,8 @@ namespace iu{
 class Volume
 {
 public:
-  Volume(IuPixelType pixel_type) :
-    pixel_type_(pixel_type), size_()
+  Volume() :
+    size_()
   {
   }
 
@@ -46,31 +46,25 @@ public:
   }
 
   Volume(const Volume &from) :
-    pixel_type_(from.pixelType()), size_(from.size_)
+    size_(from.size_)
   {
   }
 
-  Volume(IuPixelType pixel_type, unsigned int width, unsigned int height, unsigned int depth) :
-    pixel_type_(pixel_type), size_(width, height, depth)
+  Volume(unsigned int width, unsigned int height, unsigned int depth) :
+    size_(width, height, depth)
   {
   }
 
-  Volume(IuPixelType pixel_type, const IuSize &size) :
-    pixel_type_(pixel_type), size_(size)
+  Volume(const IuSize &size) :
+    size_(size)
   {
   }
 
   Volume& operator= (const Volume &from)
   {
     // TODO == operator
-    this->pixel_type_ = from.pixel_type_;
     this->size_ = from.size_;
     return *this;
-  }
-
-  IuPixelType pixelType() const
-  {
-    return pixel_type_;
   }
 
   IuSize size() const
@@ -130,7 +124,6 @@ public:
   }
 
 private:
-  IuPixelType pixel_type_;
   IuSize size_;
 };
 
