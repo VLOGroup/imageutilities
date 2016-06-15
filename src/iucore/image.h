@@ -29,6 +29,7 @@
 #include "coredefs.h"
 
 #include <ostream>
+#include <typeinfo>
 
 namespace iu{
 
@@ -81,6 +82,11 @@ public:
   unsigned int height() const
   {
     return size_.height;
+  }
+
+  bool sameType(const Image &from)
+  {
+      return typeid(from)==typeid(*this);
   }
 
   /** Returns the number of pixels in the image. */
