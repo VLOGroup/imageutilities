@@ -78,48 +78,6 @@ endif(ANDROID)
 ## Compiler Flags (to be added on demand)
 
 
-##-----------------------------------------------------------------------------
-# CUDA
-if(ANDROID)
-    find_package(CUDAAndroid 5.0 REQUIRED)
-else(ANDROID)
-    find_package(CUDA 5.0 REQUIRED)    # texture objects are introduced in 5.0
-endif(ANDROID)
-
-cuda_include_directories(${CUDA_INCLUDE_DIRS})
-include_directories(${CUDA_INCLUDE_DIRS})
-set(IU_IUCORE_LIB_DEPENDENCIES ${IU_IUCORE_LIB_DEPENDENCIES} ${CUDA_LIBRARIES})
-
-# set compute capability from environment variable (directly useable as nvcc flag)
-if(NOT ANDROID)
-if("$ENV{COMPUTE_CAPABILITY}" MATCHES "1.1")
-  message("A minimum of compute capability 3.0 and CUDA 5.0 is needed!")
-elseif("$ENV{COMPUTE_CAPABILITY}" MATCHES "1.2")
-  message("A minimum of compute capability 3.0 and CUDA 5.0 is needed!")
-elseif("$ENV{COMPUTE_CAPABILITY}" MATCHES "1.3")
-  message("A minimum of compute capability 3.0 and CUDA 5.0 is needed!")
-elseif("$ENV{COMPUTE_CAPABILITY}" MATCHES "2.0")
-  message("A minimum of compute capability 3.0 and CUDA 5.0 is needed!")
-elseif("$ENV{COMPUTE_CAPABILITY}" MATCHES "2.1")
-  message("A minimum of compute capability 3.0 and CUDA 5.0 is needed!")
-elseif("$ENV{COMPUTE_CAPABILITY}" MATCHES "3.0")
-  set(CUDA_NVCC_FLAGS -arch=sm_30)
-elseif("$ENV{COMPUTE_CAPABILITY}" MATCHES "3.2")
-  set(CUDA_NVCC_FLAGS -arch=sm_32)
-elseif("$ENV{COMPUTE_CAPABILITY}" MATCHES "3.5")
-  set(CUDA_NVCC_FLAGS -arch=sm_35)
-elseif("$ENV{COMPUTE_CAPABILITY}" MATCHES "3.7")
-  set(CUDA_NVCC_FLAGS -arch=sm_37)
-elseif("$ENV{COMPUTE_CAPABILITY}" MATCHES "5.0")
-  set(CUDA_NVCC_FLAGS -arch=sm_50)
-elseif("$ENV{COMPUTE_CAPABILITY}" MATCHES "5.2")
-  set(CUDA_NVCC_FLAGS -arch=sm_52)
-else()
-  set(CUDA_NVCC_FLAGS -arch=sm_30)
-endif()
-else(NOT ANDROID)
-  set(CUDA_NVCC_FLAGS -arch=sm_30 -target-cpu-arch=ARM -target-os-variant=Android)
-endif(NOT ANDROID)
 
 
 
@@ -443,7 +401,7 @@ if(IU_USE_IO)
     VERSION ${IMAGEUTILITIES_VERSION}
     SOVERSION ${IMAGEUTILITIES_SOVERSION}
     )
-  target_link_libraries( ${IU_IO_LIB} iucore
+  target_link_libraries( ${IU_IO_LIB} #iucore
     ${CUDA_LIBRARIES} ${OpenCV_LIBS} ${ADDITIONAL_IUIO_DEPENDENCIES}
     )
   set(IU_LIBS ${IU_LIBS} ${IU_IO_LIB})
@@ -483,21 +441,6 @@ if(IU_USE_GUI)
     set(IU_LIBS_STATIC ${IU_LIBS_STATIC} ${IU_GUI_LIB}_static)
   endif(IU_BUILD_STATIC)
 endif(IU_USE_GUI)
-
-###-----------------------------------------------------------------------------
-### build matlab-based part of library
-#set(IU_MATLAB_LIB iumatlab)
-#if(IU_USE_MATLAB)
-#  cuda_add_library( ${IU_MATLAB_LIB} SHARED ${IU_MATLAB_HEADERS} ${IU_MATLAB_SOURCES})
-#  set_target_properties(${IU_MATLAB_LIB} PROPERTIES
-#    DEFINE_SYMBOL IUMATLAB_DLL_EXPORTS
-#    VERSION ${IMAGEUTILITIES_VERSION}
-#    SOVERSION ${IMAGEUTILITIES_SOVERSION}
-#    )
-#  target_link_libraries( ${IU_MATLAB_LIB} ${MATLAB_LIBRARIES} ${CUDA_SPARSE_LIBRARY})
-#  set(IU_LIBS ${IU_LIBS} ${IU_MATLAB_LIB})
-
-#endif(IU_USE_MATLAB)
 
 ##-----------------------------------------------------------------------------
 ## Install target
@@ -583,15 +526,6 @@ install(FILES ${IU_PUBLIC_HEADERS}
   COMPONENT Headers
   )
 
-
-# install(FILES ${IU_IPP_INSTALL_HEADERS}
-#   DESTINATION include/iu/iuipp
-#   COMPONENT Headers
-#   )
-# install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videocapture.h
-#   DESTINATION include/iu/iuio
-#   COMPONENT Headers
-# )
 install(FILES ${IU_CMAKE_FILES}
   DESTINATION cmake
   )
@@ -601,23 +535,3 @@ if(ANDROID)
   message("Compiler Flags GCC:  " ${CMAKE_C_FLAGS})
 
 endif(ANDROID)
-##-----------------------------------------------------------------------------
-## CPACK configuration
-#INCLUDE(InstallRequiredSystemLibraries)
-
-#SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "ImageUtilities - Connecting the world of CPU and GPU.")
-#SET(CPACK_PACKAGE_VENDOR "Gottfried Graber <graber@icg.tugraz.at>")
-#SET(CPACK_PACKAGE_CONTACT "Gottfried Graber <graber@icg.tugraz.at>")
-#SET(CPACK_PACKAGE_DESCRIPTION_FILE "${PROJECT_SOURCE_DIR}/../README.md")
-# SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/Copyright.txt")
-#SET(CPACK_PACKAGE_VERSION_MAJOR "${IMAGEUTILITIES_VERSION_MAJOR}")
-#SET(CPACK_PACKAGE_VERSION_MINOR "${IMAGEUTILITIES_VERSION_MINOR}")
-#SET(CPACK_PACKAGE_VERSION_PATCH "${IMAGEUTILITIES_VERSION_PATH}")
-#SET(CPACK_PACKAGE_INSTALL_DIRECTORY "ImageUtilities ${IMAGEUTILITIES_VERSION_MAJOR}.${IMAGEUTILITIES_VERSION_MINOR}")
-#include(CPack)
-
-##-----------------------------------------------------------------------------
-## TESTS
-add_subdirectory(tests)
-
-

@@ -1,7 +1,7 @@
 #include <iostream>
 #include "../config.h"
-#include "iucore.h"
-#include "iuio.h"
+#include "../../src/iucore.h"
+#include "../../src/iuio.h"
 
 int main()
 {
@@ -16,4 +16,9 @@ int main()
   iu::imsave(I1,RESULTS_PATH("army_1.png"));
   iu::imsave(I2,RESULTS_PATH("army_2.png"));
   std::cout << "DONE :)" << std::endl;
+
+  delete I1;
+  delete I2;
+
+  return EXIT_SUCCESS;
 }

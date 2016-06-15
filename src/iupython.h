@@ -118,15 +118,28 @@ template<typename PixelType, class Allocator, IuPixelType _pixel_type>
 void imageCpu_from_PyArray(const bp::object& py_arr,
                            iu::ImageCpu<PixelType, Allocator, _pixel_type> &img)
 {
-    PyArrayObject* py_img = getPyArrayFromPyObject(py_arr, 'f', 'f', false);
+    if (img.data())
+        throw Exc("imageCpu_from_PyArray(): expected emtpy image (data pointer will be set to external memory)! ");
+    PyArrayObject* py_img = NULL;
+
+    py_img = getPyArrayFromPyObject(py_arr);  // don't care what datatype, just to get dimensions
     int ndim = PyArray_NDIM(py_img);
     if (ndim != 2)
         throw Exc("Image must be a 2d numpy array");
     npy_intp* dims = PyArray_DIMS(py_img);
 
-    float* data = static_cast<float*>(PyArray_DATA(py_img));          // get data pointer
 
-    img = iu::ImageCpu<PixelType, Allocator, _pixel_type>(data, dims[1], dims[0], dims[1]*sizeof(float), true);  // wrap it in imagecpu
+    if (dynamic_cast<iu::ImageCpu_32f_C1*>(&img))
+    {
+        printf("32f_c1\n");
+        py_img = getPyArrayFromPyObject(py_arr, 'f', 'f', false);
+        float* data = static_cast<float*>(PyArray_DATA(py_img));          // get data pointer
+        img = iu::ImageCpu<PixelType, Allocator, _pixel_type>(data, dims[1], dims[0], dims[1]*sizeof(float), true);  // wrap it in imagecpu
+    }
+    else
+    {
+        throw Exc("Unknown image type");
+    }
 }
 
 
