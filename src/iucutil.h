@@ -197,35 +197,39 @@ static inline void printGPUMemoryUsage()
 //#define __IU_CHECK_FOR_CUDA_ERRORS_ENABLED__ // enables checking for cuda errors
 
 
-///** CUDA ERROR HANDLING (CHECK FOR CUDA ERRORS)
-// */
-//#ifdef __IU_CHECK_FOR_CUDA_ERRORS_ENABLED__
-//#define IU_CHECK_AND_RETURN_CUDA_ERRORS() \
-//{ \
-//  cudaDeviceSynchronize(); \
-//  if (cudaError_t err = cudaGetLastError()) \
-//  { \
-//    fprintf(stderr,"\n\nCUDA Error: %s\n",cudaGetErrorString(err)); \
-//    fprintf(stderr,"  file:       %s\n",__FILE__); \
-//    fprintf(stderr,"  function:   %s\n",__FUNCTION__); \
-//    fprintf(stderr,"  line:       %d\n\n",__LINE__); \
-//    return IU_ERROR; \
-//  } \
-//  else \
-//    return IU_NO_ERROR; \
-//}
+/** CUDA ERROR HANDLING (CHECK FOR CUDA ERRORS)
+ */
+/*
+#ifdef __IU_CHECK_FOR_CUDA_ERRORS_ENABLED__
+#define IU_CHECK_AND_RETURN_CUDA_ERRORS() \
+{ \
+  cudaDeviceSynchronize(); \
+  if (cudaError_t err = cudaGetLastError()) \
+  { \
+    fprintf(stderr,"\n\nCUDA Error: %s\n",cudaGetErrorString(err)); \
+    fprintf(stderr,"  file:       %s\n",__FILE__); \
+    fprintf(stderr,"  function:   %s\n",__FUNCTION__); \
+    fprintf(stderr,"  line:       %d\n\n",__LINE__); \
+    return IU_ERROR; \
+  } \
+  else \
+    return IU_NO_ERROR; \
+}
+*/
 
-//#define IU_CHECK_CUDA_ERRORS() \
-//{ \
-//  cudaDeviceSynchronize(); \
-//  if (cudaError_t err = cudaGetLastError()) \
-//  { \
-//    fprintf(stderr,"\n\nCUDA Error: %s\n",cudaGetErrorString(err)); \
-//    fprintf(stderr,"  file:       %s\n",__FILE__); \
-//    fprintf(stderr,"  function:   %s\n",__FUNCTION__); \
-//    fprintf(stderr,"  line:       %d\n\n",__LINE__); \
-//  } \
-//}
+/*
+#define IU_CHECK_CUDA_ERRORS() \
+{ \
+  cudaDeviceSynchronize(); \
+  if (cudaError_t err = cudaGetLastError()) \
+  { \
+    fprintf(stderr,"\n\nCUDA Error: %s\n",cudaGetErrorString(err)); \
+    fprintf(stderr,"  file:       %s\n",__FILE__); \
+    fprintf(stderr,"  function:   %s\n",__FUNCTION__); \
+    fprintf(stderr,"  line:       %d\n\n",__LINE__); \
+  } \
+}
+*/
 
 //#else // __IU_CHECK_FOR_CUDA_ERRORS_ENABLED__
 //#define IU_CHECK_AND_RETURN_CUDA_ERRORS() {}
