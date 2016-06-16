@@ -428,7 +428,7 @@ if(IU_USE_IO)
     VERSION ${IMAGEUTILITIES_VERSION}
     SOVERSION ${IMAGEUTILITIES_SOVERSION}
     )
-  target_link_libraries( ${IU_IO_LIB} #iucore
+  target_link_libraries( ${IU_IO_LIB} iucore
     ${CUDA_LIBRARIES} ${OpenCV_LIBS} ${ADDITIONAL_IUIO_DEPENDENCIES}
     )
   set(IU_LIBS ${IU_LIBS} ${IU_IO_LIB})

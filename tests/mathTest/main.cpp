@@ -1,8 +1,8 @@
 #include <iostream>
 #include "../config.h"
-#include "iucore.h"
-#include "iuio.h"
-#include "iumath.h"
+#include "../../src/iucore.h"
+#include "../../src/iuio.h"
+#include "../../src/iumath.h"
 int main()
 {
     std::cout << "Read image to device directly" << std::endl;
