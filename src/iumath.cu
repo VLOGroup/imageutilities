@@ -40,6 +40,12 @@ void mulC(iu::ImageGpu_32f_C2& src, const float2& val, iu::ImageGpu_32f_C2& dst)
 void mulC(iu::ImageGpu_32f_C3& src, const float3& val, iu::ImageGpu_32f_C3& dst) {iuprivate::math::mulC(src,val,dst);}
 void mulC(iu::ImageGpu_32f_C4& src, const float4& val, iu::ImageGpu_32f_C4& dst) {iuprivate::math::mulC(src,val,dst);}
 
+void mulC(iu::ImageCpu_32f_C1& src, const float& val, iu::ImageCpu_32f_C1& dst) {iuprivate::math::mulC(src,val,dst);}
+void mulC(iu::ImageCpu_32f_C2& src, const float2& val, iu::ImageCpu_32f_C2& dst) {iuprivate::math::mulC(src,val,dst);}
+void mulC(iu::ImageCpu_32f_C3& src, const float3& val, iu::ImageCpu_32f_C3& dst) {iuprivate::math::mulC(src,val,dst);}
+void mulC(iu::ImageCpu_32f_C4& src, const float4& val, iu::ImageCpu_32f_C4& dst) {iuprivate::math::mulC(src,val,dst);}
+
+
 void mulC(iu::ImageGpu_32s_C1& src, const int& val, iu::ImageGpu_32s_C1& dst) {iuprivate::math::mulC(src,val,dst);}
 void mulC(iu::ImageGpu_32u_C1& src, const unsigned int& val, iu::ImageGpu_32u_C1& dst) {iuprivate::math::mulC(src,val,dst);}
 void mulC(iu::ImageGpu_16u_C1& src, const unsigned short& val, iu::ImageGpu_16u_C1& dst) {iuprivate::math::mulC(src,val,dst);}
@@ -107,6 +113,8 @@ void mul(iu::LinearDeviceMemory_8u_C4& src1, iu::LinearDeviceMemory_8u_C4& src2,
 
 // set value
 void fill(iu::ImageGpu_32f_C1& dst, float value) {iuprivate::math::fill(dst,value);}
+void fill(iu::ImageGpu_32f_C2& dst, float2 value) {iuprivate::math::fill(dst,value);}
+void fill(iu::ImageGpu_32f_C4& dst, float4 value) {iuprivate::math::fill(dst,value);}
 void fill(iu::LinearDeviceMemory_32f_C1& dst, float value) {iuprivate::math::fill(dst,value);}
 
 // min-max

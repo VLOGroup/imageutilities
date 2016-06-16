@@ -55,7 +55,7 @@ extern void cuConvert_hsv_to_rgb(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32
 extern void cuConvert_rgb_to_lab(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst, bool isNormalized);
 extern void cuConvert_lab_to_rgb(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst);
 
-extern double cuSummation(iu::ImageGpu_32f_C1* src);
+//extern double cuSummation(iu::ImageGpu_32f_C1* src);
 
 /* ***************************************************************************/
 
@@ -218,10 +218,10 @@ void convertLabRgb(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst)
 
 }
 
-double summation(iu::ImageGpu_32f_C1 *src)
-{
-    return cuSummation(src);
-}
+//double summation(iu::ImageGpu_32f_C1 *src)
+//{
+//    return cuSummation(src);
+//}
 
 
 } // namespace iuprivate

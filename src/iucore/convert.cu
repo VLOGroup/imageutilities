@@ -29,6 +29,28 @@
 #include "memorydefs.h"
 //#include "iutextures.cuh"
 #include <assert.h>
+#include <cuda.h>
+
+
+/**
+  Atomic add for double using comapre-and-swap (CAS)
+  Taken from nVidia CUDA Programming Guide
+  http://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html
+  */
+//__device__ double atomicAdd(double* address, double val)
+//{
+
+//    unsigned long long int* address_as_ull = (unsigned long long int*)address;
+//    unsigned long long int old = *address_as_ull, assumed;
+//    do
+//    {
+//        assumed = old;
+//        old = atomicCAS(address_as_ull, assumed, __double_as_longlong(val + __longlong_as_double(assumed)));
+
+//    } while (assumed != old);  // Note: uses integer comparison to avoid hang in case of NaN (since NaN != NaN)
+
+//    return __longlong_as_double(old);
+//}
 
 namespace iuprivate {
 
@@ -627,87 +649,71 @@ void cuConvert_lab_to_rgb(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* d
 }
 
 
-/**
-  Atomic add for double using comapre-and-swap (CAS)
-  Taken from nVidia CUDA Programming Guide
-  http://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html
-  */
-__device__ double atomicAdd(double* address, double val)
-{
-
-    unsigned long long int* address_as_ull = (unsigned long long int*)address;
-    unsigned long long int old = *address_as_ull, assumed;
-    do
-    {
-        assumed = old;
-        old = atomicCAS(address_as_ull, assumed, __double_as_longlong(val + __longlong_as_double(assumed)));
-
-    } while (assumed != old);  // Note: uses integer comparison to avoid hang in case of NaN (since NaN != NaN)
-
-    return __longlong_as_double(old);
-}
 
 
 
-__global__ void sum_reduce(iu::ImageGpu_32f_C1::KernelData g_data, double* sum)
-{
-    const unsigned int x = blockDim.x * blockIdx.x + threadIdx.x;
-    const unsigned int y = blockDim.y * blockIdx.y + threadIdx.y;
-    const int linId = threadIdx.x + threadIdx.y*blockDim.x;
+//typedef float num_t;
 
-    extern volatile __shared__ double reduction[];
+//__global__ void sum_reduce(iu::ImageGpu_32f_C1::KernelData g_data, num_t* sum)
+//{
+//    const unsigned int x = blockDim.x * blockIdx.x + threadIdx.x;
+//    const unsigned int y = blockDim.y * blockIdx.y + threadIdx.y;
+//    const int linId = threadIdx.x + threadIdx.y*blockDim.x;
 
-    if (x<g_data.width_ && y<g_data.height_)
-    {
-        reduction[linId] = g_data(x,y);
-    }
-    else
-        reduction[linId] = 0;
+//    extern volatile __shared__ num_t reduction[];
 
-    __syncthreads();
+//    if (x<g_data.width_ && y<g_data.height_)
+//    {
+//        reduction[linId] = g_data(x,y);
+//    }
+//    else
+//        reduction[linId] = 0;
 
-    if (linId < 128) { reduction[linId] += reduction[linId+128]; }
-    __syncthreads();
-    if (linId < 64) { reduction[linId] += reduction[linId+64]; }
-    __syncthreads();
+//    __syncthreads();
 
-    if (linId < 32)
-    {
-        reduction[linId] += reduction[linId+32];
-        reduction[linId] += reduction[linId+16];
-        reduction[linId] += reduction[linId+8];
-        reduction[linId] += reduction[linId+4];
-        reduction[linId] += reduction[linId+2];
-        reduction[linId] += reduction[linId+1];
-    }
-    __syncthreads();
+//    if (linId < 128) { reduction[linId] += reduction[linId+128]; }
+//    __syncthreads();
+//    if (linId < 64) { reduction[linId] += reduction[linId+64]; }
+//    __syncthreads();
 
-
-    if (linId == 0)
-        atomicAdd(sum, reduction[0]);
-}
+//    if (linId < 32)
+//    {
+//        reduction[linId] += reduction[linId+32];
+//        reduction[linId] += reduction[linId+16];
+//        reduction[linId] += reduction[linId+8];
+//        reduction[linId] += reduction[linId+4];
+//        reduction[linId] += reduction[linId+2];
+//        reduction[linId] += reduction[linId+1];
+//    }
+//    __syncthreads();
 
 
-double cuSummation(iu::ImageGpu_32f_C1* src)
-{
-    // fragmentation
-    unsigned int block_size = 16;
-    dim3 dimBlock(block_size, block_size);
-    dim3 dimGrid(iu::divUp(src->width(), dimBlock.x), iu::divUp(src->height(), dimBlock.y));
 
-    double* s;
-    cudaMalloc(&s, sizeof(double));
-    cudaMemset(s, 0, sizeof(double));
+//    if (linId == 0)
+//        atomicAdd(sum, reduction[0]);
+//}
 
-    int shared_sz = block_size*block_size*sizeof(double);
-    sum_reduce<<< dimGrid, dimBlock, shared_sz >>> (*src, s);
 
-    double sum = 0;
-    cudaMemcpy(&sum, s, sizeof(double), cudaMemcpyDeviceToHost);
+//double cuSummation(iu::ImageGpu_32f_C1* src)
+//{
+//    // fragmentation
+//    unsigned int block_size = 16;
+//    dim3 dimBlock(block_size, block_size);
+//    dim3 dimGrid(iu::divUp(src->width(), dimBlock.x), iu::divUp(src->height(), dimBlock.y));
 
-    cudaFree(s);
-    return sum;
-}
+//    num_t* s;
+//    cudaMalloc(&s, sizeof(num_t));
+//    cudaMemset(s, 0, sizeof(num_t));
+
+//    int shared_sz = block_size*block_size*sizeof(num_t);
+//    sum_reduce<<< dimGrid, dimBlock, shared_sz >>> (*src, s);
+
+//    num_t sum = 0;
+//    cudaMemcpy(&sum, s, sizeof(num_t), cudaMemcpyDeviceToHost);
+
+//    cudaFree(s);
+//    return sum;
+//}
 
 
 } // namespace iuprivate

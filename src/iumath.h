@@ -44,6 +44,12 @@ IUCORE_DLLAPI void mulC(iu::ImageGpu_32f_C2& src, const float2& val, iu::ImageGp
 IUCORE_DLLAPI void mulC(iu::ImageGpu_32f_C3& src, const float3& val, iu::ImageGpu_32f_C3& dst);
 IUCORE_DLLAPI void mulC(iu::ImageGpu_32f_C4& src, const float4& val, iu::ImageGpu_32f_C4& dst);
 
+IUCORE_DLLAPI void mulC(iu::ImageCpu_32f_C1& src, const float& val, iu::ImageCpu_32f_C1& dst);
+IUCORE_DLLAPI void mulC(iu::ImageCpu_32f_C2& src, const float2& val, iu::ImageCpu_32f_C2& dst);
+IUCORE_DLLAPI void mulC(iu::ImageCpu_32f_C3& src, const float3& val, iu::ImageCpu_32f_C3& dst);
+IUCORE_DLLAPI void mulC(iu::ImageCpu_32f_C4& src, const float4& val, iu::ImageCpu_32f_C4& dst);
+
+
 IUCORE_DLLAPI void mulC(iu::ImageGpu_8u_C1& src, const unsigned char& val, iu::ImageGpu_8u_C1& dst);
 IUCORE_DLLAPI void mulC(iu::ImageGpu_8u_C2& src, const uchar2& val, iu::ImageGpu_8u_C2& dst);
 IUCORE_DLLAPI void mulC(iu::ImageGpu_8u_C3& src, const uchar3& val, iu::ImageGpu_8u_C3& dst);
@@ -115,6 +121,8 @@ IUCORE_DLLAPI void mul(iu::LinearDeviceMemory_8u_C4& src1, iu::LinearDeviceMemor
 
 // set value
 IUCORE_DLLAPI void fill(iu::ImageGpu_32f_C1& dst, float value);
+IUCORE_DLLAPI void fill(iu::ImageGpu_32f_C2& dst, float2 value);
+IUCORE_DLLAPI void fill(iu::ImageGpu_32f_C4& dst, float4 value);
 IUCORE_DLLAPI void fill(iu::LinearDeviceMemory_32f_C1& dst, float value);
 
 //---------------------------------------------------------------------------------------------------

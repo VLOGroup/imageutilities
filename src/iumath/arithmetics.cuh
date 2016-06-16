@@ -40,6 +40,14 @@ void mulC(iu::ImageGpu<PixelType, iuprivate::ImageAllocatorGpu<Allocator> >& src
     thrust::transform(src.begin(),src.end(),thrust::constant_iterator<PixelType>(val),dst.begin(),thrust::multiplies<PixelType>());
 }
 
+template<typename PixelType, class Allocator >
+void mulC(iu::ImageCpu<PixelType, iuprivate::ImageAllocatorCpu<Allocator> >& src, const PixelType& val,
+                        iu::ImageCpu<PixelType, iuprivate::ImageAllocatorCpu<Allocator> >& dst)
+{
+    thrust::transform(src.begin(),src.end(),thrust::constant_iterator<PixelType>(val),dst.begin(),thrust::multiplies<PixelType>());
+}
+
+
 template<typename PixelType>
 void mulC(iu::LinearDeviceMemory<PixelType>& src, const PixelType& val,
                         iu::LinearDeviceMemory<PixelType>& dst)
