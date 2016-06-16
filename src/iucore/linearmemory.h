@@ -28,6 +28,7 @@
 
 #include "globaldefs.h"
 #include "coredefs.h"
+#include <typeinfo>
 
 namespace iu {
 
@@ -47,6 +48,11 @@ public:
   LinearMemory(const unsigned int& length) :
     length_(length)
   { }
+
+  bool sameType(const LinearMemory &from)
+  {
+      return typeid(from)==typeid(*this);
+  }
 
   virtual ~LinearMemory()
   { }

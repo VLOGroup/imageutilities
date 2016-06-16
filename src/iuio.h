@@ -27,9 +27,6 @@
 #include <string>
 #include "iudefs.h"
 #include <opencv2/core/core.hpp>
-#ifdef IUIO_EXR
-    #include "iuio/openexrio.h"
-#endif
 
 namespace iu {
 

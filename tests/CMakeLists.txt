@@ -34,8 +34,10 @@ endmacro(iu_add_test)
 
 
 add_subdirectory(coreTest_copy)
-add_subdirectory(ioTest)
+if(IU_USE_IO)
+  add_subdirectory(ioTest)
+  if(IU_USE_MATH)
+    add_subdirectory(mathTest)
+  endif(IU_USE_MATH)
+endif(IU_USE_IO)
 
-
-
-message("Tests: " ${CUDA_NVCC_FLAGS})

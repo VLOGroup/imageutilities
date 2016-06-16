@@ -22,6 +22,6 @@ mvlib:
   script:
     - mkdir -p build 
     - cd build
-    - cmake ../src
-    - make build_and_test
+    - cmake ..
+    - make test
     - make install

@@ -29,6 +29,7 @@
 #include "coredefs.h"
 
 #include <ostream>
+#include <typeinfo>
 
 namespace iu{
 
@@ -65,6 +66,11 @@ public:
     // TODO == operator
     this->size_ = from.size_;
     return *this;
+  }
+
+  bool sameType(const Volume &from)
+  {
+      return typeid(from)==typeid(*this);
   }
 
   IuSize size() const

@@ -127,11 +127,11 @@ static inline __host__ __device__ uchar4 operator*(unsigned char s, uchar4 a)
 {
     return make_uchar4(a.x * s, a.y * s, a.z * s,  a.w * s);
 }
-// elementwise multiply
-static inline __host__ __device__ uchar4 operator*(uchar4 a, uchar4 b)
-{
-    return make_uchar4(a.x * b.x, a.y * b.y, a.z * b.z,  a.w * b.w);
-}
+//// elementwise multiply
+//static inline __host__ __device__ uchar4 operator*(uchar4 a, uchar4 b)
+//{
+//    return make_uchar4(a.x * b.x, a.y * b.y, a.z * b.z,  a.w * b.w);
+//}
 
 
 /* ****************************************************************************
