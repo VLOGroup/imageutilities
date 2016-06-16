@@ -5,10 +5,10 @@
 #ifndef STATISTICS_CUH
 #define STATISTICS_CUH
 
-#ifdef NVCC
 
 #include "iucore.h"
 #include "thrust_kernels.cuh"
+#include <thrust/extrema.h>
 
 namespace iuprivate {
 namespace math {
@@ -37,6 +37,16 @@ void minMax(iu::ImageGpu<PixelType, iuprivate::ImageAllocatorGpu<Allocator> >& d
     maxval = thrust::get<2>(result);
 }
 
+template<typename PixelType>
+void minMax(iu::LinearDeviceMemory<PixelType>& in, PixelType& minval, PixelType& maxval, unsigned int& minidx, unsigned int& maxidx)
+{
+    typedef thrust::pair<thrust::device_ptr<PixelType>,thrust::device_ptr<PixelType> > result_type;
+    result_type result = thrust::minmax_element(in.begin(),in.end());
+    minval = *result.first;
+    maxval = *result.second;
+    minidx = result.first-in.begin();
+    maxidx = result.second-in.begin();
+}
 /** Returns the sum of the values of an image.
  * \param src Source image [device]
  * \param[out] min Minium value found in the source image.
@@ -44,10 +54,10 @@ void minMax(iu::ImageGpu<PixelType, iuprivate::ImageAllocatorGpu<Allocator> >& d
  *
  */
 template<typename PixelType, class Allocator >
-void summation(iu::ImageGpu<PixelType, iuprivate::ImageAllocatorGpu<Allocator> >& d_img,PixelType& sum)
+void summation(iu::ImageGpu<PixelType, iuprivate::ImageAllocatorGpu<Allocator> >& d_img,PixelType initval, PixelType& sum)
 {
     typedef thrust::tuple<bool, PixelType> result_type;
-    result_type init(true, 0); // initial value
+    result_type init(true, initval); // initial value
     sum_transform_tuple<int,PixelType> unary_op(d_img.width(), d_img.stride()); // transformation operator
     sum_reduce_tuple<int,PixelType> binary_op; // reduction operator
     result_type result =
@@ -58,6 +68,12 @@ void summation(iu::ImageGpu<PixelType, iuprivate::ImageAllocatorGpu<Allocator> >
                 init,
                 binary_op);
     sum = thrust::get<1>(result);
+}
+
+template<typename PixelType>
+void summation(iu::LinearDeviceMemory<PixelType>& d_img,PixelType init, PixelType& sum)
+{
+   sum = thrust::reduce(d_img.begin(),d_img.end(),init,thrust::plus<PixelType>());
 }
 
 /** Returns the norm of the L1-difference between the image and a reference.
@@ -170,5 +186,5 @@ void mse(iu::ImageGpu<PixelType, iuprivate::ImageAllocatorGpu<Allocator> >& src,
 
 } //namespace math
 } // namespace iuprivate
-#endif //NVCC
+
 #endif //STATISTICS_CUH

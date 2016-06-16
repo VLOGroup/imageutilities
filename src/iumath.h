@@ -113,9 +113,18 @@ IUCORE_DLLAPI void mul(iu::LinearDeviceMemory_32f_C4& src1, iu::LinearDeviceMemo
 IUCORE_DLLAPI void mul(iu::LinearDeviceMemory_8u_C1& src1, iu::LinearDeviceMemory_8u_C1& src2, iu::LinearDeviceMemory_8u_C1& dst);
 IUCORE_DLLAPI void mul(iu::LinearDeviceMemory_8u_C4& src1, iu::LinearDeviceMemory_8u_C4& src2, iu::LinearDeviceMemory_8u_C4& dst);
 
+// set value
+IUCORE_DLLAPI void fill(iu::ImageGpu_32f_C1& dst, float value);
+IUCORE_DLLAPI void fill(iu::LinearDeviceMemory_32f_C1& dst, float value);
+
 //---------------------------------------------------------------------------------------------------
 // STATISTICS
+IUCORE_DLLAPI void minMax(iu::ImageGpu_32f_C1& src, float& minVal, float& maxVal);
+IUCORE_DLLAPI void minMax(iu::LinearDeviceMemory_32f_C1& src, float& minVal, float& maxVal, unsigned int& minIdx, unsigned int& maxIdx);
 
+IUCORE_DLLAPI void summation(iu::ImageGpu_32f_C1& src, float& sum);
+IUCORE_DLLAPI void summation(iu::ImageGpu_32f_C2& src, float2& sum);
+IUCORE_DLLAPI void summation(iu::LinearDeviceMemory_32f_C1& src, float& sum);
 } // namespace math
 } // namespace iu
 

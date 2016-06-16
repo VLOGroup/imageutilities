@@ -1,7 +1,6 @@
 #ifndef THRUST_KERNELS_CUH
 #define THRUST_KERNELS_CUH
 
-#ifdef NVCC
 
 #include <thrust/transform.h>
 #include <thrust/reduce.h>
@@ -143,5 +142,5 @@ struct diffabs_transform_tuple :
 
 } // namespace math
 } // namespace iuprivate
-#endif //NVCC
+
 #endif // THRUST_KERNELS_CUH
