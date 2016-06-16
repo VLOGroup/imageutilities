@@ -1,8 +1,6 @@
 #ifndef ARITHMETICS_CUH
 #define ARITHMETICS_CUH
 
-#ifdef NVCC
-
 #include <thrust/transform.h>
 #include <thrust/reduce.h>
 #include <thrust/iterator/constant_iterator.h>
@@ -100,7 +98,24 @@ void mul(iu::LinearDeviceMemory<PixelType>& src1,
     thrust::transform(src1.begin(), src1.end(), src2.begin(), dst.begin(), thrust::multiplies<PixelType>());
 }
 
+/** Fill memory with a given value.
+ * \param dst Destination memory.
+ * \param val Value to set
+ */
+
+template<typename PixelType, class Allocator >
+void fill(iu::ImageGpu<PixelType, iuprivate::ImageAllocatorGpu<Allocator> >& dst,PixelType& val)
+{
+    thrust::fill(dst.begin(),dst.end(),val);
+}
+
+template<typename PixelType>
+void fill(iu::LinearDeviceMemory<PixelType>& dst,PixelType& val)
+{
+    thrust::fill(dst.begin(),dst.end(),val);
+}
+
 }//namespace math
 }//namespace iuprivate
-#endif //NVCC
+
 #endif // ARITHMETICS_CUH

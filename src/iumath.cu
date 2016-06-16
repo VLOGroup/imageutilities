@@ -2,6 +2,7 @@
 #include "iumath.h"
 #include "iucore.h"
 #include "iumath/arithmetics.cuh"
+#include "iumath/statistics.cuh"
 
 namespace iu {
 namespace math {
@@ -104,5 +105,17 @@ void mul(iu::LinearDeviceMemory_32f_C4& src1, iu::LinearDeviceMemory_32f_C4& src
 void mul(iu::LinearDeviceMemory_8u_C1& src1, iu::LinearDeviceMemory_8u_C1& src2, iu::LinearDeviceMemory_8u_C1& dst) {iuprivate::math::mul(src1,src2,dst);}
 void mul(iu::LinearDeviceMemory_8u_C4& src1, iu::LinearDeviceMemory_8u_C4& src2, iu::LinearDeviceMemory_8u_C4& dst) {iuprivate::math::mul(src1,src2,dst);}
 
+// set value
+void fill(iu::ImageGpu_32f_C1& dst, float value) {iuprivate::math::fill(dst,value);}
+void fill(iu::LinearDeviceMemory_32f_C1& dst, float value) {iuprivate::math::fill(dst,value);}
+
+// min-max
+void minMax(iu::ImageGpu_32f_C1& src, float& minVal, float& maxVal) {iuprivate::math::minMax(src,minVal,maxVal);}
+void minMax(iu::LinearDeviceMemory_32f_C1& src, float& minVal, float& maxVal, unsigned int& minIdx, unsigned int& maxIdx) {iuprivate::math::minMax(src,minVal,maxVal,minIdx,maxIdx);}
+
+//sum
+void summation(iu::ImageGpu_32f_C1& src, float& sum) {iuprivate::math::summation(src,0.f,sum);}
+void summation(iu::ImageGpu_32f_C2& src, float2& sum) {iuprivate::math::summation(src,make_float2(0.f),sum);}
+void summation(iu::LinearDeviceMemory_32f_C1& src, float& sum) {iuprivate::math::summation(src,0.f,sum);}
 } //namespace math
 } //namespace iu
