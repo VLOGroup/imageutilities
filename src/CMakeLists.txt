@@ -64,12 +64,14 @@ if(ANDROID)
 option(IU_USE_IO "Including IO module." ON)
 option(IU_USE_GUI "Including GUI module." OFF)
 option(WITH_FLYCAPTURE2 "Use FlyCapture2." OFF)
+option(IU_USE_MATH "Including Math module." OFF)
 option(WITH_OPENEXR "Use OpenEXR." OFF)
 set(ANDROID_TOOLCHAIN_NAME arm-linux-androideabi-4.6)
 set(CUDA_PROPAGATE_HOST_FLAGS OFF)
 else(ANDROID)
 option(IU_USE_IO "Including IO module." ON)
 option(IU_USE_GUI "Including GUI module." ON)
+option(IU_USE_MATH "Including Math module." ON)
 option(WITH_FLYCAPTURE2 "Use FlyCapture2." ON)
 option(WITH_OPENEXR "Use OpenEXR." ON)
 endif(ANDROID)
@@ -281,6 +283,32 @@ else(IU_USE_GUI AND Qt5Widgets_FOUND AND Qt5OpenGL_FOUND)
 
 endif(IU_USE_GUI AND Qt5Widgets_FOUND AND Qt5OpenGL_FOUND)
 
+if(IU_USE_MATH)
+  message("[+] ImageUtilities include Math module")
+
+  set( IU_PUBLIC_HEADERS
+    ${IU_PUBLIC_HEADERS}
+    ${CMAKE_CURRENT_SOURCE_DIR}/iumath.h
+   )
+  set(IU_PUBLIC_MATH_HEADERS
+      ${CMAKE_CURRENT_SOURCE_DIR}/iugui/qt5imagegpuwidget.h
+      ${CMAKE_CURRENT_SOURCE_DIR}/iugui/qt5disparitymapgpuwidget.h
+   )
+  set( IU_MATH_HEADERS
+    ${CMAKE_CURRENT_SOURCE_DIR}/iumath/thrust_kernels.cuh
+    ${CMAKE_CURRENT_SOURCE_DIR}/iumath/arithmetics.cuh
+    ${CMAKE_CURRENT_SOURCE_DIR}/iumath/statistics.cuh
+  )
+  set( IU_MATH_SOURCES
+
+    ${CMAKE_CURRENT_SOURCE_DIR}/iumath.cu
+  )
+
+
+else(IU_USE_MATH)
+  message("[-] ImageUtilities omitting Math module")
+  set(IU_USE_MATH OFF CACHE PATH "IU: Omit Math module." FORCE)
+endif(IU_USE_MATH)
 
 ##-----------------------------------------------------------------------------
 ## local settings, headers and sources
@@ -303,7 +331,6 @@ SET( IU_PUBLIC_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/iucutil.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore.h
   ${CMAKE_CURRENT_SOURCE_DIR}/helper_math.h
-#   ${CMAKE_CURRENT_SOURCE_DIR}/iumath.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iufilter.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iutransform.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iupython.h
@@ -484,6 +511,31 @@ if(IU_USE_GUI)
   endif(IU_BUILD_STATIC)
 endif(IU_USE_GUI)
 
+##-----------------------------------------------------------------------------
+## build math library
+set(IU_MATH_LIB iumath)
+if(IU_USE_MATH)
+  cuda_add_library( ${IU_MATH_LIB} SHARED ${IU_MATH_HEADERS} ${IU_MATH_SOURCES})
+  set_target_properties(${IU_MATH_LIB} PROPERTIES
+    DEFINE_SYMBOL IUMATH_DLL_EXPORTS
+    VERSION ${IMAGEUTILITIES_VERSION}
+    SOVERSION ${IMAGEUTILITIES_SOVERSION}
+    )
+  target_link_libraries( ${IU_MATH_LIB}
+    ${CUDA_LIBRARIES}
+    )
+  set(IU_LIBS ${IU_LIBS} ${IU_MATH_LIB})
+
+
+  if(IU_BUILD_STATIC)
+    cuda_add_library( ${IU_MATH_LIB}_static STATIC ${IU_MATH_HEADERS} ${IU_MATH_SOURCES})
+    target_link_libraries( ${IU_MATH_LIB}_static
+     ${CUDA_LIBRARIES}
+    )
+    set(IU_LIBS_STATIC ${IU_LIBS_STATIC} ${IU_MATH_LIB}_static)
+  endif(IU_BUILD_STATIC)
+endif(IU_USE_MATH)
+
 ###-----------------------------------------------------------------------------
 ### build matlab-based part of library
 #set(IU_MATLAB_LIB iumatlab)
@@ -576,6 +628,10 @@ install(FILES ${IU_PUBLIC_IO_HEADERS}
   )
 install(FILES ${IU_PUBLIC_GUI_HEADERS}
   DESTINATION include/iu/iugui
+  COMPONENT Headers
+  )
+install(FILES ${IU_PUBLIC_MATH_HEADERS}
+  DESTINATION include/iu/iumath
   COMPONENT Headers
   )
 install(FILES ${IU_PUBLIC_HEADERS}

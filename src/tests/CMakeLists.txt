@@ -28,6 +28,6 @@ macro(iu_add_test target)
 endmacro(iu_add_test)
 
 add_subdirectory(ioTest)
-
+add_subdirectory(mathTest)
 
 message("Tests: " ${CUDA_NVCC_FLAGS})
