@@ -11,6 +11,10 @@ OpenEXRInputFile::OpenEXRInputFile(const std::string &filename)
     Imf::InputFile file(filename.c_str());
     Imath::Box2i dw = file.header().dataWindow();
 
+    pixeltype_to_string_[Imf::UINT] = "uint";
+    pixeltype_to_string_[Imf::HALF] = "half (16bit float)";
+    pixeltype_to_string_[Imf::FLOAT] = "float";
+
     int width = dw.max.x - dw.min.x + 1;
     int height = dw.max.y - dw.min.y + 1;
     sz_ = IuSize(width, height);
@@ -23,13 +27,13 @@ OpenEXRInputFile::OpenEXRInputFile(const std::string &filename)
         switch(it.channel().type)
         {
         case Imf::UINT:
-            channels_.push_back(Channel(it.name()));
+            channels_.push_back(Channel(it.name(), pixeltype_to_string_[Imf::UINT]));
             break;
         case Imf::HALF:
             printf("OpenEXRFile: encountered channel of dataype HALF in file %s, corresponding datatype (16 bit float) not implemented in imageutilities!\n", it.name());
             break;
         case Imf::FLOAT:
-            channels_.push_back(Channel(it.name()));
+            channels_.push_back(Channel(it.name(), pixeltype_to_string_[Imf::FLOAT]));
             break;
         }
     }

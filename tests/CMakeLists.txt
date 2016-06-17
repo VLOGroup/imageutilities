@@ -34,10 +34,14 @@ endmacro(iu_add_test)
 
 
 add_subdirectory(coreTest_copy)
+#add_subdirectory(pythonTest)
 if(IU_USE_IO)
   add_subdirectory(ioTest)
   if(IU_USE_MATH)
     add_subdirectory(mathTest)
   endif(IU_USE_MATH)
+  if(WITH_OPENEXR)
+    add_subdirectory(exrTest)
+  endif(WITH_OPENEXR)
 endif(IU_USE_IO)
 

@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 #include <OpenEXR/ImfIO.h>
 #include <OpenEXR/ImfOutputFile.h>
 #include <OpenEXR/ImfInputFile.h>
@@ -29,12 +30,15 @@ public:
     OpenEXRInputFile(const std::string& filename);
     ~OpenEXRInputFile();
 
+
     struct Channel
     {
-        Channel(const std::string& name) {
+        Channel(const std::string& name, const std::string& type) {
             name_ = name;
+            type_ = type;
         }
         std::string name_;
+        std::string type_;
     };
 
     IuSize get_size() { return sz_; }
@@ -59,6 +63,7 @@ private:
     IuSize sz_;
     std::string filename_;
     std::vector<Channel> channels_;
+    std::map<Imf::PixelType, std::string> pixeltype_to_string_;
 };
 
 
