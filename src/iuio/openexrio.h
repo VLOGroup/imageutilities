@@ -4,11 +4,11 @@
 #include <string>
 #include <vector>
 #include <map>
-#include <OpenEXR/ImfIO.h>
-#include <OpenEXR/ImfOutputFile.h>
-#include <OpenEXR/ImfInputFile.h>
-#include <OpenEXR/ImfChannelList.h>
-#include <OpenEXR/ImfMatrixAttribute.h>
+#include <ImfIO.h>
+#include <ImfOutputFile.h>
+#include <ImfInputFile.h>
+#include <ImfChannelList.h>
+#include <ImfMatrixAttribute.h>
 
 #include "../iucore.h"
 

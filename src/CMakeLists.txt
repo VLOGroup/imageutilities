@@ -163,6 +163,8 @@ if(IU_USE_IO AND OpenCV_LIBS)
     if(OPENEXR_FOUND)
         message("  [+] build io module with OpenEXR support")
         include_directories(${OPENEXR_INCLUDE_DIRS})
+        cuda_include_directories(${OPENEXR_INCLUDE_DIRS})
+        message("include dirs: " ${OPENEXR_INCLUDE_DIRS})
         add_definitions(-DIUIO_EXR)
 
         find_package(Eigen3 QUIET)
