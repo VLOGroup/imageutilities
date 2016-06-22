@@ -17,6 +17,9 @@ file(MAKE_DIRECTORY ${RESULTS_DIR})
 # process the config file to embed the DATA_DIR to the test programs
 CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_SOURCE_DIR}/config.h )
 
+file(TO_CMAKE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../cmake" OT_IU_CMAKE_MODULE_PATH)
+set(CMAKE_MODULE_PATH ${OT_IU_CMAKE_MODULE_PATH})
+
 ## add subdirectories which should be actually built
 ##-----------------------------------------------------------------------------
 
@@ -41,6 +44,8 @@ if(IU_USE_IO)
     add_subdirectory(mathTest)
   endif(IU_USE_MATH)
   if(WITH_OPENEXR)
+    find_package(OpenEXR REQUIRED)
+    include_directories(${OPENEXR_INCLUDE_DIRS})
     add_subdirectory(exrTest)
   endif(WITH_OPENEXR)
 endif(IU_USE_IO)
