@@ -213,6 +213,7 @@ PyObject* PyArray_from_ImageGpu(iu::ImageGpu<PixelType, Allocator> &img)
 {
     iu::ImageCpu<PixelType, iuprivate::ImageAllocatorCpu<PixelType> > h_img(img.size());
     iuprivate::copy(&img, &h_img);
+
     return PyArray_from_ImageCpu(h_img);
 }
 

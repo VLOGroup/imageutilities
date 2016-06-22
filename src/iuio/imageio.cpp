@@ -413,6 +413,8 @@ void imshow(iu::ImageCpu_32f_C4* image, const std::string& winname, const bool& 
 {
   IuSize sz = image->size();
   cv::Mat mat_32f(sz.height, sz.width, CV_32FC4, (float*)image->data(), image->pitch());
+  if(normalize)
+    cv::normalize(mat_32f, mat_32f, 0.0, 1.0, cv::NORM_MINMAX);
   cv::Mat bgr;
   cv::cvtColor(mat_32f, bgr, CV_RGBA2BGR);
 

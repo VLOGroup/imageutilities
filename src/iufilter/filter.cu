@@ -536,7 +536,7 @@ void cuFilterGauss(const iu::VolumeGpu_32f_C1* src, iu::VolumeGpu_32f_C1* dst, f
   float c1 = exp(-0.5f / (sigma * sigma));
 
   // filter slices
-  for (int z=0; z<src->depth(); z++)
+  for (unsigned int z=0; z<src->depth(); z++)
   {
     // temporary variable for filtering (separabed kernel!)
     iu::ImageGpu_32f_C1 tmp(src->width(), src->height());
@@ -570,7 +570,7 @@ void cuFilterGauss(const iu::VolumeGpu_32f_C1* src, iu::VolumeGpu_32f_C1* dst, f
   dim3 dimGridZ(iu::divUp(src->width(), dimBlock.x), iu::divUp(src->depth(), dimBlock.y));
 
   // filter slices
-  for (int y=0; y<src->height(); y++)
+  for (unsigned int y=0; y<src->height(); y++)
   {
     cuFilterGaussZKernel_32f_C1 <<< dimGridZ, dimBlock >>> (dst->data(), tmpVol.data(),
                                                             y, dst->width(), dst->depth(),

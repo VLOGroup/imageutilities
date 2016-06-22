@@ -67,9 +67,9 @@ void cuReduce(iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
   switch(interpolation)
   {
   case IU_INTERPOLATE_NEAREST:
-  case IU_INTERPOLATE_CUBIC:
-    tex1_32f_C1__.filterMode = cudaFilterModePoint;
-    break;
+//  case IU_INTERPOLATE_CUBIC:
+//    tex1_32f_C1__.filterMode = cudaFilterModePoint;
+//    break;
   case IU_INTERPOLATE_LINEAR:
     tex1_32f_C1__.filterMode = cudaFilterModeLinear;
     break;
@@ -83,16 +83,16 @@ void cuReduce(iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
         <<< dimGridOut, dimBlock, 0, stream >>> (dst->data(), dst->stride(), dst->width(), dst->height(),
                                       x_factor, y_factor);
     break;
-  case IU_INTERPOLATE_CUBIC:
-    cuTransformCubicKernel_32f_C1
-        <<< dimGridOut, dimBlock, 0, stream >>> (dst->data(), dst->stride(), dst->width(), dst->height(),
-                                      x_factor, y_factor);
-    break;
-  case IU_INTERPOLATE_CUBIC_SPLINE:
-    cuTransformCubicSplineKernel_32f_C1
-        <<< dimGridOut, dimBlock, 0, stream >>> (dst->data(), dst->stride(), dst->width(), dst->height(),
-                                      x_factor, y_factor);
-    break;
+//  case IU_INTERPOLATE_CUBIC:
+//    cuTransformCubicKernel_32f_C1
+//        <<< dimGridOut, dimBlock, 0, stream >>> (dst->data(), dst->stride(), dst->width(), dst->height(),
+//                                      x_factor, y_factor);
+//    break;
+//  case IU_INTERPOLATE_CUBIC_SPLINE:
+//    cuTransformCubicSplineKernel_32f_C1
+//        <<< dimGridOut, dimBlock, 0, stream >>> (dst->data(), dst->stride(), dst->width(), dst->height(),
+//                                      x_factor, y_factor);
+//    break;
   }
 
   cudaUnbindTexture(&tex1_32f_C1__);

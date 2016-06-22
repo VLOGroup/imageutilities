@@ -60,7 +60,7 @@ namespace iu {
  */
 IUCORE_DLLAPI void reduce(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
                           IuInterpolationType interpolation = IU_INTERPOLATE_LINEAR,
-                          bool gauss_prefilter = true, bool bicubic_bspline_prefilter = false);
+                          bool gauss_prefilter = true);
 
 /** Image prolongation.
  * \brief Scaling the image \a src up to the size of \a dst.
