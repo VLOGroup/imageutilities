@@ -1,11 +1,11 @@
 #ifndef THRUST_KERNELS_CUH
 #define THRUST_KERNELS_CUH
 
-
 #include <thrust/transform.h>
 #include <thrust/reduce.h>
 #include <thrust/transform_reduce.h>
 #include <thrust/iterator/constant_iterator.h>
+
 #include "helper_math.h"
 
 namespace iuprivate {

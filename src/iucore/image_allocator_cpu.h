@@ -66,7 +66,7 @@ public:
                    PixelType *dst, size_t dst_pitch, IuSize size)
   {
     size_t src_stride = src_pitch/sizeof(PixelType);
-    size_t dst_stride = src_pitch/sizeof(PixelType);
+    size_t dst_stride = dst_pitch/sizeof(PixelType);
 
     for(unsigned int y=0; y< size.height; ++y)
     {

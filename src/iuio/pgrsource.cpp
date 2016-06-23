@@ -1,5 +1,8 @@
 #include "pgrsource.h"
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wignored-qualifiers"  // We have no control over FlyCapture2.h
 #include <FlyCapture2.h>
+#pragma GCC diagnostic pop
 #include "pgrcameradata.h"
 
 

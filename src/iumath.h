@@ -125,6 +125,15 @@ IUCORE_DLLAPI void fill(iu::ImageGpu_32f_C2& dst, float2 value);
 IUCORE_DLLAPI void fill(iu::ImageGpu_32f_C4& dst, float4 value);
 IUCORE_DLLAPI void fill(iu::LinearDeviceMemory_32f_C1& dst, float value);
 
+IUCORE_DLLAPI void fill(iu::ImageCpu_32f_C1& dst, float value);
+IUCORE_DLLAPI void fill(iu::ImageCpu_32f_C2& dst, float2 value);
+IUCORE_DLLAPI void fill(iu::ImageCpu_32f_C4& dst, float4 value);
+IUCORE_DLLAPI void fill(iu::ImageCpu_8u_C1& dst, unsigned char value);
+IUCORE_DLLAPI void fill(iu::ImageCpu_8u_C2& dst, uchar2 value);
+IUCORE_DLLAPI void fill(iu::ImageCpu_8u_C4& dst, uchar4 value);
+
+IUCORE_DLLAPI void fill(iu::LinearHostMemory_32f_C1& dst, float value);
+
 //---------------------------------------------------------------------------------------------------
 // STATISTICS
 IUCORE_DLLAPI void minMax(iu::ImageGpu_32f_C1& src, float& minVal, float& maxVal);

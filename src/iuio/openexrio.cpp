@@ -35,6 +35,8 @@ OpenEXRInputFile::OpenEXRInputFile(const std::string &filename)
         case Imf::FLOAT:
             channels_.push_back(Channel(it.name(), pixeltype_to_string_[Imf::FLOAT]));
             break;
+        case Imf::NUM_PIXELTYPES:   // silence warning
+            break;
         }
     }
 }
@@ -63,8 +65,8 @@ void OpenEXRInputFile::read_channel(const std::string &name, ImageCpu_32u_C1 &im
     Imf::InputFile file(filename_.c_str());
     Imath::Box2i dw = file.header().dataWindow();
 
-    int width = dw.max.x - dw.min.x + 1;
-    int height = dw.max.y - dw.min.y + 1;
+    unsigned int width = dw.max.x - dw.min.x + 1;
+    unsigned int height = dw.max.y - dw.min.y + 1;
 
     if (img.width() != width || img.height() != height)
     {
@@ -96,8 +98,8 @@ void OpenEXRInputFile::read_channel(const std::string &name, ImageCpu_32f_C1 &im
     Imf::InputFile file(filename_.c_str());
     Imath::Box2i dw = file.header().dataWindow();
 
-    int width = dw.max.x - dw.min.x + 1;
-    int height = dw.max.y - dw.min.y + 1;
+    unsigned int width = dw.max.x - dw.min.x + 1;
+    unsigned int height = dw.max.y - dw.min.y + 1;
 
     if (img.width() != width || img.height() != height)
     {
@@ -130,8 +132,8 @@ void OpenEXRInputFile::read_channel_32f(const std::string &name, ImageCpu_32f_C1
     Imf::InputFile file(filename_.c_str());
     Imath::Box2i dw = file.header().dataWindow();
 
-    int width = dw.max.x - dw.min.x + 1;
-    int height = dw.max.y - dw.min.y + 1;
+    unsigned int width = dw.max.x - dw.min.x + 1;
+    unsigned int height = dw.max.y - dw.min.y + 1;
 
     if (img.width() != width || img.height() != height)
     {
@@ -240,11 +242,11 @@ OpenEXROutputFile::~OpenEXROutputFile()
 //        delete img;
 //    for (iu::ImageCpu_32f_C2* img : pool_32f_C2_)
 //        delete img;
-    for (int i=0; i < pool_32f_C1_.size(); i++)
+    for (unsigned int i=0; i < pool_32f_C1_.size(); i++)
         delete pool_32f_C1_.at(i);
-    for (int i=0; i < pool_32f_C2_.size(); i++)
+    for (unsigned int i=0; i < pool_32f_C2_.size(); i++)
         delete pool_32f_C2_.at(i);
-    for (int i=0; i < pool_32f_C4_.size(); i++)
+    for (unsigned int i=0; i < pool_32f_C4_.size(); i++)
         delete pool_32f_C4_.at(i);
 
     pool_32f_C1_.clear();
@@ -261,9 +263,9 @@ void OpenEXROutputFile::add_channel(const std::string &name, ImageCpu_8u_C1 &img
     header_.channels().insert(name.c_str(), Imf::Channel(Imf::UINT));
 
     iu::ImageCpu_32u_C1 temp(img.size());
-    for (int y=0; y < img.height(); y++)
+    for (unsigned int y=0; y < img.height(); y++)
     {
-        for (int x=0; x < img.width(); x++)
+        for (unsigned int x=0; x < img.width(); x++)
         {
             *temp.data(x,y) = *img.data(x,y);
         }

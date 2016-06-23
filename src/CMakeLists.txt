@@ -78,7 +78,7 @@ endif(ANDROID)
 
 ##-----------------------------------------------------------------------------
 ## Compiler Flags (to be added on demand)
-#set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++11")
+set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-Wall")
 
 
 
@@ -385,6 +385,12 @@ SET( IU_SOURCES
 #   ${IU_IO_HEADERS}
 #   ${IU_IO_SOURCES}
 # )
+
+# denote kernel files as header only to not confuse the compiler
+set_source_files_properties(
+  ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/transform.cu
+  PROPERTIES HEADER_FILE_ONLY yes
+  )
 
 if(IU_BUILD_STATIC)
   message("[+] building static library")

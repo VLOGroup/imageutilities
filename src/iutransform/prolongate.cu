@@ -67,7 +67,7 @@ void cuProlongate(iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
   switch(interpolation)
   {
   case IU_INTERPOLATE_NEAREST:
-  case IU_INTERPOLATE_CUBIC:
+//  case IU_INTERPOLATE_CUBIC:
     tex1_32f_C1__.filterMode = cudaFilterModePoint;
     break;
   case IU_INTERPOLATE_LINEAR:
@@ -82,14 +82,14 @@ void cuProlongate(iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
     cuTransformKernel_32f_C1 <<< dimGridOut, dimBlock >>> (
         dst->data(), dst->stride(), dst->width(), dst->height(), x_factor, y_factor);
     break;
-  case IU_INTERPOLATE_CUBIC:
-    cuTransformCubicKernel_32f_C1 <<< dimGridOut, dimBlock >>> (
-        dst->data(), dst->stride(), dst->width(), dst->height(), x_factor, y_factor);
-    break;
-  case IU_INTERPOLATE_CUBIC_SPLINE:
-    cuTransformCubicSplineKernel_32f_C1 <<< dimGridOut, dimBlock >>> (
-        dst->data(), dst->stride(), dst->width(), dst->height(), x_factor, y_factor);
-    break;
+//  case IU_INTERPOLATE_CUBIC:
+//    cuTransformCubicKernel_32f_C1 <<< dimGridOut, dimBlock >>> (
+//        dst->data(), dst->stride(), dst->width(), dst->height(), x_factor, y_factor);
+//    break;
+//  case IU_INTERPOLATE_CUBIC_SPLINE:
+//    cuTransformCubicSplineKernel_32f_C1 <<< dimGridOut, dimBlock >>> (
+//        dst->data(), dst->stride(), dst->width(), dst->height(), x_factor, y_factor);
+//    break;
   }
 
   cudaUnbindTexture(&tex1_32f_C1__);
@@ -128,7 +128,7 @@ void cuProlongate(iu::ImageGpu_32f_C2* src, iu::ImageGpu_32f_C2* dst,
   switch(interpolation)
   {
   case IU_INTERPOLATE_NEAREST:
-  case IU_INTERPOLATE_CUBIC:
+//  case IU_INTERPOLATE_CUBIC:
     tex1_32f_C2__.filterMode = cudaFilterModePoint;
     break;
   case IU_INTERPOLATE_LINEAR:
@@ -191,7 +191,7 @@ void cuProlongate(iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst,
   switch(interpolation)
   {
   case IU_INTERPOLATE_NEAREST:
-  case IU_INTERPOLATE_CUBIC:
+//  case IU_INTERPOLATE_CUBIC:
     tex1_32f_C4__.filterMode = cudaFilterModePoint;
     break;
   case IU_INTERPOLATE_LINEAR:
@@ -214,6 +214,8 @@ void cuProlongate(iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst,
 //    cuTransformCubicSplineKernel_32f_C4 <<< dimGridOut, dimBlock >>> (
 //        dst->data(), dst->stride(), dst->width(), dst->height(), x_factor, y_factor);
 //    break;
+//  case IU_INTERPOLATE_CUBIC:
+//  case IU_INTERPOLATE_CUBIC_SPLINE:
   default:
     std::cerr << "Interpolation type not supported for this element type" << std::endl;
   }
