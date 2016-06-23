@@ -13,7 +13,7 @@
 
 namespace iu {
 /**
- * @brief The Qt5ImageGpuWidget class
+ * @brief The Qt5DisparityGpuWidget class allows to display disparity or depth maps in 3D with a built-in mouse and keyboard interaction
  *
  *
  */
@@ -22,11 +22,26 @@ class Qt5DisparitymapGpuWidget : public QOpenGLWidget, protected QOpenGLFunction
 {
     Q_OBJECT
 public:
+    /**
+      * The non-default constructor
+      @param sz Output image size
+      @param translation_z Where to put the camera initially? [0,0,%translation_z]
+      @param f Focal length of virtual camera
+      @param cx x-coordinate of principal point
+      @param cy y-coordinate of principal point
+      @param B Baseline in the case of disparity maps. If 0, then the input is expected to be a depth map
+      @param parent Parent widget
+      */
     explicit Qt5DisparitymapGpuWidget(const IuSize sz, float translation_z,
                                   float f, float cx, float cy, float B=0.f, QWidget* parent = NULL);
     virtual ~Qt5DisparitymapGpuWidget();
 
 public slots:
+    /**
+      * Set a new disparity/depthmap
+      @param depth A depthmap in float format
+      @param im A grayscale image in float format, registered to depth
+      */
     void update_vertices(iu::ImageGpu_32f_C1 *depth, iu::ImageGpu_32f_C1 *im);
 
 protected:

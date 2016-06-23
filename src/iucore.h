@@ -241,6 +241,13 @@ IUCORE_DLLAPI void copy(const ImageGpu_32f_C4* src, ImageCpu_32f_C4* dst);
 
 /** \} */ // end of Copy2D
 
+//////////////////////////////////////////////////////////////////////////////
+/** \defgroup Copy3D 3D Memory Copy
+ *  \ingroup Core
+ *  Copy methods for 3D images of various types.
+ *  \{
+ */
+
 // 3D; copy host -> host;
 /** Copy methods for host to host 3D copy
  * \param src Source volume [host].
@@ -477,8 +484,6 @@ IUCORE_DLLAPI void convert_LabRgb(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_3
 //IUCORE_DLLAPI double summation(iu::ImageGpu_32f_C1* src);
 
 
-/** \} */ // end of Core module
-
 /* ***************************************************************************
      Filters
  * ***************************************************************************/
@@ -488,7 +493,7 @@ IUCORE_DLLAPI void convert_LabRgb(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_3
      Denoising
  * ***************************************************************************/
 /** @defgroup Denoising
- *  @ingroup Filter
+ *  \ingroup Core
  *  TODO more detailed docu
  *  @{
  */
@@ -558,6 +563,7 @@ IUCORE_DLLAPI void cubicBSplinePrefilter(iu::ImageGpu_32f_C1* srcdst);
 
 /** \defgroup Geometric Transformation
  *  \brief Geometric image transformations
+    \ingroup Core
  *  TODO more detailed docu
  *  @{
  */
@@ -570,11 +576,6 @@ IUCORE_DLLAPI void cubicBSplinePrefilter(iu::ImageGpu_32f_C1* srcdst);
 /* ***************************************************************************
      Image resize
  * ***************************************************************************/
-/** @defgroup Image Transformations
- *  @ingroup Geometric Transformation
- *  TODO more detailed docu
- *  @{
- */
 
 /** Image reduction.
  * \brief Scaling the image \a src down to the size of \a dst.
@@ -641,7 +642,7 @@ IUCORE_DLLAPI void remapAffine(iu::ImageGpu_32f_C1* src,
 
 /** @} */ // end of Image Transformations
 
-
+/** \} */ // end of Core module
 } // namespace iu
 
 #endif // IU_CORE_MODULE_H
