@@ -394,7 +394,23 @@ set(IU_LIBS "") # variable where all libs that are built are saved
 set(IU_LIBS_STATIC "") # variable where all libs that are built are saved
 message("Compiler Flags NVCC: " ${CUDA_NVCC_FLAGS})
 
+##-----------------------------------------------------------------------------
+## documentation
+SET(DOXYGEN_OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/../doc/html/index.html)
+SET(DOXYGEN_EXECUTABLE doxygen)
+SET(DOXYGEN_INPUT ${CMAKE_CURRENT_SOURCE_DIR}/../doc/doxconfig)
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/../doc/doxconfig.in
+                       ${DOXYGEN_INPUT})
 
+ADD_CUSTOM_COMMAND(
+ OUTPUT ${DOXYGEN_OUTPUT}
+ COMMAND ${CMAKE_COMMAND} -E echo_append "Building API Documentation..."
+ COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_INPUT}
+ COMMAND ${CMAKE_COMMAND} -E echo "Done."
+ WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../doc
+ DEPENDS ${DOXYGEN_INPUT}
+ )
+ADD_CUSTOM_TARGET(apidoc ALL DEPENDS ${DOXYGEN_OUTPUT})
 
 ##-----------------------------------------------------------------------------
 ## build core library
