@@ -26,6 +26,7 @@
 
 #include "iudefs.h"
 
+/// The main namespace
 namespace iu {
 
 /** \defgroup Core iucore.
@@ -492,7 +493,7 @@ IUCORE_DLLAPI void convert_LabRgb(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_3
 /* ***************************************************************************
      Denoising
  * ***************************************************************************/
-/** @defgroup Denoising
+/** @defgroup Filters
     \brief Filters for 2D images
  *  \ingroup Core
  *  @{
@@ -522,16 +523,24 @@ IUCORE_DLLAPI void filterGauss(const ImageGpu_32f_C4* src, ImageGpu_32f_C4* dst,
                                float sigma, int kernel_size=0);
 
 
-/** @} */ // end of Denoising
-
 
 /* ***************************************************************************
      edge calculation
  * ***************************************************************************/
 
-
+/** Edge image calculation
+ * \param src Source image [device].
+ * \param dst Destination image [device]
+ */
 IUCORE_DLLAPI void filterEdge(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C2* dst );
 
+/** Edge image calculation
+ * \param src Source image [device].
+ * \param dst Destination image [device]
+ * \param alpha
+ * \param beta
+ * \param minval
+ */
 IUCORE_DLLAPI void filterEdge(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst ,
                               float alpha, float beta, float minval);
 
@@ -557,7 +566,7 @@ IUCORE_DLLAPI void filterEdge(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C
  * ***************************************************************************/
 
 IUCORE_DLLAPI void cubicBSplinePrefilter(iu::ImageGpu_32f_C1* srcdst);
-
+/** @} */ // end of Filters
 
 /** @} */ // end of Filter Module
 

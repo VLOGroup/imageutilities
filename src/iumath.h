@@ -4,6 +4,7 @@
 #include "iudefs.h"
 
 namespace iu {
+/// Math related functions
 namespace math {
 
 /** \defgroup Math iumath
