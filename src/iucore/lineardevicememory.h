@@ -111,11 +111,17 @@ public:
     return reinterpret_cast<const PixelType*>(&(data_[offset]));
   }
 
+  /** Returns a thrust device pointer that can be used in custom operators
+    @return Thrust pointer of the begin of the memory
+    */
   thrust::device_ptr<PixelType> begin(void)
   {
       return thrust::device_ptr<PixelType>(data());
   }
 
+  /** Returns a thrust device pointer that can be used in custom operators
+    @return Thrust pointer of the end of the memory
+    */
   thrust::device_ptr<PixelType> end(void)
   {
       return thrust::device_ptr<PixelType>(data() + length());
@@ -139,6 +145,7 @@ public:
     return true;
   }
 
+  /** Really handy struct that can be passed to kernel functions. Contains the elementary stuff */
   struct KernelData
   {
       PixelType* data_;

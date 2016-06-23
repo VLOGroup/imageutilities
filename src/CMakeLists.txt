@@ -402,15 +402,15 @@ SET(DOXYGEN_INPUT ${CMAKE_CURRENT_SOURCE_DIR}/../doc/doxconfig)
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/../doc/doxconfig.in
                        ${DOXYGEN_INPUT})
 
-ADD_CUSTOM_COMMAND(
- OUTPUT ${DOXYGEN_OUTPUT}
+ADD_CUSTOM_TARGET( apidoc
+ COMMAND ${CMAKE_COMMAND} --build . --target install
  COMMAND ${CMAKE_COMMAND} -E echo_append "Building API Documentation..."
  COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_INPUT}
  COMMAND ${CMAKE_COMMAND} -E echo "Done."
- WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../doc
+ WORKING_DIRECTORY ${CMAKE_CACHEFILE_DIR}
  DEPENDS ${DOXYGEN_INPUT}
  )
-ADD_CUSTOM_TARGET(apidoc DEPENDS ${DOXYGEN_OUTPUT})
+
 
 ##-----------------------------------------------------------------------------
 ## build core library
@@ -607,3 +607,4 @@ if(ANDROID)
   message("Compiler Flags GCC:  " ${CMAKE_C_FLAGS})
 
 endif(ANDROID)
+

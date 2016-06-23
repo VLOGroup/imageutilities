@@ -49,6 +49,7 @@ public:
     length_(length)
   { }
 
+  /** Returns true if target class is of the same type (using RTTI). */
   bool sameType(const LinearMemory &from)
   {
       return typeid(from)==typeid(*this);
