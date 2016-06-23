@@ -415,6 +415,13 @@ IUCORE_DLLAPI void convert_32u32f_C1(const iu::ImageGpu_32u_C1* src, iu::ImageGp
 IUCORE_DLLAPI void convert_32u32f_C1(const iu::ImageCpu_32u_C1* src, iu::ImageCpu_32f_C1* dst,
                                 float mul_constant, float add_constant=0.0f);
 
+/** Converts a 32-bit single-channel linear memory to a 32-bit single-channel linear memory.
+ * Inplace conversion is possible.
+ * \param src 1-channel src linear memory [device].
+ * \param dst 1-channel destination linear memory [device].
+ */
+IUCORE_DLLAPI void convert_32s32f_C1_lin(iu::LinearDeviceMemory_32s_C1* src, iu::LinearDeviceMemory_32f_C1* dst);
+
 
 /** Converts an 8-bit 3-channel image to a 32-bit 4-channel image.
  * \param src 3-channel source image [device].
