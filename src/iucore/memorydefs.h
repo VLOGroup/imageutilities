@@ -263,6 +263,7 @@ typedef TensorCpu<double> TensorCpu_64f;
 typedef TensorGpu<unsigned char> TensorGpu_8u;
 typedef TensorGpu<unsigned short> TensorGpu_16u;
 typedef TensorGpu<float> TensorGpu_32f;
+typedef TensorGpu<unsigned int> TensorGpu_32u;
 typedef TensorGpu<int> TensorGpu_32s;
 typedef TensorGpu<double> TensorGpu_64f;
 

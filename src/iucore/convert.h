@@ -63,6 +63,8 @@ void convert_8u32f_C1(const iu::ImageGpu_8u_C1* src, iu::ImageGpu_32f_C1 *dst,
 void convert_32u32f_C1(const iu::ImageGpu_32u_C1* src, iu::ImageGpu_32f_C1 *dst,
                        float mul_constant, float add_constant=0.0f);
 
+void convert_32s32f_C1_lin(iu::LinearDeviceMemory_32s_C1 *src, iu::LinearDeviceMemory_32f_C1 *dest);
+
 // [host] 2D bit depth conversion; 32u_C1 -> 32f_C1;
 void convert_32u32f_C1(const iu::ImageCpu_32u_C1* src, iu::ImageCpu_32f_C1 *dst,
                        float mul_constant, float add_constant=0.0f);

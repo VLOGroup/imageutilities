@@ -49,11 +49,16 @@ extern void cuConvert_32f_8u(const iu::ImageGpu_32f_C1* src,
 extern void cuConvert_32f_8u(const iu::ImageGpu_32f_C4* src,
                                  iu::ImageGpu_8u_C4* dst,
                                  float mul_constant, unsigned char add_constant);
+
+// src not declared as const to allow in-place conversion
+extern void cuConvert_32s_32f_lin(iu::LinearDeviceMemory_32s_C1 *src, iu::LinearDeviceMemory_32f_C1 *dest);
+
 extern void cuConvert_rgb_to_hsv(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst, bool normalize);
 extern void cuConvert_hsv_to_rgb(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst, bool denormalize);
 
 extern void cuConvert_rgb_to_lab(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst, bool isNormalized);
 extern void cuConvert_lab_to_rgb(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst);
+
 
 //extern double cuSummation(iu::ImageGpu_32f_C1* src);
 
@@ -134,6 +139,10 @@ void convert_32u32f_C1(const iu::ImageGpu_32u_C1* src, iu::ImageGpu_32f_C1 *dst,
     cuConvert_32u_32f(src, dst, mul_constant, add_constant);
 }
 
+void convert_32s32f_C1_lin(iu::LinearDeviceMemory_32s_C1 *src, iu::LinearDeviceMemory_32f_C1 *dest)
+{
+	cuConvert_32s_32f_lin(src, dest);
+}
 
 //-----------------------------------------------------------------------------
 // [host] conversion 32u_C1 -> 32f_C1
@@ -149,8 +158,6 @@ void convert_32u32f_C1(const iu::ImageCpu_32u_C1* src, iu::ImageCpu_32f_C1 *dst,
       }
     }
 }
-
-
 
 //-----------------------------------------------------------------------------
 // [device] conversion 8u_C3 -> 32f_C4

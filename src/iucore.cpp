@@ -368,6 +368,11 @@ void convert_32u32f_C1(const iu::ImageCpu_32u_C1* src, iu::ImageCpu_32f_C1* dst,
     iuprivate::convert_32u32f_C1(src, dst, mul_constant, add_constant);
 }
 
+void convert_32s32f_C1_lin(iu::LinearDeviceMemory_32s_C1* src, iu::LinearDeviceMemory_32f_C1* dst)
+{
+	iuprivate::convert_32s32f_C1_lin(src, dst);
+}
+
 
 void convert_8u32f_C3C4(const iu::ImageGpu_8u_C3* src, iu::ImageGpu_32f_C4* dst,
                                 float mul_constant, float add_constant)

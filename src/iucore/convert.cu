@@ -532,6 +532,19 @@ void cuConvert_32u_32f(const iu::ImageGpu_32u_C1* src,
                                                     mul_constant, add_constant, src->width(), src->height());
 }
 
+//-----------------------------------------------------------------------------
+struct int2float
+{
+	__host__ __device__ float operator()(int x) const
+	{
+		return (float)x;
+	}
+};
+
+void cuConvert_32s_32f_lin(iu::LinearDeviceMemory_32s_C1 *src, iu::LinearDeviceMemory_32f_C1 *dest)
+{
+	thrust::transform(src->begin(), src->end(), dest->begin(), int2float());
+}
 
 //-----------------------------------------------------------------------------
 void cuConvert_8u_32f_C3C4(const iu::ImageGpu_8u_C3* src,
