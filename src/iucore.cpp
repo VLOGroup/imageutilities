@@ -22,10 +22,12 @@
  */
 
 #include "iucore.h"
-#include <iucore/copy.h>
-//#include <iucore/setvalue.h>
-//#include <iucore/clamp.h>
-#include <iucore/convert.h>
+#include "iucore/copy.h"
+#include "iucore/convert.h"
+#include "iucore/filter.h"
+#include "iucore/reduce.h"
+#include "iucore/remap.h"
+#include "iucore/prolongate.h"
 
 namespace iu {
 
@@ -394,5 +396,134 @@ void convert_LabRgb(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst)
 //{
 //    return iuprivate::summation(src);
 //}
+
+/* ***************************************************************************
+     Denoising Filter
+ * ***************************************************************************/
+
+// 2D device; 32-bit; 1-channel
+void filterMedian3x3(const ImageGpu_32f_C1* src, ImageGpu_32f_C1* dst)
+{iuprivate::filterMedian3x3(src, dst);}
+
+/* ***************************************************************************/
+// device; 32-bit; 1-channel
+void filterGauss(const ImageGpu_32f_C1* src, ImageGpu_32f_C1* dst,
+                 float sigma, int kernel_size, ImageGpu_32f_C1 *temp)
+{iuprivate::filterGauss(src, dst, sigma, kernel_size, temp);}
+// device; volume; 32-bit; 1-channel
+void filterGauss(const VolumeGpu_32f_C1* src, VolumeGpu_32f_C1* dst,
+                 float sigma, int kernel_size)
+{iuprivate::filterGauss(src, dst, sigma, kernel_size);}
+// device; 32-bit; 4-channel
+void filterGauss(const ImageGpu_32f_C4* src, ImageGpu_32f_C4* dst,
+                 float sigma, int kernel_size)
+{iuprivate::filterGauss(src, dst, sigma, kernel_size);}
+
+
+/* ***************************************************************************
+     edge calculation
+ * ***************************************************************************/
+
+// edge filter; device; 32-bit; 1-channel
+void filterEdge(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C2* dst)
+{ iuprivate::filterEdge(src, dst); }
+
+// edge filter + evaluation; device; 32-bit; 1-channel
+void filterEdge(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
+                float alpha, float beta, float minval)
+{ iuprivate::filterEdge(src, dst, alpha, beta, minval); }
+
+// edge filter + evaluation (4n); device; 32-bit; 1-channel
+void filterEdge(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C2* dst,
+                float alpha, float beta, float minval)
+{ iuprivate::filterEdge(src, dst, alpha, beta, minval); }
+
+// edge filter + evaluation (8n); device; 32-bit; 1-channel
+void filterEdge(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C4* dst,
+                float alpha, float beta, float minval)
+{ iuprivate::filterEdge(src, dst, alpha, beta, minval); }
+
+// edge filter + evaluation; device; 32-bit; 4-channel (RGB)
+void filterEdge(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C1* dst,
+                float alpha, float beta, float minval)
+{ iuprivate::filterEdge(src, dst, alpha, beta, minval); }
+
+// edge filter + evaluation; device; 32-bit; 4-channel (RGB)
+void filterEdge(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C2* dst,
+                float alpha, float beta, float minval)
+{ iuprivate::filterEdge(src, dst, alpha, beta, minval); }
+
+// edge filter + evaluation; device; 32-bit; 4-channel (RGB)
+void filterEdge(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst,
+                float alpha, float beta, float minval)
+{ iuprivate::filterEdge(src, dst, alpha, beta, minval); }
+
+
+
+/* ***************************************************************************
+     other filters
+ * ***************************************************************************/
+void cubicBSplinePrefilter(iu::ImageGpu_32f_C1* srcdst)
+{ iuprivate::cubicBSplinePrefilter(srcdst); }
+
+/* ***************************************************************************
+     Geometric Transformation
+ * ***************************************************************************/
+
+/*
+  image reduction
+ */
+void reduce(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
+            IuInterpolationType interpolation,
+            bool gauss_prefilter)
+{iuprivate::reduce(src, dst, interpolation, gauss_prefilter);}
+
+
+/*
+  image prolongation
+ */
+void prolongate(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
+                IuInterpolationType interpolation)
+{iuprivate::prolongate(src, dst, interpolation);}
+
+void prolongate(const iu::ImageGpu_32f_C2* src, iu::ImageGpu_32f_C2* dst,
+                IuInterpolationType interpolation)
+{iuprivate::prolongate(src, dst, interpolation);}
+
+void prolongate(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst,
+                IuInterpolationType interpolation)
+{iuprivate::prolongate(src, dst, interpolation);}
+
+/*
+  image remapping (warping)
+ */
+// 8u_C1
+void remap(iu::ImageGpu_8u_C1* src,
+           iu::ImageGpu_32f_C1* dx_map, iu::ImageGpu_32f_C1* dy_map,
+           iu::ImageGpu_8u_C1* dst, IuInterpolationType interpolation)
+{iuprivate::remap(src, dx_map, dy_map, dst, interpolation);}
+
+// 32f_C1
+void remap(iu::ImageGpu_32f_C1* src,
+           iu::ImageGpu_32f_C1* dx_map, iu::ImageGpu_32f_C1* dy_map,
+           iu::ImageGpu_32f_C1* dst, IuInterpolationType interpolation)
+{iuprivate::remap(src, dx_map, dy_map, dst, interpolation);}
+
+
+//IuStatus remap(iu::ImageGpu_32f_C2* src,
+//           iu::ImageGpu_32f_C1* dx_map, iu::ImageGpu_32f_C1* dy_map,
+//           iu::ImageGpu_32f_C2* dst, IuInterpolationType interpolation)
+//{return iuprivate::remap(src, dx_map, dy_map, dst, interpolation);}
+
+// 32f_C4
+void remap(iu::ImageGpu_32f_C4* src,
+               iu::ImageGpu_32f_C1* dx_map, iu::ImageGpu_32f_C1* dy_map,
+               iu::ImageGpu_32f_C4* dst, IuInterpolationType interpolation)
+{iuprivate::remap(src, dx_map, dy_map, dst, interpolation);}
+
+void remapAffine(iu::ImageGpu_32f_C1* src,
+                 float a1, float a2, float a3, float a4, float b1, float b2,
+                 iu::ImageGpu_32f_C1* dst)
+{iuprivate::remapAffine(src, a1, a2, a3, a4, b1, b2, dst);}
 
 } // namespace iu

@@ -472,6 +472,169 @@ IUCORE_DLLAPI void convert_LabRgb(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_3
 
 /** \} */ // end of Core module
 
+/* ***************************************************************************
+     Filters
+ * ***************************************************************************/
+
+//////////////////////////////////////////////////////////////////////////////
+/* ***************************************************************************
+     Denoising
+ * ***************************************************************************/
+/** @defgroup Denoising
+ *  @ingroup Filter
+ *  TODO more detailed docu
+ *  @{
+ */
+
+/** 2D Median Filter
+ * \brief Filters a device image using a 3x3 median filter
+ * \param src Source image [device].
+ * \param dst Destination image [device]
+ * \param roi Region of interest in the dsetination image.
+ */
+IUCORE_DLLAPI void filterMedian3x3(const ImageGpu_32f_C1* src, ImageGpu_32f_C1* dst );
+
+/** Gaussian Convolution
+ * \brief Filters a device image using a Gaussian filter
+ * \param src Source image [device].
+ * \param dst Destination image [device]
+ * \param roi Region of interest in the dsetination image.
+ * \param sigma Controls the amount of smoothing
+ * \param kernel_size Sets the size of the used Gaussian kernel. If =0 the size is calculated.
+ */
+IUCORE_DLLAPI void filterGauss(const ImageGpu_32f_C1* src, ImageGpu_32f_C1* dst,
+                               float sigma, int kernel_size=0, ImageGpu_32f_C1* temp=NULL);
+IUCORE_DLLAPI void filterGauss(const VolumeGpu_32f_C1* src, VolumeGpu_32f_C1* dst,
+                               float sigma, int kernel_size=0);
+IUCORE_DLLAPI void filterGauss(const ImageGpu_32f_C4* src, ImageGpu_32f_C4* dst,
+                               float sigma, int kernel_size=0);
+
+
+/** @} */ // end of Denoising
+
+
+/* ***************************************************************************
+     edge calculation
+ * ***************************************************************************/
+
+
+IUCORE_DLLAPI void filterEdge(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C2* dst );
+
+IUCORE_DLLAPI void filterEdge(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst ,
+                              float alpha, float beta, float minval);
+
+IUCORE_DLLAPI void filterEdge(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C2* dst ,
+                              float alpha, float beta, float minval);
+
+IUCORE_DLLAPI void filterEdge(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C4* dst,
+                              float alpha, float beta, float minval);
+
+IUCORE_DLLAPI void filterEdge(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C1* dst,                               float alpha, float beta, float minval);
+
+IUCORE_DLLAPI void filterEdge(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C2* dst,
+                              float alpha, float beta, float minval);
+
+IUCORE_DLLAPI void filterEdge(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst,
+                              float alpha, float beta, float minval);
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+/* ***************************************************************************
+     other filters
+ * ***************************************************************************/
+
+IUCORE_DLLAPI void cubicBSplinePrefilter(iu::ImageGpu_32f_C1* srcdst);
+
+
+/** @} */ // end of Filter Module
+
+/** \defgroup Geometric Transformation
+ *  \brief Geometric image transformations
+ *  TODO more detailed docu
+ *  @{
+ */
+
+/* ***************************************************************************
+     Geometric Transformations
+ * ***************************************************************************/
+
+//////////////////////////////////////////////////////////////////////////////
+/* ***************************************************************************
+     Image resize
+ * ***************************************************************************/
+/** @defgroup Image Transformations
+ *  @ingroup Geometric Transformation
+ *  TODO more detailed docu
+ *  @{
+ */
+
+/** Image reduction.
+ * \brief Scaling the image \a src down to the size of \a dst.
+ * \param[in] src Source image [device]
+ * \param[out] dst Destination image [device]
+ * \param[in] interpolation The type of interpolation used for scaling down the image.
+ * \param[in] gauss_prefilter Toggles gauss prefiltering. The sigma and kernel size is chosen dependent on the scale factor.
+ * \param[in] bicubic_bspline_prefilter Only reasonable for cubic (spline) interpolation.
+ *
+ * \note The bcubic_bspline_prefilter yields sharper results when switched on. Note that this only works nicely with a scale_factor=0.5f.
+ */
+IUCORE_DLLAPI void reduce(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
+                          IuInterpolationType interpolation = IU_INTERPOLATE_LINEAR,
+                          bool gauss_prefilter = true);
+
+/** Image prolongation.
+ * \brief Scaling the image \a src up to the size of \a dst.
+ * \param[in] src Source image [device]
+ * \param[out] dst Destination image [device]
+ * \param[in] interpolation The type of interpolation used for scaling up the image.
+ * :TODO: \param[in] bicubic_bspline_prefilter Only reasonable for cubic (spline) interpolation.
+ *
+ * \note The bcubic_bspline_prefilter yields sharper results when switched on. Note that this only works nicely with a scale_factor=0.5f.
+ */
+IUCORE_DLLAPI void prolongate(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
+                              IuInterpolationType interpolation = IU_INTERPOLATE_NEAREST);
+IUCORE_DLLAPI void prolongate(const iu::ImageGpu_32f_C2* src, iu::ImageGpu_32f_C2* dst,
+                              IuInterpolationType interpolation = IU_INTERPOLATE_NEAREST);
+IUCORE_DLLAPI void prolongate(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst,
+                              IuInterpolationType interpolation = IU_INTERPOLATE_NEAREST);
+
+/** Image remapping (warping).
+ * \brief Remapping the image \a src with the given disparity fields dx, dy.
+ * \param[in] src Source image [device]
+ * \param[in] dx_map Disparities (dense) in x direction [device]
+ * \param[in] dy_map Disparities (dense) in y direction [device]
+ * \param[out] dst Destination image [device]
+ * \param[in] interpolation The type of interpolation used for scaling up the image.
+ * :TODO: \param[in] bicubic_bspline_prefilter Only reasonable for cubic (spline) interpolation.
+ *
+ * \note The bcubic_bspline_prefilter yields sharper results when switched on. Note that this only works nicely with a scale_factor=0.5f.
+ */
+IUCORE_DLLAPI void remap(iu::ImageGpu_8u_C1* src,
+                         iu::ImageGpu_32f_C1* dx_map, iu::ImageGpu_32f_C1* dy_map,
+                         iu::ImageGpu_8u_C1* dst,
+                         IuInterpolationType interpolation = IU_INTERPOLATE_LINEAR);
+IUCORE_DLLAPI void remap(iu::ImageGpu_32f_C1* src,
+                         iu::ImageGpu_32f_C1* dx_map, iu::ImageGpu_32f_C1* dy_map,
+                         iu::ImageGpu_32f_C1* dst,
+                         IuInterpolationType interpolation = IU_INTERPOLATE_LINEAR);
+//IUCORE_DLLAPI IuStatus remap(iu::ImageGpu_32f_C2* src,
+//                     iu::ImageGpu_32f_C1* dx_map, iu::ImageGpu_32f_C1* dy_map,
+//                     iu::ImageGpu_32f_C2* dst,
+//                     IuInterpolationType interpolation = IU_INTERPOLATE_LINEAR);
+IUCORE_DLLAPI void remap(iu::ImageGpu_32f_C4* src,
+                         iu::ImageGpu_32f_C1* dx_map, iu::ImageGpu_32f_C1* dy_map,
+                         iu::ImageGpu_32f_C4* dst,
+                         IuInterpolationType interpolation = IU_INTERPOLATE_LINEAR);
+
+IUCORE_DLLAPI void remapAffine(iu::ImageGpu_32f_C1* src,
+                               float a1, float a2, float a3, float a4, float b1, float b2,
+                               iu::ImageGpu_32f_C1* dst);
+
+
+/** @} */ // end of Image Transformations
+
+
 } // namespace iu
 
 #endif // IU_CORE_MODULE_H

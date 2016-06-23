@@ -251,8 +251,7 @@ if(IU_USE_MATH)
     ${CMAKE_CURRENT_SOURCE_DIR}/iumath.h
    )
   set(IU_PUBLIC_MATH_HEADERS
-      ${CMAKE_CURRENT_SOURCE_DIR}/iugui/qt5imagegpuwidget.h
-      ${CMAKE_CURRENT_SOURCE_DIR}/iugui/qt5disparitymapgpuwidget.h
+
    )
   set( IU_MATH_HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/iumath/thrust_kernels.cuh
@@ -291,8 +290,6 @@ SET( IU_PUBLIC_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/iucutil.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore.h
   ${CMAKE_CURRENT_SOURCE_DIR}/helper_math.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/iufilter.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/iutransform.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iupython.h
   )
 # 
@@ -339,25 +336,20 @@ SET( IU_HEADERS
 # 
 SET( IU_SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore.cpp
-#   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/imagepyramid.cpp
-#  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/setvalue.cpp
-#  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/setvalue.cu
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/convert.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/convert.cu
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/copy.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/copy.cu
-  ${CMAKE_CURRENT_SOURCE_DIR}/iufilter.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/iufilter/filter.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/iufilter/filter.cu
-  ${CMAKE_CURRENT_SOURCE_DIR}/iufilter/filterbspline_kernels.cu
-  ${CMAKE_CURRENT_SOURCE_DIR}/iutransform.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/transform.cu
-  ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/reduce.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/reduce.cu
-  ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/prolongate.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/prolongate.cu
-  ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/remap.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/remap.cu
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/filter.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/filter.cu
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/filterbspline_kernels.cu
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/transform.cu
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/reduce.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/reduce.cu
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/prolongate.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/prolongate.cu
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/remap.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/remap.cu
   )
 # 
 # # denote kernel files as header only to not confuse the compiler
@@ -388,7 +380,7 @@ SET( IU_SOURCES
 
 # denote kernel files as header only to not confuse the compiler
 set_source_files_properties(
-  ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/transform.cu
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/transform.cu
   PROPERTIES HEADER_FILE_ONLY yes
   )
 
