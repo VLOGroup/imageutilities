@@ -119,12 +119,12 @@ void Qt5ImageGpuWidget::init_cuda()
 
     // vertex and texture coordinate data for a quad (2 triangles)
     // layout: x,y,z,u,v
-    float vertices_and_texUV[6*(3+2)] = {-0.5, -0.5, 0, 0, 0,
-            image_size_.width-0.5, -0.5, 0, 1, 0,
-            image_size_.width-0.5, image_size_.height-0.5, 0, 1, 1,
-            -0.5, image_size_.height-0.5, 0, 0, 1,
-            image_size_.width-0.5, image_size_.height-0.5, 0, 1, 1,
-            -0.5, -0.5, 0, 0, 0};
+    float vertices_and_texUV[6*(3+2)] = {-0.5f, -0.5f, 0, 0, 0,
+            image_size_.width-0.5f, -0.5f, 0, 1, 0,
+            image_size_.width-0.5f, image_size_.height-0.5f, 0, 1, 1,
+            -0.5f, image_size_.height-0.5f, 0, 0, 1,
+            image_size_.width-0.5f, image_size_.height-0.5f, 0, 1, 1,
+            -0.5f, -0.5f, 0, 0, 0};
     vbo_ = new QOpenGLBuffer(QOpenGLBuffer::VertexBuffer);
     vbo_->setUsagePattern(QOpenGLBuffer::StaticDraw);
     vbo_->create();
@@ -190,7 +190,8 @@ void Qt5ImageGpuWidget::initializeGL()
 
 void Qt5ImageGpuWidget::resizeGL(int w, int h)
 {
-
+    Q_UNUSED(w);
+    Q_UNUSED(h);
 }
 
 

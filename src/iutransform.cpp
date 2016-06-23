@@ -38,8 +38,8 @@ namespace iu {
  */
 void reduce(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
             IuInterpolationType interpolation,
-            bool gauss_prefilter, bool bicubic_bspline_prefilter)
-{iuprivate::reduce(src, dst, interpolation, gauss_prefilter, bicubic_bspline_prefilter);}
+            bool gauss_prefilter)
+{iuprivate::reduce(src, dst, interpolation, gauss_prefilter);}
 
 
 /*

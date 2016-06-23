@@ -5,10 +5,10 @@
 #ifndef STATISTICS_CUH
 #define STATISTICS_CUH
 
-
 #include "iucore.h"
 #include "thrust_kernels.cuh"
 #include <thrust/extrema.h>
+
 
 namespace iuprivate {
 namespace math {
@@ -186,5 +186,6 @@ void mse(iu::ImageGpu<PixelType, iuprivate::ImageAllocatorGpu<Allocator> >& src,
 
 } //namespace math
 } // namespace iuprivate
+
 
 #endif //STATISTICS_CUH

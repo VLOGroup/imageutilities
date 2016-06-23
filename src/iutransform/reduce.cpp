@@ -47,7 +47,7 @@ extern void cuReduce(iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
 // device; 32-bit; 1-channel
 void reduce(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
                 IuInterpolationType interpolation,
-                bool gauss_prefilter, bool bicubic_bspline_prefilter)
+                bool gauss_prefilter)
 {
   // temporary variable if there is some pre-filtering
   iu::ImageGpu_32f_C1* filtered = const_cast<iu::ImageGpu_32f_C1*>(src);
@@ -83,18 +83,18 @@ void reduce(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
 
   // convert the input image into cubic bspline coefficients
   // (only useful for cubic interpolation!)
-  if(bicubic_bspline_prefilter && interpolation==IU_INTERPOLATE_CUBIC)
-  {
-    if(!filtered_auto.get())
-    {
-      // if no gaussian prefilter applied alloc mem, etc.
-      filtered = new iu::ImageGpu_32f_C1(src->size());
-	  filtered_auto.reset( filtered );
-      iuprivate::copy(src, filtered);
-    }
+//  if(bicubic_bspline_prefilter && interpolation==IU_INTERPOLATE_CUBIC)
+//  {
+//    if(!filtered_auto.get())
+//    {
+//      // if no gaussian prefilter applied alloc mem, etc.
+//      filtered = new iu::ImageGpu_32f_C1(src->size());
+//	  filtered_auto.reset( filtered );
+//      iuprivate::copy(src, filtered);
+//    }
 
-    iuprivate::cubicBSplinePrefilter(filtered);
-  }
+//    iuprivate::cubicBSplinePrefilter(filtered);
+//  }
 
   cuReduce(filtered, dst, interpolation);
 
@@ -103,7 +103,7 @@ void reduce(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
 void reduce(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
             iu::ImageGpu_32f_C1* temp, iu::ImageGpu_32f_C1 *temp_filter, cudaStream_t stream,
             IuInterpolationType interpolation,
-            bool gauss_prefilter, bool bicubic_bspline_prefilter)
+            bool gauss_prefilter)
 {
 
   // gauss pre-filter
@@ -133,10 +133,10 @@ void reduce(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
 
   // convert the input image into cubic bspline coefficients
   // (only useful for cubic interpolation!)
-  if(bicubic_bspline_prefilter && interpolation==IU_INTERPOLATE_CUBIC)
-  {
-    printf("reduce(): cubic bspline filter not implemented\n");
-  }
+//  if(bicubic_bspline_prefilter && interpolation==IU_INTERPOLATE_CUBIC)
+//  {
+//    printf("reduce(): cubic bspline filter not implemented\n");
+//  }
 
   cuReduce(temp, dst, interpolation, stream);
 

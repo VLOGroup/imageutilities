@@ -28,6 +28,8 @@
 #include <assert.h>
 #include <cstdlib>
 #include <string.h>         // memcpy
+#include <thrust/memory.h>
+
 #include "linearmemory.h"
 
 namespace iu {
@@ -123,6 +125,16 @@ public:
   virtual unsigned int bitDepth() const
   {
     return 8*sizeof(PixelType);
+  }
+
+  thrust::pointer<PixelType, thrust::host_system_tag> begin(void)
+  {
+      return thrust::pointer<PixelType, thrust::host_system_tag>(data());
+  }
+
+  thrust::pointer<PixelType, thrust::host_system_tag> end(void)
+  {
+      return thrust::pointer<PixelType, thrust::host_system_tag>(data()+length());
   }
 
   /** Returns flag if the image data resides on the device/GPU (TRUE) or host/GPU (FALSE) */

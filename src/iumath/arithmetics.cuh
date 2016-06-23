@@ -4,6 +4,7 @@
 #include <thrust/transform.h>
 #include <thrust/reduce.h>
 #include <thrust/iterator/constant_iterator.h>
+
 #include "thrust_kernels.cuh"
 #include "iucore.h"
 
@@ -117,11 +118,25 @@ void fill(iu::ImageGpu<PixelType, iuprivate::ImageAllocatorGpu<Allocator> >& dst
     thrust::fill(dst.begin(),dst.end(),val);
 }
 
+template<typename PixelType, class Allocator >
+void fill(iu::ImageCpu<PixelType, iuprivate::ImageAllocatorCpu<Allocator> >& dst,PixelType& val)
+{
+    thrust::fill(dst.begin(),dst.end(),val);
+}
+
+
 template<typename PixelType>
 void fill(iu::LinearDeviceMemory<PixelType>& dst,PixelType& val)
 {
     thrust::fill(dst.begin(),dst.end(),val);
 }
+
+template<typename PixelType>
+void fill(iu::LinearHostMemory<PixelType>& dst,PixelType& val)
+{
+    thrust::fill(dst.begin(),dst.end(),val);
+}
+
 
 }//namespace math
 }//namespace iuprivate

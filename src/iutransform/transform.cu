@@ -49,42 +49,42 @@ namespace iuprivate {
 */
 
 //-----------------------------------------------------------------------------
-static __global__ void cuTransformCubicSplineKernel_32f_C1(float* dst,
-                                                           size_t dst_stride, int dst_width, int dst_height,
-                                                           float x_factor, float y_factor)
-{
-  const int x = blockIdx.x*blockDim.x + threadIdx.x;
-  const int y = blockIdx.y*blockDim.y + threadIdx.y;
+//static __global__ void cuTransformCubicSplineKernel_32f_C1(float* dst,
+//                                                           size_t dst_stride, int dst_width, int dst_height,
+//                                                           float x_factor, float y_factor)
+//{
+//  const int x = blockIdx.x*blockDim.x + threadIdx.x;
+//  const int y = blockIdx.y*blockDim.y + threadIdx.y;
 
-  if (x<dst_width && y<dst_height)
-  {
-    // texture coordinates
-    const float xx = (x + 0.5f) * x_factor;
-    const float yy = (y + 0.5f) * y_factor;
+//  if (x<dst_width && y<dst_height)
+//  {
+//    // texture coordinates
+//    const float xx = (x + 0.5f) * x_factor;
+//    const float yy = (y + 0.5f) * y_factor;
 
-    // bilinear reduction
-    dst[y*dst_stride + x] = iu::cubicTex2D(tex1_32f_C1__, xx, yy);
-  }
-}
+//    // bilinear reduction
+//    dst[y*dst_stride + x] = iu::cubicTex2D(tex1_32f_C1__, xx, yy);
+//  }
+//}
 
 //-----------------------------------------------------------------------------
-static __global__ void cuTransformCubicKernel_32f_C1(float* dst,
-                                                     size_t dst_stride, int dst_width, int dst_height,
-                                                     float x_factor, float y_factor)
-{
-  const int x = blockIdx.x*blockDim.x + threadIdx.x;
-  const int y = blockIdx.y*blockDim.y + threadIdx.y;
+//static __global__ void cuTransformCubicKernel_32f_C1(float* dst,
+//                                                     size_t dst_stride, int dst_width, int dst_height,
+//                                                     float x_factor, float y_factor)
+//{
+//  const int x = blockIdx.x*blockDim.x + threadIdx.x;
+//  const int y = blockIdx.y*blockDim.y + threadIdx.y;
 
-  if (x<dst_width && y<dst_height)
-  {
-    // texture coordinates
-    const float xx = (x + 0.5f) * x_factor;
-    const float yy = (y + 0.5f) * y_factor;
+//  if (x<dst_width && y<dst_height)
+//  {
+//    // texture coordinates
+//    const float xx = (x + 0.5f) * x_factor;
+//    const float yy = (y + 0.5f) * y_factor;
 
-    // bilinear reduction
-    dst[y*dst_stride + x] = iu::cubicTex2DSimple(tex1_32f_C1__, xx, yy);
-  }
-}
+//    // bilinear reduction
+//    dst[y*dst_stride + x] = iu::cubicTex2DSimple(tex1_32f_C1__, xx, yy);
+//  }
+//}
 
 //-----------------------------------------------------------------------------
 static __global__ void cuTransformKernel_32f_C1(float* dst,

@@ -178,9 +178,9 @@ void copy(const iu::ImageCpu<PixelType, AllocatorCpu  > *src, iu::LinearHostMemo
 {
   IU_SIZE_CHECK(src, dst);
 	PixelType *dstData = dst->data();
-	for(int y = 0; y < src->height(); ++y)
+    for(unsigned int y = 0; y < src->height(); ++y)
 	{
-		for(int x = 0; x < src->width(); ++x)
+        for(unsigned int x = 0; x < src->width(); ++x)
 		{
 			dstData[x + y * src->width()] = *(src->data(x, y));
 		}

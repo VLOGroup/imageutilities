@@ -63,41 +63,41 @@ __global__ void cuRemapKernel_32f_C1(float *dst, size_t stride, int width, int h
 }
 
 // cubic interpolation
-__global__ void cuRemapCubicKernel_32f_C1(float *dst, size_t stride, int width, int height)
-{
-  const int x = blockIdx.x*blockDim.x + threadIdx.x;
-  const int y = blockIdx.y*blockDim.y + threadIdx.y;
+//__global__ void cuRemapCubicKernel_32f_C1(float *dst, size_t stride, int width, int height)
+//{
+//  const int x = blockIdx.x*blockDim.x + threadIdx.x;
+//  const int y = blockIdx.y*blockDim.y + threadIdx.y;
 
-  // texutre coordinates
-  const float xx = x+0.5f;
-  const float yy = y+0.5f;
-  // warped texutre coordinates
-  const float wx = xx + tex2D(tex_remap_dx_32f_C1__, xx, yy);
-  const float wy = yy + tex2D(tex_remap_dy_32f_C1__, xx, yy);
+//  // texutre coordinates
+//  const float xx = x+0.5f;
+//  const float yy = y+0.5f;
+//  // warped texutre coordinates
+//  const float wx = xx + tex2D(tex_remap_dx_32f_C1__, xx, yy);
+//  const float wy = yy + tex2D(tex_remap_dy_32f_C1__, xx, yy);
 
-  if (x<width && y<height) // Check if out coordinates lie inside output image
-  {
-    dst[y*stride+x] = iu::cubicTex2DSimple(tex1_32f_C1__, wx, wy);
-  }
-}
+//  if (x<width && y<height) // Check if out coordinates lie inside output image
+//  {
+//    dst[y*stride+x] = iu::cubicTex2DSimple(tex1_32f_C1__, wx, wy);
+//  }
+//}
 // cubic spline interpolation
-__global__ void cuRemapCubicSplineKernel_32f_C1(float *dst, size_t stride, int width, int height)
-{
-  const int x = blockIdx.x*blockDim.x + threadIdx.x;
-  const int y = blockIdx.y*blockDim.y + threadIdx.y;
+//__global__ void cuRemapCubicSplineKernel_32f_C1(float *dst, size_t stride, int width, int height)
+//{
+//  const int x = blockIdx.x*blockDim.x + threadIdx.x;
+//  const int y = blockIdx.y*blockDim.y + threadIdx.y;
 
-  // texutre coordinates
-  const float xx = x+0.5f;
-  const float yy = y+0.5f;
-  // warped texutre coordinates
-  const float wx = xx + tex2D(tex_remap_dx_32f_C1__, xx, yy);
-  const float wy = yy + tex2D(tex_remap_dy_32f_C1__, xx, yy);
+//  // texutre coordinates
+//  const float xx = x+0.5f;
+//  const float yy = y+0.5f;
+//  // warped texutre coordinates
+//  const float wx = xx + tex2D(tex_remap_dx_32f_C1__, xx, yy);
+//  const float wy = yy + tex2D(tex_remap_dy_32f_C1__, xx, yy);
 
-  if (x<width && y<height) // Check if out coordinates lie inside output image
-  {
-    dst[y*stride+x] = iu::cubicTex2D(tex1_32f_C1__, wx, wy);
-  }
-}
+//  if (x<width && y<height) // Check if out coordinates lie inside output image
+//  {
+//    dst[y*stride+x] = iu::cubicTex2D(tex1_32f_C1__, wx, wy);
+//  }
+//}
 
 
 //-----------------------------------------------------------------------------
@@ -134,8 +134,6 @@ void cuRemap(iu::ImageGpu_32f_C1* src,
   switch(interpolation)
   {
   case IU_INTERPOLATE_NEAREST:
-  case IU_INTERPOLATE_CUBIC:
-  case IU_INTERPOLATE_CUBIC_SPLINE:
     tex1_32f_C1__.filterMode = cudaFilterModePoint;
     break;
   case IU_INTERPOLATE_LINEAR:
@@ -150,14 +148,14 @@ void cuRemap(iu::ImageGpu_32f_C1* src,
     cuRemapKernel_32f_C1 <<< dimGridOut, dimBlock >>> (
                                                       dst->data(), dst->stride(), dst->width(), dst->height());
     break;
-  case IU_INTERPOLATE_CUBIC:
-    cuRemapCubicKernel_32f_C1 <<< dimGridOut, dimBlock >>> (
-                                                           dst->data(), dst->stride(), dst->width(), dst->height());
-    break;
-  case IU_INTERPOLATE_CUBIC_SPLINE:
-    cuRemapCubicSplineKernel_32f_C1 <<< dimGridOut, dimBlock >>> (
-                                                                 dst->data(), dst->stride(), dst->width(), dst->height());
-    break;
+//  case IU_INTERPOLATE_CUBIC:
+//    cuRemapCubicKernel_32f_C1 <<< dimGridOut, dimBlock >>> (
+//                                                           dst->data(), dst->stride(), dst->width(), dst->height());
+//    break;
+//  case IU_INTERPOLATE_CUBIC_SPLINE:
+//    cuRemapCubicSplineKernel_32f_C1 <<< dimGridOut, dimBlock >>> (
+//                                                                 dst->data(), dst->stride(), dst->width(), dst->height());
+//    break;
   }
 
   cudaUnbindTexture(&tex1_32f_C1__);
@@ -312,17 +310,15 @@ void cuRemap(iu::ImageGpu_8u_C1* src,
   dim3 dimBlock(block_size, block_size);
   dim3 dimGridOut(iu::divUp(dst->width(), dimBlock.x), iu::divUp(dst->height(), dimBlock.y));
 
-  //  switch(interpolation)
-  //  {
-  //  case IU_INTERPOLATE_NEAREST:
-  //  case IU_INTERPOLATE_CUBIC:
-  //  case IU_INTERPOLATE_CUBIC_SPLINE:
-  //    tex1_8u_C1__.filterMode = cudaFilterModePoint;
-  //    break;
-  //  case IU_INTERPOLATE_LINEAR:
-  //    tex1_8u_C1__.filterMode = cudaFilterModeLinear;
-  //    break;
-  //  }
+    switch(interpolation)
+    {
+    case IU_INTERPOLATE_NEAREST:
+      tex1_8u_C1__.filterMode = cudaFilterModePoint;
+      break;
+    case IU_INTERPOLATE_LINEAR:
+      tex1_8u_C1__.filterMode = cudaFilterModeLinear;
+      break;
+    }
 
   //  switch(interpolation)
   //  {
