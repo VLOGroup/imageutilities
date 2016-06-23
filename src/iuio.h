@@ -30,8 +30,9 @@
 
 namespace iu {
 
-/** \defgroup IO iuio.
+/** \defgroup IO iuio
  * Image I/O module
+ *\{
  */
 
 /** Loads an image to host memory from a file.
@@ -97,7 +98,7 @@ IUIO_DLLAPI void imshow(iu::ImageGpu_32f_C1* image, const std::string& winname, 
 IUIO_DLLAPI void imshow(iu::ImageGpu_32f_C4* image, const std::string& winname, const bool& normalize=false);
 
 
-/** Construct a ImgaCpu from an openCV Mat.
+/** Construct a ImageCpu from an openCV Mat.
   * The ImageCpu is NOT a deep copy, it just uses the data pointer from the Mat, i.e.
   * it wraps the memory from the Mat in an ImageCpu.
   */
