@@ -410,7 +410,7 @@ ADD_CUSTOM_COMMAND(
  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../doc
  DEPENDS ${DOXYGEN_INPUT}
  )
-ADD_CUSTOM_TARGET(apidoc ALL DEPENDS ${DOXYGEN_OUTPUT})
+ADD_CUSTOM_TARGET(apidoc DEPENDS ${DOXYGEN_OUTPUT})
 
 ##-----------------------------------------------------------------------------
 ## build core library
