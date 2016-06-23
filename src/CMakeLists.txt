@@ -98,7 +98,7 @@ if(IU_USE_IO AND OpenCV_LIBS)
   set( IU_PUBLIC_HEADERS
     ${IU_PUBLIC_HEADERS}
     ${CMAKE_CURRENT_SOURCE_DIR}/iuio.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/iuvideosource.h
+
     )
 
   set( IU_IO_HEADERS
@@ -107,6 +107,7 @@ if(IU_USE_IO AND OpenCV_LIBS)
     #${CMAKE_CURRENT_SOURCE_DIR}/iuio/videocapture_private.h
     )
   set(IU_PUBLIC_IO_HEADERS
+      ${CMAKE_CURRENT_SOURCE_DIR}/iuio/iuvideosource.h
       ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videosource.h
       ${CMAKE_CURRENT_SOURCE_DIR}/iuio/opencvsource.h
    )

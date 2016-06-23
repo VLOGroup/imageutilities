@@ -28,8 +28,8 @@
 
 namespace iu {
 
-/** \defgroup Core The core module.
- *  TODO more detailed docu
+/** \defgroup Core iucore.
+ *
  */
 
 
@@ -72,7 +72,7 @@ private:
 //////////////////////////////////////////////////////////////////////////////
 /** \defgroup Copy1D 1D Memory Copy
  *  \ingroup Core
- *  TODO more detailed docu
+ *  \brief Copy methods for 1D images of various types.
  *  \{
  */
 
@@ -165,7 +165,7 @@ IUCORE_DLLAPI void copy(const LinearDeviceMemory_32f_C4* src, LinearHostMemory_3
 //////////////////////////////////////////////////////////////////////////////
 /** \defgroup Copy2D 2D Memory Copy
  *  \ingroup Core
- *  Copy methods for 2D images of various types.
+ *  \brief Copy methods for 2D images of various types.
  *  \{
  */
 
@@ -244,7 +244,7 @@ IUCORE_DLLAPI void copy(const ImageGpu_32f_C4* src, ImageCpu_32f_C4* dst);
 //////////////////////////////////////////////////////////////////////////////
 /** \defgroup Copy3D 3D Memory Copy
  *  \ingroup Core
- *  Copy methods for 3D images of various types.
+ *  \brief Copy methods for 3D images of various types.
  *  \{
  */
 
@@ -347,7 +347,7 @@ IUCORE_DLLAPI void copy(const ImageGpu_32f_C1* src, LinearDeviceMemory_32f_C1* d
 //////////////////////////////////////////////////////////////////////////////
 /** \defgroup Conversions
  * \ingroup Core
- * Conversion methods for 2D images.
+ * \brief Conversion methods for 2D images.
  * \{
  */
 
@@ -493,8 +493,8 @@ IUCORE_DLLAPI void convert_LabRgb(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_3
      Denoising
  * ***************************************************************************/
 /** @defgroup Denoising
+    \brief Filters for 2D images
  *  \ingroup Core
- *  TODO more detailed docu
  *  @{
  */
 
@@ -562,9 +562,8 @@ IUCORE_DLLAPI void cubicBSplinePrefilter(iu::ImageGpu_32f_C1* srcdst);
 /** @} */ // end of Filter Module
 
 /** \defgroup Geometric Transformation
- *  \brief Geometric image transformations
+    \brief Up- and Downscaling of images
     \ingroup Core
- *  TODO more detailed docu
  *  @{
  */
 

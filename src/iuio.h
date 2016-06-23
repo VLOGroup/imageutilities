@@ -30,10 +30,8 @@
 
 namespace iu {
 
-/** \defgroup IMAGEIO
- *  \brief The image IO module.
- *  TODO more detailed docu
- *  @{
+/** \defgroup IO iuio.
+ * Image I/O module
  */
 
 /** Loads an image to host memory from a file.
