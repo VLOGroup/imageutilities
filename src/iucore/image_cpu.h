@@ -31,15 +31,19 @@
 namespace iu {
 
 template<typename PixelType, class Allocator>
+/** ImageCpu class.
+ */
 class ImageCpu : public Image
 {
 public:
+  /** Constructor. */
   ImageCpu() :
     Image(),
     data_(0), pitch_(0), ext_data_pointer_(false)
   {
   }
 
+  /** Destructor. */
   virtual ~ImageCpu()
   {
     if(!ext_data_pointer_)
@@ -51,6 +55,10 @@ public:
     pitch_ = 0;
   }
 
+  /** Special constructor.
+   *  @param _width Width of the Image
+   *  @param _height Height of the Image
+   */
   ImageCpu(unsigned int _width, unsigned int _height) :
     Image(_width, _height), data_(0), pitch_(0),
     ext_data_pointer_(false)
@@ -58,6 +66,9 @@ public:
     data_ = Allocator::alloc(_width, _height, &pitch_);
   }
 
+  /** Special constructor.
+   *  @param size Size of the Image
+   */
   ImageCpu(const IuSize& size) :
     Image(size.width, size.height), data_(0), pitch_(0),
     ext_data_pointer_(false)
@@ -65,23 +76,13 @@ public:
     data_ = Allocator::alloc(size.width, size.height, &pitch_);
   }
 
-  ImageCpu(const ImageCpu<PixelType, Allocator>& from) :
-    Image(from), data_(0), pitch_(0),
-    ext_data_pointer_(false)
-  {
-      if (from.ext_data_pointer_)      // external image stays external when copied
-      {
-          data_ = from.data_;
-          pitch_ = from.pitch_;
-          ext_data_pointer_ = from.ext_data_pointer_;
-      }
-      else
-      {
-          data_ = Allocator::alloc(width(), height(), &pitch_);
-          Allocator::copy(from.data(), from.pitch(), data_, pitch_, this->size());
-      }
-  }
-
+  /** Special constructor.
+   *  @param _data Host data pointer
+   *  @param _width Width of the Image
+   *  @param _height Height of the Image
+   *  @param _pitch Distance in bytes between starts of consecutive rows.
+   *  @param ext_data_pointer Use external data pointer as internal data pointer
+   */
   ImageCpu(PixelType* _data, unsigned int _width, unsigned int _height,
            size_t _pitch, bool ext_data_pointer = false) :
     Image(_width, _height), data_(0), pitch_(0),
@@ -89,7 +90,6 @@ public:
   {
     if(ext_data_pointer_)
     {
-      // This uses the external data pointer as internal data pointer.
       data_ = _data;
       pitch_ = _pitch;
     }
@@ -100,33 +100,23 @@ public:
     }
   }
 
-  ImageCpu& operator=(const ImageCpu<PixelType, Allocator>& from)
-  {
-      // destructor of ImageCpu does not free data in case ext_data_pointer_ is true.
-      // We support assignment operator of ImageCpu that wrap external memory by simply copying the data pointer. Reasoning: can have
-      // as many ImageCpu's referencing the external memory as we like, since we are not responsible for that data.
-      // Support of assignment operator for non external data would require deep copy or reference counting.
-      if (!(from.ext_data_pointer_))
-          throw IuException("ImageCpu supports assignment operator only for externally handled data");
-
-      Image::operator=(from);
-      data_ = from.data_;      // copy external (!) data pointer
-      pitch_ = from.pitch();
-      ext_data_pointer_ = from.ext_data_pointer_;
-
-      return *this;
-  }
-
   /** Returns a pointer to the pixel data.
-   * The pointer can be offset to position \a (ox/oy).
-   * @param[in] ox Horizontal offset of the pointer array.
-   * @param[in] oy Vertical offset of the pointer array.
+   * The pointer can be offset to position (ox/oy).
+   * @param ox Horizontal offset of the pointer array.
+   * @param oy Vertical offset of the pointer array.
    * @return Pointer to the pixel array.
    */
   PixelType* data(int ox = 0, int oy = 0)
   {
     return &data_[oy * stride() + ox];
   }
+
+  /** Returns a const pointer to the pixel data.
+   * The pointer can be offset to position (ox/oy).
+   * @param ox Horizontal offset of the pointer array.
+   * @param oy Vertical offset of the pointer array.
+   * @return Const pointer to the pixel array.
+   */
   const PixelType* data(int ox = 0, int oy = 0) const
   {
     return reinterpret_cast<const PixelType*>(
@@ -139,16 +129,14 @@ public:
     return *data(x, y);
   }
 
-  /** Get Pointer to beginning of row \a row (y index).
+  /** Get Pointer to beginning of row (y index).
    * This enables the usage of [y][x] operator.
+   * \param row y index / beginning of row
    */
   PixelType* operator[](unsigned int row)
   {
     return data_+row*stride();
   }
-
-  // :TODO:
-  //ImageCpu& operator= (const ImageCpu<PixelType, Allocator>& from);
 
   /** Returns the total amount of bytes saved in the data buffer. */
   virtual size_t bytes() const
@@ -162,7 +150,7 @@ public:
     return pitch_;
   }
 
-  /** Returns the distnace in pixels between starts of consecutive rows. */
+  /** Returns the distance in pixels between starts of consecutive rows. */
   virtual size_t stride() const
   {
     return pitch_/sizeof(PixelType);
@@ -174,11 +162,17 @@ public:
     return 8*sizeof(PixelType);
   }
 
+  /** Returns a thrust pointer that can be used in custom operators
+    @return Thrust pointer of the begin of the host memory
+   */
   thrust::pointer<PixelType, thrust::host_system_tag> begin(void)
   {
       return thrust::pointer<PixelType, thrust::host_system_tag>(data());
   }
 
+  /** Returns a thrust pointer that can be used in custom operators
+    @return Thrust pointer of the end of the host memory
+   */
   thrust::pointer<PixelType, thrust::host_system_tag> end(void)
   {
       return thrust::pointer<PixelType, thrust::host_system_tag>(data()+stride()*height());
@@ -191,9 +185,18 @@ public:
   }
 
 protected:
+  /** Pointer to host buffer. */
   PixelType* data_;
+  /** Distance in bytes between starts of consecutive rows. */
   size_t pitch_;
-  bool ext_data_pointer_; /**< Flag if data pointer is handled outside the image class. */
+  /** Flag if data pointer is handled outside the image class. */
+  bool ext_data_pointer_;
+
+private:
+  /** Private copy constructor. */
+  ImageCpu(const ImageCpu&);
+  /** Private copy assignment operator. */
+  ImageCpu& operator=(const ImageCpu&);
 };
 
 } // namespace iuprivate

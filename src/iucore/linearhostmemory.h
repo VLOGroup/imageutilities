@@ -35,15 +35,19 @@
 namespace iu {
 
 template<typename PixelType>
+/** \brief LinearHostMemory class.
+  */
 class LinearHostMemory : public LinearMemory
 {
 public:
+  /** Constructor. */
   LinearHostMemory() :
     LinearMemory(),
     data_(0), ext_data_pointer_(false)
   {
   }
 
+  /** Destructor. */
   virtual ~LinearHostMemory()
   {
     if((!ext_data_pointer_) && (data_!=NULL))
@@ -53,6 +57,9 @@ public:
     }
   }
 
+  /** Special constructor.
+   *  @param length Length of linear memory
+   */
   LinearHostMemory(const unsigned int& length) :
     LinearMemory(length),
     data_(0), ext_data_pointer_(false)
@@ -61,16 +68,11 @@ public:
     if (data_ == 0) throw std::bad_alloc();
   }
 
-  LinearHostMemory(const LinearHostMemory<PixelType>& from) :
-    LinearMemory(from),
-    data_(0), ext_data_pointer_(false)
-  {
-    if (from.data_==0) throw IuException("input data not valid", __FILE__, __FUNCTION__, __LINE__);
-    data_ = (PixelType*)malloc(this->length()*sizeof(PixelType));
-    if (data_ == 0) throw std::bad_alloc();
-    memcpy(data_, from.data_, this->length() * sizeof(PixelType));
-  }
-
+  /** Special constructor.
+   *  @param host_data Host data pointer
+   *  @param length Length of the memory
+   *  @param ext_data_pointer Use external data pointer as internal data pointer
+   */
   LinearHostMemory(PixelType* host_data, const unsigned int& length, bool ext_data_pointer = false) :
     LinearMemory(length),
     data_(0), ext_data_pointer_(ext_data_pointer)
@@ -90,11 +92,9 @@ public:
     }
   }
 
-  // :TODO: operator=
-
   /** Returns a pointer to the device buffer.
    * The pointer can be offset to position \a offset.
-   * @param[in] offset Offset of the pointer array.
+   * @param offset Offset of the pointer array.
    * @return Pointer to the device buffer.
    */
   PixelType* data(int offset = 0)
@@ -105,7 +105,7 @@ public:
 
   /** Returns a const pointer to the device buffer.
    * The pointer can be offset to position \a offset.
-   * @param[in] offset Offset of the pointer array.
+   * @param offset Offset of the pointer array.
    * @return Const pointer to the device buffer.
    */
   const PixelType* data(int offset = 0) const
@@ -127,11 +127,17 @@ public:
     return 8*sizeof(PixelType);
   }
 
+  /** Returns a thrust pointer that can be used in custom operators
+    @return Thrust pointer of the begin of the host memory
+   */
   thrust::pointer<PixelType, thrust::host_system_tag> begin(void)
   {
       return thrust::pointer<PixelType, thrust::host_system_tag>(data());
   }
 
+  /** Returns a thrust pointer that can be used in custom operators
+    @return Thrust pointer of the end of the host memory
+   */
   thrust::pointer<PixelType, thrust::host_system_tag> end(void)
   {
       return thrust::pointer<PixelType, thrust::host_system_tag>(data()+length());
@@ -145,10 +151,17 @@ public:
 
 protected:
 
+private:
+  /** Pointer to host buffer. */
+  PixelType* data_;
+  /** Flag if data pointer is handled outside the LinearHostMemory class. */
+  bool ext_data_pointer_;
 
 private:
-  PixelType* data_; /**< Pointer to device buffer. */
-  bool ext_data_pointer_; /**< Flag if data pointer is handled outside the image class. */
+  /** Private copy constructor. */
+  LinearHostMemory(const LinearHostMemory&);
+  /** Private copy assignment operator. */
+  LinearHostMemory& operator=(const LinearHostMemory&);
 
 };
 

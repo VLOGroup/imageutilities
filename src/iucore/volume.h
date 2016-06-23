@@ -33,61 +33,77 @@
 
 namespace iu{
 
-//! \todo We maybe do not want to have the Volume class in the public dll interface??
+/** \brief Volume base class.
+ * \todo We maybe do not want to have the Volume class in the public dll interface??
+ */
 class Volume
 {
 public:
+  /** Constructor. */
   Volume() :
     size_()
   {
   }
 
+  /** Destructor. */
   virtual ~Volume()
   {
   }
 
-  Volume(const Volume &from) :
-    size_(from.size_)
-  {
-  }
-
+  /** Special constructor.
+   *  @param width Width of the Volume
+   *  @param height Height of the Volume
+   *  @param depth Depth of the Volume
+   */
   Volume(unsigned int width, unsigned int height, unsigned int depth) :
     size_(width, height, depth)
   {
   }
 
+  /** Special constructor.
+   *  @param size Size of the Volume
+   */
   Volume(const IuSize &size) :
     size_(size)
   {
   }
 
-  Volume& operator= (const Volume &from)
-  {
-    // TODO == operator
-    this->size_ = from.size_;
-    return *this;
-  }
-
+  /** Compares the Volume type to a target Volume.
+   *  @param from Target Volume.
+   *  @return Returns true if target class is of the same type (using RTTI).
+   */
   bool sameType(const Volume &from)
   {
       return typeid(from)==typeid(*this);
   }
 
+  /** Get the size of the Volume
+   *  @return Size of the Volume
+   */
   IuSize size() const
   {
     return size_;
   }
 
+  /** Get the width of the Volume
+   *  @return Width of the Volume
+   */
   unsigned int width() const
   {
     return size_.width;
   }
 
+  /** Get the height of the Volume
+   *  @return Height of the Volume
+   */
   unsigned int height() const
   {
     return size_.height;
   }
 
+  /** Get the depth of the Volume
+   *  @return Depth of the Volume
+   */
   unsigned int depth() const
   {
     return size_.depth;
@@ -98,8 +114,6 @@ public:
   {
     return (size_.width * size_.height * size_.depth);
   }
-
-
 
   /** Returns the total amount of bytes saved in the data buffer. */
   virtual size_t bytes() const {return 0;};
@@ -130,7 +144,14 @@ public:
   }
 
 private:
+  /** Size of the Volume. */
   IuSize size_;
+
+private:
+  /** Private copy constructor. */
+  Volume(const Volume&);
+  /** Private copy assignment operator. */
+  Volume& operator=(const Volume&);
 };
 
 } // namespace iuprivate

@@ -30,15 +30,19 @@
 namespace iu {
 
 template<typename PixelType, class Allocator>
+/** VolumeGpu class.
+ */
 class VolumeGpu : public Volume
 {
 public:
+  /** Constructor. */
   VolumeGpu() :
     Volume(),
     data_(0), pitch_(0), ext_data_pointer_(false)
   {
   }
 
+  /** Destructor. */
   virtual ~VolumeGpu()
   {
     if(!ext_data_pointer_)
@@ -50,6 +54,11 @@ public:
     pitch_ = 0;
   }
 
+  /** Special constructor.
+   *  @param width Width of the Volume
+   *  @param height Height of the Volume
+   *  @param depth Depth of the Volume
+   */
   VolumeGpu(unsigned int _width, unsigned int _height, unsigned int _depth) :
     Volume(_width, _height, _depth), data_(0), pitch_(0),
     ext_data_pointer_(false)
@@ -57,6 +66,9 @@ public:
     data_ = Allocator::alloc(this->size(), &pitch_);
   }
 
+  /** Special constructor.
+   *  @param size Size of the Volume
+   */
   VolumeGpu(const IuSize& size) :
     Volume(size), data_(0), pitch_(0),
     ext_data_pointer_(false)
@@ -64,15 +76,14 @@ public:
     data_ = Allocator::alloc(this->size(), &pitch_);
   }
 
-  VolumeGpu(const VolumeGpu<PixelType, Allocator>& from) :
-    Volume(from), data_(0), pitch_(0),
-    ext_data_pointer_(false)
-  {
-    data_ = Allocator::alloc(this->size(), &pitch_);
-    Allocator::copy(from.data(), from.pitch(), data_, pitch_, this->size());
-    this->setRoi(from.roi());
-  }
-
+  /** Special constructor.
+   *  @param _data Device data pointer
+   *  @param _width Width of the Volume
+   *  @param _height Height of the Volume
+   *  @param _depth Height of the Volume
+   *  @param _pitch Distance in bytes between starts of consecutive rows.
+   *  @param ext_data_pointer Use external data pointer as internal data pointer
+   */
   VolumeGpu(PixelType* _data, unsigned int _width, unsigned int _height, unsigned int _depth,
             size_t _pitch, bool ext_data_pointer = false) :
     Volume(_width, _height, _depth), data_(0), pitch_(0),
@@ -95,9 +106,6 @@ public:
     }
   }
 
-  // :TODO:
-  //VolumeGpu& operator= (const VolumeGpu<PixelType, Allocator>& from);
-
   /** Returns the total amount of bytes saved in the data buffer. */
   size_t bytes() const
   {
@@ -116,13 +124,13 @@ public:
     return height()*pitch_;
   }
 
-  /** Returns the distnace in pixels between starts of consecutive rows. */
+  /** Returns the distance in pixels between starts of consecutive rows. */
   size_t stride() const
   {
     return pitch_/sizeof(PixelType);
   }
 
-  /** Returns the distnace in pixels between starts of consecutive slices. */
+  /** Returns the distance in pixels between starts of consecutive slices. */
   size_t slice_stride() const
   {
     return height()*pitch_/sizeof(PixelType);
@@ -143,14 +151,21 @@ public:
 
   /** Returns a pointer to the pixel data.
    * The pointer can be offset to position \a (ox/oy).
-   * @param[in] ox Horizontal offset of the pointer array.
-   * @param[in] oy Vertical offset of the pointer array.
+   * @param ox Horizontal offset of the pointer array.
+   * @param oy Vertical offset of the pointer array.
    * @return Pointer to the pixel array.
    */
   PixelType* data(int ox = 0, int oy = 0, int oz = 0)
   {
     return &data_[oz*slice_stride() + oy*stride() + ox];
   }
+
+  /** Returns a const pointer to the pixel data.
+   * The pointer can be offset to position \a (ox/oy).
+   * @param ox Horizontal offset of the pointer array.
+   * @param oy Vertical offset of the pointer array.
+   * @return Const pointer to the pixel array.
+   */
   const PixelType* data(int ox = 0, int oy = 0, int oz = 0) const
   {
     return reinterpret_cast<const PixelType*>(
@@ -168,32 +183,77 @@ public:
           &data_[oz*slice_stride()], width(), height(), pitch_, true);
   }
 
+  /** Returns a thrust pointer that can be used in custom operators
+    @return Thrust pointer of the begin of the device memory
+   */
   thrust::device_ptr<PixelType> begin(void)
   {
       return thrust::device_ptr<PixelType>(data());
   }
 
+  /** Returns a thrust pointer that can be used in custom operators
+    @return Thrust pointer of the end of the device memory
+   */
   thrust::device_ptr<PixelType> end(void)
   {
       return thrust::device_ptr<PixelType>(data()+slice_stride()*depth());
   }
 
+  /** \todo cuda texture for VolumeGpu */
   
+  /** Struct pointer KernelData that can be used in CUDA kernels. This struct
+   *  provides the device data pointer as well as important class properties.
+   *  @code
+   *  template<typename PixelType, class Allocator>
+   *  __global__ void cudaFunctionKernel(VolumeGpu<PixelType, Allocator>::KernelData img, PixelType value)
+   *  {
+   *     const unsigned int x = threadIdx.x + blockIdx.x * blockDim.x;
+   *     const unsigned int y = threadIdx.y + blockIdx.y * blockDim.y;
+   *     const unsigned int z = threadIdx.z + blockIdx.z * blockDim.z;
+   *
+   *     if (x < img.width_ && y < img.height_ && z < img.depth_)
+   *     {
+   *        img(x, y, z) += value;
+   *     }
+   *  }
+   *
+   * template<typename PixelType, class Allocator>
+   * void doSomethingWithCuda(iu::VolumeGpu<PixelType, Allocator> *img, PixelType value)
+   * {
+   *     dim3 dimBlock(32,16,4);
+   *     dim3 dimGrid((img->width() + dimBlock.x - 1) / dimBlock.x,
+   *                  (img->height() + dimBlock.y - 1) / dimBlock.y,
+   *                  (img->depth() + dimBlock.z - 1) / dimBlock.z);
+   *     cudaFunctionKernel<PixelType, Allocator><<<dimGrid, dimBlock>>>(*img, value);
+   *     IU_CUDA_CHECK;
+   * }
+   * @endcode
+   */
   struct KernelData
   {
+      /** Pointer to device buffer. */
       PixelType* data_;
+      /** Width of Volume. */
       int width_;
+      /** Height of Volume. */
       int height_;
+      /** Depth of Volume. */
       int depth_;
+      /** Distance in pixels between starts of consecutive rows. */
       int stride_;
 
+      /** Access the image via the () operator.
+       * @param x Position in x.
+       * @param y Position in y.
+       * @param z Position in z.
+       * @return value at position (x,y,z).
+       */
       __device__ PixelType& operator()(int x, int y, int z)
       {
           return data_[z*height_*stride_ + y*stride_ + x];
       }
 
-
-
+      /** Constructor. */
       __host__ KernelData(const VolumeGpu<PixelType, Allocator> &vol)
           : data_(const_cast<PixelType*>(vol.data())), width_(vol.width()), height_(vol.height()),
             depth_(vol.depth()), stride_(vol.stride())
@@ -203,9 +263,18 @@ public:
 protected:
 
 private:
+  /** Pointer to device buffer. */
   PixelType* data_;
+  /** Distance in bytes between starts of consecutive rows. */
   size_t pitch_;
-  bool ext_data_pointer_; /**< Flag if data pointer is handled outside the volume class. */
+  /** Flag if data pointer is handled outside the volume class. */
+  bool ext_data_pointer_;
+
+private:
+  /** Private copy constructor. */
+  VolumeGpu(const VolumeGpu&);
+  /** Private copy assignment operator. */
+  VolumeGpu& operator=(const VolumeGpu&);
 };
 
 } // namespace iuprivate
