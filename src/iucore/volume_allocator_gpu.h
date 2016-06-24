@@ -29,7 +29,7 @@
 #include "coredefs.h"
 #include "../iucutil.h"
 
-namespace iuprivate {
+namespace iu {
 
 //--------------------------------------------------------------------------
 template <typename PixelType>

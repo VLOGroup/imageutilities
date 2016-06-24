@@ -20,7 +20,7 @@ namespace math {
  *
  */
 template<typename PixelType, class Allocator >
-void minMax(iu::ImageGpu<PixelType, iuprivate::ImageAllocatorGpu<Allocator> >& d_img, PixelType& minval, PixelType& maxval)
+void minMax(iu::ImageGpu<PixelType, iu::ImageAllocatorGpu<Allocator> >& d_img, PixelType& minval, PixelType& maxval)
 {
     typedef thrust::tuple<bool, PixelType, PixelType> result_type;
     result_type init(true, 10e10f, -10e10f); // initial value
@@ -54,7 +54,7 @@ void minMax(iu::LinearDeviceMemory<PixelType>& in, PixelType& minval, PixelType&
  *
  */
 template<typename PixelType, class Allocator >
-void summation(iu::ImageGpu<PixelType, iuprivate::ImageAllocatorGpu<Allocator> >& d_img,PixelType initval, PixelType& sum)
+void summation(iu::ImageGpu<PixelType, iu::ImageAllocatorGpu<Allocator> >& d_img,PixelType initval, PixelType& sum)
 {
     typedef thrust::tuple<bool, PixelType> result_type;
     result_type init(true, initval); // initial value
@@ -83,8 +83,8 @@ void summation(iu::LinearDeviceMemory<PixelType>& d_img,PixelType init, PixelTyp
  *
  */
 template<typename PixelType, class Allocator >
-void normDiffL1(iu::ImageGpu<PixelType, iuprivate::ImageAllocatorGpu<Allocator> >& src,
-                iu::ImageGpu<PixelType, iuprivate::ImageAllocatorGpu<Allocator> >& ref,PixelType& norm)
+void normDiffL1(iu::ImageGpu<PixelType, iu::ImageAllocatorGpu<Allocator> >& src,
+                iu::ImageGpu<PixelType, iu::ImageAllocatorGpu<Allocator> >& ref,PixelType& norm)
 {
     typedef thrust::tuple<bool, PixelType> result_type;
     result_type init(true, 0); // initial value
@@ -107,7 +107,7 @@ void normDiffL1(iu::ImageGpu<PixelType, iuprivate::ImageAllocatorGpu<Allocator> 
  *
  */
 template<typename PixelType, class Allocator >
-void normDiffL1(iu::ImageGpu<PixelType, iuprivate::ImageAllocatorGpu<Allocator> >& src,PixelType& ref,PixelType& norm)
+void normDiffL1(iu::ImageGpu<PixelType, iu::ImageAllocatorGpu<Allocator> >& src,PixelType& ref,PixelType& norm)
 {
     typedef thrust::tuple<bool, PixelType> result_type;
     result_type init(true, 0); // initial value
@@ -130,8 +130,8 @@ void normDiffL1(iu::ImageGpu<PixelType, iuprivate::ImageAllocatorGpu<Allocator> 
  *
  */
 template<typename PixelType, class Allocator >
-void normDiffL2(iu::ImageGpu<PixelType, iuprivate::ImageAllocatorGpu<Allocator> >& src,
-                iu::ImageGpu<PixelType, iuprivate::ImageAllocatorGpu<Allocator> >& ref,PixelType& norm)
+void normDiffL2(iu::ImageGpu<PixelType, iu::ImageAllocatorGpu<Allocator> >& src,
+                iu::ImageGpu<PixelType, iu::ImageAllocatorGpu<Allocator> >& ref,PixelType& norm)
 {
     typedef thrust::tuple<bool, PixelType> result_type;
     result_type init(true, 0); // initial value
@@ -154,7 +154,7 @@ void normDiffL2(iu::ImageGpu<PixelType, iuprivate::ImageAllocatorGpu<Allocator> 
  *
  */
 template<typename PixelType, class Allocator >
-void normDiffL2(iu::ImageGpu<PixelType, iuprivate::ImageAllocatorGpu<Allocator> >& src,PixelType& ref,PixelType& norm)
+void normDiffL2(iu::ImageGpu<PixelType, iu::ImageAllocatorGpu<Allocator> >& src,PixelType& ref,PixelType& norm)
 {
     typedef thrust::tuple<bool, PixelType> result_type;
     result_type init(true, 0); // initial value
@@ -177,8 +177,8 @@ void normDiffL2(iu::ImageGpu<PixelType, iuprivate::ImageAllocatorGpu<Allocator> 
  *
  */
 template<typename PixelType, class Allocator >
-void mse(iu::ImageGpu<PixelType, iuprivate::ImageAllocatorGpu<Allocator> >& src,
-         iu::ImageGpu<PixelType, iuprivate::ImageAllocatorGpu<Allocator> >& ref,PixelType& mse)
+void mse(iu::ImageGpu<PixelType, iu::ImageAllocatorGpu<Allocator> >& src,
+         iu::ImageGpu<PixelType, iu::ImageAllocatorGpu<Allocator> >& ref,PixelType& mse)
 {
     normDiffL2(src,ref,mse);
     mse=(mse*mse)/(src.width()*src.height());

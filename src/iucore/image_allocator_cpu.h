@@ -28,7 +28,7 @@
 #include <math.h>
 #include "coredefs.h"
 
-namespace iuprivate {
+namespace iu {
 
 //--------------------------------------------------------------------------
 template <typename PixelType>
