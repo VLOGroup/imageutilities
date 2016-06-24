@@ -34,13 +34,10 @@
 
 namespace iu {
 
-template<typename PixelType>
-/** \addtogroup LinearMemory
- *  \{
- */
-
 /**  \brief Linear host memory class.
+ *   \ingroup LinearMemory
  */
+template<typename PixelType>
 class LinearHostMemory : public LinearMemory
 {
 public:
@@ -168,9 +165,6 @@ private:
   LinearHostMemory& operator=(const LinearHostMemory&);
 
 };
-
-/** \} */ // end of Linear Memory
-
 } // namespace iu
 
 #endif // IU_LINEARHOSTMEMORY_H

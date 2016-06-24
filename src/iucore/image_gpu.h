@@ -31,11 +31,8 @@
 namespace iu {
 
 template<typename PixelType, class Allocator>
-/** \addtogroup Image
- *  \{
- */
-
 /** \brief Device 2D image class (pitched memory).
+ *  \ingroup Image
  */
 class ImageGpu : public Image
 {
@@ -323,8 +320,6 @@ private:
   /** Private copy assignment operator. */
   ImageGpu& operator=(const ImageGpu&);
 };
-
-/** \} */ // end of Image
 
 } // namespace iu
 

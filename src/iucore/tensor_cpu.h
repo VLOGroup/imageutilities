@@ -3,14 +3,10 @@
 
 namespace iu
 {
-
-template<typename PixelType>
-/** \addtogroup LinearMemory
- *  \{
- */
-
 /**  \brief Host 4D tensor class.
+ *   \ingroup LinearMemory
  */
+template<typename PixelType>
 class TensorCpu : public LinearHostMemory<PixelType>
 {
 public:
@@ -109,8 +105,6 @@ private:
   /** Private copy assignment operator. */
   TensorCpu& operator=(const TensorCpu&);
 };
-
-/** \} */ // end of Linear Memory
 
 } // namespace iu
 

@@ -31,13 +31,10 @@
 
 namespace iu {
 
-template<typename PixelType>
-/** \addtogroup LinearMemory
- *  \{
- */
-
 /**  \brief Linear device memory class.
+ *   \ingroup LinearMemory
  */
+template<typename PixelType>
 class LinearDeviceMemory : public LinearMemory
 {
 public:
@@ -213,8 +210,6 @@ private:
   /** Private copy assignment operator. */
   LinearDeviceMemory& operator=(const LinearDeviceMemory&);
 };
-
-/** \} */ // end of Linear Memory
 
 } // namespace iu
 
