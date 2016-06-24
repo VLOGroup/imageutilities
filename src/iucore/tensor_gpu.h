@@ -4,14 +4,10 @@
 
 namespace iu
 {
-
+/**  \brief Device 4D tensor class.
+ *   \ingroup LinearMemory
+ */
 template<typename PixelType>
-/** \addtogroup LinearMemory
- *  \{
- */
-
-/**  \brief Host 4D tensor class.
- */
 class TensorGpu: public LinearDeviceMemory<PixelType>
 {
 public:
@@ -208,7 +204,5 @@ private:
   /** Private copy assignment operator. */
   TensorGpu& operator=(const TensorGpu&);
 };
-
-/** \} */ // end of Linear Memory
 
 }  // namespace iu

@@ -28,14 +28,10 @@
 #include "volume_allocator_cpu.h"
 
 namespace iu {
-
-template<typename PixelType, class Allocator>
-/** \addtogroup Volume
- *  \{
- */
-
 /** \brief Host 3D volume class (pitched memory).
+ *  \ingroup Volume
  */
+template<typename PixelType, class Allocator>
 class VolumeCpu : public Volume
 {
 public:
@@ -224,8 +220,6 @@ private:
   /** Private copy assignment operator. */
   VolumeCpu& operator=(const VolumeCpu&);
 };
-
-/** \} */ // end of Volume
 
 } // namespace iuprivate
 
