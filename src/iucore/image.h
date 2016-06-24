@@ -33,63 +33,75 @@
 
 namespace iu{
 
-//! \todo We maybe do not want to have the Image class in the public dll interface??
+/** \brief Image base class.
+ * \todo We maybe do not want to have the Image class in the public dll interface??
+ */
+
 class Image
 {
 public:
+  /** Constructor. */
   Image() :
    size_(0,0)
   {
   }
 
+  /** Destructor. */
   virtual ~Image()
   {
   }
 
-  Image(const Image &from) :
-    size_(from.size_)
-  {
-  }
-
+  /** Special constructor.
+   *  @param width Width of the Image
+   *  @param height Height of the Image
+   */
   Image( unsigned int width, unsigned int height) :
        size_(width, height)
   {
   }
 
+  /** Special constructor.
+   *  @param size Size of the Image
+   */
   Image( const IuSize &size) :
       size_(size)
   {
   }
 
-  Image& operator= (const Image &from)
-  {
-    // TODO == operator
-    this->size_ = from.size_;
-    return *this;
-  }
-
+  /** Get the size of the Image
+   *  @return Size of the Image
+   */
   IuSize size() const
   {
     return size_;
   }
 
-
+  /** Get the width of the Image.
+   *  @return Width of the Image
+   */
   unsigned int width() const
   {
     return size_.width;
   }
 
+  /** Get the height of the Image.
+   *  @return Height of the Image
+   */
   unsigned int height() const
   {
     return size_.height;
   }
 
+  /** Compares the Image type to a target Image.
+   *  @param from Target Image.
+   *  @return Returns true if target class is of the same type (using RTTI).
+   */
   bool sameType(const Image &from)
   {
       return typeid(from)==typeid(*this);
   }
 
-  /** Returns the number of pixels in the image. */
+  /** Returns the number of pixels in the Image. */
   size_t numel() const
   {
     return (size_.width * size_.height);
@@ -119,8 +131,15 @@ public:
     return out;
   }
 
-protected:
+private:
+  /** Size of the Image. */
   IuSize size_;
+
+private:
+  /** Private copy constructor. */
+  Image(const Image&);
+  /** Private copy assignment operator. */
+  Image& operator=(const Image&);
 };
 
 } // namespace iuprivate

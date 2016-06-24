@@ -30,14 +30,21 @@
 namespace iu {
 
 /** \defgroup Core iucore.
- *
+ * \{
  */
 
 
-
+/**
+ * @brief The IuCudaTimer class can be used to do high-precision GPU timing measurements. It
+ * uses GPU hardware timers with a resolution of around to 0.5 microseconds. It is not necessary
+ * to put workload on the GPU, i.e. this class can also be used for high-precision CPU timings.
+ */
 class IuCudaTimer
 {
 public:
+    /**
+   * @brief IuCudaTimer constructor
+   */
   IuCudaTimer() {
     cudaEventCreate(&start_);
     cudaEventCreate(&stop_);
@@ -48,10 +55,17 @@ public:
     cudaEventDestroy(stop_);
   }
 
+  /**
+   * @brief start timing
+   */
   void start() {
     cudaEventRecord(start_, 0);
   }
 
+  /**
+   * @brief stop timing
+   * @return elapsed time since \ref start was called in milliseconds
+   */
   float elapsed() {
     cudaEventRecord(stop_);
     cudaEventSynchronize(stop_);

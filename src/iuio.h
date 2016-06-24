@@ -30,10 +30,17 @@
 
 namespace iu {
 
-/** \defgroup IO iuio
- * Image I/O module
- *\{
+/** \defgroup IO iuio.
+ * \brief iuio module contains I/O functionality: Reading/writing images, reading from cameras
+ * and video files, interfaces to read/write OpenEXR files
+ * \{
  */
+
+/** \defgroup ImageIO Images
+  * \ingroup IO
+  * \brief Read and write images
+  * \{
+  */
 
 /** Loads an image to host memory from a file.
  * @param filename Name of file to be loaded
@@ -98,6 +105,8 @@ IUIO_DLLAPI void imshow(iu::ImageGpu_32f_C1* image, const std::string& winname, 
 IUIO_DLLAPI void imshow(iu::ImageGpu_32f_C4* image, const std::string& winname, const bool& normalize=false);
 
 
+/** \}  */ // end of ImagIO
+
 /** Construct a ImageCpu from an openCV Mat.
   * The ImageCpu is NOT a deep copy, it just uses the data pointer from the Mat, i.e.
   * it wraps the memory from the Mat in an ImageCpu.
@@ -158,7 +167,7 @@ IUIO_DLLAPI void imageCpu_from_Mat(cv::Mat& mat, iu::ImageCpu<PixelType, Allocat
     img = iu::ImageCpu<PixelType, Allocator>((PixelType*)mat.data, mat_sz.width, mat_sz.height, mat.step, true);
 }
 
-/** @} */ // end of IMAGEIO
+/** \} */ // end of IO
 
 } // namespace iu
 

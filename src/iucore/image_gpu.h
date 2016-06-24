@@ -31,15 +31,19 @@
 namespace iu {
 
 template<typename PixelType, class Allocator>
+/** ImageGpu class.
+ */
 class ImageGpu : public Image
 {
 public:
+  /** Constructor. */
   ImageGpu() :
     Image(),
     data_(0), pitch_(0), ext_data_pointer_(false), texture_(0)
   {
   }
 
+  /** Destructor. */
   virtual ~ImageGpu()
   {
     if(!ext_data_pointer_)
@@ -54,6 +58,10 @@ public:
       IU_CUDA_SAFE_CALL(cudaDestroyTextureObject(texture_));
   }
 
+  /** Special constructor.
+   *  @param _width Width of the Image
+   *  @param _height Height of the Image
+   */
   ImageGpu(unsigned int _width, unsigned int _height) :
       Image(_width, _height), data_(0), pitch_(0),
       ext_data_pointer_(false), texture_(0)
@@ -61,6 +69,9 @@ public:
     data_ = Allocator::alloc(this->size(), &pitch_);
   }
 
+  /** Special constructor.
+   *  @param size Size of the Image
+   */
   ImageGpu(const IuSize& size) :
       Image(size), data_(0), pitch_(0),
       ext_data_pointer_(false), texture_(0)
@@ -68,23 +79,13 @@ public:
     data_ = Allocator::alloc(size, &pitch_);
   }
 
-  ImageGpu(const ImageGpu<PixelType, Allocator>& from) :
-      Image(from), data_(0), pitch_(0),
-      ext_data_pointer_(false), texture_(0)
-  {
-      if (from.ext_data_pointer_)  // external image stays external when copied
-      {
-          data_ = from.data_;
-          pitch_ = from.pitch_;
-          ext_data_pointer_ = from.ext_data_pointer_;
-      }
-      else
-      {
-          data_ = Allocator::alloc(from.size(), &pitch_);
-          Allocator::copy(from.data(), from.pitch(), data_, pitch_, this->size());
-      }
-  }
-
+  /** Special constructor.
+   *  @param _data Device data pointer
+   *  @param _width Width of the Image
+   *  @param _height Height of the Image
+   *  @param _pitch Distance in bytes between starts of consecutive rows.
+   *  @param ext_data_pointer Use external data pointer as internal data pointer
+   */
   ImageGpu(PixelType* _data, unsigned int _width, unsigned int _height,
            size_t _pitch, bool ext_data_pointer = false) :
       Image(_width, _height), data_(0), pitch_(0), ext_data_pointer_(ext_data_pointer), texture_(0)
@@ -106,18 +107,7 @@ public:
     }
   }
 
-    ImageGpu& operator= (const ImageGpu<PixelType, Allocator> &from)
-	{
-		this->size_ = from.size();
-//		this->roi_ = from.roi();
-		this->data_ = Allocator::alloc(from.size(), &(this->pitch_));
-		IU_CUDA_SAFE_CALL(cudaMemcpy2D(data_, pitch_, from.data(), from.pitch(), from.width(), from.height(), cudaMemcpyDeviceToDevice));
-		// pitch_ = from.pitch(); // handled by allocator
-		this->ext_data_pointer_ = false; 
-        this->texture_ = 0;
-		return *this;
-	}
-
+  /** Get Pixel value at position x,y. */
   PixelType getPixel(unsigned int x, unsigned int y)
   {
     PixelType value;
@@ -125,9 +115,6 @@ public:
                  sizeof(PixelType), 1, cudaMemcpyDeviceToHost));
     return value;
   }
-
-  // :TODO:
-  //ImageGpu& operator= (const ImageGpu<PixelType, Allocator>& from);
 
   /** Returns the total amount of bytes saved in the data buffer. */
   virtual size_t bytes() const
@@ -163,32 +150,50 @@ public:
   }
 
   /** Returns a pointer to the pixel data.
-   * The pointer can be offset to position \a (ox/oy).
-   * @param[in] ox Horizontal offset of the pointer array.
-   * @param[in] oy Vertical offset of the pointer array.
+   * The pointer can be offset to position (ox/oy).
+   * @param ox Horizontal offset of the pointer array.
+   * @param oy Vertical offset of the pointer array.
    * @return Pointer to the pixel array.
    */
   PixelType* data(int ox = 0, int oy = 0)
   {
     return &data_[oy * stride() + ox];
   }
+
+  /** Returns a const pointer to the pixel data.
+   * The pointer can be offset to position (ox/oy).
+   * @param ox Horizontal offset of the pointer array.
+   * @param oy Vertical offset of the pointer array.
+   * @return Const pointer to the pixel array.
+   */
   const PixelType* data(int ox = 0, int oy = 0) const
   {
     return reinterpret_cast<const PixelType*>(
         &data_[oy * stride() + ox]);
   }
 
+  /** Returns a thrust pointer that can be used in custom operators
+    @return Thrust pointer of the begin of the device memory
+   */
   thrust::device_ptr<PixelType> begin(void)
   {
       return thrust::device_ptr<PixelType>(data());
   }
 
+  /** Returns a thrust pointer that can be used in custom operators
+    @return Thrust pointer of the end of the device memory
+   */
   thrust::device_ptr<PixelType> end(void)
   {
       return thrust::device_ptr<PixelType>(data()+stride()*height());
   }
 
-
+  /** Prepare CUDA texture
+   * @todo
+   * @param readMode CUDA texture read mode
+   * @param filterMode CUDA texture filter mode
+   * @param addressMode CUDA texture address mode (border handling)
+   */
   void prepareTexture(cudaTextureReadMode readMode = cudaReadModeElementType,
                       cudaTextureFilterMode filterMode = cudaFilterModeLinear,
                       cudaTextureAddressMode addressMode = cudaAddressModeClamp)
@@ -218,6 +223,7 @@ public:
       IU_CUDA_SAFE_CALL(cudaCreateTextureObject(&texture_, &resDesc, &texDesc, NULL));
   }
 
+  /** Get CUDA texture object */
   cudaTextureObject_t getTexture()
   {
       if (!texture_)        // create texture object implicitly
@@ -226,10 +232,13 @@ public:
       return texture_;
   }
 
-  // Use case: ImageGPU is passed as const into a function and the method getTexture() is used as
-  // a parameter in a cuda kernel call. In that case the user has to explicitly call prepareTexture()
-  // in advance such that the texture object exists, because an implicit call to prepareTexture()
-  // here would obviously violate method constness
+  /** Get CUDA texture object
+   * \note Use case: ImageGPU is passed as const into a function and the method
+   * getTexture() is used as a parameter in a cuda kernel call. In that case the
+   * user has to explicitly call prepareTexture() in advance such that the texture
+   * object exists, because an implicit call to prepareTexture() here would
+   * obviously violate method constness.
+   */
   inline cudaTextureObject_t getTexture() const
   {
       if (!texture_)
@@ -239,20 +248,54 @@ public:
       return texture_;
   }
 
+  /** Struct pointer KernelData that can be used in CUDA kernels. This struct
+   *  provides the device data pointer as well as important class properties.
+   *  @code
+   *  template<typename PixelType, class Allocator>
+   *  __global__ void cudaFunctionKernel(ImageGpu<PixelType, Allocator>::KernelData img, PixelType value)
+   *  {
+   *     const unsigned int x = threadIdx.x + blockIdx.x * blockDim.x;
+   *     const unsigned int y = threadIdx.y + blockIdx.y * blockDim.y;
+   *
+   *     if (x < img.width_ && y < img.height_)
+   *     {
+   *        img(x, y) += value;
+   *     }
+   *  }
+   *
+   * template<typename PixelType, class Allocator>
+   * void doSomethingWithCuda(iu::ImageGpu<PixelType, Allocator> *img, PixelType value)
+   * {
+   *     dim3 dimBlock(32,32);
+   *     dim3 dimGrid((img->width() + dimBlock.x - 1) / dimBlock.x,
+   *                  (img->height() + dimBlock.y - 1) / dimBlock.y);
+   *     cudaFunctionKernel<PixelType, Allocator><<<dimGrid, dimBlock>>>(*img, value);
+   *     IU_CUDA_CHECK;
+   * }
+   * @endcode
+   */
   struct KernelData
   {
+      /** Pointer to device buffer. */
       PixelType* data_;
+      /** Width of the Image. */
       int width_;
+      /** Height of the Image. */
       int height_;
+      /** Distance in pixels between starts of consecutive rows. */
       int stride_;
 
+      /** Access the image via the () operator.
+       * @param x Position in x.
+       * @param y Position in y.
+       * @return value at position (x,y).
+       */
       __device__ PixelType& operator()(int x, int y)
       {
           return data_[y*stride_ + x];
       }
 
-
-
+      /** Constructor */
       __host__ KernelData(const ImageGpu<PixelType, Allocator> &im)
           : data_(const_cast<PixelType*>(im.data())), width_(im.width()), height_(im.height()),
             stride_(im.stride())
@@ -260,11 +303,20 @@ public:
   };
 
 protected:
+  /** Pointer to device buffer. */
   PixelType* data_;
+  /** Distance in bytes between starts of consecutive rows. */
   size_t pitch_;
-  bool ext_data_pointer_; /**< Flag if data pointer is handled outside the image class. */
-
+  /** Flag if data pointer is handled outside the image class. */
+  bool ext_data_pointer_;
+  /** CUDA texture object */
   cudaTextureObject_t texture_;
+
+private:
+  /** Private copy constructor. */
+  ImageGpu(const ImageGpu&);
+  /** Private copy assignment operator. */
+  ImageGpu& operator=(const ImageGpu&);
 };
 
 } // namespace iuprivate

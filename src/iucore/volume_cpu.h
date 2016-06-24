@@ -30,15 +30,19 @@
 namespace iu {
 
 template<typename PixelType, class Allocator>
+/** VolumeCpu class.
+ */
 class VolumeCpu : public Volume
 {
 public:
+  /** Constructor. */
   VolumeCpu() :
     Volume(),
     data_(0), pitch_(0), ext_data_pointer_(false)
   {
   }
 
+  /** Destructor. */
   virtual ~VolumeCpu()
   {
     if(!ext_data_pointer_)
@@ -50,6 +54,11 @@ public:
     pitch_ = 0;
   }
 
+  /** Special constructor.
+   *  @param width Width of the Volume
+   *  @param height Height of the Volume
+   *  @param depth Depth of the Volume
+   */
   VolumeCpu(unsigned int _width, unsigned int _height, unsigned int _depth) :
     Volume(_width, _height, _depth),
     data_(0), pitch_(0),
@@ -58,6 +67,9 @@ public:
     data_ = Allocator::alloc(_width, _height, _depth, &pitch_);
   }
 
+  /** Special constructor.
+   *  @param size Size of the Volume
+   */
   VolumeCpu(const IuSize& size) :
     Volume(size), data_(0), pitch_(0),
     ext_data_pointer_(false)
@@ -65,15 +77,14 @@ public:
     data_ = Allocator::alloc(size.width, size.height, size.depth, &pitch_);
   }
 
-  VolumeCpu(const VolumeCpu<PixelType, Allocator>& from) :
-    Volume(from),
-    data_(0), pitch_(0), ext_data_pointer_(false)
-  {
-    data_ = Allocator::alloc(from.width(), from.height(), from.depth(), &pitch_);
-    Allocator::copy(from.data(), from.pitch(), data_, pitch_, this->size());
-    this->setRoi(from.roi());
-  }
-
+  /** Special constructor.
+   *  @param _data Host data pointer
+   *  @param _width Width of the Volume
+   *  @param _height Height of the Volume
+   *  @param _depth Height of the Volume
+   *  @param _pitch Distance in bytes between starts of consecutive rows.
+   *  @param ext_data_pointer Use external data pointer as internal data pointer
+   */
   VolumeCpu(PixelType* _data, unsigned int _width, unsigned int _height, unsigned int _depth,
             size_t _pitch, bool ext_data_pointer = false) :
     Volume(_width, _height, _depth),
@@ -96,9 +107,6 @@ public:
     }
   }
 
-  // :TODO:
-  //VolumeCpu& operator= (const VolumeCpu<PixelType, Allocator>& from);
-
   /** Returns the total amount of bytes saved in the data buffer. */
   size_t bytes() const
   {
@@ -117,7 +125,7 @@ public:
     return height()*pitch_;
   }
 
-  /** Returns the distnace in pixels between starts of consecutive rows. */
+  /** Returns the distance in pixels between starts of consecutive rows. */
   size_t stride() const
   {
     return pitch_/sizeof(PixelType);
@@ -141,17 +149,23 @@ public:
     return false;
   }
 
-
   /** Returns a pointer to the pixel data.
    * The pointer can be offset to position \a (ox/oy).
-   * @param[in] ox Horizontal offset of the pointer array.
-   * @param[in] oy Vertical offset of the pointer array.
+   * @param ox Horizontal offset of the pointer array.
+   * @param oy Vertical offset of the pointer array.
    * @return Pointer to the pixel array.
    */
   PixelType* data(int ox = 0, int oy = 0, int oz = 0)
   {
     return &data_[oz*slice_stride() + oy*stride() + ox];
   }
+
+  /** Returns a const pointer to the pixel data.
+   * The pointer can be offset to position \a (ox/oy).
+   * @param ox Horizontal offset of the pointer array.
+   * @param oy Vertical offset of the pointer array.
+   * @return Const pointer to the pixel array.
+   */
   const PixelType* data(int ox = 0, int oy = 0, int oz = 0) const
   {
     return reinterpret_cast<const PixelType*>(
@@ -174,12 +188,37 @@ public:
     return *data(x, y, z);
   }
 
+  /** Returns a thrust pointer that can be used in custom operators
+    @return Thrust pointer of the begin of the host memory
+   */
+  thrust::pointer<PixelType, thrust::host_system_tag> begin(void)
+  {
+      return thrust::pointer<PixelType, thrust::host_system_tag>(data());
+  }
+
+  /** Returns a thrust pointer that can be used in custom operators
+    @return Thrust pointer of the end of the host memory
+   */
+  thrust::pointer<PixelType, thrust::host_system_tag> end(void)
+  {
+      return thrust::pointer<PixelType, thrust::host_system_tag>(data()+slice_stride()*depth());
+  }
+
 protected:
 
 private:
+  /** Pointer to host buffer. */
   PixelType* data_;
+  /** Distance in bytes between starts of consecutive rows. */
   size_t pitch_;
-  bool ext_data_pointer_; /**< Flag if data pointer is handled outside the volume class. */
+  /** Flag if data pointer is handled outside the volume class. */
+  bool ext_data_pointer_;
+
+private:
+  /** Private copy constructor. */
+  VolumeCpu(const VolumeCpu&);
+  /** Private copy assignment operator. */
+  VolumeCpu& operator=(const VolumeCpu&);
 };
 
 } // namespace iuprivate

@@ -32,29 +32,33 @@
 
 namespace iu {
 
-/** \brief LinearMemory Base class for linear memory classes.
+/** \brief LinearMemory base class for linear memory classes.
   */
 class LinearMemory
 {
 public:
+  /** Constructor. */
   LinearMemory() :
     length_(0)
   { }
 
-  LinearMemory(const LinearMemory& from) :
-      length_(from.length_)
-  { }
-
+  /** Special constructor.
+   *  @param length Length of linear memory
+   */
   LinearMemory(const unsigned int& length) :
     length_(length)
   { }
 
-  /** Returns true if target class is of the same type (using RTTI). */
+  /** Compares the LinearMemory type to a target LinearMemory.
+   *  @param from Target LinearMemory.
+   *  @return Returns true if target class is of the same type (using RTTI).
+   */
   bool sameType(const LinearMemory &from)
   {
       return typeid(from)==typeid(*this);
   }
 
+  /** Destructor. */
   virtual ~LinearMemory()
   { }
 
@@ -73,7 +77,7 @@ public:
   /** Returns flag if the image data resides on the device/GPU (TRUE) or host/GPU (FALSE) */
   virtual bool onDevice() const {return false;}
 
-  /** Operator<< overloading. Output of Image class. */
+  /** Operator<< overloading. Output of LinearMemory class. */
   friend std::ostream& operator<<(std::ostream & out,
                                   LinearMemory const& linmem)
   {
@@ -82,9 +86,14 @@ public:
   }
 
 private:
+  /** Length of the memory.*/
   unsigned int length_;
 
-
+private:
+  /** Private copy constructor. */
+  LinearMemory(const LinearMemory&);
+  /** Private copy assignment operator. */
+  LinearMemory& operator=(const LinearMemory&);
 };
 
 } // namespace iu

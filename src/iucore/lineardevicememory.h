@@ -32,15 +32,19 @@
 namespace iu {
 
 template<typename PixelType>
+/** \brief LinearDeviceMemory class.
+  */
 class LinearDeviceMemory : public LinearMemory
 {
 public:
+  /** Constructor. */
   LinearDeviceMemory() :
     LinearMemory(),
     data_(0), ext_data_pointer_(false)
   {
   }
 
+  /** Destructor. */
   virtual ~LinearDeviceMemory()
   {
     if((!ext_data_pointer_) && (data_!=NULL))
@@ -50,6 +54,9 @@ public:
     }
   }
 
+  /** Special constructor.
+   *  @param length Length of linear memory
+   */
   LinearDeviceMemory(const unsigned int& length) :
     LinearMemory(length),
     data_(0), ext_data_pointer_(false)
@@ -58,16 +65,11 @@ public:
     if (data_ == 0) throw std::bad_alloc();
   }
 
-  LinearDeviceMemory(const LinearDeviceMemory<PixelType>& from) :
-    LinearMemory(from),
-    data_(0), ext_data_pointer_(false)
-  {
-    if (from.data_==0) throw IuException("input data not valid", __FILE__, __FUNCTION__, __LINE__);
-    IU_CUDA_SAFE_CALL(cudaMalloc((void**)&data_, this->length()*sizeof(PixelType)));
-    if (data_ == 0) throw std::bad_alloc();
-    IU_CUDA_SAFE_CALL(cudaMemcpy(data_, from.data_, this->length() * sizeof(PixelType), cudaMemcpyDeviceToDevice));
-  }
-
+  /** Special constructor.
+   *  @param device_data Device data pointer
+   *  @param length Length of the memory
+   *  @param ext_data_pointer Use external data pointer as internal data pointer
+   */
   LinearDeviceMemory(PixelType* device_data, const unsigned int& length, bool ext_data_pointer = false) :
     LinearMemory(length),
     data_(0), ext_data_pointer_(ext_data_pointer)
@@ -87,11 +89,9 @@ public:
     }
   }
 
-  // :TODO: operator=
-
   /** Returns a pointer to the device buffer.
    * The pointer can be offset to position \a offset.
-   * @param[in] offset Offset of the pointer array.
+   * @param offset Offset of the pointer array.
    * @return Pointer to the device buffer.
    */
   PixelType* data(int offset = 0)
@@ -102,7 +102,7 @@ public:
 
   /** Returns a const pointer to the device buffer.
    * The pointer can be offset to position \a offset.
-   * @param[in] offset Offset of the pointer array.
+   * @param offset Offset of the pointer array.
    * @return Const pointer to the device buffer.
    */
   const PixelType* data(int offset = 0) const
@@ -145,19 +145,48 @@ public:
     return true;
   }
 
-  /** Really handy struct that can be passed to kernel functions. Contains the elementary stuff */
+  /** Struct pointer KernelData that can be used in CUDA kernels. This struct
+   *  provides the device data pointer as well as important class properties.
+   *  @code
+   *  template<typename PixelType>
+   *  __global__ void cudaFunctionKernel(iu::LinearDeviceMemory<PixelType>::KernelData memory, PixelType value)
+   *  {
+   *     const unsigned int x = threadIdx.x + blockIdx.x * blockDim.x;
+   *
+   *     if (x < memory.length_ )
+   *     {
+   *        img(x) += value;
+   *     }
+   *  }
+   *
+   * template<typename PixelType>
+   * void doSomethingWithCuda(iu::LinearDeviceMemory<PixelType> *memory, PixelType value)
+   * {
+   *     dim3 dimBlock(32,1);
+   *     dim3 dimGrid((img->length() + dimBlock.x - 1) / dimBlock.x, 1);
+   *     cudaFunctionKernel<PixelType><<<dimGrid, dimBlock>>>(*memory, value);
+   *     IU_CUDA_CHECK;
+   * }
+   * @endcode
+   */
   struct KernelData
   {
+      /** Pointer to device buffer. */
       PixelType* data_;
+
+      /** Length of the memory.*/
       int length_;
 
-      __device__ float& operator()(int idx)
+      /** Access the memory via the () operator.
+       * @param idx Index to access.
+       * @return value at index.
+       */
+      __device__ PixelType& operator()(int idx)
       {
           return data_[idx];
       }
 
-
-
+      /** Constructor */
       __host__ KernelData(const LinearDeviceMemory<PixelType> &mem)
           : data_(const_cast<PixelType*>(mem.data())), length_(mem.length())
       { }
@@ -167,9 +196,16 @@ protected:
 
 
 private:
-  PixelType* data_; /**< Pointer to device buffer. */
-  bool ext_data_pointer_; /**< Flag if data pointer is handled outside the image class. */
+  /** Pointer to device buffer. */
+  PixelType* data_;
+  /** Flag if data pointer is handled outside the LinearDeviceMemory class. */
+  bool ext_data_pointer_;
 
+private:
+  /** Private copy constructor. */
+  LinearDeviceMemory(const LinearDeviceMemory&);
+  /** Private copy assignment operator. */
+  LinearDeviceMemory& operator=(const LinearDeviceMemory&);
 };
 
 } // namespace iuprivate
