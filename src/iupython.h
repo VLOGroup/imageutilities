@@ -6,17 +6,22 @@
 #include <boost/python.hpp>
 #include <numpy/ndarrayobject.h>
 #include <eigen3/Eigen/Dense>
-#include <iu/iucore.h>
-#include <iu/iucore/copy.h>
-#include <iu/iucore/image_allocator_cpu.h>
+#include "iucore.h"
+#include "iucore/copy.h"
+#include "iucore/image_allocator_cpu.h"
 
 
-#include <iu/iuio.h>
+#include "iuio.h"
 
 
 namespace bp = boost::python;
 using std::string;
 
+/**
+  * @brief Python exception class
+
+  *
+  */
 class Exc
 {
 public:

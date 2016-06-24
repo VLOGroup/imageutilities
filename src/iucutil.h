@@ -38,11 +38,10 @@
 //// ERROR CHECKS ////////////////////////////////////////////
 
 #include <stdio.h>
-
-
 /**
  * @brief Exceptions related to cuda issues.
  *
+ * @ingroup UTILS
  * Can be used to raise IuException s related to CUDA.
  */
 class IuCudaException : public IuException
@@ -60,9 +59,13 @@ protected:
 };
 
 namespace iu {
-
-
-/** Check for CUDA error (throws IuCudaException) */
+/** \defgroup UTILS Utilities
+ * \brief various bits and pieces, error handling, conveniencs functions
+ * \{
+ */
+/** Check for CUDA error (throws IuCudaException)
+ * @ingroup UTILS
+ */
 static inline void checkCudaErrorState( const char* file, const char* function, const int line )
 {
   cudaDeviceSynchronize();
@@ -71,7 +74,9 @@ static inline void checkCudaErrorState( const char* file, const char* function, 
     throw IuCudaException( err, file, function, line );
 }
 
-/** Check for CUDA error (throws IuCudaException) */
+/** Check for CUDA error (throws IuCudaException)
+* @ingroup UTILS
+*/
 static inline void checkCudaErrorState(cudaError_t err, const char *file, const char* function,
                          const int line)
 {
@@ -81,7 +86,9 @@ static inline void checkCudaErrorState(cudaError_t err, const char *file, const 
   }
 }
 
-/** Get total GPU memory. */
+/** Get total GPU memory.
+* @ingroup UTILS
+*/
 static inline float getTotalGPUMemory()
 {
   size_t total = 0;
@@ -90,7 +97,9 @@ static inline float getTotalGPUMemory()
   return total/(1024.0f*1024.0f);   // return value in Megabytes
 }
 
-/** Get free GPU memory. */
+/** Get free GPU memory.
+* @ingroup UTILS
+*/
 static inline float getFreeGPUMemory()
 {
   size_t total = 0;
@@ -99,7 +108,9 @@ static inline float getFreeGPUMemory()
   return free/(1024.0f*1024.0f);   // return value in Megabytes
 }
 
-/** Print GPU memory usage information. */
+/** Print GPU memory usage information.
+* @ingroup UTILS
+*/
 static inline void printGPUMemoryUsage()
 {
   float total = iu::getTotalGPUMemory();
@@ -112,20 +123,11 @@ static inline void printGPUMemoryUsage()
   printf("   Free memory:  %.2f MiB\n", free);
 }
 
-/** \todo print device information */
 
-} //namespace iu
 
-// MACROS
-
-#define IU_CUDA_CHECK         iu::checkCudaErrorState(__FILE__, __FUNCTION__, __LINE__)
-#define IU_CUDA_SAFE_CALL(fun)       iu::checkCudaErrorState(fun, __FILE__, __FUNCTION__, __LINE__)
-
-//// SMALL CUDA HELPERS (DEFINED static inline) ////////////////////////////////////////////
-namespace iu {
-
-//// VARIOUS OTHER HELPER FUNCTIONS ////////////////////////////////////////////
-// getTime
+/** Get current system time with high resolution.
+* @ingroup UTILS
+*/
 static inline double getTime()
 {
   cudaDeviceSynchronize();
@@ -140,7 +142,12 @@ static inline double getTime()
   return time.tv_sec * 1000.0 + time.tv_usec / 1000.0;
 #endif
 }
+/** \} */
+} //namespace iu
 
-} // namespace iu
+// MACROS
+
+#define IU_CUDA_CHECK         iu::checkCudaErrorState(__FILE__, __FUNCTION__, __LINE__)
+#define IU_CUDA_SAFE_CALL(fun)       iu::checkCudaErrorState(fun, __FILE__, __FUNCTION__, __LINE__)
 
 #endif // IUCUTIL_H

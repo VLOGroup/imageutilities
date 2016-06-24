@@ -16,6 +16,7 @@ namespace iu {
  * @brief Allows to display disparity or depth maps in 3D with a built-in mouse and keyboard interaction.
  *
  * All data is kept on the graphics card, OpenGL is responsible for rendering the generated point-cloud.
+ * @ingroup GUI
  */
 
 class Qt5DisparitymapGpuWidget : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Core

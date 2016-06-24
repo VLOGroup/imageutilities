@@ -1,12 +1,6 @@
 #include "qt5imagegpuwidget.h"
 #include <GL/glu.h>
 #include <cuda_gl_interop.h>
-//#include <iu/iuio.h>
-
-//#include "tools.h"
-//#include "flow_uv.cuh"
-
-
 
 
 // OpenGL error check macro
