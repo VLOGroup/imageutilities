@@ -85,10 +85,13 @@ private:
 /* ***************************************************************************
      COPY
  * ***************************************************************************/
-
+/** \defgroup Copy
+ *  \brief Copy methods.
+ *  \{
+ */
 //////////////////////////////////////////////////////////////////////////////
 /** \defgroup Copy1D 1D Memory Copy
- *  \ingroup Core
+ *  \ingroup Copy
  *  \brief Copy methods for 1D images of various types.
  *  \{
  */
@@ -181,7 +184,7 @@ IUCORE_DLLAPI void copy(const LinearDeviceMemory_32f_C4* src, LinearHostMemory_3
 
 //////////////////////////////////////////////////////////////////////////////
 /** \defgroup Copy2D 2D Memory Copy
- *  \ingroup Core
+ *  \ingroup Copy
  *  \brief Copy methods for 2D images of various types.
  *  \{
  */
@@ -260,7 +263,7 @@ IUCORE_DLLAPI void copy(const ImageGpu_32f_C4* src, ImageCpu_32f_C4* dst);
 
 //////////////////////////////////////////////////////////////////////////////
 /** \defgroup Copy3D 3D Memory Copy
- *  \ingroup Core
+ *  \ingroup Copy
  *  \brief Copy methods for 3D images of various types.
  *  \{
  */
@@ -359,6 +362,7 @@ IUCORE_DLLAPI void copy(const ImageCpu_32f_C1* src, LinearHostMemory_32f_C1* dst
 IUCORE_DLLAPI void copy(const ImageGpu_32f_C1* src, LinearDeviceMemory_32f_C1* dst);
 
 /** \} */ // end of Copy3D
+/** \} */ // end of Copy
 
 
 //////////////////////////////////////////////////////////////////////////////

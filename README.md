@@ -17,6 +17,11 @@ $ make
 $ make install
 ~~~
 
+To build the documentation (requires doxygen), additionally
+~~~
+$ make apidoc
+~~~
+
 Usage:
 ------
 

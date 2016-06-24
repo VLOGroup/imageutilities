@@ -24,65 +24,8 @@
 #ifndef IU_CUTIL_H
 #define IU_CUTIL_H
 
-//#ifdef WIN32
-//  #undef max
-//  #undef min
-//  #define NOMINMAX
-//#endif
-
-////#ifdef __CUDACC__ // only include this include in cuda files (seen by nvcc)
-//#include <helper_math.h>
-////#endif
-
 #include <driver_types.h>
 #include "iucore/coredefs.h"
-
-// including some common device functions
-//#include "common/vectormath_kernels.cuh"
-//#include "common/derivative_kernels.cuh"
-//#include "common/bsplinetexture_kernels.cuh"
-//#include "common/bind_textures.cuh"
-
-/////// SIMPLE MIN MAX HELPERS
-////#ifndef __CUDACC__
-//template<typename Type>
-//inline __host__ __device__ Type IUMIN(Type a, Type b, bool check_inf_or_nan=true)
-//{
-////  if (check_inf_or_nan)
-////  {
-////    if (isnan(a) || isinf(a))
-////      return b;
-////    if (isnan(b) || isinf(b))
-////      return a;
-////  }
-//  return a<b ? a : b;
-//}
-
-//template<typename Type>
-//inline __host__ __device__ Type IUMAX(Type a, Type b, bool check_inf_or_nan=true)
-//{
-////  if (check_inf_or_nan)
-////  {
-////    if (isnan(a) || isinf(a))
-////      return b;
-////    if (isnan(b) || isinf(b))
-////      return a;
-////  }
-//  return a>b ? a : b;
-//}
-
-//#else
-//template<typename Type>
-//inline __host__ __device__ Type IUMIN(Type a, Type b) {return min(a,b);}
-
-//template<typename Type>
-//inline __host__ __device__ Type IUMAX(Type a, Type b) {return max(a,b);}
-//#endif
-
-namespace iu {
-template<typename Type>
-inline __host__ __device__ Type sqr(Type a) {return a*a;}
-}
 
 // includes for time measurements
 #ifdef WIN32
@@ -138,7 +81,7 @@ static inline void checkCudaErrorState(cudaError_t err, const char *file, const 
   }
 }
 
-
+/** Get total GPU memory. */
 static inline float getTotalGPUMemory()
 {
   size_t total = 0;
@@ -147,6 +90,7 @@ static inline float getTotalGPUMemory()
   return total/(1024.0f*1024.0f);   // return value in Megabytes
 }
 
+/** Get free GPU memory. */
 static inline float getFreeGPUMemory()
 {
   size_t total = 0;
@@ -155,6 +99,7 @@ static inline float getFreeGPUMemory()
   return free/(1024.0f*1024.0f);   // return value in Megabytes
 }
 
+/** Print GPU memory usage information. */
 static inline void printGPUMemoryUsage()
 {
   float total = iu::getTotalGPUMemory();
@@ -167,8 +112,7 @@ static inline void printGPUMemoryUsage()
   printf("   Free memory:  %.2f MiB\n", free);
 }
 
-
-
+/** \todo print device information */
 
 } //namespace iu
 
@@ -176,8 +120,6 @@ static inline void printGPUMemoryUsage()
 
 #define IU_CUDA_CHECK         iu::checkCudaErrorState(__FILE__, __FUNCTION__, __LINE__)
 #define IU_CUDA_SAFE_CALL(fun)       iu::checkCudaErrorState(fun, __FILE__, __FUNCTION__, __LINE__)
-
-
 
 //// SMALL CUDA HELPERS (DEFINED static inline) ////////////////////////////////////////////
 namespace iu {

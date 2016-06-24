@@ -5,8 +5,7 @@ namespace iu
 {
 
 template<typename PixelType>
-/** \brief TensorCpu class.
-  */
+/** \brief Host 4D tensor class. */
 class TensorCpu : public LinearHostMemory<PixelType>
 {
 public:

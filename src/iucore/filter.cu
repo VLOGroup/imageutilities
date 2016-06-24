@@ -656,8 +656,8 @@ __global__ void cuFilterBilateralKernel_32f_C1(const float* src, float* dst,
         if(xx>=0 && yy>=0 && xx<width && yy<height)
         {
           int cc = yy*stride+xx;
-          float g = expf(-((iu::sqr(x-xx)+iu::sqr(y-yy))/(2.0f*iu::sqr(sigma_spatial)))
-                         -(iu::sqr(p-prior[cc])/(2.0f*iu::sqr(sigma_range))));
+          float g = expf(-((sqr(x-xx)+sqr(y-yy))/(2.0f*sqr(sigma_spatial)))
+                         -(sqr(p-prior[cc])/(2.0f*sqr(sigma_range))));
           sum_g += g;
           sum_val += g*src[cc];
         }
@@ -697,8 +697,8 @@ __global__ void cuFilterBilateralKernel_32f_C1C4(const float* src, float* dst,
         if(xx>=0 && yy>=0 && xx<width && yy<height)
         {
           float4 diff = p-prior[yy*stride4+xx];
-          float g = expf(-((iu::sqr(x-xx)+iu::sqr(y-yy))/(2*iu::sqr(sigma_spatial)))
-                         -(dot(diff,diff)/(2*iu::sqr(sigma_range))));
+          float g = expf(-((sqr(x-xx)+sqr(y-yy))/(2*sqr(sigma_spatial)))
+                         -(dot(diff,diff)/(2*sqr(sigma_range))));
           sum_g += g;
           sum_val += g*src[y*stride1+x];
         }
@@ -738,8 +738,8 @@ __global__ void cuFilterBilateralKernel_32f_C4(const float4* src, float4* dst,
         {
           int cc = yy*stride+xx;
           float4 diff = p-prior[cc];
-          float g = expf(-((iu::sqr(x-xx)+iu::sqr(y-yy))/(2*iu::sqr(sigma_spatial)))
-                         -(dot(diff,diff)/(2*iu::sqr(sigma_range))));
+          float g = expf(-((sqr(x-xx)+sqr(y-yy))/(2*sqr(sigma_spatial)))
+                         -(dot(diff,diff)/(2*sqr(sigma_range))));
           sum_g += g;
           sum_val += g*src[cc];
         }
