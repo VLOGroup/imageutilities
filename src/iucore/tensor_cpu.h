@@ -5,7 +5,12 @@ namespace iu
 {
 
 template<typename PixelType>
-/** \brief Host 4D tensor class. */
+/** \addtogroup LinearMemory
+ *  \{
+ */
+
+/**  \brief Host 4D tensor class.
+ */
 class TensorCpu : public LinearHostMemory<PixelType>
 {
 public:
@@ -104,6 +109,8 @@ private:
   /** Private copy assignment operator. */
   TensorCpu& operator=(const TensorCpu&);
 };
+
+/** \} */ // end of Linear Memory
 
 } // namespace iu
 

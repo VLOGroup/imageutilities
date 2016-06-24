@@ -32,8 +32,12 @@
 namespace iu {
 
 template<typename PixelType>
-/** \brief Device linear memory class.
-  */
+/** \addtogroup LinearMemory
+ *  \{
+ */
+
+/**  \brief Linear device memory class.
+ */
 class LinearDeviceMemory : public LinearMemory
 {
 public:
@@ -210,6 +214,8 @@ private:
   LinearDeviceMemory& operator=(const LinearDeviceMemory&);
 };
 
-} // namespace iuprivate
+/** \} */ // end of Linear Memory
+
+} // namespace iu
 
 #endif // LINEARDEVICEMEMORY_H

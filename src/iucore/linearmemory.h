@@ -32,8 +32,53 @@
 
 namespace iu {
 
-/** \brief Base class for linear memory classes.
-  */
+/** \defgroup MemoryManagement Memory management
+ *  \ingroup Core
+ *  \brief Handles memory management of different types of host and device classes.
+ *
+ * - LinearMemory and specialized 4D tensor
+ *    - LinearHostMemory
+ *    - LinearDeviceMemory
+ *    - TensorCpu
+ *    - TensorGpu
+ * - Pitched memory: Image
+ *    - ImageCpu
+ *    - ImageGpu
+ * - Pitched memory: Volume
+ *    - VolumeCpu
+ *    - VolumeGpu
+ *
+ * The device memory classes can be easily passed to CUDA kernels using a special
+ * struct. This struct gives the possibility to not only access the data pointer
+ * of the image but also other useful information such as length/size of the
+ * object.
+ * - LinearDeviceMemory::KernelData
+ * - TensorGpu::TensorKernelData
+ * - ImageGpu::KernelData
+ * - VolumeGpu::KernelData
+ * \{
+ */
+
+/** \defgroup LinearMemory Linear memory
+ *  \ingroup MemoryManagement
+ *  \brief Memory management for LinearMemory classes.
+ *
+ *  This handles the memory management for following linear memory classes:
+ *  - LinearHostMemory
+ *  - LinearDeviceMemory
+ *  - TensorCpu
+ *  - TensorGpu
+ *
+ * The device memory classes can be easily passed to CUDA kernels using a special
+ * struct. This struct gives the possibility to not only access the data pointer
+ * of the image but also other useful information such as length of the
+ * object.
+ * - LinearDeviceMemory::KernelData
+ * - TensorGpu::TensorKernelData
+ *  \{
+ */
+
+/** \brief Base class for linear memory classes. */
 class LinearMemory
 {
 public:
@@ -95,6 +140,9 @@ private:
   /** Private copy assignment operator. */
   LinearMemory& operator=(const LinearMemory&);
 };
+
+/** \} */ // end of Memory Management
+/** \} */ // end of Linear Memory
 
 } // namespace iu
 

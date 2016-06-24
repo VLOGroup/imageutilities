@@ -30,7 +30,11 @@
 namespace iu {
 
 template<typename PixelType, class Allocator>
-/** \brief Device 3D volume class (pitched memory).
+/** \addtogroup Volume
+ *  \{
+ */
+
+/** \brief Host 3D volume class (pitched memory).
  */
 class VolumeCpu : public Volume
 {
@@ -220,6 +224,8 @@ private:
   /** Private copy assignment operator. */
   VolumeCpu& operator=(const VolumeCpu&);
 };
+
+/** \} */ // end of Volume
 
 } // namespace iuprivate
 

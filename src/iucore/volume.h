@@ -32,10 +32,26 @@
 #include <typeinfo>
 
 namespace iu{
-
-/** \brief Base class for 3D volumes (pitched memory).
+/** \defgroup Volume Pitched Memory: Volume
+ *  \ingroup MemoryManagement
+ *  \brief Memory management for Volume classes.
+ *
+ *  This handles the memory management for following pitched memory classes:
+ *  - VolumeCpu
+ *  - VolumeGpu
+ *
+ * The device memory class can be easily passed to CUDA kernels using a special
+ * struct. This struct gives the possibility to not only access the data pointer
+ * of the image but also other useful information such as size and strides of the
+ * object.
+ * - VolumeGpu::KernelData
+ *
  * \todo We maybe do not want to have the Volume class in the public dll interface??
+ *
+ * \{
  */
+
+/** \brief Base class for 3D volumes (pitched memory). */
 class Volume
 {
 public:
@@ -153,6 +169,8 @@ private:
   /** Private copy assignment operator. */
   Volume& operator=(const Volume&);
 };
+
+/** \} */ // end of Volume
 
 } // namespace iuprivate
 

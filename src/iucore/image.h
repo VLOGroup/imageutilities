@@ -33,10 +33,26 @@
 
 namespace iu{
 
-/** \brief Base class for 2D images (pitched memory).
+/** \defgroup Image Pitched memory: Image
+ *  \ingroup MemoryManagement
+ *  \brief Memory management for Image classes.
+ *
+ *  This handles the memory management for following pitched memory classes:
+ *  - ImageCpu
+ *  - ImageGpu
+ *
+ * The device memory class can be easily passed to CUDA kernels using a special
+ * struct. This struct gives the possibility to not only access the data pointer
+ * of the image but also other useful information such as size and strides of the
+ * object.
+ * - ImageGpu::KernelData
+ *
  * \todo We maybe do not want to have the Image class in the public dll interface??
+ *
+ * \{
  */
 
+/** \brief Base class for 2D images (pitched memory). */
 class Image
 {
 public:
@@ -142,6 +158,8 @@ private:
   Image& operator=(const Image&);
 };
 
-} // namespace iuprivate
+/** \} */ // end of Image
+
+} // namespace iu
 
 #endif // IUCORE_IMAGE_H
