@@ -59,9 +59,9 @@ public:
   }
 
   /** Special constructor.
-   *  @param width Width of the Volume
-   *  @param height Height of the Volume
-   *  @param depth Depth of the Volume
+   *  @param _width Width of the Volume
+   *  @param _height Height of the Volume
+   *  @param _depth Depth of the Volume
    */
   VolumeCpu(unsigned int _width, unsigned int _height, unsigned int _depth) :
     Volume(_width, _height, _depth),

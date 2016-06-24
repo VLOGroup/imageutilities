@@ -374,17 +374,13 @@ IUCORE_DLLAPI void copy(const ImageGpu_32f_C1* src, LinearDeviceMemory_32f_C1* d
 
 /** Converts an 32-bit 3-channel image to a 32-bit 4-channel image (adds alpha channel with value 1.0 everywhere).
  * \param src 3-channel source image [device].
- * \param src_roi Region of interest in the source image.
  * \param dst 4-channel destination image [device]
- * \param dst_roi Region of interest in the dsetination image.
  */
 IUCORE_DLLAPI void convert(const ImageGpu_32f_C3* src, ImageGpu_32f_C4* dst);
 
 /** Converts an 32-bit 4-channel image to a 32-bit 3-channel image (simply neglects the alpha channel).
  * \param src 4-channel source image [device].
- * \param src_roi Region of interest in the source image.
  * \param dst 3-channel destination image [device]
- * \param dst_roi Region of interest in the dsetination image.
  */
 IUCORE_DLLAPI void convert(const ImageGpu_32f_C4* src, ImageGpu_32f_C3* dst);
 
@@ -481,7 +477,7 @@ IUCORE_DLLAPI void convert_RgbHsv(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_3
 /** Converts a HSV image to an RGB image.
  * \param src 4-channel source image [device].
  * \param dst 4-channel destination image [device].
- * \param normalize Normalizes all channels to [0, 1]
+ * \param denormalize Denormalizes all channels to [0, 1]
  */
 IUCORE_DLLAPI void convert_HsvRgb(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst, bool denormalize=false);
 
@@ -523,7 +519,6 @@ IUCORE_DLLAPI void convert_LabRgb(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_3
  * \brief Filters a device image using a 3x3 median filter
  * \param src Source image [device].
  * \param dst Destination image [device]
- * \param roi Region of interest in the dsetination image.
  */
 IUCORE_DLLAPI void filterMedian3x3(const ImageGpu_32f_C1* src, ImageGpu_32f_C1* dst );
 
@@ -531,7 +526,6 @@ IUCORE_DLLAPI void filterMedian3x3(const ImageGpu_32f_C1* src, ImageGpu_32f_C1* 
  * \brief Filters a device image using a Gaussian filter
  * \param src Source image [device].
  * \param dst Destination image [device]
- * \param roi Region of interest in the dsetination image.
  * \param sigma Controls the amount of smoothing
  * \param kernel_size Sets the size of the used Gaussian kernel. If =0 the size is calculated.
  */
@@ -609,7 +603,6 @@ IUCORE_DLLAPI void cubicBSplinePrefilter(iu::ImageGpu_32f_C1* srcdst);
  * \param[out] dst Destination image [device]
  * \param[in] interpolation The type of interpolation used for scaling down the image.
  * \param[in] gauss_prefilter Toggles gauss prefiltering. The sigma and kernel size is chosen dependent on the scale factor.
- * \param[in] bicubic_bspline_prefilter Only reasonable for cubic (spline) interpolation.
  *
  * \note The bcubic_bspline_prefilter yields sharper results when switched on. Note that this only works nicely with a scale_factor=0.5f.
  */
@@ -622,7 +615,6 @@ IUCORE_DLLAPI void reduce(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* d
  * \param[in] src Source image [device]
  * \param[out] dst Destination image [device]
  * \param[in] interpolation The type of interpolation used for scaling up the image.
- * :TODO: \param[in] bicubic_bspline_prefilter Only reasonable for cubic (spline) interpolation.
  *
  * \note The bcubic_bspline_prefilter yields sharper results when switched on. Note that this only works nicely with a scale_factor=0.5f.
  */
@@ -640,7 +632,6 @@ IUCORE_DLLAPI void prolongate(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C
  * \param[in] dy_map Disparities (dense) in y direction [device]
  * \param[out] dst Destination image [device]
  * \param[in] interpolation The type of interpolation used for scaling up the image.
- * :TODO: \param[in] bicubic_bspline_prefilter Only reasonable for cubic (spline) interpolation.
  *
  * \note The bcubic_bspline_prefilter yields sharper results when switched on. Note that this only works nicely with a scale_factor=0.5f.
  */

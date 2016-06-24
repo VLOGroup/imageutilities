@@ -63,6 +63,7 @@ namespace iu {
  * \brief various bits and pieces, error handling, conveniencs functions
  * \{
  */
+
 /** Check for CUDA error (throws IuCudaException)
  * @ingroup UTILS
  */
