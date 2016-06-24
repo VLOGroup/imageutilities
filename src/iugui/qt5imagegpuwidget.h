@@ -11,9 +11,9 @@
 
 namespace iu {
 /**
- * @brief The Qt5ImageGpuWidget class
+ * @brief @brief Allows to display images directly in an OpenGL Widget.
  *
- *
+ * Images are kept on the graphics card, without the need to copy to the host for displaying.
  */
 
 class Qt5ImageGpuWidget : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Core

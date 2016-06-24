@@ -26,8 +26,9 @@ namespace iu {
   */
 
 /**
- * @brief The OpenEXRInputFile class interfaces the OpenEXR library with the Imageutilities. After
- * construction various information (image size, channels, attributes) can be queried which
+ * @brief The OpenEXRInputFile class interfaces the OpenEXR library with the Imageutilities.
+ *
+ * After construction various information (image size, channels, attributes) can be queried which
  * allows to construct the corresponding ImageCpu* variables needed to call the \ref read_channel method.
  * convenience methods to read directly to GPU-images are provided as well.
  */
@@ -144,8 +145,9 @@ private:
 
 
 /**
- * @brief The OpenEXROutputFile class interfaces the OpenEXR library with the Imageutilities. Constructing
- * an \ref OpenEXROutputFile requires the filename and image size. Data is added through various \ref add_channel and
+ * @brief Interfaces the OpenEXR library with the Imageutilities.
+ *
+ * Constructing an \ref OpenEXROutputFile requires the filename and image size. Data is added through various \ref add_channel and
  * \ref add_attribute methods. Note that \ref write has to be called explicitly to write the data to disk.
  * \todo what happens if \ref write is called multiple times?
  */

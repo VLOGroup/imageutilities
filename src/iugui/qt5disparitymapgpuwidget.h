@@ -13,9 +13,9 @@
 
 namespace iu {
 /**
- * @brief The Qt5DisparityGpuWidget class allows to display disparity or depth maps in 3D with a built-in mouse and keyboard interaction
+ * @brief Allows to display disparity or depth maps in 3D with a built-in mouse and keyboard interaction.
  *
- *
+ * All data is kept on the graphics card, OpenGL is responsible for rendering the generated point-cloud.
  */
 
 class Qt5DisparitymapGpuWidget : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Core

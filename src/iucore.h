@@ -29,14 +29,16 @@
 /// The main namespace
 namespace iu {
 
-/** \defgroup Core iucore.
+/** \defgroup Core iucore
+ * \brief Core classes, memory management and basic operations.
  * \{
  */
 
 
 /**
- * @brief The IuCudaTimer class can be used to do high-precision GPU timing measurements. It
- * uses GPU hardware timers with a resolution of around to 0.5 microseconds. It is not necessary
+ * @brief The IuCudaTimer class can be used to do high-precision GPU timing measurements.
+ *
+ * It uses GPU hardware timers with a resolution of around to 0.5 microseconds. It is not necessary
  * to put workload on the GPU, i.e. this class can also be used for high-precision CPU timings.
  */
 class IuCudaTimer

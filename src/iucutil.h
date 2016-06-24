@@ -96,17 +96,12 @@ inline __host__ __device__ Type sqr(Type a) {return a*a;}
 
 #include <stdio.h>
 
-//#define IU_CUDACALL(err) iu::cudaCall(err, __FILE__, __LINE__ );
 
-///** Compile time conditional check for CUDA error (throws IuCudaException).
-//    Define IU_CUDA_CHECK_ENABLED to enable it.
-// */
-//#ifdef IU_CUDA_CHECK_ENABLED
-//  #define IU_CUDA_CHECK() checkCudaErrorState(__FILE__, __FUNCTION__, __LINE__)
-//#else
-//  #define IU_CUDA_CHECK() do{}while(0)
-//#endif
-
+/**
+ * @brief Exceptions related to cuda issues.
+ *
+ * Can be used to raise IuException s related to CUDA.
+ */
 class IuCudaException : public IuException
 {
 public:
@@ -120,14 +115,6 @@ public:
 protected:
   cudaError_t cudaErr_;
 };
-
-//class IuCudaBadAllocException : public IuCudaException
-//{
-//public:
-//  IuCudaBadAllocException(const cudaError_t cudaErr,
-//                  const char* file=NULL, const char* function=NULL, int line=0) throw() :
-//    IuCudaException(cudaErr, file, function, line) {}
-//};
 
 namespace iu {
 
@@ -185,59 +172,10 @@ static inline void printGPUMemoryUsage()
 
 } //namespace iu
 
-//#ifdef __CUDACC__ // only include this error check in cuda files (seen by nvcc)
-
 // MACROS
 
 #define IU_CUDA_CHECK         iu::checkCudaErrorState(__FILE__, __FUNCTION__, __LINE__)
 #define IU_CUDA_SAFE_CALL(fun)       iu::checkCudaErrorState(fun, __FILE__, __FUNCTION__, __LINE__)
-
-
-////-----------------------------------------------------------------------------
-//#define __IU_CHECK_FOR_CUDA_ERRORS_ENABLED__ // enables checking for cuda errors
-
-
-/** CUDA ERROR HANDLING (CHECK FOR CUDA ERRORS)
- */
-/*
-#ifdef __IU_CHECK_FOR_CUDA_ERRORS_ENABLED__
-#define IU_CHECK_AND_RETURN_CUDA_ERRORS() \
-{ \
-  cudaDeviceSynchronize(); \
-  if (cudaError_t err = cudaGetLastError()) \
-  { \
-    fprintf(stderr,"\n\nCUDA Error: %s\n",cudaGetErrorString(err)); \
-    fprintf(stderr,"  file:       %s\n",__FILE__); \
-    fprintf(stderr,"  function:   %s\n",__FUNCTION__); \
-    fprintf(stderr,"  line:       %d\n\n",__LINE__); \
-    return IU_ERROR; \
-  } \
-  else \
-    return IU_NO_ERROR; \
-}
-*/
-
-/*
-#define IU_CHECK_CUDA_ERRORS() \
-{ \
-  cudaDeviceSynchronize(); \
-  if (cudaError_t err = cudaGetLastError()) \
-  { \
-    fprintf(stderr,"\n\nCUDA Error: %s\n",cudaGetErrorString(err)); \
-    fprintf(stderr,"  file:       %s\n",__FILE__); \
-    fprintf(stderr,"  function:   %s\n",__FUNCTION__); \
-    fprintf(stderr,"  line:       %d\n\n",__LINE__); \
-  } \
-}
-*/
-
-//#else // __IU_CHECK_FOR_CUDA_ERRORS_ENABLED__
-//#define IU_CHECK_AND_RETURN_CUDA_ERRORS() {}
-//#define IU_CHECK_CUDA_ERRORS() {}
-//#endif // __IU_CHECK_FOR_CUDA_ERRORS_ENABLED__
-
-
-//#endif // __CUDACC__
 
 
 

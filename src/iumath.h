@@ -8,7 +8,7 @@ namespace iu {
 namespace math {
 
 /** \defgroup Math iumath
- * Image Mathematics module
+ * \brief Provides basic mathematics on arrays and images
  */
 
 /** \defgroup MathArithmetics Arithmetics

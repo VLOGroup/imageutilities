@@ -30,8 +30,10 @@
 
 namespace iu {
 
-/** \defgroup IO iuio.
- * \brief iuio module contains I/O functionality: Reading/writing images, reading from cameras
+/** \defgroup IO iuio
+ * \brief Provides I/O functionality.
+
+ * Reading/writing images, reading from cameras
  * and video files, interfaces to read/write OpenEXR files
  * \{
  */
