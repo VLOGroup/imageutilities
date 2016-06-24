@@ -588,8 +588,6 @@ IUCORE_DLLAPI void filterEdge(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C
 IUCORE_DLLAPI void cubicBSplinePrefilter(iu::ImageGpu_32f_C1* srcdst);
 /** @} */ // end of Filters
 
-/** @} */ // end of Filter Module
-
 /** \defgroup Geometric Transformation
     \brief Up- and Downscaling of images
     \ingroup Core

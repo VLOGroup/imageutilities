@@ -52,7 +52,8 @@
 #endif //DEBUG
 
 /** @brief Exceptions with additional error information
- */
+* @ingroup UTILS
+*/
 class IuException : public std::exception
 {
 public:
