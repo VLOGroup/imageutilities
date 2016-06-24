@@ -33,7 +33,7 @@
 
 namespace iu{
 
-/** \brief Image base class.
+/** \brief Base class for 2D images (pitched memory).
  * \todo We maybe do not want to have the Image class in the public dll interface??
  */
 

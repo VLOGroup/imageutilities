@@ -32,7 +32,7 @@
 
 namespace iu {
 
-/** \brief LinearMemory base class for linear memory classes.
+/** \brief Base class for linear memory classes.
   */
 class LinearMemory
 {

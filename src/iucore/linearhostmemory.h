@@ -35,7 +35,7 @@
 namespace iu {
 
 template<typename PixelType>
-/** \brief LinearHostMemory class.
+/** \brief Host linear memory class.
   */
 class LinearHostMemory : public LinearMemory
 {

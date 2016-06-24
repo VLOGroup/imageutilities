@@ -30,7 +30,7 @@
 namespace iu {
 
 template<typename PixelType, class Allocator>
-/** VolumeGpu class.
+/** \brief Device 3D volume class (pitched memory).
  */
 class VolumeGpu : public Volume
 {
@@ -201,8 +201,10 @@ public:
 
   /** \todo cuda texture for VolumeGpu */
   
-  /** Struct pointer KernelData that can be used in CUDA kernels. This struct
-   *  provides the device data pointer as well as important class properties.
+  /** \brief Struct pointer KernelData that can be used in CUDA kernels
+   *
+   *  This struct provides the device data pointer as well as important class
+   *  properties.
    *  @code
    *  template<typename PixelType, class Allocator>
    *  __global__ void cudaFunctionKernel(VolumeGpu<PixelType, Allocator>::KernelData img, PixelType value)
@@ -220,10 +222,10 @@ public:
    * template<typename PixelType, class Allocator>
    * void doSomethingWithCuda(iu::VolumeGpu<PixelType, Allocator> *img, PixelType value)
    * {
-   *     dim3 dimBlock(32,16,4);
-   *     dim3 dimGrid((img->width() + dimBlock.x - 1) / dimBlock.x,
-   *                  (img->height() + dimBlock.y - 1) / dimBlock.y,
-   *                  (img->depth() + dimBlock.z - 1) / dimBlock.z);
+   *     dim3 dimBlock(8,8,4);
+   *     dim3 dimGrid(iu::divUp(img->width(), dimBlock.x),
+   *                  iu::divUp(img->height(), dimBlock.y),
+   *                  iu::divUp(img->depth(), dimBlock.z));
    *     cudaFunctionKernel<PixelType, Allocator><<<dimGrid, dimBlock>>>(*img, value);
    *     IU_CUDA_CHECK;
    * }

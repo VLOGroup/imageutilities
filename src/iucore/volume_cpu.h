@@ -30,7 +30,7 @@
 namespace iu {
 
 template<typename PixelType, class Allocator>
-/** VolumeCpu class.
+/** \brief Device 3D volume class (pitched memory).
  */
 class VolumeCpu : public Volume
 {

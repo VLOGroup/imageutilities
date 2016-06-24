@@ -6,13 +6,13 @@ namespace iu
 {
 
 template<typename PixelType>
-/** \brief TensorCpu class.
-  */
+/** \brief Device 4D tensor class. */
 class TensorGpu: public LinearDeviceMemory<PixelType>
 {
 public:
-  /** Memory layout to access the data elements. Defines how the elements are
-   *  laid out in the memory.
+  /** \brief Memory layout to access the data elements.
+   *
+   *  Defines how the elements are laid out in the memory.
    * - NCHW: Samples - channels - height - width
    * - NHWC: Samples - height - width - channels
    */
@@ -109,8 +109,10 @@ public:
     return out;
   }
 
-  /** Struct pointer TensorKernelData that can be used in CUDA kernels. This struct
-   *  provides the device data pointer as well as important class properties.
+  /** \brief Struct pointer TensorKernelData that can be used in CUDA kernels.
+   *
+   *  This struct provides the device data pointer as well as important class
+   *  properties.
    */
 	struct TensorKernelData
 	//struct KernelData

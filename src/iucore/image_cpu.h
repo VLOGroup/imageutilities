@@ -31,7 +31,7 @@
 namespace iu {
 
 template<typename PixelType, class Allocator>
-/** ImageCpu class.
+/** \brief Host 2D image class (pitched memory).
  */
 class ImageCpu : public Image
 {

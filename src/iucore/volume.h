@@ -33,7 +33,7 @@
 
 namespace iu{
 
-/** \brief Volume base class.
+/** \brief Base class for 3D volumes (pitched memory).
  * \todo We maybe do not want to have the Volume class in the public dll interface??
  */
 class Volume

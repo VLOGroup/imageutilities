@@ -31,7 +31,7 @@
 namespace iu {
 
 template<typename PixelType, class Allocator>
-/** ImageGpu class.
+/** \brief Device 2D image class (pitched memory).
  */
 class ImageGpu : public Image
 {
@@ -189,10 +189,9 @@ public:
   }
 
   /** Prepare CUDA texture
-   * @todo
    * @param readMode CUDA texture read mode
    * @param filterMode CUDA texture filter mode
-   * @param addressMode CUDA texture address mode (border handling)
+   * @param addressMode CUDA texture address mode
    */
   void prepareTexture(cudaTextureReadMode readMode = cudaReadModeElementType,
                       cudaTextureFilterMode filterMode = cudaFilterModeLinear,
@@ -248,8 +247,10 @@ public:
       return texture_;
   }
 
-  /** Struct pointer KernelData that can be used in CUDA kernels. This struct
-   *  provides the device data pointer as well as important class properties.
+  /** \brief Struct pointer KernelData that can be used in CUDA kernels.
+   *
+   *  This struct provides the device data pointer as well as important class
+   *  properties.
    *  @code
    *  template<typename PixelType, class Allocator>
    *  __global__ void cudaFunctionKernel(ImageGpu<PixelType, Allocator>::KernelData img, PixelType value)
@@ -267,8 +268,8 @@ public:
    * void doSomethingWithCuda(iu::ImageGpu<PixelType, Allocator> *img, PixelType value)
    * {
    *     dim3 dimBlock(32,32);
-   *     dim3 dimGrid((img->width() + dimBlock.x - 1) / dimBlock.x,
-   *                  (img->height() + dimBlock.y - 1) / dimBlock.y);
+   *     dim3 dimGrid(iu::divUp(img->width(), dimBlock.x),
+   *                  iu::divUp(img->height(), dimBlock.y));
    *     cudaFunctionKernel<PixelType, Allocator><<<dimGrid, dimBlock>>>(*img, value);
    *     IU_CUDA_CHECK;
    * }

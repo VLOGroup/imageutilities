@@ -32,7 +32,7 @@
 namespace iu {
 
 template<typename PixelType>
-/** \brief LinearDeviceMemory class.
+/** \brief Device linear memory class.
   */
 class LinearDeviceMemory : public LinearMemory
 {
@@ -145,8 +145,10 @@ public:
     return true;
   }
 
-  /** Struct pointer KernelData that can be used in CUDA kernels. This struct
-   *  provides the device data pointer as well as important class properties.
+  /** \brief Struct pointer KernelData that can be used in CUDA kernels.
+   *
+   *  This struct provides the device data pointer as well as important class
+   *  properties.
    *  @code
    *  template<typename PixelType>
    *  __global__ void cudaFunctionKernel(iu::LinearDeviceMemory<PixelType>::KernelData memory, PixelType value)
@@ -163,7 +165,7 @@ public:
    * void doSomethingWithCuda(iu::LinearDeviceMemory<PixelType> *memory, PixelType value)
    * {
    *     dim3 dimBlock(32,1);
-   *     dim3 dimGrid((img->length() + dimBlock.x - 1) / dimBlock.x, 1);
+   *     dim3 dimGrid(iu::divUp(img->length(), dimBlock.x), 1);
    *     cudaFunctionKernel<PixelType><<<dimGrid, dimBlock>>>(*memory, value);
    *     IU_CUDA_CHECK;
    * }
