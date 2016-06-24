@@ -117,67 +117,67 @@ typedef LinearDeviceMemory<uint4> LinearDeviceMemory_32u_C4;
   Host
 */
 // Cpu Images; 8u
-typedef ImageCpu<unsigned char, ImageAllocatorCpu<unsigned char> > ImageCpu_8u_C1;
-typedef ImageCpu<uchar2, ImageAllocatorCpu<uchar2> > ImageCpu_8u_C2;
-typedef ImageCpu<uchar3, ImageAllocatorCpu<uchar3> > ImageCpu_8u_C3;
-typedef ImageCpu<uchar4, ImageAllocatorCpu<uchar4> > ImageCpu_8u_C4;
+typedef ImageCpu<unsigned char, iuprivate::ImageAllocatorCpu<unsigned char> > ImageCpu_8u_C1;
+typedef ImageCpu<uchar2, iuprivate::ImageAllocatorCpu<uchar2> > ImageCpu_8u_C2;
+typedef ImageCpu<uchar3, iuprivate::ImageAllocatorCpu<uchar3> > ImageCpu_8u_C3;
+typedef ImageCpu<uchar4, iuprivate::ImageAllocatorCpu<uchar4> > ImageCpu_8u_C4;
 
 // Cpu Images; 16u
-typedef ImageCpu<unsigned short, ImageAllocatorCpu<unsigned short> > ImageCpu_16u_C1;
-typedef ImageCpu<ushort2, ImageAllocatorCpu<ushort2> > ImageCpu_16u_C2;
-typedef ImageCpu<ushort3, ImageAllocatorCpu<ushort3> > ImageCpu_16u_C3;
-typedef ImageCpu<ushort4, ImageAllocatorCpu<ushort4> > ImageCpu_16u_C4;
+typedef ImageCpu<unsigned short, iuprivate::ImageAllocatorCpu<unsigned short> > ImageCpu_16u_C1;
+typedef ImageCpu<ushort2, iuprivate::ImageAllocatorCpu<ushort2> > ImageCpu_16u_C2;
+typedef ImageCpu<ushort3, iuprivate::ImageAllocatorCpu<ushort3> > ImageCpu_16u_C3;
+typedef ImageCpu<ushort4, iuprivate::ImageAllocatorCpu<ushort4> > ImageCpu_16u_C4;
 
 // Cpu Images; 32s
-typedef ImageCpu<int, ImageAllocatorCpu<int> > ImageCpu_32s_C1;
-typedef ImageCpu<int2, ImageAllocatorCpu<int2> > ImageCpu_32s_C2;
-typedef ImageCpu<int3, ImageAllocatorCpu<int3> > ImageCpu_32s_C3;
-typedef ImageCpu<int4, ImageAllocatorCpu<int4> > ImageCpu_32s_C4;
+typedef ImageCpu<int, iuprivate::ImageAllocatorCpu<int> > ImageCpu_32s_C1;
+typedef ImageCpu<int2, iuprivate::ImageAllocatorCpu<int2> > ImageCpu_32s_C2;
+typedef ImageCpu<int3, iuprivate::ImageAllocatorCpu<int3> > ImageCpu_32s_C3;
+typedef ImageCpu<int4, iuprivate::ImageAllocatorCpu<int4> > ImageCpu_32s_C4;
 
 // Cpu Images; 32u
-typedef ImageCpu<unsigned int, ImageAllocatorCpu<unsigned int> > ImageCpu_32u_C1;
-typedef ImageCpu<uint2, ImageAllocatorCpu<uint2> > ImageCpu_32u_C2;
-typedef ImageCpu<uint4, ImageAllocatorCpu<uint4> > ImageCpu_32u_C4;
+typedef ImageCpu<unsigned int, iuprivate::ImageAllocatorCpu<unsigned int> > ImageCpu_32u_C1;
+typedef ImageCpu<uint2, iuprivate::ImageAllocatorCpu<uint2> > ImageCpu_32u_C2;
+typedef ImageCpu<uint4, iuprivate::ImageAllocatorCpu<uint4> > ImageCpu_32u_C4;
 
 
 // Cpu Images; 32f
-typedef ImageCpu<float, ImageAllocatorCpu<float> > ImageCpu_32f_C1;
-typedef ImageCpu<float2, ImageAllocatorCpu<float2> > ImageCpu_32f_C2;
-typedef ImageCpu<float3, ImageAllocatorCpu<float3> > ImageCpu_32f_C3;
-typedef ImageCpu<float4, ImageAllocatorCpu<float4> > ImageCpu_32f_C4;
+typedef ImageCpu<float, iuprivate::ImageAllocatorCpu<float> > ImageCpu_32f_C1;
+typedef ImageCpu<float2, iuprivate::ImageAllocatorCpu<float2> > ImageCpu_32f_C2;
+typedef ImageCpu<float3, iuprivate::ImageAllocatorCpu<float3> > ImageCpu_32f_C3;
+typedef ImageCpu<float4, iuprivate::ImageAllocatorCpu<float4> > ImageCpu_32f_C4;
 
 /*
   Device
 */
 // Gpu Images; 8u
-typedef ImageGpu<unsigned char, ImageAllocatorGpu<unsigned char> > ImageGpu_8u_C1;
-typedef ImageGpu<uchar2, ImageAllocatorGpu<uchar2> > ImageGpu_8u_C2;
-typedef ImageGpu<uchar3, ImageAllocatorGpu<uchar3> > ImageGpu_8u_C3;
-typedef ImageGpu<uchar4, ImageAllocatorGpu<uchar4> > ImageGpu_8u_C4;
+typedef ImageGpu<unsigned char, iuprivate::ImageAllocatorGpu<unsigned char> > ImageGpu_8u_C1;
+typedef ImageGpu<uchar2, iuprivate::ImageAllocatorGpu<uchar2> > ImageGpu_8u_C2;
+typedef ImageGpu<uchar3, iuprivate::ImageAllocatorGpu<uchar3> > ImageGpu_8u_C3;
+typedef ImageGpu<uchar4, iuprivate::ImageAllocatorGpu<uchar4> > ImageGpu_8u_C4;
 
 // Gpu Images; 16u
-typedef ImageGpu<unsigned short, ImageAllocatorGpu<unsigned short> > ImageGpu_16u_C1;
-typedef ImageGpu<ushort2, ImageAllocatorGpu<ushort2> > ImageGpu_16u_C2;
-typedef ImageGpu<ushort3, ImageAllocatorGpu<ushort3> > ImageGpu_16u_C3;
-typedef ImageGpu<ushort4, ImageAllocatorGpu<ushort4> > ImageGpu_16u_C4;
+typedef ImageGpu<unsigned short, iuprivate::ImageAllocatorGpu<unsigned short> > ImageGpu_16u_C1;
+typedef ImageGpu<ushort2, iuprivate::ImageAllocatorGpu<ushort2> > ImageGpu_16u_C2;
+typedef ImageGpu<ushort3, iuprivate::ImageAllocatorGpu<ushort3> > ImageGpu_16u_C3;
+typedef ImageGpu<ushort4, iuprivate::ImageAllocatorGpu<ushort4> > ImageGpu_16u_C4;
 
 // Gpu Images; 32s
-typedef ImageGpu<int, ImageAllocatorGpu<int> > ImageGpu_32s_C1;
-typedef ImageGpu<int2, ImageAllocatorGpu<int2> > ImageGpu_32s_C2;
-typedef ImageGpu<int3, ImageAllocatorGpu<int3> > ImageGpu_32s_C3;
-typedef ImageGpu<int4, ImageAllocatorGpu<int4> > ImageGpu_32s_C4;
+typedef ImageGpu<int, iuprivate::ImageAllocatorGpu<int> > ImageGpu_32s_C1;
+typedef ImageGpu<int2, iuprivate::ImageAllocatorGpu<int2> > ImageGpu_32s_C2;
+typedef ImageGpu<int3, iuprivate::ImageAllocatorGpu<int3> > ImageGpu_32s_C3;
+typedef ImageGpu<int4, iuprivate::ImageAllocatorGpu<int4> > ImageGpu_32s_C4;
 
 // Gpu Images; 32u
-typedef ImageGpu<unsigned int, ImageAllocatorGpu<unsigned int> > ImageGpu_32u_C1;
-typedef ImageGpu<uint2, ImageAllocatorGpu<uint2> > ImageGpu_32u_C2;
-typedef ImageGpu<uint4, ImageAllocatorGpu<uint4> > ImageGpu_32u_C4;
+typedef ImageGpu<unsigned int, iuprivate::ImageAllocatorGpu<unsigned int> > ImageGpu_32u_C1;
+typedef ImageGpu<uint2, iuprivate::ImageAllocatorGpu<uint2> > ImageGpu_32u_C2;
+typedef ImageGpu<uint4, iuprivate::ImageAllocatorGpu<uint4> > ImageGpu_32u_C4;
 
 
 // Gpu Images; 32f
-typedef ImageGpu<float, ImageAllocatorGpu<float> > ImageGpu_32f_C1;
-typedef ImageGpu<float2, ImageAllocatorGpu<float2> > ImageGpu_32f_C2;
-typedef ImageGpu<float3, ImageAllocatorGpu<float3> > ImageGpu_32f_C3;
-typedef ImageGpu<float4, ImageAllocatorGpu<float4> > ImageGpu_32f_C4;
+typedef ImageGpu<float, iuprivate::ImageAllocatorGpu<float> > ImageGpu_32f_C1;
+typedef ImageGpu<float2, iuprivate::ImageAllocatorGpu<float2> > ImageGpu_32f_C2;
+typedef ImageGpu<float3, iuprivate::ImageAllocatorGpu<float3> > ImageGpu_32f_C3;
+typedef ImageGpu<float4, iuprivate::ImageAllocatorGpu<float4> > ImageGpu_32f_C4;
 
 
 /* ****************************************************************************
@@ -188,59 +188,59 @@ typedef ImageGpu<float4, ImageAllocatorGpu<float4> > ImageGpu_32f_C4;
   Host
 */
 // Cpu Volumes; 8u
-typedef VolumeCpu<unsigned char, VolumeAllocatorCpu<unsigned char> > VolumeCpu_8u_C1;
-typedef VolumeCpu<uchar2, VolumeAllocatorCpu<uchar2> > VolumeCpu_8u_C2;
-typedef VolumeCpu<uchar3, VolumeAllocatorCpu<uchar3> > VolumeCpu_8u_C3;
-typedef VolumeCpu<uchar4, VolumeAllocatorCpu<uchar4> > VolumeCpu_8u_C4;
+typedef VolumeCpu<unsigned char, iuprivate::VolumeAllocatorCpu<unsigned char> > VolumeCpu_8u_C1;
+typedef VolumeCpu<uchar2, iuprivate::VolumeAllocatorCpu<uchar2> > VolumeCpu_8u_C2;
+typedef VolumeCpu<uchar3, iuprivate::VolumeAllocatorCpu<uchar3> > VolumeCpu_8u_C3;
+typedef VolumeCpu<uchar4, iuprivate::VolumeAllocatorCpu<uchar4> > VolumeCpu_8u_C4;
 
 // Cpu Volumes; 16u
-typedef VolumeCpu<unsigned short, VolumeAllocatorCpu<unsigned short> > VolumeCpu_16u_C1;
+typedef VolumeCpu<unsigned short, iuprivate::VolumeAllocatorCpu<unsigned short> > VolumeCpu_16u_C1;
 
 // Cpu Volumes; 32u
-typedef VolumeCpu<unsigned int, VolumeAllocatorCpu<unsigned int> > VolumeCpu_32u_C1;
-typedef VolumeCpu<uint2, VolumeAllocatorCpu<uint2> > VolumeCpu_32u_C2;
-typedef VolumeCpu<uint4, VolumeAllocatorCpu<uint4> > VolumeCpu_32u_C4;
+typedef VolumeCpu<unsigned int, iuprivate::VolumeAllocatorCpu<unsigned int> > VolumeCpu_32u_C1;
+typedef VolumeCpu<uint2, iuprivate::VolumeAllocatorCpu<uint2> > VolumeCpu_32u_C2;
+typedef VolumeCpu<uint4, iuprivate::VolumeAllocatorCpu<uint4> > VolumeCpu_32u_C4;
 
 // Cpu Volumes; 32s
-typedef VolumeCpu<int, VolumeAllocatorCpu<int> > VolumeCpu_32s_C1;
-typedef VolumeCpu<int2, VolumeAllocatorCpu<int2> > VolumeCpu_32s_C2;
-typedef VolumeCpu<int4, VolumeAllocatorCpu<int4> > VolumeCpu_32s_C4;
+typedef VolumeCpu<int, iuprivate::VolumeAllocatorCpu<int> > VolumeCpu_32s_C1;
+typedef VolumeCpu<int2, iuprivate::VolumeAllocatorCpu<int2> > VolumeCpu_32s_C2;
+typedef VolumeCpu<int4, iuprivate::VolumeAllocatorCpu<int4> > VolumeCpu_32s_C4;
 
 
 // Cpu Volumes; 32f
-typedef VolumeCpu<float, VolumeAllocatorCpu<float> > VolumeCpu_32f_C1;
-typedef VolumeCpu<float2, VolumeAllocatorCpu<float2> > VolumeCpu_32f_C2;
-typedef VolumeCpu<float3, VolumeAllocatorCpu<float3> > VolumeCpu_32f_C3;
-typedef VolumeCpu<float4, VolumeAllocatorCpu<float4> > VolumeCpu_32f_C4;
+typedef VolumeCpu<float, iuprivate::VolumeAllocatorCpu<float> > VolumeCpu_32f_C1;
+typedef VolumeCpu<float2, iuprivate::VolumeAllocatorCpu<float2> > VolumeCpu_32f_C2;
+typedef VolumeCpu<float3, iuprivate::VolumeAllocatorCpu<float3> > VolumeCpu_32f_C3;
+typedef VolumeCpu<float4, iuprivate::VolumeAllocatorCpu<float4> > VolumeCpu_32f_C4;
 
 /*
   Device
 */
 // Gpu Volumes; 8u
-typedef VolumeGpu<unsigned char, VolumeAllocatorGpu<unsigned char> > VolumeGpu_8u_C1;
-typedef VolumeGpu<uchar2, VolumeAllocatorGpu<uchar2> > VolumeGpu_8u_C2;
-typedef VolumeGpu<uchar3, VolumeAllocatorGpu<uchar3> > VolumeGpu_8u_C3;
-typedef VolumeGpu<uchar4, VolumeAllocatorGpu<uchar4> > VolumeGpu_8u_C4;
+typedef VolumeGpu<unsigned char, iuprivate::VolumeAllocatorGpu<unsigned char> > VolumeGpu_8u_C1;
+typedef VolumeGpu<uchar2, iuprivate::VolumeAllocatorGpu<uchar2> > VolumeGpu_8u_C2;
+typedef VolumeGpu<uchar3, iuprivate::VolumeAllocatorGpu<uchar3> > VolumeGpu_8u_C3;
+typedef VolumeGpu<uchar4, iuprivate::VolumeAllocatorGpu<uchar4> > VolumeGpu_8u_C4;
 
 // Gpu Volumes; 16u
-typedef VolumeGpu<unsigned short, VolumeAllocatorGpu<unsigned short> > VolumeGpu_16u_C1;
+typedef VolumeGpu<unsigned short, iuprivate::VolumeAllocatorGpu<unsigned short> > VolumeGpu_16u_C1;
 
 // Gpu Volumes; 32u
-typedef VolumeGpu<unsigned int, VolumeAllocatorGpu<unsigned int> > VolumeGpu_32u_C1;
-typedef VolumeGpu<uint2, VolumeAllocatorGpu<uint2> > VolumeGpu_32u_C2;
-typedef VolumeGpu<uint4, VolumeAllocatorGpu<uint4> > VolumeGpu_32u_C4;
+typedef VolumeGpu<unsigned int, iuprivate::VolumeAllocatorGpu<unsigned int> > VolumeGpu_32u_C1;
+typedef VolumeGpu<uint2, iuprivate::VolumeAllocatorGpu<uint2> > VolumeGpu_32u_C2;
+typedef VolumeGpu<uint4, iuprivate::VolumeAllocatorGpu<uint4> > VolumeGpu_32u_C4;
 
 // Gpu Volumes; 32s
-typedef VolumeGpu<int, VolumeAllocatorGpu<int> > VolumeGpu_32s_C1;
-typedef VolumeGpu<int2, VolumeAllocatorGpu<int2> > VolumeGpu_32s_C2;
-typedef VolumeGpu<int4, VolumeAllocatorGpu<int4> > VolumeGpu_32s_C4;
+typedef VolumeGpu<int, iuprivate::VolumeAllocatorGpu<int> > VolumeGpu_32s_C1;
+typedef VolumeGpu<int2, iuprivate::VolumeAllocatorGpu<int2> > VolumeGpu_32s_C2;
+typedef VolumeGpu<int4, iuprivate::VolumeAllocatorGpu<int4> > VolumeGpu_32s_C4;
 
 
 // Gpu Volumes; 32f
-typedef VolumeGpu<float, VolumeAllocatorGpu<float> > VolumeGpu_32f_C1;
-typedef VolumeGpu<float2, VolumeAllocatorGpu<float2> > VolumeGpu_32f_C2;
-typedef VolumeGpu<float3, VolumeAllocatorGpu<float3> > VolumeGpu_32f_C3;
-typedef VolumeGpu<float4, VolumeAllocatorGpu<float4> > VolumeGpu_32f_C4;
+typedef VolumeGpu<float, iuprivate::VolumeAllocatorGpu<float> > VolumeGpu_32f_C1;
+typedef VolumeGpu<float2, iuprivate::VolumeAllocatorGpu<float2> > VolumeGpu_32f_C2;
+typedef VolumeGpu<float3, iuprivate::VolumeAllocatorGpu<float3> > VolumeGpu_32f_C3;
+typedef VolumeGpu<float4, iuprivate::VolumeAllocatorGpu<float4> > VolumeGpu_32f_C4;
 
 
 /* ****************************************************************************

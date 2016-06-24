@@ -16,8 +16,8 @@ namespace math {
  * \param dst Destination image.
  */
 template<typename PixelType, class Allocator >
-void addC(iu::ImageGpu<PixelType, iu::ImageAllocatorGpu<Allocator> >& src, const PixelType& val,
-                        iu::ImageGpu<PixelType, iu::ImageAllocatorGpu<Allocator> >& dst)
+void addC(iu::ImageGpu<PixelType, Allocator >& src, const PixelType& val,
+                        iu::ImageGpu<PixelType,Allocator >& dst)
 {
     thrust::transform(src.begin(),src.end(),thrust::constant_iterator<PixelType>(val),dst.begin(),thrust::plus<PixelType>());
 }
@@ -35,15 +35,15 @@ void addC(iu::LinearDeviceMemory<PixelType>& src, const PixelType& val,
  * \param[out] dst Destination image.
  */
 template<typename PixelType, class Allocator >
-void mulC(iu::ImageGpu<PixelType, iu::ImageAllocatorGpu<Allocator> >& src, const PixelType& val,
-                        iu::ImageGpu<PixelType, iu::ImageAllocatorGpu<Allocator> >& dst)
+void mulC(iu::ImageGpu<PixelType, Allocator>& src, const PixelType& val,
+                        iu::ImageGpu<PixelType,Allocator >& dst)
 {
     thrust::transform(src.begin(),src.end(),thrust::constant_iterator<PixelType>(val),dst.begin(),thrust::multiplies<PixelType>());
 }
 
 template<typename PixelType, class Allocator >
-void mulC(iu::ImageCpu<PixelType, iu::ImageAllocatorCpu<Allocator> >& src, const PixelType& val,
-                        iu::ImageCpu<PixelType, iu::ImageAllocatorCpu<Allocator> >& dst)
+void mulC(iu::ImageCpu<PixelType, Allocator >& src, const PixelType& val,
+                        iu::ImageCpu<PixelType, Allocator >& dst)
 {
     thrust::transform(src.begin(),src.end(),thrust::constant_iterator<PixelType>(val),dst.begin(),thrust::multiplies<PixelType>());
 }
@@ -63,9 +63,9 @@ void mulC(iu::LinearDeviceMemory<PixelType>& src, const PixelType& val,
  * \param dst Result image dst=weight1*src1 + weight1*src2.
  */
 template<typename PixelType, class Allocator >
-void addWeighted(iu::ImageGpu<PixelType, iu::ImageAllocatorGpu<Allocator> >& src1, const PixelType& weight1,
-                 iu::ImageGpu<PixelType, iu::ImageAllocatorGpu<Allocator> >& src2, const PixelType& weight2,
-                 iu::ImageGpu<PixelType, iu::ImageAllocatorGpu<Allocator> >& dst)
+void addWeighted(iu::ImageGpu<PixelType, Allocator >& src1, const PixelType& weight1,
+                 iu::ImageGpu<PixelType, Allocator >& src2, const PixelType& weight2,
+                 iu::ImageGpu<PixelType, Allocator >& dst)
 {
     weightedsum_transform_tuple<PixelType> unary_op(weight1,weight2); // transformation operator
     thrust::transform(thrust::make_zip_iterator(thrust::make_tuple(src1.begin(), src2.begin())),
@@ -92,9 +92,9 @@ void addWeighted(iu::LinearDeviceMemory<PixelType>& src1, const PixelType& weigh
  * \param dst Result image dst=src1*src2.
  */
 template<typename PixelType, class Allocator >
-void mul(iu::ImageGpu<PixelType, iu::ImageAllocatorGpu<Allocator> >& src1,
-         iu::ImageGpu<PixelType, iu::ImageAllocatorGpu<Allocator> >& src2,
-         iu::ImageGpu<PixelType, iu::ImageAllocatorGpu<Allocator> >& dst)
+void mul(iu::ImageGpu<PixelType, Allocator >& src1,
+         iu::ImageGpu<PixelType, Allocator >& src2,
+         iu::ImageGpu<PixelType, Allocator >& dst)
 {
     thrust::transform(src1.begin(), src1.end(), src2.begin(), dst.begin(), thrust::multiplies<PixelType>());
 }
@@ -113,13 +113,13 @@ void mul(iu::LinearDeviceMemory<PixelType>& src1,
  */
 
 template<typename PixelType, class Allocator >
-void fill(iu::ImageGpu<PixelType, iu::ImageAllocatorGpu<Allocator> >& dst,PixelType& val)
+void fill(iu::ImageGpu<PixelType, Allocator >& dst,PixelType& val)
 {
     thrust::fill(dst.begin(),dst.end(),val);
 }
 
 template<typename PixelType, class Allocator >
-void fill(iu::ImageCpu<PixelType, iu::ImageAllocatorCpu<Allocator> >& dst,PixelType& val)
+void fill(iu::ImageCpu<PixelType, Allocator >& dst,PixelType& val)
 {
     thrust::fill(dst.begin(),dst.end(),val);
 }

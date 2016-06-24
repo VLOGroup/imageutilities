@@ -177,9 +177,9 @@ public:
     * @return volume slice at depth z as ImageGpu. Note, the ImageGpu merely holds a pointer to the volume data at depth z,
     * i.e. it does not manage its own data -> changes to the Image are transparent to the volume and vice versa.
     */
-  ImageGpu<PixelType, ImageAllocatorGpu<PixelType> > getSlice(int oz)
+  ImageGpu<PixelType, iuprivate::ImageAllocatorGpu<PixelType> > getSlice(int oz)
   {
-    return ImageGpu<PixelType, ImageAllocatorGpu<PixelType> >(
+    return ImageGpu<PixelType, iuprivate::ImageAllocatorGpu<PixelType> >(
           &data_[oz*slice_stride()], width(), height(), pitch_, true);
   }
 

@@ -28,7 +28,7 @@
 #include <cuda_runtime.h>
 #include "coredefs.h"
 
-namespace iu {
+namespace iuprivate {
 
 //--------------------------------------------------------------------------
 template <typename PixelType>

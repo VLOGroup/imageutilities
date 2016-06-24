@@ -177,9 +177,9 @@ public:
     * @return volume slice at depth z as ImageCpu. Note, the ImageCpu merely holds a pointer to the volume data at depth z,
     * i.e. it does not manage its own data -> changes to the Image are transparent to the volume and vice versa.
     */
-  ImageCpu<PixelType, ImageAllocatorCpu<PixelType> > getSlice(int oz)
+  ImageCpu<PixelType, iuprivate::ImageAllocatorCpu<PixelType> > getSlice(int oz)
   {
-    return ImageCpu<PixelType, ImageAllocatorCpu<PixelType> >(&data_[oz*slice_stride()], width(), height(), pitch_, true);
+    return ImageCpu<PixelType, iuprivate::ImageAllocatorCpu<PixelType> >(&data_[oz*slice_stride()], width(), height(), pitch_, true);
   }
   
   /** Get Pixel value at position x,y,z. */
