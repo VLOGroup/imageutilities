@@ -95,11 +95,11 @@ void summation(LinearMemoryType<PixelType>& d_img, PixelType init,
                        thrust::plus<PixelType>());
 }
 
-/** Returns the norm of the L1-difference between the image and a reference.
- * \param[in] src Source image [device]
- * \param[in] ref Reference image [device]
- * \param[out] mse MSE value (sum((src-ref)^2)).
- *
+/** Calculate the L1-Norm \f$ \sum\limits_{i=1}^N \vert x_i - y_i \vert \f$
+ *  where \f$ N \f$ is the total number of pixels.
+ * \param[in] src Source array \f$ x \f$
+ * \param[in] ref Reference array \f$ y \f$
+ * \param[out] norm Resulting norm
  */
 template<template<typename, typename > class PitchedMemoryType, template<
     typename > class Allocator, typename PixelType>
@@ -121,14 +121,14 @@ void normDiffL1(PitchedMemoryType<PixelType, Allocator<PixelType> >& src,
                              ref.end(),
                              thrust::counting_iterator<int>(0))),
       unary_op, init, binary_op);
-  norm = sqrt(thrust::get<1>(result));
+  norm = thrust::get<1>(result);
 }
 
-/** Returns the norm of the L1-difference between the image and a reference value.
- * \param[in] src Source image [device]
- * \param[in] ref Reference value
- * \param[out] mse MSE value (sum((src-ref)^2)).
- *
+/** Calculate the L1-Norm \f$ \sum\limits_{i=1}^N \vert x_i - y \vert \f$
+ *  where \f$ N \f$ is the total number of pixels.
+ * \param[in] src Source array \f$ x \f$
+ * \param[in] ref Reference value \f$ y \f$
+ * \param[out] norm Resulting norm
  */
 template<template<typename, typename > class PitchedMemoryType, template<
     typename > class Allocator, typename PixelType>
@@ -149,14 +149,14 @@ void normDiffL1(PitchedMemoryType<PixelType, Allocator<PixelType> >& src,
                              thrust::constant_iterator<PixelType>(ref),
                              thrust::counting_iterator<int>(0))),
       unary_op, init, binary_op);
-  norm = sqrt(thrust::get<1>(result));
+  norm = thrust::get<1>(result);
 }
 
-/** Returns the norm of the L2-difference between the image and a reference.
- * \param[in] src Source image [device]
- * \param[in] ref Reference image [device]
- * \param[out] mse MSE value (sum((src-ref)^2)).
- *
+/** Calculate the L2-Norm \f$ \sqrt{\sum\limits_{i=1}^N ( x_i - y_i )^2}\f$
+ *  where \f$ N \f$ is the total number of pixels.
+ * \param[in] src Source array \f$ x \f$
+ * \param[in] ref Reference array \f$ y \f$
+ * \param[out] norm Resulting norm
  */
 template<template<typename, typename > class PitchedMemoryType, template<
     typename > class Allocator, typename PixelType>
@@ -181,11 +181,11 @@ void normDiffL2(PitchedMemoryType<PixelType, Allocator<PixelType> >& src,
   norm = sqrt(thrust::get<1>(result));
 }
 
-/** Returns the norm of the L2-difference between the image and a reference value.
- * \param[in] src Source image [device]
- * \param[in] ref Reference value
- * \param[out] mse MSE value (sum((src-ref)^2)).
- *
+/** Calculate the L2-Norm \f$ \sqrt{\sum\limits_{i=1}^N ( x_i - y )^2}\f$
+ *  where \f$ N \f$ is the total number of pixels.
+ * \param[in] src Source array \f$ x \f$
+ * \param[in] ref Reference value \f$ y \f$
+ * \param[out] norm Resulting norm
  */
 template<template<typename, typename > class PitchedMemoryType, template<
     typename > class Allocator, typename PixelType>
@@ -209,11 +209,11 @@ void normDiffL2(PitchedMemoryType<PixelType, Allocator<PixelType> >& src,
   norm = sqrt(thrust::get<1>(result));
 }
 
-/** Returns the MSE between the image and a reference.
- * \param[in] src Source image [device]
- * \param[in] ref Reference image [device]
- * \param[out] mse MSE value (sum((src-ref)^2)).
- *
+/** Calculate the mean-squared error (MSE) \f$ \frac{\sum\limits_{i=1}^N ( x_i - y_i )^2}{N}\f$
+ *  where \f$ N \f$ is the total number of pixels.
+ * \param[in] src Source array \f$ x \f$
+ * \param[in] ref Reference array  \f$ y \f$
+ * \param[out] mse mean-squared error
  */
 template<template<typename, typename > class PitchedMemoryType, template<
     typename > class Allocator, typename PixelType>

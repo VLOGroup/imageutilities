@@ -270,6 +270,37 @@ void summation(iu::ImageCpu_32f_C1& src, float& sum) {iuprivate::math::summation
 void summation(iu::VolumeCpu_32f_C1& src, float& sum) {iuprivate::math::summation(src,0.f,sum);}
 void summation(iu::LinearHostMemory_32f_C1& src, float& sum) {iuprivate::math::summation(src,0.f,sum);}
 
+
+// L1-norm
+IUCORE_DLLAPI void normDiffL1(iu::ImageGpu_32f_C1& src, iu::ImageGpu_32f_C1& ref, float& norm) {iuprivate::math::normDiffL1(src,ref,norm);}
+IUCORE_DLLAPI void normDiffL1(iu::ImageGpu_32f_C1& src, float& ref, float& norm) {iuprivate::math::normDiffL1(src,ref,norm);}
+IUCORE_DLLAPI void normDiffL1(iu::VolumeGpu_32f_C1& src, iu::VolumeGpu_32f_C1& ref, float& norm) {iuprivate::math::normDiffL1(src,ref,norm);}
+IUCORE_DLLAPI void normDiffL1(iu::VolumeGpu_32f_C1& src, float& ref, float& norm) {iuprivate::math::normDiffL1(src,ref,norm);}
+
+IUCORE_DLLAPI void normDiffL1(iu::ImageCpu_32f_C1& src, iu::ImageCpu_32f_C1& ref, float& norm) {iuprivate::math::normDiffL1(src,ref,norm);}
+IUCORE_DLLAPI void normDiffL1(iu::ImageCpu_32f_C1& src, float& ref, float& norm) {iuprivate::math::normDiffL1(src,ref,norm);}
+IUCORE_DLLAPI void normDiffL1(iu::VolumeCpu_32f_C1& src, iu::VolumeCpu_32f_C1& ref, float& norm) {iuprivate::math::normDiffL1(src,ref,norm);}
+IUCORE_DLLAPI void normDiffL1(iu::VolumeCpu_32f_C1& src, float& ref, float& norm) {iuprivate::math::normDiffL1(src,ref,norm);}
+
+
+// L2-norm
+IUCORE_DLLAPI void normDiffL2(iu::ImageGpu_32f_C1& src, iu::ImageGpu_32f_C1& ref, float& norm) {iuprivate::math::normDiffL2(src,ref,norm);}
+IUCORE_DLLAPI void normDiffL2(iu::ImageGpu_32f_C1& src, float& ref, float& norm) {iuprivate::math::normDiffL2(src,ref,norm);}
+IUCORE_DLLAPI void normDiffL2(iu::VolumeGpu_32f_C1& src, iu::VolumeGpu_32f_C1& ref, float& norm) {iuprivate::math::normDiffL2(src,ref,norm);}
+IUCORE_DLLAPI void normDiffL2(iu::VolumeGpu_32f_C1& src, float& ref, float& norm) {iuprivate::math::normDiffL2(src,ref,norm);}
+
+IUCORE_DLLAPI void normDiffL2(iu::ImageCpu_32f_C1& src, iu::ImageCpu_32f_C1& ref, float& norm) {iuprivate::math::normDiffL2(src,ref,norm);}
+IUCORE_DLLAPI void normDiffL2(iu::ImageCpu_32f_C1& src, float& ref, float& norm) {iuprivate::math::normDiffL2(src,ref,norm);}
+IUCORE_DLLAPI void normDiffL2(iu::VolumeCpu_32f_C1& src, iu::VolumeCpu_32f_C1& ref, float& norm) {iuprivate::math::normDiffL2(src,ref,norm);}
+IUCORE_DLLAPI void normDiffL2(iu::VolumeCpu_32f_C1& src, float& ref, float& norm) {iuprivate::math::normDiffL2(src,ref,norm);}
+
+// MSE
+IUCORE_DLLAPI void mse(iu::ImageGpu_32f_C1& src, iu::ImageGpu_32f_C1& ref, float& mse) {iuprivate::math::mse(src,ref,mse);}
+IUCORE_DLLAPI void mse(iu::VolumeGpu_32f_C1& src, iu::VolumeGpu_32f_C1& ref, float& mse) {iuprivate::math::mse(src,ref,mse);}
+
+IUCORE_DLLAPI void mse(iu::ImageCpu_32f_C1& src, iu::ImageCpu_32f_C1& ref, float& mse) {iuprivate::math::mse(src,ref,mse);}
+IUCORE_DLLAPI void mse(iu::VolumeCpu_32f_C1& src, iu::VolumeCpu_32f_C1& ref, float& mse) {iuprivate::math::mse(src,ref,mse);}
+
 } //namespace math
 } //namespace iu
 

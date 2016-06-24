@@ -135,7 +135,7 @@ struct diffabs_transform_tuple :
     __host__ __device__
     OutputTuple operator()(const InputTuple& t) const
     {
-        bool is_valid = (thrust::get<1>(t) % N) < n;
+        bool is_valid = (thrust::get<2>(t) % N) < n;
         return OutputTuple(is_valid, abs(thrust::get<1>(t)-thrust::get<0>(t)));
     }
 };
