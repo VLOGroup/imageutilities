@@ -15,24 +15,24 @@ namespace math {
 //__host__ __device__ float2 operator*(const float2& v1, const float2& v2) { return make_float2(v1.x*v2.x,v1.y*v2.y);}
 //__host__ __device__ float2 operator+(const float2& v1, const float2& v2) { return make_float2(v1.x+v2.x,v1.y+v2.y);}
 
-template <typename IndexType, typename ValueType>
+template <typename ValueType, typename IndexType>
 struct minmax_transform_tuple :
-        public thrust::unary_function< thrust::tuple<IndexType,ValueType>,
+        public thrust::unary_function< thrust::tuple<ValueType,IndexType>,
         thrust::tuple<bool,ValueType,ValueType> >
 {
-    typedef typename thrust::tuple<IndexType,ValueType> InputTuple;
+    typedef typename thrust::tuple<ValueType, IndexType> InputTuple;
     typedef typename thrust::tuple<bool,ValueType,ValueType> OutputTuple;
     IndexType n, N;
     minmax_transform_tuple(IndexType n, IndexType N) : n(n), N(N) {}
     __host__ __device__
     OutputTuple operator()(const InputTuple& t) const
     {
-        bool is_valid = (thrust::get<0>(t) % N) < n;
-        return OutputTuple(is_valid, thrust::get<1>(t), thrust::get<1>(t));
+        bool is_valid = (thrust::get<1>(t) % N) < n;
+        return OutputTuple(is_valid, thrust::get<0>(t), thrust::get<0>(t));
     }
 };
 
-template <typename IndexType, typename ValueType>
+template <typename ValueType, typename IndexType>
 struct minmax_reduce_tuple :
         public thrust::binary_function< thrust::tuple<bool,ValueType,ValueType>,
         thrust::tuple<bool,ValueType,ValueType>,
@@ -55,24 +55,24 @@ struct minmax_reduce_tuple :
     }
 };
 
-template <typename IndexType, typename ValueType>
+template <typename ValueType, typename IndexType>
 struct sum_transform_tuple :
-        public thrust::unary_function< thrust::tuple<IndexType,ValueType>,
+        public thrust::unary_function< thrust::tuple<ValueType, IndexType>,
         thrust::tuple<bool,ValueType,ValueType> >
 {
-    typedef typename thrust::tuple<IndexType,ValueType> InputTuple;
+    typedef typename thrust::tuple<ValueType, IndexType> InputTuple;
     typedef typename thrust::tuple<bool,ValueType> OutputTuple;
     IndexType n, N;
     sum_transform_tuple(IndexType n, IndexType N) : n(n), N(N) {}
     __host__ __device__
     OutputTuple operator()(const InputTuple& t) const
     {
-        bool is_valid = (thrust::get<0>(t) % N) < n;
-        return OutputTuple(is_valid, thrust::get<1>(t));
+        bool is_valid = (thrust::get<1>(t) % N) < n;
+        return OutputTuple(is_valid, thrust::get<0>(t));
     }
 };
 
-template <typename IndexType, typename ValueType>
+template <typename ValueType, typename IndexType>
 struct sum_reduce_tuple :
         public thrust::binary_function< thrust::tuple<bool,ValueType,ValueType>,
         thrust::tuple<bool,ValueType,ValueType>,
@@ -92,20 +92,20 @@ struct sum_reduce_tuple :
     }
 };
 
-template <typename IndexType, typename ValueType>
+template <typename ValueType, typename IndexType>
 struct diffsqr_transform_tuple :
-        public thrust::unary_function< thrust::tuple<IndexType,ValueType,ValueType>,
+        public thrust::unary_function< thrust::tuple<ValueType,ValueType,IndexType>,
         thrust::tuple<bool,ValueType> >
 {
-    typedef typename thrust::tuple<IndexType,ValueType,ValueType> InputTuple;
+    typedef typename thrust::tuple<ValueType,ValueType,IndexType> InputTuple;
     typedef typename thrust::tuple<bool,ValueType> OutputTuple;
     IndexType n, N;
     diffsqr_transform_tuple(IndexType n, IndexType N) : n(n), N(N) {}
     __host__ __device__
     OutputTuple operator()(const InputTuple& t) const
     {
-        bool is_valid = (thrust::get<0>(t) % N) < n;
-        return OutputTuple(is_valid, (thrust::get<1>(t)-thrust::get<2>(t))*(thrust::get<1>(t)-thrust::get<2>(t)));
+        bool is_valid = (thrust::get<2>(t) % N) < n;
+        return OutputTuple(is_valid, (thrust::get<1>(t)-thrust::get<0>(t))*(thrust::get<1>(t)-thrust::get<0>(t)));
     }
 };
 
@@ -123,20 +123,20 @@ struct weightedsum_transform_tuple :
     }
 };
 
-template <typename IndexType, typename ValueType>
+template <typename ValueType, typename IndexType>
 struct diffabs_transform_tuple :
-        public thrust::unary_function< thrust::tuple<IndexType,ValueType,ValueType>,
+        public thrust::unary_function< thrust::tuple<ValueType,ValueType,IndexType>,
         thrust::tuple<bool,ValueType> >
 {
-    typedef typename thrust::tuple<IndexType,ValueType,ValueType> InputTuple;
+    typedef typename thrust::tuple<ValueType,ValueType,IndexType> InputTuple;
     typedef typename thrust::tuple<bool,ValueType> OutputTuple;
     IndexType n, N;
     diffabs_transform_tuple(IndexType n, IndexType N) : n(n), N(N) {}
     __host__ __device__
     OutputTuple operator()(const InputTuple& t) const
     {
-        bool is_valid = (thrust::get<0>(t) % N) < n;
-        return OutputTuple(is_valid, abs(thrust::get<1>(t)-thrust::get<2>(t)));
+        bool is_valid = (thrust::get<1>(t) % N) < n;
+        return OutputTuple(is_valid, abs(thrust::get<1>(t)-thrust::get<0>(t)));
     }
 };
 
