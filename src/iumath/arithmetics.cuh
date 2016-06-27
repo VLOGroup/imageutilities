@@ -121,6 +121,165 @@ void fill(LinearMemoryType<PixelType>& dst,PixelType& val)
     thrust::fill(dst.begin(),dst.end(),val);
 }
 
+/** Split planes of a two channel image (e.g. complex image)
+ * \param[in] src  Combined image (e.g. complex image)
+ * \param[out] dst1 First channel (e.g. real part)
+ * \param[out] dst2 Second channel (e.g. imaginary part)
+ *
+ */
+template<template<typename, typename > class PitchedMemoryType, template<
+    typename > class Allocator, typename CombinedPixelType,
+    typename PlanePixelType>
+void splitPlanes(
+    PitchedMemoryType<CombinedPixelType, Allocator<CombinedPixelType> >& src,
+    PitchedMemoryType<PlanePixelType, Allocator<PlanePixelType> >& dst1,
+    PitchedMemoryType<PlanePixelType, Allocator<PlanePixelType> >& dst2)
+{
+  thrust::transform(
+      src.begin(),
+      src.end(),
+      thrust::make_zip_iterator(
+          thrust::make_tuple(dst1.begin(), dst2.begin())),
+      split_planes2_functor<CombinedPixelType, PlanePixelType>());
+}
+
+template<template<typename> class LinearMemoryType, typename CombinedPixelType,
+    typename PlanePixelType>
+void splitPlanes(
+    LinearMemoryType<CombinedPixelType>& src,
+    LinearMemoryType<PlanePixelType>& dst1,
+    LinearMemoryType<PlanePixelType>& dst2)
+{
+  thrust::transform(
+      src.begin(),
+      src.end(),
+      thrust::make_zip_iterator(
+          thrust::make_tuple(dst1.begin(), dst2.begin())),
+      split_planes2_functor<CombinedPixelType, PlanePixelType>());
+}
+
+/** Split planes of a three channel image (e.g. rgb image)
+ * \param[in] src  Combined image (e.g. rgb image)
+ * \param[out] dst1 First channel (e.g. r channel)
+ * \param[out] dst2 Second channel (e.g. g channel)
+ * \param[out] dst3 Third channel (e.g. b channel)
+ *
+ */
+template<template<typename, typename > class PitchedMemoryType, template<
+    typename > class Allocator, typename CombinedPixelType,
+    typename PlanePixelType>
+void splitPlanes(
+    PitchedMemoryType<CombinedPixelType, Allocator<CombinedPixelType> >& src,
+    PitchedMemoryType<PlanePixelType, Allocator<PlanePixelType> >& dst1,
+    PitchedMemoryType<PlanePixelType, Allocator<PlanePixelType> >& dst2,
+    PitchedMemoryType<PlanePixelType, Allocator<PlanePixelType> >& dst3)
+{
+  thrust::transform(
+      src.begin(),
+      src.end(),
+      thrust::make_zip_iterator(
+          thrust::make_tuple(dst1.begin(), dst2.begin(), dst3.begin())),
+      split_planes3_functor<CombinedPixelType, PlanePixelType>());
+}
+
+template<template<typename> class LinearMemoryType, typename CombinedPixelType,
+    typename PlanePixelType>
+void splitPlanes(
+    LinearMemoryType<CombinedPixelType>& src,
+    LinearMemoryType<PlanePixelType>& dst1,
+    LinearMemoryType<PlanePixelType>& dst2,
+    LinearMemoryType<PlanePixelType>& dst3)
+{
+  thrust::transform(
+      src.begin(),
+      src.end(),
+      thrust::make_zip_iterator(
+          thrust::make_tuple(dst1.begin(), dst2.begin(), dst3.begin())),
+      split_planes3_functor<CombinedPixelType, PlanePixelType>());
+}
+
+/** Combine planes to a two channel image (e.g. complex image)
+ * \param[in] src1 First channel (e.g. real part)
+ * \param[in] src2 Second channel (e.g. imaginary part)
+ * \param[out] dst Combined image (e.g. complex image)
+ *
+ */
+template<template<typename, typename > class PitchedMemoryType, template<
+    typename > class Allocator, typename CombinedPixelType,
+    typename PlanePixelType>
+void combinePlanes(
+    PitchedMemoryType<PlanePixelType, Allocator<PlanePixelType> >& src1,
+    PitchedMemoryType<PlanePixelType, Allocator<PlanePixelType> >& src2,
+    PitchedMemoryType<CombinedPixelType, Allocator<CombinedPixelType> >& dst)
+{
+  thrust::transform(
+      thrust::make_zip_iterator(
+          thrust::make_tuple(src1.begin(), src2.begin())),
+      thrust::make_zip_iterator(
+          thrust::make_tuple(src1.end(), src2.end())),
+      dst.begin(),
+      combine_planes2_functor<CombinedPixelType, PlanePixelType>());
+}
+
+template<template<typename> class LinearMemoryType, typename CombinedPixelType,
+    typename PlanePixelType>
+void combinePlanes(
+    LinearMemoryType<PlanePixelType>& src1,
+    LinearMemoryType<PlanePixelType>& src2,
+    LinearMemoryType<CombinedPixelType>& dst)
+{
+  thrust::transform(
+      thrust::make_zip_iterator(
+          thrust::make_tuple(src1.begin(), src2.begin())),
+      thrust::make_zip_iterator(
+          thrust::make_tuple(src1.end(), src2.end())),
+      dst.begin(),
+      combine_planes2_functor<CombinedPixelType, PlanePixelType>());
+}
+
+/** Combine planes to a three channel image (e.g. rgb image)
+ * \param[in] src1 First channel (e.g. r channel)
+ * \param[in] src2 Second channel (e.g. g channel)
+ * \param[in] src3 Third channel (e.g. b channel)
+ * \param[out] dst Combined image (e.g. rgb image)
+ *
+ */
+template<template<typename, typename > class PitchedMemoryType, template<
+    typename > class Allocator, typename CombinedPixelType,
+    typename PlanePixelType>
+void combinePlanes(
+    PitchedMemoryType<PlanePixelType, Allocator<PlanePixelType> >& src1,
+    PitchedMemoryType<PlanePixelType, Allocator<PlanePixelType> >& src2,
+    PitchedMemoryType<PlanePixelType, Allocator<PlanePixelType> >& src3,
+    PitchedMemoryType<CombinedPixelType, Allocator<CombinedPixelType> >& dst)
+{
+  thrust::transform(
+      thrust::make_zip_iterator(
+          thrust::make_tuple(src1.begin(), src2.begin(), src3.begin())),
+      thrust::make_zip_iterator(
+          thrust::make_tuple(src1.end(), src2.end(), src3.end())),
+      dst.begin(),
+      combine_planes3_functor<CombinedPixelType, PlanePixelType>());
+}
+
+template<template<typename> class LinearMemoryType, typename CombinedPixelType,
+    typename PlanePixelType>
+void combinePlanes(
+    LinearMemoryType<PlanePixelType>& src1,
+    LinearMemoryType<PlanePixelType>& src2,
+    LinearMemoryType<PlanePixelType>& src3,
+    LinearMemoryType<CombinedPixelType>& dst)
+{
+  thrust::transform(
+      thrust::make_zip_iterator(
+          thrust::make_tuple(src1.begin(), src2.begin(), src3.begin())),
+      thrust::make_zip_iterator(
+          thrust::make_tuple(src1.end(), src2.end(), src3.end())),
+      dst.begin(),
+      combine_planes3_functor<CombinedPixelType, PlanePixelType>());
+}
+
+
 }//namespace math
 }//namespace iuprivate
 

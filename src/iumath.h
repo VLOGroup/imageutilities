@@ -285,14 +285,74 @@ IUCORE_DLLAPI void fill(iu::ImageCpu_8u_C2& dst, uchar2 value);
 IUCORE_DLLAPI void fill(iu::ImageCpu_8u_C4& dst, uchar4 value);
 
 IUCORE_DLLAPI void fill(iu::LinearDeviceMemory_32f_C1& dst, float value);
+IUCORE_DLLAPI void fill(iu::LinearDeviceMemory_32f_C2& dst, float2 value);
+IUCORE_DLLAPI void fill(iu::LinearDeviceMemory_32f_C3& dst, float3 value);
 
 IUCORE_DLLAPI void fill(iu::LinearHostMemory_32f_C1& dst, float value);
+IUCORE_DLLAPI void fill(iu::LinearHostMemory_32f_C2& dst, float2 value);
+IUCORE_DLLAPI void fill(iu::LinearHostMemory_32f_C3& dst, float3 value);
 
 IUCORE_DLLAPI void fill(iu::VolumeGpu_32f_C1& dst, float value);
 IUCORE_DLLAPI void fill(iu::VolumeGpu_32f_C2& dst, float2 value);
+IUCORE_DLLAPI void fill(iu::VolumeGpu_32f_C3& dst, float3 value);
 
 IUCORE_DLLAPI void fill(iu::VolumeCpu_32f_C1& dst, float value);
 IUCORE_DLLAPI void fill(iu::VolumeCpu_32f_C2& dst, float2 value);
+IUCORE_DLLAPI void fill(iu::VolumeCpu_32f_C3& dst, float3 value);
+
+/** Split planes of a two channel image (e.g. complex image)
+ * \param[in] src  Combined image (e.g. complex image)
+ * \param[out] dst1 First channel (e.g. real part)
+ * \param[out] dst2 Second channel (e.g. imaginary part)
+ *
+ */
+IUCORE_DLLAPI void splitPlanes(iu::VolumeCpu_32f_C2& src, iu::VolumeCpu_32f_C1& dst1, iu::VolumeCpu_32f_C1& dst2);
+IUCORE_DLLAPI void splitPlanes(iu::VolumeGpu_32f_C2& src, iu::VolumeGpu_32f_C1& dst1, iu::VolumeGpu_32f_C1& dst2);
+IUCORE_DLLAPI void splitPlanes(iu::ImageCpu_32f_C2& src, iu::ImageCpu_32f_C1& dst1, iu::ImageCpu_32f_C1& dst2);
+IUCORE_DLLAPI void splitPlanes(iu::ImageGpu_32f_C2& src, iu::ImageGpu_32f_C1& dst1, iu::ImageGpu_32f_C1& dst2);
+IUCORE_DLLAPI void splitPlanes(iu::LinearDeviceMemory_32f_C2& src, iu::LinearDeviceMemory_32f_C1& dst1, iu::LinearDeviceMemory_32f_C1& dst2);
+IUCORE_DLLAPI void splitPlanes(iu::LinearHostMemory_32f_C2& src, iu::LinearHostMemory_32f_C1& dst1, iu::LinearHostMemory_32f_C1& dst2);
+
+/** Split planes of a three channel image (e.g. rgb image)
+ * \param[in] src  Combined image (e.g. rgb image)
+ * \param[out] dst1 First channel (e.g. r channel)
+ * \param[out] dst2 Second channel (e.g. g channel)
+ * \param[out] dst3 Third channel (e.g. b channel)
+ *
+ */
+IUCORE_DLLAPI void splitPlanes(iu::VolumeCpu_32f_C3& src, iu::VolumeCpu_32f_C1& dst1, iu::VolumeCpu_32f_C1& dst2, iu::VolumeCpu_32f_C1& dst3);
+IUCORE_DLLAPI void splitPlanes(iu::VolumeGpu_32f_C3& src, iu::VolumeGpu_32f_C1& dst1, iu::VolumeGpu_32f_C1& dst2, iu::VolumeGpu_32f_C1& dst3);
+IUCORE_DLLAPI void splitPlanes(iu::ImageCpu_32f_C3& src, iu::ImageCpu_32f_C1& dst1, iu::ImageCpu_32f_C1& dst2, iu::ImageCpu_32f_C1& dst3);
+IUCORE_DLLAPI void splitPlanes(iu::ImageGpu_32f_C3& src, iu::ImageGpu_32f_C1& dst1, iu::ImageGpu_32f_C1& dst2, iu::ImageGpu_32f_C1& dst3);
+IUCORE_DLLAPI void splitPlanes(iu::LinearHostMemory_32f_C3& src, iu::LinearHostMemory_32f_C1& dst1, iu::LinearHostMemory_32f_C1& dst2, iu::LinearHostMemory_32f_C1& dst3);
+IUCORE_DLLAPI void splitPlanes(iu::LinearDeviceMemory_32f_C3& src, iu::LinearDeviceMemory_32f_C1& dst1, iu::LinearDeviceMemory_32f_C1& dst2, iu::LinearDeviceMemory_32f_C1& dst3);
+
+/** Combine planes to a two channel image (e.g. complex image)
+ * \param[in] src1 First channel (e.g. real part)
+ * \param[in] src2 Second channel (e.g. imaginary part)
+ * \param[out] dst Combined image (e.g. complex image)
+ *
+ */
+IUCORE_DLLAPI void combinePlanes(iu::VolumeCpu_32f_C1& src1, iu::VolumeCpu_32f_C1& src2, iu::VolumeCpu_32f_C2& dst);
+IUCORE_DLLAPI void combinePlanes(iu::VolumeGpu_32f_C1& src1, iu::VolumeGpu_32f_C1& src2, iu::VolumeGpu_32f_C2& dst);
+IUCORE_DLLAPI void combinePlanes(iu::ImageCpu_32f_C1& src1, iu::ImageCpu_32f_C1& src2, iu::ImageCpu_32f_C2& dst);
+IUCORE_DLLAPI void combinePlanes(iu::ImageGpu_32f_C1& src1, iu::ImageGpu_32f_C1& src2, iu::ImageGpu_32f_C2& dst);
+IUCORE_DLLAPI void combinePlanes(iu::LinearHostMemory_32f_C1& src1, iu::LinearHostMemory_32f_C1& src2, iu::LinearHostMemory_32f_C2& dst);
+IUCORE_DLLAPI void combinePlanes(iu::LinearDeviceMemory_32f_C1& src1, iu::LinearDeviceMemory_32f_C1& src2, iu::LinearDeviceMemory_32f_C2& dst);
+
+/** Combine planes to a three channel image (e.g. rgb image)
+ * \param[in] src1 First channel (e.g. r channel)
+ * \param[in] src2 Second channel (e.g. g channel)
+ * \param[in] src3 Third channel (e.g. b channel)
+ * \param[out] dst Combined image (e.g. rgb image)
+ *
+ */
+IUCORE_DLLAPI void combinePlanes(iu::VolumeCpu_32f_C1& src1, iu::VolumeCpu_32f_C1& src2, iu::VolumeCpu_32f_C1& src3, iu::VolumeCpu_32f_C3& dst);
+IUCORE_DLLAPI void combinePlanes(iu::VolumeGpu_32f_C1& src1, iu::VolumeGpu_32f_C1& src2, iu::VolumeGpu_32f_C1& src3, iu::VolumeGpu_32f_C3& dst);
+IUCORE_DLLAPI void combinePlanes(iu::ImageCpu_32f_C1& src1, iu::ImageCpu_32f_C1& src2, iu::ImageCpu_32f_C1& src3, iu::ImageCpu_32f_C3& dst);
+IUCORE_DLLAPI void combinePlanes(iu::ImageGpu_32f_C1& src1, iu::ImageGpu_32f_C1& src2, iu::ImageGpu_32f_C1& src3, iu::ImageGpu_32f_C3& dst);
+IUCORE_DLLAPI void combinePlanes(iu::LinearHostMemory_32f_C1& src1, iu::LinearHostMemory_32f_C1& src2, iu::LinearHostMemory_32f_C1& src3, iu::LinearHostMemory_32f_C3& dst);
+IUCORE_DLLAPI void combinePlanes(iu::LinearDeviceMemory_32f_C1& src1, iu::LinearDeviceMemory_32f_C1& src2, iu::LinearDeviceMemory_32f_C1& src3, iu::LinearDeviceMemory_32f_C3& dst);
 
 /** \} */ // end of MathArithmetics
 
@@ -398,6 +458,120 @@ IUCORE_DLLAPI void mse(iu::VolumeCpu_32f_C1& src, iu::VolumeCpu_32f_C1& ref, flo
 
 
 /** \} */ // end of MathStatistics
+
+//---------------------------------------------------------------------------------------------------
+/// Complex math
+namespace complex {
+
+/** \defgroup MathComplex Complex
+ \ingroup Math
+ \brief Complex math operations
+ * \{
+ */
+
+/** Compute the absolute image of a complex (two channel) image
+ * \param[in] complex_img Complex source image
+ * \param[out] abs_img Absolute image
+ *
+ */
+IUCORE_DLLAPI void abs(iu::VolumeCpu_32f_C2& complex, iu::VolumeCpu_32f_C1& real);
+IUCORE_DLLAPI void abs(iu::VolumeGpu_32f_C2& complex, iu::VolumeGpu_32f_C1& real);
+IUCORE_DLLAPI void abs(iu::ImageCpu_32f_C2& complex, iu::ImageCpu_32f_C1& real);
+IUCORE_DLLAPI void abs(iu::ImageGpu_32f_C2& complex, iu::ImageGpu_32f_C1& real);
+IUCORE_DLLAPI void abs(iu::LinearHostMemory_32f_C2& complex, iu::LinearHostMemory_32f_C1& real);
+IUCORE_DLLAPI void abs(iu::LinearDeviceMemory_32f_C2& complex, iu::LinearDeviceMemory_32f_C1& real);
+
+/** Compute the real image of a complex (two channel) image
+ * \param[in] complex_img Complex source image
+ * \param[out] real_img Real image
+ *
+ */
+IUCORE_DLLAPI void real(iu::VolumeCpu_32f_C2& complex, iu::VolumeCpu_32f_C1& real);
+IUCORE_DLLAPI void real(iu::VolumeGpu_32f_C2& complex, iu::VolumeGpu_32f_C1& real);
+IUCORE_DLLAPI void real(iu::ImageCpu_32f_C2& complex, iu::ImageCpu_32f_C1& real);
+IUCORE_DLLAPI void real(iu::ImageGpu_32f_C2& complex, iu::ImageGpu_32f_C1& real);
+IUCORE_DLLAPI void real(iu::LinearHostMemory_32f_C2& complex, iu::LinearHostMemory_32f_C1& real);
+IUCORE_DLLAPI void real(iu::LinearDeviceMemory_32f_C2& complex, iu::LinearDeviceMemory_32f_C1& real);
+
+/** Compute the imaginary image of a complex (two channel) image
+ * \param[in] complex_img Complex source image
+ * \param[out] imag_img Imaginary image
+ *
+ */
+IUCORE_DLLAPI void imag(iu::VolumeCpu_32f_C2& complex, iu::VolumeCpu_32f_C1& real);
+IUCORE_DLLAPI void imag(iu::VolumeGpu_32f_C2& complex, iu::VolumeGpu_32f_C1& real);
+IUCORE_DLLAPI void imag(iu::ImageCpu_32f_C2& complex, iu::ImageCpu_32f_C1& real);
+IUCORE_DLLAPI void imag(iu::ImageGpu_32f_C2& complex, iu::ImageGpu_32f_C1& real);
+IUCORE_DLLAPI void imag(iu::LinearHostMemory_32f_C2& complex, iu::LinearHostMemory_32f_C1& real);
+IUCORE_DLLAPI void imag(iu::LinearDeviceMemory_32f_C2& complex, iu::LinearDeviceMemory_32f_C1& real);
+
+/** Compute the phase of a complex (two channel) image
+ * \param[in] complex_img Complex source image
+ * \param[out] phase_img Phase image
+ *
+ */
+IUCORE_DLLAPI void phase(iu::VolumeCpu_32f_C2& complex, iu::VolumeCpu_32f_C1& real);
+IUCORE_DLLAPI void phase(iu::VolumeGpu_32f_C2& complex, iu::VolumeGpu_32f_C1& real);
+IUCORE_DLLAPI void phase(iu::ImageCpu_32f_C2& complex, iu::ImageCpu_32f_C1& real);
+IUCORE_DLLAPI void phase(iu::ImageGpu_32f_C2& complex, iu::ImageGpu_32f_C1& real);
+IUCORE_DLLAPI void phase(iu::LinearHostMemory_32f_C2& complex, iu::LinearHostMemory_32f_C1& real);
+IUCORE_DLLAPI void phase(iu::LinearDeviceMemory_32f_C2& complex, iu::LinearDeviceMemory_32f_C1& real);
+
+/** Scale a complex (two channel) image with a scalar
+ * \param[in] complex_src Complex source image
+ * \param[in] scale Scaling factor
+ * \param[out] complex_dst Complex result image
+ *
+ */
+IUCORE_DLLAPI void scale(iu::VolumeCpu_32f_C2& complex_src, const float& scale, iu::VolumeCpu_32f_C2& complex_dst);
+IUCORE_DLLAPI void scale(iu::VolumeGpu_32f_C2& complex_src, const float& scale, iu::VolumeGpu_32f_C2& complex_dst);
+IUCORE_DLLAPI void scale(iu::ImageCpu_32f_C2& complex_src, const float& scale, iu::ImageCpu_32f_C2& complex_dst);
+IUCORE_DLLAPI void scale(iu::ImageGpu_32f_C2& complex_src, const float& scale, iu::ImageGpu_32f_C2& complex_dst);
+IUCORE_DLLAPI void scale(iu::LinearHostMemory_32f_C2& complex_src, const float& scale, iu::LinearHostMemory_32f_C2& complex_dst);
+IUCORE_DLLAPI void scale(iu::LinearDeviceMemory_32f_C2& complex_src, const float& scale, iu::LinearDeviceMemory_32f_C2& complex_dst);
+
+/** Multiply a complex (two channel) image with a real image
+ * \param[in] complex_src First complex source image
+ * \param[in] real Real source image
+ * \param[out] complex_dst Complex result image
+ *
+ */
+IUCORE_DLLAPI void multiply(iu::VolumeCpu_32f_C2& complex_src, iu::VolumeCpu_32f_C1& real, iu::VolumeCpu_32f_C2& complex_dst);
+IUCORE_DLLAPI void multiply(iu::VolumeGpu_32f_C2& complex_src, iu::VolumeGpu_32f_C1& real, iu::VolumeGpu_32f_C2& complex_dst);
+IUCORE_DLLAPI void multiply(iu::ImageCpu_32f_C2& complex_src, iu::ImageCpu_32f_C1& real, iu::ImageCpu_32f_C2& complex_dst);
+IUCORE_DLLAPI void multiply(iu::ImageGpu_32f_C2& complex_src, iu::ImageGpu_32f_C1& real, iu::ImageGpu_32f_C2& complex_dst);
+IUCORE_DLLAPI void multiply(iu::LinearHostMemory_32f_C2& complex_src, iu::LinearHostMemory_32f_C1& real, iu::LinearHostMemory_32f_C2& complex_dst);
+IUCORE_DLLAPI void multiply(iu::LinearDeviceMemory_32f_C2& complex_src, iu::LinearDeviceMemory_32f_C1& real, iu::LinearDeviceMemory_32f_C2& complex_dst);
+
+/** Multiply two complex (two channel) images
+ * \param[in] complex_src1 First complex source image
+ * \param[in] complex_src2 Second complex source image
+ * \param[out] complex_dst Complex result image
+ *
+ */
+IUCORE_DLLAPI void multiply(iu::VolumeCpu_32f_C2& complex_src1, iu::VolumeCpu_32f_C2& complex_src2, iu::VolumeCpu_32f_C2& complex_dst);
+IUCORE_DLLAPI void multiply(iu::VolumeGpu_32f_C2& complex_src1, iu::VolumeGpu_32f_C2& complex_src2, iu::VolumeGpu_32f_C2& complex_dst);
+IUCORE_DLLAPI void multiply(iu::ImageCpu_32f_C2& complex_src1, iu::ImageCpu_32f_C2& complex_src2, iu::ImageCpu_32f_C2& complex_dst);
+IUCORE_DLLAPI void multiply(iu::ImageGpu_32f_C2& complex_src1, iu::ImageGpu_32f_C2& complex_src2, iu::ImageGpu_32f_C2& complex_dst);
+IUCORE_DLLAPI void multiply(iu::LinearHostMemory_32f_C2& complex_src1, iu::LinearHostMemory_32f_C2& complex_src2, iu::LinearHostMemory_32f_C2& complex_dst);
+IUCORE_DLLAPI void multiply(iu::LinearDeviceMemory_32f_C2& complex_src1, iu::LinearDeviceMemory_32f_C2& complex_src2, iu::LinearDeviceMemory_32f_C2& complex_dst);
+
+/** Multiply one complex (two channel) image with the complex conjugate of a second complex image
+ * \param[in] complex_src1 First complex source image
+ * \param[in] complex_src2 Second complex source image
+ * \param[out] complex_dst Complex result image
+ *
+ */
+IUCORE_DLLAPI void multiplyConjugate(iu::VolumeCpu_32f_C2& complex_src1, iu::VolumeCpu_32f_C2& complex_src2, iu::VolumeCpu_32f_C2& complex_dst);
+IUCORE_DLLAPI void multiplyConjugate(iu::VolumeGpu_32f_C2& complex_src1, iu::VolumeGpu_32f_C2& complex_src2, iu::VolumeGpu_32f_C2& complex_dst);
+IUCORE_DLLAPI void multiplyConjugate(iu::ImageCpu_32f_C2& complex_src1, iu::ImageCpu_32f_C2& complex_src2, iu::ImageCpu_32f_C2& complex_dst);
+IUCORE_DLLAPI void multiplyConjugate(iu::ImageGpu_32f_C2& complex_src1, iu::ImageGpu_32f_C2& complex_src2, iu::ImageGpu_32f_C2& complex_dst);
+IUCORE_DLLAPI void multiplyConjugate(iu::LinearHostMemory_32f_C2& complex_src1, iu::LinearHostMemory_32f_C2& complex_src2, iu::LinearHostMemory_32f_C2& complex_dst);
+IUCORE_DLLAPI void multiplyConjugate(iu::LinearDeviceMemory_32f_C2& complex_src1, iu::LinearDeviceMemory_32f_C2& complex_src2, iu::LinearDeviceMemory_32f_C2& complex_dst);
+/** \} */ // end of MathComplex
+
+} // namespace complex
+
 } // namespace math
 } // namespace iu
 

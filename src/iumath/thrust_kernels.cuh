@@ -140,6 +140,71 @@ struct diffabs_transform_tuple :
     }
 };
 
+template<typename CombinedPixelType, typename PlanePixelType>
+struct split_planes2_functor: public thrust::unary_function<CombinedPixelType,
+    thrust::tuple<PlanePixelType, PlanePixelType> >
+{
+  typedef thrust::tuple<PlanePixelType, PlanePixelType> OutputTuple;
+  __host__   __device__ OutputTuple operator()(const CombinedPixelType& t) const
+  {
+    return OutputTuple(t.x, t.y);
+  }
+};
+
+template<typename CombinedPixelType, typename PlanePixelType>
+struct split_planes3_functor: public thrust::unary_function<CombinedPixelType,
+    thrust::tuple<PlanePixelType, PlanePixelType, PlanePixelType> >
+{
+  typedef thrust::tuple<PlanePixelType, PlanePixelType, PlanePixelType> OutputTuple;
+  __host__   __device__ OutputTuple operator()(const CombinedPixelType& t) const
+  {
+    return OutputTuple(t.x, t.y, t.z);
+  }
+};
+
+// special operators
+float2 __host__ __device__ make2(float x, float y)
+{
+  return make_float2(x, y);
+}
+
+double2 __host__ __device__ make2(double x, double y)
+{
+  return make_double2(x, y);
+}
+
+float3 __host__ __device__ make3(float x, float y, float z)
+{
+  return make_float3(x, y, z);
+}
+
+double3 __host__ __device__ make3(double x, double y, double z)
+{
+  return make_double3(x, y, z);
+}
+
+template<typename CombinedPixelType, typename PlanePixelType>
+struct combine_planes2_functor: public thrust::unary_function<
+    thrust::tuple<PlanePixelType, PlanePixelType>, CombinedPixelType>
+{
+  typedef thrust::tuple<PlanePixelType, PlanePixelType> InputTuple;
+  __host__   __device__ CombinedPixelType operator()(const InputTuple& t) const
+  {
+    return make2(thrust::get<0>(t), thrust::get<1>(t));
+  }
+};
+
+template<typename CombinedPixelType, typename PlanePixelType>
+struct combine_planes3_functor: public thrust::unary_function<
+    thrust::tuple<PlanePixelType, PlanePixelType, PlanePixelType>, CombinedPixelType>
+{
+  typedef thrust::tuple<PlanePixelType, PlanePixelType, PlanePixelType> InputTuple;
+  __host__   __device__ CombinedPixelType operator()(const InputTuple& t) const
+  {
+    return make3(thrust::get<0>(t), thrust::get<1>(t), thrust::get<2>(t));
+  }
+};
+
 } // namespace math
 } // namespace iuprivate
 

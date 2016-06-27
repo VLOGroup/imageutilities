@@ -258,6 +258,7 @@ if(IU_USE_MATH)
     ${CMAKE_CURRENT_SOURCE_DIR}/iumath/thrust_kernels.cuh
     ${CMAKE_CURRENT_SOURCE_DIR}/iumath/arithmetics.cuh
     ${CMAKE_CURRENT_SOURCE_DIR}/iumath/statistics.cuh
+    ${CMAKE_CURRENT_SOURCE_DIR}/iumath/complex.cuh
   )
   set( IU_MATH_SOURCES
 

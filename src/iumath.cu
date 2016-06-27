@@ -4,6 +4,7 @@
 
 #include "iumath/arithmetics.cuh"
 #include "iumath/statistics.cuh"
+#include "iumath/complex.cuh"
 
 namespace iu {
 namespace math {
@@ -242,14 +243,20 @@ void fill(iu::ImageCpu_8u_C2& dst, uchar2 value) {iuprivate::math::fill(dst,valu
 void fill(iu::ImageCpu_8u_C4& dst, uchar4 value) {iuprivate::math::fill(dst,value);}
 
 void fill(iu::LinearDeviceMemory_32f_C1& dst, float value) {iuprivate::math::fill(dst,value);}
+void fill(iu::LinearDeviceMemory_32f_C2& dst, float2 value) {iuprivate::math::fill(dst,value);}
+void fill(iu::LinearDeviceMemory_32f_C3& dst, float3 value) {iuprivate::math::fill(dst,value);}
 
 void fill(iu::LinearHostMemory_32f_C1& dst, float value) {iuprivate::math::fill(dst,value);}
+void fill(iu::LinearHostMemory_32f_C2& dst, float2 value) {iuprivate::math::fill(dst,value);}
+void fill(iu::LinearHostMemory_32f_C3& dst, float3 value) {iuprivate::math::fill(dst,value);}
 
 void fill(iu::VolumeGpu_32f_C1& dst, float value) {iuprivate::math::fill(dst,value);}
 void fill(iu::VolumeGpu_32f_C2& dst, float2 value) {iuprivate::math::fill(dst,value);}
+void fill(iu::VolumeGpu_32f_C3& dst, float3 value) {iuprivate::math::fill(dst,value);}
 
 void fill(iu::VolumeCpu_32f_C1& dst, float value) {iuprivate::math::fill(dst,value);}
 void fill(iu::VolumeCpu_32f_C2& dst, float2 value) {iuprivate::math::fill(dst,value);}
+void fill(iu::VolumeCpu_32f_C3& dst, float3 value) {iuprivate::math::fill(dst,value);}
 
 // min-max
 void minMax(iu::ImageGpu_32f_C1& src, float& minVal, float& maxVal) {iuprivate::math::minMax(src,minVal,maxVal);}
@@ -300,6 +307,129 @@ void mse(iu::VolumeGpu_32f_C1& src, iu::VolumeGpu_32f_C1& ref, float& mse) {iupr
 
 void mse(iu::ImageCpu_32f_C1& src, iu::ImageCpu_32f_C1& ref, float& mse) {iuprivate::math::mse(src,ref,mse);}
 void mse(iu::VolumeCpu_32f_C1& src, iu::VolumeCpu_32f_C1& ref, float& mse) {iuprivate::math::mse(src,ref,mse);}
+
+// split planes
+void splitPlanes(iu::VolumeCpu_32f_C2& src, iu::VolumeCpu_32f_C1& dst1, iu::VolumeCpu_32f_C1& dst2) {iuprivate::math::splitPlanes(src, dst1, dst2);}
+void splitPlanes(iu::VolumeGpu_32f_C2& src, iu::VolumeGpu_32f_C1& dst1, iu::VolumeGpu_32f_C1& dst2) {iuprivate::math::splitPlanes(src, dst1, dst2);}
+void splitPlanes(iu::ImageCpu_32f_C2& src, iu::ImageCpu_32f_C1& dst1, iu::ImageCpu_32f_C1& dst2) {iuprivate::math::splitPlanes(src, dst1, dst2);}
+void splitPlanes(iu::ImageGpu_32f_C2& src, iu::ImageGpu_32f_C1& dst1, iu::ImageGpu_32f_C1& dst2) {iuprivate::math::splitPlanes(src, dst1, dst2);}
+void splitPlanes(iu::LinearHostMemory_32f_C2& src, iu::LinearHostMemory_32f_C1& dst1, iu::LinearHostMemory_32f_C1& dst2) {iuprivate::math::splitPlanes(src, dst1, dst2);}
+void splitPlanes(iu::LinearDeviceMemory_32f_C2& src, iu::LinearDeviceMemory_32f_C1& dst1, iu::LinearDeviceMemory_32f_C1& dst2) {iuprivate::math::splitPlanes(src, dst1, dst2);}
+
+void splitPlanes(iu::VolumeCpu_32f_C3& src, iu::VolumeCpu_32f_C1& dst1, iu::VolumeCpu_32f_C1& dst2, iu::VolumeCpu_32f_C1& dst3){iuprivate::math::splitPlanes(src, dst1, dst2, dst3);}
+void splitPlanes(iu::VolumeGpu_32f_C3& src, iu::VolumeGpu_32f_C1& dst1, iu::VolumeGpu_32f_C1& dst2, iu::VolumeGpu_32f_C1& dst3){iuprivate::math::splitPlanes(src, dst1, dst2, dst3);}
+void splitPlanes(iu::ImageCpu_32f_C3& src, iu::ImageCpu_32f_C1& dst1, iu::ImageCpu_32f_C1& dst2, iu::ImageCpu_32f_C1& dst3){iuprivate::math::splitPlanes(src, dst1, dst2, dst3);}
+void splitPlanes(iu::ImageGpu_32f_C3& src, iu::ImageGpu_32f_C1& dst1, iu::ImageGpu_32f_C1& dst2, iu::ImageGpu_32f_C1& dst3){iuprivate::math::splitPlanes(src, dst1, dst2, dst3);}
+void splitPlanes(iu::LinearHostMemory_32f_C3& src, iu::LinearHostMemory_32f_C1& dst1, iu::LinearHostMemory_32f_C1& dst2, iu::LinearHostMemory_32f_C1& dst3){iuprivate::math::splitPlanes(src, dst1, dst2, dst3);}
+void splitPlanes(iu::LinearDeviceMemory_32f_C3& src, iu::LinearDeviceMemory_32f_C1& dst1, iu::LinearDeviceMemory_32f_C1& dst2, iu::LinearDeviceMemory_32f_C1& dst3){iuprivate::math::splitPlanes(src, dst1, dst2, dst3);}
+
+// combine planes
+void combinePlanes(iu::VolumeCpu_32f_C1& src1, iu::VolumeCpu_32f_C1& src2, iu::VolumeCpu_32f_C2& dst) {iuprivate::math::combinePlanes(src1, src2, dst);}
+void combinePlanes(iu::VolumeGpu_32f_C1& src1, iu::VolumeGpu_32f_C1& src2, iu::VolumeGpu_32f_C2& dst) {iuprivate::math::combinePlanes(src1, src2, dst);}
+void combinePlanes(iu::ImageCpu_32f_C1& src1, iu::ImageCpu_32f_C1& src2, iu::ImageCpu_32f_C2& dst) {iuprivate::math::combinePlanes(src1, src2, dst);}
+void combinePlanes(iu::ImageGpu_32f_C1& src1, iu::ImageGpu_32f_C1& src2, iu::ImageGpu_32f_C2& dst) {iuprivate::math::combinePlanes(src1, src2, dst);}
+void combinePlanes(iu::LinearHostMemory_32f_C1& src1, iu::LinearHostMemory_32f_C1& src2, iu::LinearHostMemory_32f_C2& dst) {iuprivate::math::combinePlanes(src1, src2, dst);}
+void combinePlanes(iu::LinearDeviceMemory_32f_C1& src1, iu::LinearDeviceMemory_32f_C1& src2, iu::LinearDeviceMemory_32f_C2& dst) {iuprivate::math::combinePlanes(src1, src2, dst);}
+
+void combinePlanes(iu::VolumeCpu_32f_C1& src1, iu::VolumeCpu_32f_C1& src2, iu::VolumeCpu_32f_C1& src3, iu::VolumeCpu_32f_C3& dst){iuprivate::math::combinePlanes(src1, src2, src3, dst);}
+void combinePlanes(iu::VolumeGpu_32f_C1& src1, iu::VolumeGpu_32f_C1& src2, iu::VolumeGpu_32f_C1& src3, iu::VolumeGpu_32f_C3& dst){iuprivate::math::combinePlanes(src1, src2, src3, dst);}
+void combinePlanes(iu::ImageCpu_32f_C1& src1, iu::ImageCpu_32f_C1& src2, iu::ImageCpu_32f_C1& src3, iu::ImageCpu_32f_C3& dst){iuprivate::math::combinePlanes(src1, src2, src3, dst);}
+void combinePlanes(iu::ImageGpu_32f_C1& src1, iu::ImageGpu_32f_C1& src2, iu::ImageGpu_32f_C1& src3, iu::ImageGpu_32f_C3& dst){iuprivate::math::combinePlanes(src1, src2, src3, dst);}
+void combinePlanes(iu::LinearHostMemory_32f_C1& src1, iu::LinearHostMemory_32f_C1& src2, iu::LinearHostMemory_32f_C1& src3, iu::LinearHostMemory_32f_C3& dst){iuprivate::math::combinePlanes(src1, src2, src3, dst);}
+void combinePlanes(iu::LinearDeviceMemory_32f_C1& src1, iu::LinearDeviceMemory_32f_C1& src2, iu::LinearDeviceMemory_32f_C1& src3, iu::LinearDeviceMemory_32f_C3& dst){iuprivate::math::combinePlanes(src1, src2, src3, dst);}
+
+namespace complex {
+// abs
+void abs(iu::VolumeCpu_32f_C2& complex, iu::VolumeCpu_32f_C1& real) {iuprivate::math::complex::abs(complex, real);}
+void abs(iu::VolumeGpu_32f_C2& complex, iu::VolumeGpu_32f_C1& real) {iuprivate::math::complex::abs(complex, real);}
+void abs(iu::ImageCpu_32f_C2& complex, iu::ImageCpu_32f_C1& real) {iuprivate::math::complex::abs(complex, real);}
+void abs(iu::ImageGpu_32f_C2& complex, iu::ImageGpu_32f_C1& real) {iuprivate::math::complex::abs(complex, real);}
+void abs(iu::LinearHostMemory_32f_C2& complex, iu::LinearHostMemory_32f_C1& real) {iuprivate::math::complex::abs(complex, real);}
+void abs(iu::LinearDeviceMemory_32f_C2& complex, iu::LinearDeviceMemory_32f_C1& real) {iuprivate::math::complex::abs(complex, real);}
+
+// real
+void real(iu::VolumeCpu_32f_C2& complex, iu::VolumeCpu_32f_C1& real) {iuprivate::math::complex::real(complex, real);}
+void real(iu::VolumeGpu_32f_C2& complex, iu::VolumeGpu_32f_C1& real) {iuprivate::math::complex::real(complex, real);}
+void real(iu::ImageCpu_32f_C2& complex, iu::ImageCpu_32f_C1& real) {iuprivate::math::complex::real(complex, real);}
+void real(iu::ImageGpu_32f_C2& complex, iu::ImageGpu_32f_C1& real) {iuprivate::math::complex::real(complex, real);}
+void real(iu::LinearHostMemory_32f_C2& complex, iu::LinearHostMemory_32f_C1& real) {iuprivate::math::complex::real(complex, real);}
+void real(iu::LinearDeviceMemory_32f_C2& complex, iu::LinearDeviceMemory_32f_C1& real) {iuprivate::math::complex::real(complex, real);}
+
+// imag
+void imag(iu::VolumeCpu_32f_C2& complex, iu::VolumeCpu_32f_C1& real) {iuprivate::math::complex::imag(complex, real);}
+void imag(iu::VolumeGpu_32f_C2& complex, iu::VolumeGpu_32f_C1& real) {iuprivate::math::complex::imag(complex, real);}
+void imag(iu::ImageCpu_32f_C2& complex, iu::ImageCpu_32f_C1& real) {iuprivate::math::complex::imag(complex, real);}
+void imag(iu::ImageGpu_32f_C2& complex, iu::ImageGpu_32f_C1& real) {iuprivate::math::complex::imag(complex, real);}
+void imag(iu::LinearHostMemory_32f_C2& complex, iu::LinearHostMemory_32f_C1& real) {iuprivate::math::complex::imag(complex, real);}
+void imag(iu::LinearDeviceMemory_32f_C2& complex, iu::LinearDeviceMemory_32f_C1& real) {iuprivate::math::complex::imag(complex, real);}
+
+// phase
+void phase(iu::VolumeCpu_32f_C2& complex, iu::VolumeCpu_32f_C1& real) {iuprivate::math::complex::phase(complex, real);}
+void phase(iu::VolumeGpu_32f_C2& complex, iu::VolumeGpu_32f_C1& real) {iuprivate::math::complex::phase(complex, real);}
+void phase(iu::ImageCpu_32f_C2& complex, iu::ImageCpu_32f_C1& real) {iuprivate::math::complex::phase(complex, real);}
+void phase(iu::ImageGpu_32f_C2& complex, iu::ImageGpu_32f_C1& real) {iuprivate::math::complex::phase(complex, real);}
+void phase(iu::LinearHostMemory_32f_C2& complex, iu::LinearHostMemory_32f_C1& real) {iuprivate::math::complex::phase(complex, real);}
+void phase(iu::LinearDeviceMemory_32f_C2& complex, iu::LinearDeviceMemory_32f_C1& real) {iuprivate::math::complex::phase(complex, real);}
+
+// scale
+void scale(iu::VolumeCpu_32f_C2& complex_src, const float& scale, iu::VolumeCpu_32f_C2& complex_dst) {iuprivate::math::mulC(complex_src, make_float2(scale, scale), complex_dst);}
+void scale(iu::VolumeGpu_32f_C2& complex_src, const float& scale, iu::VolumeGpu_32f_C2& complex_dst) {iuprivate::math::mulC(complex_src, make_float2(scale, scale), complex_dst);}
+void scale(iu::ImageCpu_32f_C2& complex_src, const float& scale, iu::ImageCpu_32f_C2& complex_dst) {iuprivate::math::mulC(complex_src, make_float2(scale, scale), complex_dst);}
+void scale(iu::ImageGpu_32f_C2& complex_src, const float& scale, iu::ImageGpu_32f_C2& complex_dst) {iuprivate::math::mulC(complex_src, make_float2(scale, scale), complex_dst);}
+void scale(iu::LinearHostMemory_32f_C2& complex_src, const float& scale, iu::LinearHostMemory_32f_C2& complex_dst) {iuprivate::math::mulC(complex_src, make_float2(scale, scale), complex_dst);}
+void scale(iu::LinearDeviceMemory_32f_C2& complex_src, const float& scale, iu::LinearDeviceMemory_32f_C2& complex_dst) {iuprivate::math::mulC(complex_src, make_float2(scale, scale), complex_dst);}
+
+// multiply complex with real
+void multiply(iu::VolumeCpu_32f_C2& complex_src, iu::VolumeCpu_32f_C1& real, iu::VolumeCpu_32f_C2& complex_dst)
+{
+  iuprivate::math::combinePlanes(real, real, complex_dst);
+  iuprivate::math::mul(complex_src, complex_dst, complex_dst);
+}
+void multiply(iu::VolumeGpu_32f_C2& complex_src, iu::VolumeGpu_32f_C1& real, iu::VolumeGpu_32f_C2& complex_dst)
+{
+  iuprivate::math::combinePlanes(real, real, complex_dst);
+  iuprivate::math::mul(complex_src, complex_dst, complex_dst);
+}
+void multiply(iu::ImageCpu_32f_C2& complex_src, iu::ImageCpu_32f_C1& real, iu::ImageCpu_32f_C2& complex_dst)
+{
+  iuprivate::math::combinePlanes(real, real, complex_dst);
+  iuprivate::math::mul(complex_src, complex_dst, complex_dst);
+}
+void multiply(iu::ImageGpu_32f_C2& complex_src, iu::ImageGpu_32f_C1& real, iu::ImageGpu_32f_C2& complex_dst)
+{
+  iuprivate::math::combinePlanes(real, real, complex_dst);
+  iuprivate::math::mul(complex_src, complex_dst, complex_dst);
+}
+
+void multiply(iu::LinearHostMemory_32f_C2& complex_src, iu::LinearHostMemory_32f_C1& real, iu::LinearHostMemory_32f_C2& complex_dst)
+{
+  iuprivate::math::combinePlanes(real, real, complex_dst);
+  iuprivate::math::mul(complex_src, complex_dst, complex_dst);
+}
+void multiply(iu::LinearDeviceMemory_32f_C2& complex_src, iu::LinearDeviceMemory_32f_C1& real, iu::LinearDeviceMemory_32f_C2& complex_dst)
+{
+  iuprivate::math::combinePlanes(real, real, complex_dst);
+  iuprivate::math::mul(complex_src, complex_dst, complex_dst);
+}
+
+
+// multiply complex with complex
+void multiply(iu::VolumeCpu_32f_C2& complex_src1, iu::VolumeCpu_32f_C2& complex_src2, iu::VolumeCpu_32f_C2& complex_dst){iuprivate::math::complex::multiply(complex_src1,complex_src2,complex_dst);}
+void multiply(iu::VolumeGpu_32f_C2& complex_src1, iu::VolumeGpu_32f_C2& complex_src2, iu::VolumeGpu_32f_C2& complex_dst){iuprivate::math::complex::multiply(complex_src1,complex_src2,complex_dst);}
+void multiply(iu::ImageCpu_32f_C2& complex_src1, iu::ImageCpu_32f_C2& complex_src2, iu::ImageCpu_32f_C2& complex_dst){iuprivate::math::complex::multiply(complex_src1,complex_src2,complex_dst);}
+void multiply(iu::ImageGpu_32f_C2& complex_src1, iu::ImageGpu_32f_C2& complex_src2, iu::ImageGpu_32f_C2& complex_dst){iuprivate::math::complex::multiply(complex_src1,complex_src2,complex_dst);}
+void multiply(iu::LinearHostMemory_32f_C2& complex_src1, iu::LinearHostMemory_32f_C2& complex_src2, iu::LinearHostMemory_32f_C2& complex_dst){iuprivate::math::complex::multiply(complex_src1,complex_src2,complex_dst);}
+void multiply(iu::LinearDeviceMemory_32f_C2& complex_src1, iu::LinearDeviceMemory_32f_C2& complex_src2, iu::LinearDeviceMemory_32f_C2& complex_dst){iuprivate::math::complex::multiply(complex_src1,complex_src2,complex_dst);}
+
+// multiply complex with complex conjugate
+void multiplyConjugate(iu::VolumeCpu_32f_C2& complex_src1, iu::VolumeCpu_32f_C2& complex_src2, iu::VolumeCpu_32f_C2& complex_dst){iuprivate::math::complex::multiplyConjugate(complex_src1,complex_src2,complex_dst);}
+void multiplyConjugate(iu::VolumeGpu_32f_C2& complex_src1, iu::VolumeGpu_32f_C2& complex_src2, iu::VolumeGpu_32f_C2& complex_dst){iuprivate::math::complex::multiplyConjugate(complex_src1,complex_src2,complex_dst);}
+void multiplyConjugate(iu::ImageCpu_32f_C2& complex_src1, iu::ImageCpu_32f_C2& complex_src2, iu::ImageCpu_32f_C2& complex_dst){iuprivate::math::complex::multiplyConjugate(complex_src1,complex_src2,complex_dst);}
+void multiplyConjugate(iu::ImageGpu_32f_C2& complex_src1, iu::ImageGpu_32f_C2& complex_src2, iu::ImageGpu_32f_C2& complex_dst){iuprivate::math::complex::multiplyConjugate(complex_src1,complex_src2,complex_dst);}
+void multiplyConjugate(iu::LinearHostMemory_32f_C2& complex_src1, iu::LinearHostMemory_32f_C2& complex_src2, iu::LinearHostMemory_32f_C2& complex_dst){iuprivate::math::complex::multiplyConjugate(complex_src1,complex_src2,complex_dst);}
+void multiplyConjugate(iu::LinearDeviceMemory_32f_C2& complex_src1, iu::LinearDeviceMemory_32f_C2& complex_src2, iu::LinearDeviceMemory_32f_C2& complex_dst){iuprivate::math::complex::multiplyConjugate(complex_src1,complex_src2,complex_dst);}
+}
+
 
 } //namespace math
 } //namespace iu
