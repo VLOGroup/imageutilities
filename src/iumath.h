@@ -386,8 +386,8 @@ IUCORE_DLLAPI void normDiffL2(iu::VolumeCpu_32f_C1& src, float& ref, float& norm
 
 /** Calculate the mean-squared error (MSE) \f$ \frac{\sum\limits_{i=1}^N ( x_i - y_i )^2}{N}\f$
  *  where \f$ N \f$ is the total number of pixels.
- * \param[in] src Source array
- * \param[in] ref Reference array
+ * \param[in] src Source array \f$ x \f$
+ * \param[in] ref Reference array \f$ y \f$
  * \param[out] mse mean-squared error
  */
 IUCORE_DLLAPI void mse(iu::ImageGpu_32f_C1& src, iu::ImageGpu_32f_C1& ref, float& mse);
