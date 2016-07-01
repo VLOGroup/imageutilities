@@ -88,7 +88,7 @@ set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-Wall")
 if(ANDROID)
     set(OpenCV_DIR $ENV{NVPACK_CUDA_ROOT_DIR}/../OpenCV-2.4.8.2-Tegra-sdk/sdk/native/jni)
 endif(ANDROID)
-find_package( OpenCV QUIET COMPONENTS opencv_core opencv_highgui)
+find_package( OpenCV QUIET COMPONENTS opencv_core opencv_highgui opencv_imgcodecs opencv_videostab)
 # only include if IO module is used and OpenCV found.
 if(IU_USE_IO AND OpenCV_LIBS)
 
