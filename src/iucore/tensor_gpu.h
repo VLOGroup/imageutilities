@@ -2,6 +2,8 @@
 
 #include "lineardevicememory.h"
 
+template<typename, int> class ndarray_ref;
+
 namespace iu
 {
 /**  \brief Device 4D tensor class.
@@ -185,6 +187,12 @@ public:
 			}
 		}
 	};
+
+	/** convert to ndarray_ref -- include ndarray/ndarray_iu.h*/
+	ndarray_ref<PixelType,4> ref() const;
+
+	/** construct from ndarray_ref  -- include ndarray/ndarray_iu.h*/
+	TensorGpu(const ndarray_ref<PixelType,4> &x);
 
 private:
   /** Number of samples. */

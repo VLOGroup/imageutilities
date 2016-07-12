@@ -10,6 +10,11 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/tests)
 # Include the private copy of the imageutilities (not the installed one)
 #include_directories(${CMAKE_CURRENT_SOURCE_DIR}/..)
 
+include_directories(${CMAKE_CURRENT_LIST_DIR}/../src/)
+
+## Compiler Flags (to be added on demand)
+set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-Wall --std=c++11")
+
 # This is the path where the images and testdata are stored
 SET( DATA_DIR ${CMAKE_CURRENT_SOURCE_DIR}/data)
 SET( RESULTS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/results)
@@ -37,6 +42,7 @@ endmacro(iu_add_test)
 
 
 add_subdirectory(coreTest_copy)
+add_subdirectory(ndarrayTest)
 #add_subdirectory(pythonTest)
 if(IU_USE_IO)
   add_subdirectory(ioTest)

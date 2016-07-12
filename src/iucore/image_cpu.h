@@ -28,6 +28,9 @@
 #include "image.h"
 #include "image_allocator_cpu.h"
 
+//#include "ndarray/ndarray_ref.host.h"
+template<typename type, int dims> class ndarray_ref;
+
 namespace iu {
 
 template<typename PixelType, class Allocator>
@@ -184,6 +187,12 @@ public:
   {
     return false;
   }
+
+  /** convert to ndarray_ref -- include ndarray/ndarray_iu.h*/
+  ndarray_ref<PixelType,2> ref() const;
+
+  /** construct from ndarray_ref  -- include ndarray/ndarray_iu.h*/
+   ImageCpu(const ndarray_ref<PixelType,2> &x);
 
 protected:
   /** Pointer to host buffer. */
