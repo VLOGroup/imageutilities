@@ -43,7 +43,7 @@ endmacro(iu_add_test)
 
 
 add_subdirectory(coreTest_copy)
-#add_subdirectory(ndarrayTest)
+add_subdirectory(ndarrayTest)
 #add_subdirectory(pythonTest)
 if(IU_USE_IO)
   add_subdirectory(ioTest)

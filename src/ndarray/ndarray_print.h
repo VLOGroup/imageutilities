@@ -64,6 +64,18 @@ __host__  __device__ void print_array(tstream & ss, const char * s, const ndarra
 			//ss << "\n";
 		};
 	};
-};
+}
+
+template<class tstream, typename type>
+__host__  __device__ void print_array(tstream & ss, const char * s, const ndarray_ref<type, 4> & A, int debug_lvl = 1){
+	if (debug_lvl <= DEBUG_LVL){
+		ss << s << "\n";
+		for (int i = 0; i < A.size(3); ++i){
+			ss << "A(:,:,:,"<< i <<")=";
+			print_array(ss, "", A.template subdim<3>(i), debug_lvl);
+			//ss << "\n";
+		};
+	};
+}
 
 #endif

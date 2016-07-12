@@ -5,6 +5,7 @@
 #include "error_cuda.h"
 
 #include "ndarray_example.h"
+#include "ndarray_print.cuh"
 
 // managed memory test
 void test_1(){
@@ -81,23 +82,42 @@ void test_2D(){
 }
 
 void test_3D(){
-	iu::ImageGpu_32f_C1 I1(100,200);
-	iu::VolumeGpu_32f_C1 V1(10,100,100);
-	iu::VolumeGpu_32f_C3 V2(10,200,100);
+	iu::ImageGpu_32f_C1 I1(5,7);
+	iu::VolumeGpu_32f_C1 V1(3,5,5);
+	iu::VolumeGpu_32f_C3 V2(3,7,5);
+
+	I1.ref() << 1.0f;
 
 	ndarray_ref<float, 3> x1 = V1;
 	ndarray_ref<float3, 3> x2 = V2;
+	x1 << 1.0f;
 	x1 += x1;
-	x2.subtype(&float3::x) += I1.ref().transp().new_dim<0>(x2.size(0));
+	x2.unpack() << 0.0f;
+	x2.subtype(&float3::x) *= I1.ref().transp().new_dim<0>(x2.size(0));
 	//
+	ndarray<float3,3> r;
+	r.create<memory::GPU_managed>(x2);
+	r.unpack() << x2.unpack();
+	//std::cout << r;
+	//print_array("\n r=", r.unpack());
 	template_foo(x1);
 }
 
 void test_4D(){
-	iu::TensorCpu<float> V1(2, 5,7,13);
+	iu::TensorGpu<float> V1(2, 5,7,13);
 	iu::TensorGpu<int>   V2(7,13,2,5);
+	std::cout << V2;
+	std::cout << V2.ref();
+
+	V1.ref() << 0.0f;
+	V1.ref().subdim<0,1>(0,0) << 1.0f;
 
 	V2.ref() << V1.ref().permute_dims({2,3,0,1});
+	ndarray<float,4> r;
+	r.create<memory::GPU_managed>(V2.ref());
+	r << V2.ref();
+	//std::cout << r;
+	print_array("\n r=", r.subrange({0,0,0,0},{2,2,2,2}));
 }
 
 //! type conversions
@@ -127,6 +147,7 @@ int main(){
 	test_1D();
 	test_2D();
 	test_3D();
+	test_4D();
 	//std::cout << test_warn(13);
 	return EXIT_SUCCESS;
 }

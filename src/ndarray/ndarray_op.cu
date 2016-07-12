@@ -23,25 +23,34 @@ namespace device_op{
 //	error_text("Kernel launch not implemented");
 //};
 
+// a+=val
 template<typename type, int dims>
 ndarray_ref<type, dims> & operator += (ndarray_ref<type, dims> & a, const type val){
-	//check_allowed(a);
 	auto func = [=] __device__ (const intn<dims> & ii){ a.kernel()(ii) += val; }; // operation capture
 	struct_dims<dims>::for_each(a.shape(), func);
 	return a;
 }
 
+// a*=val
 template<typename type, int dims>
 ndarray_ref<type, dims> & operator *= (ndarray_ref<type, dims> & a, const type val){
-	//ckeck_allowed(a);
 	auto func = [=] __device__ (const intn<dims> & ii){ a.kernel()(ii) *= val; }; // operation capture
 	struct_dims<dims>::for_each(a.shape(), func);
 	return a;
 }
 
+// a+=b
 template<typename type, int dims>
 	ndarray_ref<type, dims> & operator += (ndarray_ref<type, dims> & a, const ndarray_ref<type, dims> & b){
 	auto func = [=] __device__ (const intn<dims> & ii){ a.kernel()(ii) += b.kernel()(ii); }; // operation capture
+	struct_dims<dims>::for_each(a.shape(), func);
+	return a;
+}
+
+// a*=b
+template<typename type, int dims>
+	ndarray_ref<type, dims> & operator *= (ndarray_ref<type, dims> & a, const ndarray_ref<type, dims> & b){
+	auto func = [=] __device__ (const intn<dims> & ii){ a.kernel()(ii) *= b.kernel()(ii); }; // operation capture
 	struct_dims<dims>::for_each(a.shape(), func);
 	return a;
 }
@@ -104,6 +113,7 @@ void ttest(){
 	a += type(1);
 	a << type(1);
 	a += a;
+	a *= a;
 	copy_data(a,b);
 };
 

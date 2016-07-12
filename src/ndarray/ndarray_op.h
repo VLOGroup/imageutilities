@@ -99,7 +99,17 @@ bool operations_allowed(const ndarray_ref<type, dims> & a){
 		auto func = [&] (const intn<dims> & ii){ a(ii) += b(ii); };
 		struct_dims<dims>::for_each(a.shape(), func);
 		return a;
-		//binary_operator_move(a,b,a(ii)+=b(ii),[&]);
+	}
+
+	//! operator a*=b (component-wise)
+	template<typename type, int dims>
+	ndarray_ref<type, dims> & operator *= (ndarray_ref<type, dims> & a, const ndarray_ref<type, dims> & b){
+		check_allowed(a);
+		check_allowed(b);
+		runtime_check(a.size() == b.size());
+		auto func = [&] (const intn<dims> & ii){ a(ii) *= b(ii); };
+		struct_dims<dims>::for_each(a.shape(), func);
+		return a;
 	}
 
 	//! operator a = val
@@ -184,6 +194,10 @@ bool operations_allowed(const ndarray_ref<type, dims> & a){
 	//! operator a+=b
 	template<typename type, int dims>
 	ndarray_ref<type, dims> & operator += (ndarray_ref<type, dims> & a, const ndarray_ref<type, dims> & b);
+
+	//! operator a*=b
+	template<typename type, int dims>
+	ndarray_ref<type, dims> & operator *= (ndarray_ref<type, dims> & a, const ndarray_ref<type, dims> & b);
 
 	//! operator << val
 	template<typename type, int dims>
@@ -301,6 +315,21 @@ ndarray_ref<type, dims> & operator += (ndarray_ref<type, dims> && a, const ndarr
 	return a+=b;
 }
 
+// a *= b
+template<typename type, int dims>
+ndarray_ref<type, dims> & operator *= (ndarray_ref<type, dims> & a, const ndarray_ref<type, dims> & b){
+	if(a.device_allowed() && b.device_allowed()){
+		return device_op::operator *=(a,b);
+	}else{
+		return host_op::operator *=(a,b);
+	};
+}
+// a *= b
+template<typename type, int dims>
+ndarray_ref<type, dims> & operator *= (ndarray_ref<type, dims> && a, const ndarray_ref<type, dims> & b){
+	return a*=b;
+}
+
 // a << val
 template<typename type, int dims>
 ndarray_ref<type, dims> & operator << (ndarray_ref<type, dims> & a, const type val){
@@ -320,7 +349,7 @@ template<typename type, int dims>
 ndarray_ref<type, dims> & operator << (const ndarray_ref<type, dims> & a, const type val){
 	return operator << (const_cast<ndarray_ref<type, dims> &>(a), val);
 }
-*/
+ */
 
 // a += val
 template<typename type, int dims>

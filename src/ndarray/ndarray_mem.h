@@ -193,7 +193,7 @@ public://__________constructors / initializers
 		this->find_linear_dim();
 	}
 	//! construct array of a given size using Allocator, copy shape from existing array
-	template<class Allocator> void create(const ndarray_ref<type,dims> & x){
+	template<class Allocator, typename type2> void create(const ndarray_ref<type2,dims> & x){
 		runtime_check(!allocated());
 		set_allocator(memory::get<Allocator>());
 		allocator().allocate((void*&)_beg, x.size_bytes());

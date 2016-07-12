@@ -8,6 +8,8 @@
 #include <iostream>
 #endif
 
+#include "type_expand.h"
+
 #ifndef  __CUDA_ARCH__
 #define runtime_check_this(expression) if(!(expression))throw error_stream().set_file_line(__FILE__,__LINE__) << "Runtime check failed: " << #expression << *this << "\n"
 #else
@@ -18,26 +20,6 @@ extern bool is_ptr_device_accessible(void * ptr);
 extern bool is_ptr_host_accessible(void * ptr);
 extern int ptr_access_flags(void * ptr);
 
-
-template<typename compound_type> struct type_expand{
-	typedef compound_type type;
-	static const int n = 1;
-};
-
-template<> struct type_expand<float2>{
-	typedef float type;
-	static const int n = 2;
-};
-
-template<> struct type_expand<float3>{
-	typedef float type;
-	static const int n = 3;
-};
-
-template<> struct type_expand<float4>{
-	typedef float type;
-	static const int n = 4;
-};
 
 // forward declaration of classes in iu from which conversion is provided, include "ndarray_iu.h"
 namespace iu{

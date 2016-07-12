@@ -77,9 +77,9 @@ namespace special2{
 	ndarray_ref<type, 4> & ndarray_ref<type, 4>::set_ref(const iu::TensorGpu<type> & t){
 		intn<4> size;
 		if (t.memoryLayout() == iu::TensorGpu<type>::NCHW){
-			size = intn<4>(t.samples(), t.channels(), t.height(), t.width());
+			size = (t.samples(), t.channels(), t.height(), t.width());
 		} else if (t.memoryLayout() == iu::TensorGpu<type>::NHWC){
-			size = intn<4>(t.samples(), t.height(), t.width(), t.channels());
+			size = (t.samples(), t.height(), t.width(), t.channels());
 		} else{
 			slperror("unknown TensorGPU shape");
 		};
@@ -207,25 +207,21 @@ namespace iu{
 	TensorGpu<type>::TensorGpu(const ndarray_ref<type,4> &x):
 	LinearHostMemory<type>(x.ptr(), x.numel(), true) {
 		runtime_check(x.host_allowed());
-		runtime_check(x.strides_descending());
-		//use [N x C x H x W] layout
-		runtime_check(x.stride_bytes(3)==sizeof(type)); //contiguous in width
-		samples_ = x.size(0);
-		channels_ = x.size(1);
-		height_ = x.size(2);
-		width_ = x.size(3);
-		memoryLayout_ = iu::TensorGpu<type>::NCHW;
-		/*
+		runtime_check(x.stride_bytes(0)==sizeof(type)); //contiguous in width
+		if(x.strides_descending()){ // [N x C x H x W] layout
+			samples_ = x.size(0);
+			channels_ = x.size(1);
+			height_ = x.size(2);
+			width_ = x.size(3);
+			memoryLayout_ = iu::TensorGpu<type>::NCHW;
 		}else{                      // [N x H x W x C]
 			runtime_check(x.strides_ascending());
-			runtime_check(x.stride_bytes(3)==sizeof(type)); //contiguous in width
 			samples_ = x.size(0);
 			height_ = x.size(1);
 			width_ = x.size(2);
 			channels_ = x.size(3);
 			memoryLayout_ = iu::TensorGpu<type>::NHWC;
 		};
-		*/
 	}
 }
 
