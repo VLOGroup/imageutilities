@@ -122,6 +122,8 @@ void dtest(){
 	ndarray_ref<int, dims> b;
 	a << b;
 	b << a;
+	a << a;
+	b << b;
 };
 
 void test(){

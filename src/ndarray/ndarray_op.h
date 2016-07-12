@@ -274,6 +274,12 @@ ndarray_ref<type1, dims> & operator << (ndarray_ref<type1, dims> && a, const nda
 	return a << b;
 }
 
+/*
+template<typename type, int dims>
+ndarray_ref<type, dims> & operator << (const ndarray_ref<type, dims> & a, const ndarray_ref<type, dims> & b){
+	return const_cast<ndarray_ref<type, dims> & >(a) << b;
+}*/
+
 
 template<typename type, int dims> ndarray_ref<type, dims> & copy_data(ndarray_ref<type, dims> && dest, const ndarray_ref<type, dims> & src){
 	return copy_data(dest,src);
@@ -295,6 +301,7 @@ ndarray_ref<type, dims> & operator += (ndarray_ref<type, dims> && a, const ndarr
 	return a+=b;
 }
 
+// a << val
 template<typename type, int dims>
 ndarray_ref<type, dims> & operator << (ndarray_ref<type, dims> & a, const type val){
 	if(a.device_allowed()){
@@ -303,10 +310,17 @@ ndarray_ref<type, dims> & operator << (ndarray_ref<type, dims> & a, const type v
 		return host_op::operator <<(a,val);
 	};
 }
+
 template<typename type, int dims>
 ndarray_ref<type, dims> & operator << (ndarray_ref<type, dims> && a, const type val){
 	return operator << (a, val);
 }
+/*
+template<typename type, int dims>
+ndarray_ref<type, dims> & operator << (const ndarray_ref<type, dims> & a, const type val){
+	return operator << (const_cast<ndarray_ref<type, dims> &>(a), val);
+}
+*/
 
 // a += val
 template<typename type, int dims>

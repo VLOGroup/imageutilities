@@ -27,6 +27,9 @@
 #include "volume.h"
 #include "volume_allocator_gpu.h"
 #include <thrust/device_ptr.h>
+
+template<typename, int> class ndarray_ref;
+
 namespace iu {
 
 template<typename PixelType, class Allocator>
@@ -262,6 +265,12 @@ public:
             depth_(vol.depth()), stride_(vol.stride())
       { }
   };
+
+  /** convert to ndarray_ref -- include ndarray/ndarray_iu.h*/
+  ndarray_ref<PixelType,3> ref() const;
+
+  /** construct from ndarray_ref  -- include ndarray/ndarray_iu.h*/
+  VolumeGpu(const ndarray_ref<PixelType,3> &x);
 
 protected:
 

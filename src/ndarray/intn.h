@@ -164,6 +164,17 @@ public: //__________cut and permute
 		r[n] = a;
 		return r;
 	}
+	//! insert element at j
+	template<int j>
+	__host__ __device__ __forceinline__ intn<n+1> insert(int a) const{
+		intn<n+1> r;
+		for (int i = 0; i < n; ++i){
+			int i1 = (i<j)? i : i+1;
+			r[i1] = (*this)[i];
+		};
+		r[j] = a;
+		return r;
+	}
 	//! remove element at i
 	template<int j>
 	__host__ __device__ __forceinline__ intn<n - 1> erase() const{

@@ -5,6 +5,7 @@
 #ifndef  __CUDA_ARCH__
 #include <typeinfo>
 #include "error.h"
+#include <iostream>
 #endif
 
 #ifndef  __CUDA_ARCH__
@@ -17,6 +18,26 @@ extern bool is_ptr_device_accessible(void * ptr);
 extern bool is_ptr_host_accessible(void * ptr);
 extern int ptr_access_flags(void * ptr);
 
+
+template<typename compound_type> struct type_expand{
+	typedef compound_type type;
+	static const int n = 1;
+};
+
+template<> struct type_expand<float2>{
+	typedef float type;
+	static const int n = 2;
+};
+
+template<> struct type_expand<float3>{
+	typedef float type;
+	static const int n = 3;
+};
+
+template<> struct type_expand<float4>{
+	typedef float type;
+	static const int n = 4;
+};
 
 // forward declaration of classes in iu from which conversion is provided, include "ndarray_iu.h"
 namespace iu{
@@ -196,9 +217,9 @@ namespace base2{
 		 */
 	public:
 		//! helper conversion to the kernel base
-		kernel::ndarray_ref<type, dims> & kernel(){ return *this; };
+		__host__ __device__ __forceinline__ kernel::ndarray_ref<type, dims> & kernel(){ return *this; };
 		//! helper conversion to the kernel base
-		const kernel::ndarray_ref<type, dims> & kernel() const { return *this; };
+		__host__ __device__ __forceinline__ const kernel::ndarray_ref<type, dims> & kernel() const { return *this; };
 	public: // additional shape / size functions
 		//! shape
 		shapen<dims> shape() const;
@@ -563,8 +584,11 @@ namespace special3{
 		// inherit constructors
 		using special2::ndarray_ref < type, dims >::ndarray_ref;
 		ndarray_ref() = default;
+		//! slice a struct member from type
 		template<typename U>
 		::ndarray_ref<U,dims> subtype(U type::*member)const;
+		//! expand struct as a new dimension
+		::ndarray_ref<typename type_expand<type>::type, dims+1> unpack()const;
 	};
 }
 
@@ -591,6 +615,8 @@ public: // operations
 public: // recast and slicing
 	//! reinterpret same data as a different type (no type conversion)
 	template<typename type2> ndarray_ref<type2, dims> recast()const;
+//	//! reinterpret fixed-size vector data as a new dimension
+//	//template<typename type2, int length> ndarray_ref<type2, dims+1> recast()const;
 	//! slice a member from the type structure. Result has the same size and stride_bytes
 	//template<typename tmember> ndarray_ref<tmember, dims> subtype(tmember type::*member)const;
 	//template<typename tmember, typename tmemberptr> ndarray_ref<tmember, dims> subtype(tmemberptr a)const; //tmember type::*member)const;
@@ -621,6 +647,16 @@ template<typename type2> ndarray_ref<type2, dims> ndarray_ref<type, dims>::recas
 }
 
 /*
+//! reinterpret fixed-size vector data as a new dimension
+template<typename type, int dims>
+template<typename type2, int length> ndarray_ref<type2, dims+1> ndarray_ref<type, dims>::recast()const{
+	runtime_check_this(this->template stride<char>(0) == intsizeof(type));
+	intn<dims+1> sz2;
+	intn<dims+1> st2;
+}
+*/
+
+/*
 template<typename type, int dims>
 //template<typename tmember> ndarray_ref<tmember, dims> ndarray_ref<type, dims>::subtype(tmember type::* member)const{
 //template<typename tmember, typename tmemberptr> ndarray_ref<tmember, dims> ndarray_ref<type, dims>::subtype(tmemberptr member)const{
@@ -636,6 +672,14 @@ namespace special3{
 	::ndarray_ref<U,dims> ndarray_ref<type,dims,false>::subtype(U type::*member)const{
 		U * p2 = &(this->ptr()->*member);
 		return ::ndarray_ref<U, dims>(p2 , this->size(), this->stride_bytes() , this->access());
+	};
+
+	template<typename type, int dims>
+	::ndarray_ref<typename type_expand<type>::type, dims+1> ndarray_ref<type,dims,false>::unpack()const{
+		typedef typename type_expand<type>::type type2;
+		intn<dims+1> sz2 = this->size().template insert<0>(type_expand<type>::n);
+		intn<dims+1> st2 = this->stride_bytes().template insert<0>(sizeof(type2));
+		return ::ndarray_ref<type2, dims+1>((type2*)this->ptr(), sz2, st2 , this->access());
 	};
 };
 
@@ -804,9 +848,9 @@ template <typename tstream> void print_flags(tstream & ss, const ndarray_flags &
 		default: slperror("unexpected case");
 	};
 	ss << "; linear_dim: " << ff.linear_dim();
-	return ss;
 }
 
+/*
 template <typename tstream> tstream & operator << (tstream & ss, const ndarray_flags & ff){
 	//print_flags(ss,ff);
 	ss << "access: ";
@@ -820,16 +864,70 @@ template <typename tstream> tstream & operator << (tstream & ss, const ndarray_f
 	ss << "; linear_dim: " << ff.linear_dim();
 	return ss;
 }
-
+*/
 
 //___________________________external________
 
-template <typename type, int dims, typename tstream> tstream & operator << (tstream & ss, const ndarray_ref<type,dims> & a){
+/*
+namespace special{
+	template<class X> struct stream_catcher{
+	};
+#ifndef  __CUDA_ARCH__
+	template<> struct stream_catcher<std::ostream>{
+		const std::ostream & _x;
+		stream_catcher(const std::ostream & x): _x(x){};
+		operator const std::ostream & ()const {return _x;};
+	};
+	template<> struct stream_catcher<error_stream>{
+		const error_stream & _x;
+		stream_catcher(const error_stream & x): _x(x){};
+		operator const error_stream & ()const {return _x;};
+	};
+#endif
+//	template<> struct stream_catcher<pf_stream> : public pf_stream{
+//		stream_catcher(const pf_stream & x): pf_stream(x){};
+//	};
+}
+*/
+
+template <typename type, int dims, typename tstream> void print_array(tstream & ss, const ndarray_ref<type,dims> & a){
 #ifndef  __CUDA_ARCH__
 	ss << "\n ndarray_ref<" << typeid(type).name() << "," << dims << ">:" << "ptr="<<a.ptr() << ", size=" << a.size() << ", strides_b=" << a.stride_bytes();
 	const ndarray_flags & ff = a;
 	ss << ", " << ff;
 #endif
-	return ss;
-	//ss << "ndarray_ref<" << "type" << "," << dims << ">:" << "a.size=" << a.size() << " a.strides_b=" << a.stride_bytes() << "\n";
 }
+
+inline error_stream & operator << (error_stream & ss, const ndarray_flags & ff){
+	print_flags(ss,ff);
+	return ss;
+}
+
+template <typename type, int dims> error_stream & operator << (error_stream & ss, const ndarray_ref<type,dims> & a){
+	print_array(ss,a);
+	return ss;
+}
+
+inline std::ostream& operator << (std::ostream & ss, const ndarray_flags & ff){
+	print_flags(ss,ff);
+	return ss;
+}
+
+template <typename type, int dims> std::ostream & operator << (std::ostream & ss, const ndarray_ref<type,dims> & a){
+	print_array(ss,a);
+	return ss;
+}
+
+
+/*
+	template <typename type, int dims, typename tstream> tstream & operator << (tstream & ss, const ndarray_ref<type,dims> & a){
+#ifndef  __CUDA_ARCH__
+		ss << "\n ndarray_ref<" << typeid(type).name() << "," << dims << ">:" << "ptr="<<a.ptr() << ", size=" << a.size() << ", strides_b=" << a.stride_bytes();
+		const ndarray_flags & ff = a;
+		ss << ", " << ff;
+#endif
+		return ss;
+		//ss << "ndarray_ref<" << "type" << "," << dims << ">:" << "a.size=" << a.size() << " a.strides_b=" << a.stride_bytes() << "\n";
+	}
+ */
+

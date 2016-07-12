@@ -29,6 +29,8 @@
 #include <thrust/device_ptr.h>
 #include "../iucutil.h"
 
+template<typename, int> class ndarray_ref;
+
 namespace iu {
 
 /**  \brief Linear device memory class.
@@ -194,6 +196,12 @@ public:
           : data_(const_cast<PixelType*>(mem.data())), length_(mem.length())
       { }
   };
+
+  /** convert to ndarray_ref -- include ndarray/ndarray_iu.h*/
+  ndarray_ref<PixelType,1> ref() const;
+
+  /** construct from ndarray_ref  -- include ndarray/ndarray_iu.h*/
+  LinearDeviceMemory(const ndarray_ref<PixelType,1> &x);
 
 protected:
 

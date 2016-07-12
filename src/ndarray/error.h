@@ -11,6 +11,7 @@
           throw error("not good at all");
           runtime_check(a<0); // throws if condition is not satisfied
 */
+
 class error_stream : public std::exception{
 private:
 	std::string msg;

@@ -23,7 +23,6 @@ namespace hd{
 		a = b;
 		b = c;
 	}
-
 }
 
 //_______________________________tstride_____________________________________________
@@ -326,7 +325,7 @@ namespace kernel{
 
 template <typename type , int dims> class ndarray_ref;
 
-template <typename type, int dims, typename tstream> tstream & operator << (tstream & ss, const ndarray_ref<type,dims> & a);
+//template <typename type, int dims, typename tstream> tstream & operator << (tstream & ss, const ndarray_ref<type,dims> & a);
 
 namespace kernel{
 	//_________________________kernel::ndarray_ref___________________________________________________

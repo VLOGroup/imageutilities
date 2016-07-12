@@ -159,6 +159,7 @@ void memory::GPU_managed::allocate(void *& ptr, size_t size_bytes){
 	cudaDeviceSynchronize();
 	cuda_check_error();
 	cudaMallocManaged(&ptr, size_bytes, cudaMemAttachGlobal);
+	cudaDeviceSynchronize();
 	cuda_check_error();
 	journal_allocation(ptr,size_bytes);
 };
