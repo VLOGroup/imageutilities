@@ -3,9 +3,10 @@
 
 #include "ndarray_ref.kernel.h"
 
-#include <cuda.h>
-#include <device_functions.h>
-#include <cuda_runtime.h>
+//#include <cuda.h>
+//#include <device_functions.h>
+//#include <cuda_runtime.h>
+
 #include <string>
 #include <sstream>
 
