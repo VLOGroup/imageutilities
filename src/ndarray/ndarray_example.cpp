@@ -3,6 +3,167 @@
 #include "ndarray_iu.h"
 #include "ndarray_example.h"
 
+
+void intro_test(){
+	//Here a brief overview of ndarray functionality
+
+
+	//___________________Basics___________________________
+	ndarray_ref<float, 2> x; // x is "reference" to a 2D array of floats
+	auto y = x; // should be treated like a pointer: can copy, pass by value, etc.
+	// Can be attached to any ImageUtilities class
+	iu::ImageGpu_32f_C1 I1(100,200);
+	x = I1; // ImageCpu uses padded memory, ndarray_ref remembers a separate stride per dimension
+	std::cout << "x    size:" << x.size() << "\n";
+	// x    size:(100,200,)
+	std::cout << "x strides:" << x.stride_bytes() << "\n";
+	// x strides:(4,512,)
+	// Let's take a volume
+	iu::VolumeGpu_32f_C1 V1(3,300,100);
+	//          v  new built-in method in all iu classes
+	auto z = V1.ref();
+	//^^ z will have type ndarray_ref<float,3> (this is what V1.ref() returns)
+	// Complete information abut z is as follows:
+	std::cout << "z= " << z << "\n";
+	//
+	//ndarray_ref<f,3>:ptr=0x604920000, size=(3,300,100,), strides_b=(4,512,153600,), access: device; linear_dim: 0
+	//      =float^           address^                               ^strides in bytes        ^remembers it is on device
+	//
+	// We can slice an array by fixing one dimension
+	auto u = z.subdim<0>(0); // fix dimension 0 to 0
+	//                ^ dimension to fix
+	std::cout << "u= " << u << "\n";
+	//ndarray_ref<f,2>:ptr=0x604920000, size=(300,100,), strides_b=(512,153600,), access: device; linear_dim: 15
+	// note, the slice may address memory discontinuously, even if VolumeGpu was not using padding
+	//
+	u = u.transp(); // logical transpose of the referenced shape
+	std::cout << "after transpose u= " << u << "\n";
+	// ndarray_ref<f,2>:ptr=0x604920000, size=(100,300,), strides_b=(153600,512,), access: device; linear_dim: 15
+	//									       ^^^^^^^ swapped       ^^^^^^^^^^ swapped
+	u = u.subrange({0,50},{100,200}); // logically crop to the size 100x200 starting at (0,50)
+	std::cout << "after subrange u= " << u << "\n";
+	//ndarray_ref<f,2>:ptr=0x604926400, size=(100,200,), strides_b=(153600,512,), access: device; linear_dim: 15
+	//                            ^^^^        ^^^^^^^
+	// no changes to the data so far, methods of ndarray_ref are all just on the "reference" object
+	// not at all like external functions:
+	u += x; // we are adding to the cropped slice of V1 the image I1
+	// this works because both have the same size (but different strides) and both are on GPU
+	//
+	// Other currently available (element-wise) functions:
+	u << 0.0f; // assign constant
+	u << x; // overwrite
+	u *= u; // multiply
+
+	//_________________Type Slicing__________________________
+	iu::ImageGpu_32f_C3 I2(100,200); // take a 3-channel image
+	x = I2.ref().subtype(&float3::x); // get an ndarray_ref to the slice of member "x" of struct float3 in ImageGpu_32f_C3
+	std::cout << "x= " << x << "\n";
+	//ndarray_ref<f,2>:ptr=0x6057e0000, size=(100,200,), strides_b=(12,1536,), access: device; linear_dim: 15
+	//                                                              ^^ jumps over 3 floats
+	y = I2.ref().subtype(&float3::y); // member "y"
+	std::cout << "y= " << y << "\n";
+	//ndarray_ref<f,2>:ptr=0x6057e0004, size=(100,200,), strides_b=(12,1536,), access: device; linear_dim: 15
+	//                            ^^^^ offset 1 float
+	// of course we can do any operation, like
+	x += y;
+
+
+	//________________Struct Unpacking and Conversion_________
+	iu::ImageGpu_32s_C3 I3(100,200); // Image of type int
+	// attach a reference
+	std::cout << "I3.ref()=" << I3.ref() <<"\n";
+	//ndarray_ref<4int3,2>:ptr=0x60582b000, size=(100,200,), strides_b=(12,1536,), access: device; linear_dim: 0
+	//              ^^^ int3 struct
+	auto w = I3.ref();
+	// there is no math on int3:
+	// w += w; // <- error, unless we implement int3 += int3 and instantiate a kernel for ndarray_ref<int3,3>
+	// but can interpret it as an extra dimension:
+	std::cout << "w.unpack()=" << w.unpack() <<"\n";
+	//ndarray_ref<i,3>:ptr=0x60582b000, size=(3,100,200,), strides_b=(4,12,1536,), access: device; linear_dim: 15
+	//         int^    same pointer^^^        ^added dimension        ^ 1 float stride
+	I2.ref().unpack() << I3.ref().unpack(); // unpack both strides and copy with conversion from int to float
+
+
+	//________________Zero Strides______________________________
+	// One more useful logical opration on arrays
+	// suppose we like to add Image I1 (iu::ImageGpu_32f_C1) to every channel of I2 (iu::ImageGpu_32f_C3)
+	auto q = I1.ref().new_dim<0>(3);
+	std::cout << "q=" << q <<"\n";
+	// ndarray_ref<f,3>:ptr=0x604820000, size=(3,100,200,), strides_b=(0,4,512,), access: device; linear_dim: 15
+	//                                                                 ^ offset along this dimension is zero
+	// then it is valid to do:
+	I2.ref().unpack() += q;
+	// zero strides on the left-hand sides are currently lead to race condition:
+	// q += I2.ref().unpack(); // bad
+
+
+	//________________Permutation_______________________________
+	// We've seen logical transposition, it is more general:
+	iu::TensorGpu<float> T1(2, 5,7,13);
+	iu::TensorGpu<int>   T2(7,13,2,5);
+	std::cout << "T2:" << T2.ref() <<"\n";
+	//ndarray_ref<i,4>:ptr=0x6058e1000, size=(7,13,2,5,), strides_b=(520,40,20,4,), access: device; linear_dim: 3
+	//       TensorGpu uses descending strides layout (pyton arrays)^^^^^^^^^^^^^^
+	std::cout << "T1:" << T1.ref() <<"\n";
+	//ndarray_ref<f,4>:ptr=0x6058e0000, size=(2,5,7,13,), strides_b=(1820,364,52,4,), access: device; linear_dim: 3
+	auto T1p = T1.ref().permute_dims({2,3,0,1});
+	std::cout << "T1p:" << T1p <<"\n";
+	//ndarray_ref<f,4>:ptr=0x6058e0000, size=(7,13,2,5,), strides_b=(52,4,1820,364,), access: device; linear_dim: 15
+	//                                        ^^^^^^^^^              ^^^^^^^^^^^^^
+	// can just copy over from a different layout with conversion from float to int
+	T2.ref() << T1p;
+
+
+	//   _______________Kernels_________________________________
+	// consider a call to a function with the signature:
+	// void call_my_kernel(ndarray_ref<float, 2> && result, const ndarray_ref<float, 3> & data);
+	// (see ndarray_example.h)
+	//             v implicit conversion creates a temporary object of type ndarray_ref<float, 2>
+	call_my_kernel(I1, I2.ref().unpack().permute_dims({1,2,0}));
+	//                 ^ some rearrangement of I2 so resulting in a temporary ndarray_ref<float, 3>
+
+
+	// ________________Attaching to "wild" pointers_____________
+	int * p1 = new int[1000];
+	// interpret as 3D array:
+	//                                 vv  need to specify size, assumes linear memory layout
+	std::cout <<"linear 1:" << ndarray_ref<int,3>(p1,{10,10,10}) <<"\n";
+	//ndarray_ref<i,3>:ptr=0x166e6a0, size=(10,10,10,), strides_b=(4,40,400,), access: host; linear_dim: 0
+
+	ndarray_ref<int,3> t1;
+	t1.set_linear_ref<false>(p1,{10,10,10});
+	//                ^ use descending strides layout (default is ascending strides)
+	std::cout  <<"linear 2:" << t1 << "\n";
+	//ndarray_ref<i,3>:ptr=0x166e6a0, size=(10,10,10,), strides_b=(400,40,4,), access: host; linear_dim: 2
+	//                               v  specify custom stride vector, in bytes
+	t1.set_ref(p1,{10,10,10},intn<3>(100,1,10)*sizeof(int),ndarray_flags::host_only);
+	//                                                     ^ specify explicitly access type
+	std::cout  <<"linear 3:" << t1 << "\n";
+	//ndarray_ref<i,3>:ptr=0x115ae70, size=(10,10,10,), strides_b=(400,4,40,), access: host; linear_dim: 1
+
+	// ________________ Host or Device? _____________
+	// host/device access is determined using cudaPointerGetAttributes
+	int * p2;
+	cudaMallocManaged(&p2, 1000*sizeof(int));
+	ndarray_ref<int,3> t2 = ndarray_ref<int,3>(p2,{10,10,10});
+	std::cout << t2 <<"\n";
+	//ndarray_ref<i,3>:ptr=0x203500000, size=(10,10,10,), strides_b=(4,40,400,), access: host, device; linear_dim: 0
+	//                              legal for both: host-side and device-side operations ^^^^^^^^^^^^^
+	t1 << 1;  // host-side operation
+	t2 << 0;  // resolves to GPU operation -- t2 has device access
+	cudaDeviceSynchronize(); // neede for managed memory in CUDA 7.5, otherwise deamons come out
+	t2 += t1; // resolves to CPU operation -- t2 has device access but not t1
+	cudaDeviceSynchronize();
+	t2 += t2; // resolves to GPU operation
+	cudaDeviceSynchronize();
+	std::cout << t2(0,0) << "\n"; // should print 2
+	runtime_check(t2(0,0)==2);
+	//
+	delete p1;
+	cudaFree(p1);
+}
+
+
 // managed memory test
 void test_1(){
 	ndarray_ref<float,3> a;
@@ -27,7 +188,7 @@ void test_1(){
 	cudaDeviceSynchronize();
 	int r = (int)c(9, 9);
 	std::cout << r << "\n"; // accessing managed memory from host
-	if(r != 5500) slperror("test failed");
+	if(r != 100) slperror("test failed");
 	int fl = ptr_access_flags(x);
 	delete x;
 
@@ -110,7 +271,7 @@ void test_4D(){
 	iu::TensorGpu<float> V1(2, 5,7,13);
 	iu::TensorGpu<int>   V2(7,13,2,5);
 	std::cout << V2;
-	std::cout << V2.ref();
+	std::cout << V2.ref() << "\n";
 
 	V1.ref() << 0.0f;
 	V1.ref().subdim<0,1>(0,0) << 1.0f;
@@ -120,7 +281,7 @@ void test_4D(){
 	r.create<memory::GPU_managed>(V2.ref());
 	r << V2.ref();
 	//std::cout << r;
-	print_array("\n r=", r.subrange({0,0,0,0},{2,2,2,2}));
+	print_array("\n r=", r.subrange({0,0,0,0},{2,2,2,2}),0);
 }
 
 //! type conversions
@@ -141,6 +302,7 @@ float test_warn(long long x){
 */
 
 int main(){
+	intro_test();
 	try{
 		test_1();
 	}catch(const std::exception & e){

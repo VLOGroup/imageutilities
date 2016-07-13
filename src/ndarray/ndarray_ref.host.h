@@ -189,6 +189,7 @@ namespace base2{
 		template<bool order_ascending = true>
 		ndarray_ref<type, dims> & set_linear_ref(type * const __beg, const intn<dims> & size, int access_policy);
 		//! from a pointer assuming a linear layout and auto access flags from pointer attributes
+		template<bool order_ascending = true>
 		ndarray_ref & set_linear_ref(type * p, const intn<dims> & size);// defined later, pointer checking;
 		/*
 		//! from ImageGPU, ImageCPU, VolumeCPU, VolumeGPU
@@ -265,8 +266,9 @@ namespace base2{
 	}
 
 	template<typename type, int dims>
+	template<bool order_ascending>
 	ndarray_ref<type, dims> & ndarray_ref<type, dims>::set_linear_ref(type * const __beg, const intn<dims> & size){
-		set_linear_ref(__beg, size, ptr_access_flags(__beg));
+		set_linear_ref<order_ascending>(__beg, size, ptr_access_flags(__beg));
 		return *this;
 	}
 
@@ -769,8 +771,8 @@ ndarray_ref<type, dims> ndarray_ref<type, dims>::permute_dims(intn<dims> p) cons
 	sz2 = -1;
 	intn<dims> st2;
 	for(int d=0; d<dims; ++d){
-		sz2[p[d]] = size(d);
-		st2[p[d]] = stride_bytes(d);
+		sz2[d] = size(p[d]);
+		st2[d] = stride_bytes(p[d]);
 	};
 	runtime_check(sz2 >=0) << "p= " << p << " is not a proper permutation\n";
 	return ndarray_ref<type, dims>(ptr(),sz2,st2,access());
