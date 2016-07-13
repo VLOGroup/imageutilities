@@ -67,6 +67,12 @@ void test_2D(){
 		ndarray_ref<float, 2> x1 = I1;
 		ndarray_ref<float3, 2> x2 = I2;
 	}
+	{
+		auto I = new iu::ImageGpu_32f_C1(100,100);
+		ndarray_ref<float, 2> x1;
+		x1 = *I;
+		delete I;
+	}
 	iu::ImageGpu_32f_C1 I1(200,200);
 	iu::ImageGpu_32f_C3 I2(100,100);
 	I1.ref() << 1.0f;

@@ -423,7 +423,7 @@ namespace special2{
 	public:
 		// inherit constructors
 		using parent::parent;
-		using parent::operator =;
+		//using parent::operator =;
 		using parent::set_ref;
 		ndarray_ref() = default;
 		// special constructors
@@ -451,7 +451,7 @@ namespace special2{
 	public:
 		// inherit constructors
 		using parent::parent;
-		using parent::operator =;
+		//using parent::operator =;
 		using parent::set_ref;
 
 		ndarray_ref() = default;
@@ -482,7 +482,7 @@ namespace special2{
 	public:
 		// inherit constructors
 		using parent::parent;
-		using parent::operator =;
+		//using parent::operator =;
 		using parent::set_ref;
 		ndarray_ref() = default;
 		// special constructors
@@ -521,7 +521,7 @@ namespace special2{
 	public:
 		// inherit constructors
 		using parent::parent;
-		using parent::operator =;
+		//using parent::operator =;
 		using parent::set_ref;
 		ndarray_ref() = default;
 		// special constructors
@@ -583,7 +583,7 @@ public:
 	// inherit constructors
 	using parent::parent;
 	ndarray_ref() = default;
-	using parent::operator =;
+	//using parent::operator =;
 	using parent::access;
 	using parent::stride_bytes;
 	using parent::ptr;
