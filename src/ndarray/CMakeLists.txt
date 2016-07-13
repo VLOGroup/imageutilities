@@ -46,6 +46,13 @@ ${SRC_DIR}/ndarray_example.cpp
 ${SRC_DIR}/ndarray_example.cu
 )
 
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+  if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "4.9.0")
+    message(WARNINGR " ================= Insufficient gcc version ===================")
+    SET(SRC ${SRC_DIR}/dummy.cpp)
+  endif()
+endif()
+
 my_cuda_add_library(ndarray SHARED ${SRC})
 set_target_properties(ndarray PROPERTIES POSITION_INDEPENDENT_CODE ON)
 target_link_libraries(ndarray)
@@ -58,6 +65,13 @@ SET(SRC
 ${SRC_DIR}/ndarray_example.cpp
 ${SRC_DIR}/ndarray_example.cu
 )
+
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+  if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "4.9.0")
+    message(WARNINGR " ================= Insufficient gcc version ===================")
+    SET(SRC ${SRC_DIR}/dummy.cpp)
+  endif()
+endif()
 
 my_cuda_add_executable(ndarrayTest ${SRC})
 my_cuda_add_executable(cuda_bug cuda_bug.cu)
