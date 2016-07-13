@@ -17,9 +17,9 @@
 #define runtime_check_this(expression) stream_eater()
 #endif
 
-extern bool is_ptr_device_accessible(void * ptr);
-extern bool is_ptr_host_accessible(void * ptr);
-extern int ptr_access_flags(void * ptr);
+extern "C" DLL_PUBLIC bool is_ptr_device_accessible(void * ptr);
+extern "C" DLL_PUBLIC bool is_ptr_host_accessible(void * ptr);
+extern "C" DLL_PUBLIC int ptr_access_flags(void * ptr);
 
 
 // forward declaration of classes in iu from which conversion is provided, include "ndarray_iu.h"

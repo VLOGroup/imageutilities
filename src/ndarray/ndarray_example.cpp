@@ -28,6 +28,7 @@ void test_1(){
 	int r = (int)c(9, 9);
 	std::cout << r << "\n"; // accessing managed memory from host
 	if(r != 5500) slperror("test failed");
+	int fl = ptr_access_flags(x);
 	delete x;
 
 }
