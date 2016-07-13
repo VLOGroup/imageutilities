@@ -1,11 +1,12 @@
 #pragma once
-#include "ndarray_ref.h"
+#include "ndarray_ref.kernel.h"
 #include "error.h"
 
 #ifndef  __CUDA_ARCH__
 #include <typeinfo>
 #include "error.h"
 #include <iostream>
+#include "ndarray_print.h"
 #endif
 
 #include "type_expand.h"

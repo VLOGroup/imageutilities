@@ -1,11 +1,7 @@
 #include <cuda_runtime_api.h>
-#include "ndarray_mem.h"
+#include "ndarray.h"
 #include "ndarray_iu.h"
-#include "ndarray_op.h"
-#include "error_cuda.h"
-
 #include "ndarray_example.h"
-#include "ndarray_print.cuh"
 
 // managed memory test
 void test_1(){

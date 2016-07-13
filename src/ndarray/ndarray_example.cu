@@ -1,6 +1,6 @@
 #include <cuda.h>
 #include <device_functions.h>
-#include "ndarray_example.h"
+#include "ndarray_ref.kernel.h"
 
 // using ndarray_ref inside kernel, simple level
 __global__ void my_kernel_1(kernel::ndarray_ref<float, 2> result, kernel::ndarray_ref<float, 3> data){
@@ -49,10 +49,10 @@ __global__ void my_kernel_3(kernel::ndarray_ref<float, 2> result, kernel::ndarra
 }
 */
 
-
 #define divup(x,y) ((x-1)/(y)+1)
 #define roundup(x,y) (divup(x,y)*y)
 
+#include "ndarray_example.h"
 #include "ndarray_ref.host.h"
 
 void call_my_kernel(ndarray_ref<float, 2> & result, const ndarray_ref<float, 3> & data){

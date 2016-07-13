@@ -1,9 +1,6 @@
 #include <cuda.h>
 #include <device_functions.h>
-#include <cuda_runtime.h>
-#include <cuda_runtime_api.h>
 
-#include "ndarray_op.h"
 #include "ndarray_op.cuh"
 
 #include "error_cuda.h"
@@ -15,7 +12,6 @@ void copy_raw_data(void * dest, void * src, size_t n_bytes){
 };
 
 namespace device_op{
-
 
 //template<typename type, int dims, typename Func>
 //void for_each_device(const ndarray_ref<type, dims> & r, Func func){

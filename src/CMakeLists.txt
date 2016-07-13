@@ -55,6 +55,14 @@ else()
     #set(IMAGEUTILITIES_DEBUG_POSTFIX)
 endif()
 
+##------------------------INSTALL RPATH----------------------------------------
+#---Configure Install RPATH, see https://cmake.org/Wiki/CMake_RPATH_handling; Relative Rpath: http://stackoverflow.com/questions/3960641/how-to-link-to-shared-lib-from-shared-lib-with-relative-path
+SET(CMAKE_INSTALL_RPATH "$ORIGIN")
+###SET(CMAKE_SKIP_BUILD_RPATH  FALSE)
+###SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE) 
+###SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+###SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+
 ##-----------------------------------------------------------------------------
 ## Flags if modules are used.
 ## The modules are included per default unless dependencies not found or omitted by the user.
@@ -428,6 +436,7 @@ set_target_properties(${IU_CORE_LIB} PROPERTIES
   SOVERSION ${IMAGEUTILITIES_SOVERSION}
   PUBLIC_HEADER "${IU_PUBLIC_HEADERS}"
   )
+
 target_link_libraries( ${IU_CORE_LIB} ${CUDA_LIBRARIES} ${NDARRAY_LIB})
 set(IU_LIBS ${IU_LIBS} ${IU_CORE_LIB})
 

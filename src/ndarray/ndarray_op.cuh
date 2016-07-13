@@ -1,5 +1,9 @@
 #pragma once
-#include "ndarray_ref.h"
+#include "ndarray_ref.kernel.h"
+
+#include "ndarray_op.h"
+#include "ndarray/error_cuda.h"
+#include "ndarray/ndarray_print.h"
 
 #define blockdim0 8
 #define blockdim1 8
@@ -52,11 +56,6 @@ namespace device_op{
 		};
 	}
 }
-
-#include "ndarray_op.h"
-#include "ndarray/error_cuda.h"
-#include "ndarray/ndarray_print.cuh"
-
 
 namespace device_op{
 	//! 1D kernel launch

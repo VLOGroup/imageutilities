@@ -1,7 +1,6 @@
 #ifndef ndarray_op_h
 #define ndarray_op_h
 
-#include "ndarray_ref.h"
 #include "ndarray_ref.host.h"
 #include "error.h"
 #include <typeinfo>

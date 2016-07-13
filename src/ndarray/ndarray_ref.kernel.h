@@ -449,5 +449,11 @@ namespace kernel{
 	};
 }
 
+/*
+template <typename Kernel, typename... Args> void launch(dim3 dimBlock, dim3 dimGrid, Kernel kernel, Args... args){
+	kernel <<< dimGrid, dimBlock >>>(args...);
+}
+*/
+
 //__CUDA_ARCH__is always undefined when compiling host code, steered by nvcc or not
 //__CUDA_ARCH__is only defined for the device code trajectory of compilation steered by nvcc
