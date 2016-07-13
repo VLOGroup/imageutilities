@@ -27,6 +27,8 @@
 #include "volume.h"
 #include "volume_allocator_cpu.h"
 
+template<typename, int> class ndarray_ref;
+
 namespace iu {
 /** \brief Host 3D volume class (pitched memory).
  *  \ingroup Volume
@@ -201,8 +203,14 @@ public:
    */
   thrust::pointer<PixelType, thrust::host_system_tag> end(void)
   {
-      return thrust::pointer<PixelType, thrust::host_system_tag>(data()+slice_stride()*depth());
+	  return thrust::pointer<PixelType, thrust::host_system_tag>(data()+slice_stride()*depth());
   }
+
+  /** convert to ndarray_ref -- include ndarray/ndarray_iu.h*/
+  ndarray_ref<PixelType,3> ref() const;
+
+  /** construct from ndarray_ref  -- include ndarray/ndarray_iu.h*/
+  VolumeCpu(const ndarray_ref<PixelType,3> &x);
 
 protected:
 

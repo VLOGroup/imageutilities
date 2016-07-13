@@ -28,6 +28,8 @@
 #include "image_allocator_gpu.h"
 #include <thrust/device_ptr.h>
 
+template<typename type, int dims> class ndarray_ref;
+
 namespace iu {
 
 template<typename PixelType, class Allocator>
@@ -303,6 +305,12 @@ public:
             stride_(im.stride())
       { }
   };
+
+  /** convert to ndarray_ref -- include ndarray/ndarray_iu.h*/
+  ndarray_ref<PixelType,2> ref() const;
+
+  /** construct from ndarray_ref  -- include ndarray/ndarray_iu.h*/
+   ImageGpu(const ndarray_ref<PixelType,2> &x);
 
 protected:
   /** Pointer to device buffer. */

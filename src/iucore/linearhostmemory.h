@@ -32,6 +32,8 @@
 
 #include "linearmemory.h"
 
+template<typename, int> class ndarray_ref;
+
 namespace iu {
 
 /**  \brief Linear host memory class.
@@ -149,6 +151,12 @@ public:
   {
     return false;
   }
+
+  /** convert to ndarray_ref -- include ndarray/ndarray_iu.h*/
+    ndarray_ref<PixelType,1> ref() const;
+
+    /** construct from ndarray_ref  -- include ndarray/ndarray_iu.h*/
+    LinearHostMemory(const ndarray_ref<PixelType,1> &x);
 
 protected:
 

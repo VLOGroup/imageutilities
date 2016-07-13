@@ -55,6 +55,14 @@ else()
     #set(IMAGEUTILITIES_DEBUG_POSTFIX)
 endif()
 
+##------------------------INSTALL RPATH----------------------------------------
+#---Configure Install RPATH, see https://cmake.org/Wiki/CMake_RPATH_handling; Relative Rpath: http://stackoverflow.com/questions/3960641/how-to-link-to-shared-lib-from-shared-lib-with-relative-path
+SET(CMAKE_INSTALL_RPATH "$ORIGIN")
+###SET(CMAKE_SKIP_BUILD_RPATH  FALSE)
+###SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE) 
+###SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+###SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+
 ##-----------------------------------------------------------------------------
 ## Flags if modules are used.
 ## The modules are included per default unless dependencies not found or omitted by the user.
@@ -78,7 +86,7 @@ endif(ANDROID)
 
 ##-----------------------------------------------------------------------------
 ## Compiler Flags (to be added on demand)
-set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-Wall")
+set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-Wall --std=c++11")
 
 
 
@@ -277,6 +285,7 @@ include_directories(
   ${CMAKE_SOURCE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}/..
+  ${CMAKE_CURRENT_LIST_DIR}
   )
 cuda_include_directories(
   ${CMAKE_SOURCE_DIR}
@@ -414,6 +423,9 @@ ADD_CUSTOM_TARGET( apidoc
  )
 
 
+##-build ndarray---------------------------------------------------------------
+add_subdirectory(ndarray)
+message("NDARRAY_LIB" = ${NDARRAY_LIB})
 ##-----------------------------------------------------------------------------
 ## build core library
 set(IU_CORE_LIB iucore)
@@ -424,12 +436,13 @@ set_target_properties(${IU_CORE_LIB} PROPERTIES
   SOVERSION ${IMAGEUTILITIES_SOVERSION}
   PUBLIC_HEADER "${IU_PUBLIC_HEADERS}"
   )
-target_link_libraries( ${IU_CORE_LIB} ${CUDA_LIBRARIES})
+
+target_link_libraries( ${IU_CORE_LIB} ${CUDA_LIBRARIES} ${NDARRAY_LIB})
 set(IU_LIBS ${IU_LIBS} ${IU_CORE_LIB})
 
 if(IU_BUILD_STATIC)
   cuda_add_library( ${IU_CORE_LIB}_static STATIC ${IU_HEADERS} ${IU_SOURCES})
-  target_link_libraries( ${IU_CORE_LIB}_static ${CUDA_LIBRARIES})
+  target_link_libraries( ${IU_CORE_LIB}_static ${CUDA_LIBRARIES} ${NDARRAY_LIB})
   set(IU_LIBS_STATIC ${IU_LIBS_STATIC} ${IU_CORE_LIB}_static)
 endif(IU_BUILD_STATIC)
 

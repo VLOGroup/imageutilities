@@ -1,6 +1,8 @@
 #pragma once
 #include "linearhostmemory.h"
 
+template<typename, int> class ndarray_ref;
+
 namespace iu
 {
 /**  \brief Host 4D tensor class.
@@ -88,6 +90,12 @@ public:
         << tensor.channels() << " onDevice=" << tensor.onDevice();
     return out;
   }
+
+  /** convert to ndarray_ref -- include ndarray/ndarray_iu.h*/
+  ndarray_ref<PixelType,4> ref() const;
+
+  /** construct from ndarray_ref  -- include ndarray/ndarray_iu.h*/
+  TensorCpu(const ndarray_ref<PixelType,4> &x);
 
 private:
   /** Number of samples. */
