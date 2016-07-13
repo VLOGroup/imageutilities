@@ -89,6 +89,26 @@ namespace special2{
 
 }
 
+template<typename type, int dims>
+ndarray_ref<type,dims>::ndarray_ref(const iu::LinearHostMemory<type> & x, const intn<dims> & size){
+	this->set_linear_ref(const_cast<type*>(x.data()), size, ndarray_flags::host_only);
+}
+
+template<typename type, int dims>
+ndarray_ref<type,dims>::ndarray_ref(const iu::LinearDeviceMemory <type>& x, const intn<dims> & size){
+	this->set_linear_ref(const_cast<type*>(x.data()), size, ndarray_flags::device_only);
+}
+
+template<typename type, int dims>
+ndarray_ref<type,dims>::ndarray_ref(const iu::LinearHostMemory<type> * x, const intn<dims> & size){
+	this->set_linear_ref(const_cast<type*>(x.data()), size, ndarray_flags::host_only);
+}
+
+template<typename type, int dims>
+ndarray_ref<type,dims>::ndarray_ref(const iu::LinearDeviceMemory<type> * x, const intn<dims> & size){
+	this->set_linear_ref(const_cast<type*>(x.data()), size, ndarray_flags::device_only);
+}
+
 namespace iu{
 
 	//1D

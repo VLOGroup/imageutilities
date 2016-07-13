@@ -588,6 +588,13 @@ public:
 	using parent::stride_bytes;
 	using parent::ptr;
 	using parent::size;
+public:
+	//! from LinearHostMemory and size
+	ndarray_ref(const iu::LinearHostMemory<type> & x, const intn<dims> & size);
+	//! from LinearDeviceMemory and size
+	ndarray_ref(const iu::LinearDeviceMemory<type> & x, const intn<dims> & size);
+	ndarray_ref(const iu::LinearHostMemory<type> * x, const intn<dims> & size);
+	ndarray_ref(const iu::LinearDeviceMemory<type> * x, const intn<dims> & size);
 public: // operations
 	//! reshape to get descending order of strides - last index fastest
 	ndarray_ref<type, dims> reshape_descending() const;
