@@ -7,7 +7,7 @@ error_stream::error_stream(){
 	print_stacktrace(stack);
 }
 
-error_stream::~error_stream(){
+error_stream::~error_stream() throw (){
 	std::cout << "~ERROR\n"<<std::flush;
 	//std::cout << what();
 	//__asm__ volatile("int3");
