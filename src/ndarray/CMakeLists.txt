@@ -48,6 +48,7 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     SET(SRC ${SRC_DIR}/dummy.cpp)
   else()
     add_flags(CMAKE_CXX_FLAGS "-ggdb --std=c++11 -pg -fPIC -fmax-errors=3 -Wall -Wc++11-compat -Wdiv-by-zero -Wfloat-equal -Wdisabled-optimization -Wno-unused-but-set-variable -Wno-unused-result -Wno-unused-variable") # -Q --help=warnings,joined,separate") #-Q --help=warnings #-Wfatal-errors
+    SET(CUDA_PROPAGATE_HOST_FLAGS OFF)
     add_flags(CUDA_NVCC_FLAGS "-std=c++11 -pg -expt-extended-lambda -ftemplate-backtrace-limit=2 -Xcompiler -fPIC -lineinfo -Xcompiler -Wno-unused-but-set-variable -pg -lineinfo")
   endif()
 endif()
@@ -56,6 +57,8 @@ message("COMPILER FLAGS for ndarray:")
 message(STATUS "CMAKE_CXX_FLAGS= ${CMAKE_CXX_FLAGS}")
 message(STATUS "CUDA_NVCC_FLAGS= ${CUDA_NVCC_FLAGS}")
 message(STATUS "CUDA_PROPAGATE_HOST_FLAGS= ${CUDA_PROPAGATE_HOST_FLAGS}")
+message(STATUS "CMAKE_SHARED_LINKER_FLAGS = ${CMAKE_SHARED_LINKER_FLAGS}")
+message(STATUS "CMAKE_LIB_LINKER_FLAGS = ${CMAKE_LIB_LINKER_FLAGS}")
 
 
 my_cuda_add_library(ndarray SHARED ${SRC})

@@ -3,7 +3,6 @@
 #include "ndarray_iu.h"
 #include "ndarray_example.h"
 
-
 void intro_test(){
 	//Here a brief overview of ndarray functionality
 
@@ -21,7 +20,7 @@ void intro_test(){
 	// Let's take a volume
 	iu::VolumeGpu_32f_C1 V1(3,300,100);
 	//          v  new built-in method in all iu classes
-	auto z = V1.ref();
+	auto z =  V1.ref();
 	//^^ z will have type ndarray_ref<float,3> (this is what V1.ref() returns)
 	// Complete information abut z is as follows:
 	std::cout << "z= " << z << "\n";
@@ -39,7 +38,7 @@ void intro_test(){
 	u = u.transp(); // logical transpose of the referenced shape
 	std::cout << "after transpose u= " << u << "\n";
 	// ndarray_ref<f,2>:ptr=0x604920000, size=(100,300,), strides_b=(153600,512,), access: device; linear_dim: 15
-	//									       ^^^^^^^ swapped       ^^^^^^^^^^ swapped
+	//                                         ^^^^^^^ swapped       ^^^^^^^^^^ swapped
 	u = u.subrange({0,50},{100,200}); // logically crop to the size 100x200 starting at (0,50)
 	std::cout << "after subrange u= " << u << "\n";
 	//ndarray_ref<f,2>:ptr=0x604926400, size=(100,200,), strides_b=(153600,512,), access: device; linear_dim: 15
@@ -116,7 +115,7 @@ void intro_test(){
 
 	//   _______________Kernels_________________________________
 	// consider a call to a function with the signature:
-	// void call_my_kernel(ndarray_ref<float, 2> && result, const ndarray_ref<float, 3> & data);
+	// void call_my_kernel(ndarray_ref<float, 2>  result, const ndarray_ref<float, 3> & data);
 	// (see ndarray_example.h)
 	//             v implicit conversion creates a temporary object of type ndarray_ref<float, 2>
 	call_my_kernel(I1, I2.ref().unpack().permute_dims({1,2,0}));
@@ -126,7 +125,7 @@ void intro_test(){
 	// ________________Attaching to "wild" pointers_____________
 	int * p1 = new int[1000];
 	// interpret as 3D array:
-	//                                 vv  need to specify size, assumes linear memory layout
+	//                                               vv  need to specify size, assumes linear memory layout
 	std::cout <<"linear 1:" << ndarray_ref<int,3>(p1,{10,10,10}) <<"\n";
 	//ndarray_ref<i,3>:ptr=0x166e6a0, size=(10,10,10,), strides_b=(4,40,400,), access: host; linear_dim: 0
 
@@ -151,7 +150,7 @@ void intro_test(){
 	//                              legal for both: host-side and device-side operations ^^^^^^^^^^^^^
 	t1 << 1;  // host-side operation
 	t2 << 0;  // resolves to GPU operation -- t2 has device access
-	cudaDeviceSynchronize(); // neede for managed memory in CUDA 7.5, otherwise deamons come out
+	cudaDeviceSynchronize(); // needed for managed memory in CUDA 7.5, otherwise demons come out
 	t2 += t1; // resolves to CPU operation -- t2 has device access but not t1
 	cudaDeviceSynchronize();
 	t2 += t2; // resolves to GPU operation

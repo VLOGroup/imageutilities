@@ -9,7 +9,8 @@
 #include "../iucore/memorydefs.h"
 #include "../iucore/tensor_cpu.h"
 #include "../iucore/tensor_gpu.h"
-
+//
+#include "type_expand_cuda.h"
 //! implicit / explicit conversions between iu classes and ndarray_ref
 
 namespace special2{
