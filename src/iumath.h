@@ -273,6 +273,7 @@ IUCORE_DLLAPI void mul(iu::LinearHostMemory_8u_C4& src1, iu::LinearHostMemory_8u
 IUCORE_DLLAPI void fill(iu::ImageGpu_32f_C1& dst, float value);
 IUCORE_DLLAPI void fill(iu::ImageGpu_32f_C2& dst, float2 value);
 IUCORE_DLLAPI void fill(iu::ImageGpu_32f_C4& dst, float4 value);
+IUCORE_DLLAPI void fill(iu::ImageGpu_32u_C1& dst, unsigned int value);
 IUCORE_DLLAPI void fill(iu::ImageGpu_8u_C1& dst, unsigned char value);
 IUCORE_DLLAPI void fill(iu::ImageGpu_8u_C2& dst, uchar2 value);
 IUCORE_DLLAPI void fill(iu::ImageGpu_8u_C4& dst, uchar4 value);

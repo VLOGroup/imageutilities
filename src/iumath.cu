@@ -231,6 +231,7 @@ void mul(iu::LinearHostMemory_8u_C4& src1, iu::LinearHostMemory_8u_C4& src2, iu:
 void fill(iu::ImageGpu_32f_C1& dst, float value) {iuprivate::math::fill(dst,value);}
 void fill(iu::ImageGpu_32f_C2& dst, float2 value) {iuprivate::math::fill(dst,value);}
 void fill(iu::ImageGpu_32f_C4& dst, float4 value) {iuprivate::math::fill(dst,value);}
+void fill(iu::ImageGpu_32u_C1& dst, unsigned int value) {iuprivate::math::fill(dst,value);}
 void fill(iu::ImageGpu_8u_C1& dst, unsigned char value) {iuprivate::math::fill(dst,value);}
 void fill(iu::ImageGpu_8u_C2& dst, uchar2 value) {iuprivate::math::fill(dst,value);}
 void fill(iu::ImageGpu_8u_C4& dst, uchar4 value) {iuprivate::math::fill(dst,value);}

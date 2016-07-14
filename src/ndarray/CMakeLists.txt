@@ -48,7 +48,7 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     SET(SRC ${SRC_DIR}/dummy.cpp)
   else()
     add_flags(CMAKE_CXX_FLAGS "-ggdb --std=c++11 -pg -fPIC -fmax-errors=3 -Wall -Wc++11-compat -Wdiv-by-zero -Wfloat-equal -Wdisabled-optimization -Wno-unused-but-set-variable -Wno-unused-result -Wno-unused-variable") # -Q --help=warnings,joined,separate") #-Q --help=warnings #-Wfatal-errors
-    add_flags(CUDA_NVCC_FLAGS "-pg -expt-extended-lambda -ftemplate-backtrace-limit=2 -Xcompiler -fPIC -lineinfo -Xcompiler -Wno-unused-but-set-variable -pg -lineinfo")
+    add_flags(CUDA_NVCC_FLAGS "-std=c++11 -pg -expt-extended-lambda -ftemplate-backtrace-limit=2 -Xcompiler -fPIC -lineinfo -Xcompiler -Wno-unused-but-set-variable -pg -lineinfo")
   endif()
 endif()
 
