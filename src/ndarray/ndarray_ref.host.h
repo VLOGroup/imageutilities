@@ -9,7 +9,10 @@
 #include "ndarray_print.h"
 #endif
 
-#include "type_expand.h"
+template<typename compound_type> struct type_expand{
+	typedef compound_type type;
+	static const int n = 1;
+};
 
 #ifndef  __CUDA_ARCH__
 #define runtime_check_this(expression) if(!(expression))throw error_stream().set_file_line(__FILE__,__LINE__) << "Runtime check failed: " << #expression << *this << "\n"

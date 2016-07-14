@@ -1,9 +1,5 @@
 #pragma once
 
-template<typename compound_type> struct type_expand{
-	typedef compound_type type;
-	static const int n = 1;
-};
 
 template<> struct type_expand<float2>{
 	typedef float type;
