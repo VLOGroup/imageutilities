@@ -41,8 +41,14 @@ void test_IuSize(){
 	d *= 1.5;
 	std::cout << "d=" << d << "\n";
 	//-----4D------
-	intn<4> s(2,2,2,2);
+	intn<4> s(2,3,4,5);
+	//s.height; // error
 	std::cout <<"s=" << s << "\n";
+	//  s=(2,3,4,5,)
+	std::cout << "s.erase<1>() = " << s.erase<1>() << "\n";
+	//	s.erase<1>() = (2,4,5,)
+	std::cout << "s.erase<1>().height = " << s.erase<1>().height << "\n";
+	//	s.erase<1>().height = 4
 };
 
 void intro_test(){

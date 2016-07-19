@@ -9,28 +9,13 @@
 #endif
 
 template<typename T, typename U> constexpr size_t offsetOf(U T::*member){
-    return (char*)&((T*)nullptr->*member) - (char*)nullptr;
+	return (char*)&((T*)nullptr->*member) - (char*)nullptr;
 }
 
 //________________________________intn______________________________________________
-/*
-namespace base{
-	//! struct with array int[n] and some operations on it
-	template<int n> struct intn{
-	public:
-		typedef int array_type[n];
-		array_type v;
-	protected://__________constructors
-		int & V(int i){return V(i);};
-		const int & V(int i)const{return V(i);};
-	};
-}
-*/
-
-//specializations
-
+//! specializations of intn<n> for lower dimensions
 namespace special{
-	//! generic dimension
+	//! generic dimensions - array storage
 	template<int n> struct intn{
 	public:
 		typedef int array_type[n];
@@ -69,7 +54,7 @@ namespace special{
 	//! 2D specialization
 	template<> struct intn<2>{
 	public:
-			typedef int array_type[2];
+		typedef int array_type[2];
 	public:
 		int width;
 		int height;
@@ -89,7 +74,7 @@ namespace special{
 	//! 3D specialization
 	template<> struct intn<3>{
 	public:
-			typedef int array_type[3];
+		typedef int array_type[3];
 	public:
 		int width;
 		int height;
@@ -243,7 +228,7 @@ public: //__________cut and permute
 		r[j] = a;
 		return r;
 	}
-	//! remove element at i
+	//! remove element at j
 	template<int j>
 	__host__ __device__ __forceinline__ intn<n - 1> erase() const{
 		static_assert(n > 1,"bad");
