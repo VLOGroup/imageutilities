@@ -48,10 +48,6 @@ struct stream_eater{
 	__host__ __device__ __forceinline__ stream_eater & operator << (const std::string & a){return *this;}
 };
 
-
-template<typename T, typename U> constexpr size_t offsetOf(U T::*member){
-    return (char*)&((T*)nullptr->*member) - (char*)nullptr;
-}
 /*
 template<typename T, typename U> struct member_ptr_t{
 	typedef U T::* type;

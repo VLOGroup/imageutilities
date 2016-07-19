@@ -3,9 +3,53 @@
 #include "ndarray_iu.h"
 #include "ndarray_example.h"
 
+void foo(const ndarray_ref<float,2> & x){
+	x(1,1) = 0;
+}
+
+void test_IuSize(){
+	//-----1D------
+	intn<1> a(5);
+	a = 3;
+	a < 10;
+	runtime_check(a.width == 3);
+	runtime_check(a.width == a[0]);
+	runtime_check(a.height == 1);
+	runtime_check(a.depth == 1);
+	//-----2D------
+	intn<2> b(5,6);
+	b >= 0;
+	b < intn<2>(10,10);
+	runtime_check(b.width ==5);
+	runtime_check(b.height ==6);
+	runtime_check(b.width ==b[0]);
+	runtime_check(b.height ==b[1]);
+	runtime_check(b.depth == 1);
+	//-----3D------
+	intn<3> c(5,6,7);
+	c >= 0;
+	c < intn<3>(10,10,10);
+	c == intn<3>(10,10,10);
+	runtime_check(c.width ==5);
+	runtime_check(c.height ==6);
+	runtime_check(c.depth ==7);
+	runtime_check(c.width ==c[0]);
+	runtime_check(c.height ==c[1]);
+	runtime_check(c.depth ==c[2]);
+	c = intn<3>(2,2,2);
+	intn<3> d(c);
+	d *= 1.5;
+	std::cout << "d=" << d << "\n";
+	//-----4D------
+	intn<4> s(2,2,2,2);
+	std::cout <<"s=" << s << "\n";
+};
+
 void intro_test(){
 	//Here a brief overview of ndarray functionality
-
+	ndarray<float,4> A;
+	A.create<memory::GPU>({3,3,3,3});
+	//A += A;
 
 	//___________________Basics___________________________
 	ndarray_ref<float, 2> x; // x is "reference" to a 2D array of floats
@@ -13,6 +57,7 @@ void intro_test(){
 	// Can be attached to any ImageUtilities class
 	iu::ImageGpu_32f_C1 I1(100,200);
 	x = I1; // ImageCpu uses padded memory, ndarray_ref remembers a separate stride per dimension
+	//foo(I1); // exception: host_allowed() failed
 	std::cout << "x    size:" << x.size() << "\n";
 	// x    size:(100,200,)
 	std::cout << "x strides:" << x.stride_bytes() << "\n";
@@ -135,7 +180,7 @@ void intro_test(){
 	std::cout  <<"linear 2:" << t1 << "\n";
 	//ndarray_ref<i,3>:ptr=0x166e6a0, size=(10,10,10,), strides_b=(400,40,4,), access: host; linear_dim: 2
 	//                               v  specify custom stride vector, in bytes
-	t1.set_ref(p1,{10,10,10},intn<3>(100,1,10)*sizeof(int),ndarray_flags::host_only);
+	t1.set_ref(p1,{10,10,10},intn<3>(100,1,10)*intsizeof(int),ndarray_flags::host_only);
 	//                                                     ^ specify explicitly access type
 	std::cout  <<"linear 3:" << t1 << "\n";
 	//ndarray_ref<i,3>:ptr=0x115ae70, size=(10,10,10,), strides_b=(400,4,40,), access: host; linear_dim: 1
@@ -301,6 +346,7 @@ float test_warn(long long x){
 */
 
 int main(){
+	test_IuSize();
 	intro_test();
 	try{
 		test_1();
