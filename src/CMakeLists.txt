@@ -87,7 +87,7 @@ endif(ANDROID)
 
 ##-----------------------------------------------------------------------------
 ## Compiler Flags (to be added on demand)
-set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-Wall")
+set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-Wall -std=c++11")
 
 
 
@@ -404,8 +404,9 @@ endif(IU_BUILD_STATIC)
 
 set(IU_LIBS "") # variable where all libs that are built are saved
 set(IU_LIBS_STATIC "") # variable where all libs that are built are saved
-message("Compiler Flags NVCC: " ${CUDA_NVCC_FLAGS})
 
+set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} "-std=c++11")
+message("Compiler Flags NVCC: " ${CUDA_NVCC_FLAGS})
 ##-----------------------------------------------------------------------------
 ## documentation
 SET(DOXYGEN_OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/../doc/html/index.html)

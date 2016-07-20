@@ -42,9 +42,9 @@ template<typename PixelType>
 void minMax(iu::LinearDeviceMemory<PixelType>& in, PixelType& minval,
             PixelType& maxval, unsigned int& minidx, unsigned int& maxidx)
 {
-  typedef thrust::pair<thrust::device_ptr<PixelType>,
-      thrust::device_ptr<PixelType> > result_type;
-  result_type result = thrust::minmax_element(in.begin(), in.end());
+//  typedef thrust::pair<thrust::device_ptr<PixelType>,
+//      thrust::device_ptr<PixelType> > result_type;
+  auto result = thrust::minmax_element(in.begin(), in.end());
   minval = *result.first;
   maxval = *result.second;
   minidx = result.first - in.begin();
@@ -55,9 +55,9 @@ template<typename PixelType>
 void minMax(iu::LinearHostMemory<PixelType>& in, PixelType& minval,
             PixelType& maxval, unsigned int& minidx, unsigned int& maxidx)
 {
-  typedef thrust::pair<thrust::pointer<PixelType, thrust::host_system_tag>,
-      thrust::pointer<PixelType, thrust::host_system_tag> > result_type;
-  result_type result = thrust::minmax_element(in.begin(), in.end());
+//  typedef thrust::pair<thrust::pointer<PixelType, thrust::host_system_tag>,
+//      thrust::pointer<PixelType, thrust::host_system_tag> > result_type;
+  auto result = thrust::minmax_element(in.begin(), in.end());
   minval = *result.first;
   maxval = *result.second;
   minidx = result.first - in.begin();
