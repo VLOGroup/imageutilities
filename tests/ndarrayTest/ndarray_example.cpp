@@ -1,6 +1,6 @@
 #include <cuda_runtime_api.h>
-#include "ndarray.h"
-#include "ndarray_iu.h"
+#include "../../src/ndarray/ndarray.h"
+#include "../../src/ndarray/ndarray_iu.h"
 #include "ndarray_example.h"
 
 void foo(const ndarray_ref<float,2> & x){

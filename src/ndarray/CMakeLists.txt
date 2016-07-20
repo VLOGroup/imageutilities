@@ -51,8 +51,8 @@ ${SRC_DIR}/error.cpp
 ${SRC_DIR}/ndarray_mem.cpp
 ${SRC_DIR}/ndarray.cpp
 ${SRC_DIR}/ndarray_op.cu
-${SRC_DIR}/ndarray_example.cpp
-${SRC_DIR}/ndarray_example.cu
+#${SRC_DIR}/ndarray_example.cpp
+#${SRC_DIR}/ndarray_example.cu
 )
 
 #message("COMPILER FLAGS for ndarray:")
@@ -71,12 +71,6 @@ target_link_libraries(ndarray)
 set(NDARRAY_LIB ${MYLIBS} PARENT_SCOPE)
 #set(NDARRAY_LIB ${MY_LIB_PATH}/${MYLIBS} PARENT_SCOPE)
 
-SET(SRC
-${SRC_DIR}/ndarray_example.cpp
-${SRC_DIR}/ndarray_example.cu
-)
-
-my_cuda_add_executable(ndarrayTest ${SRC})
 my_cuda_add_executable(cuda_bug cuda_bug.cu)
 
 file(GLOB_RECURSE H "${SRC_DIR}/*.h")

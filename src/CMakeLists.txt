@@ -80,6 +80,7 @@ else(ANDROID)
 option(IU_USE_IO "Including IO module." ON)
 option(IU_USE_GUI "Including GUI module." ON)
 option(IU_USE_MATH "Including Math module." ON)
+option(IU_USE_NDARRAY "Include NDArray module" ON)
 option(WITH_FLYCAPTURE2 "Use FlyCapture2." ON)
 option(WITH_OPENEXR "Use OpenEXR." ON)
 endif(ANDROID)
@@ -426,6 +427,9 @@ ADD_CUSTOM_TARGET( apidoc
 ##-build ndarray---------------------------------------------------------------
 add_subdirectory(ndarray)
 message("NDARRAY_LIB" = ${NDARRAY_LIB})
+if(NOT NDARRAY_LIB)
+  set(IU_USE_NDARRAY OFF CACHE PATH "IU: Omit NDArray module." FORCE)
+endif()
 ##-----------------------------------------------------------------------------
 ## build core library
 set(IU_CORE_LIB iucore)

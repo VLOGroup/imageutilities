@@ -1,6 +1,6 @@
 #include <cuda.h>
 #include <device_functions.h>
-#include "ndarray_ref.kernel.h"
+#include "./../src/ndarray/ndarray_ref.kernel.h"
 
 // using ndarray_ref inside kernel
 	//                                                   v here arguments passed by value
@@ -35,7 +35,7 @@ __global__ void my_kernel_1(kernel::ndarray_ref<float, 2> result, kernel::ndarra
 #define roundup(x,y) (divup(x,y)*y)
 
 #include "ndarray_example.h"
-#include "ndarray_ref.host.h"
+#include "./../src/ndarray/ndarray_ref.host.h"
 
     //                                    v passing by value accepts temporaries
 void call_my_kernel(ndarray_ref<float, 2> result, const ndarray_ref<float, 3> & data){
