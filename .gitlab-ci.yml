@@ -22,7 +22,7 @@ mvlib:
   script:
     - mkdir -p build 
     - cd build
-    - cmake ..
+    - cmake -DCMAKE_C_COMPILER=/usr/bin/gcc-4.9 -DCMAKE_CXX_COMPILER=/usr/bin/g++-4.9 ..
     - make
     - make test
     - make install
