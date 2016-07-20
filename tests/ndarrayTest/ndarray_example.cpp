@@ -174,6 +174,7 @@ void intro_test(){
 
 
 	// ________________Attaching to "wild" pointers_____________
+	//the usage of new / delete is not recommended - better use container classes, here just to demonstrate how to attach to pointers
 	int * p1 = new int[1000];
 	// interpret as 3D array:
 	//                                               vv  need to specify size, assumes linear memory layout
@@ -194,7 +195,9 @@ void intro_test(){
 	// ________________ Host or Device? _____________
 	// host/device access is determined using cudaPointerGetAttributes
 	int * p2;
+	//the usage of cudaMalloc / cudaFree is not recommended - better use container classes, here just to demonstrate how to attach to pointers
 	cudaMallocManaged(&p2, 1000*sizeof(int));
+	cuda_check_error();
 	ndarray_ref<int,3> t2 = ndarray_ref<int,3>(p2,{10,10,10});
 	std::cout << t2 <<"\n";
 	//ndarray_ref<i,3>:ptr=0x203500000, size=(10,10,10,), strides_b=(4,40,400,), access: host, device; linear_dim: 0
@@ -210,7 +213,7 @@ void intro_test(){
 	runtime_check(t2(0,0)==2);
 	//
 	delete p1;
-	cudaFree(p1);
+	cudaFree(p2);
 }
 
 
