@@ -11,7 +11,7 @@ set(CMAKE_DISABLE_SOURCE_CHANGES  ON)
 if ("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_BINARY_DIR}")
   message(SEND_ERROR "In-source builds are not allowed.")
 endif ()
-set(CMAKE_VERBOSE_MAKEFILE ON)
+set(CMAKE_VERBOSE_MAKEFILE OFF)
 set(CMAKE_COLOR_MAKEFILE   ON)
 
 SET (SRC_DIR .)
@@ -31,8 +31,21 @@ include(${CMAKE_CURRENT_LIST_DIR}/cmake/flags_functions.cmake.txt)
 
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/functions.cmake.txt)
                                       
-##-----------------------------------------------------------------------------
+##------------check if we can build--------------------------------------------
+set(WITH_NDARRAY TRUE)
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+  if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "4.9.0")
+    message("[-] insufficient gcc version, building without ndarray")
+    set(WITH_NDARRAY FALSE)
+    #SET(SRC ${SRC_DIR}/dummy.cpp)
+  else()
+    add_flags(CMAKE_CXX_FLAGS "-ggdb --std=c++11 -pg -fPIC -fmax-errors=3 -Wall -Wc++11-compat -Wdiv-by-zero -Wfloat-equal -Wdisabled-optimization -Wno-unused-but-set-variable -Wno-unused-result -Wno-unused-variable -Wno-unused-value") # -Q --help=warnings,joined,separate") #-Q --help=warnings #-Wfatal-errors
+    SET(CUDA_PROPAGATE_HOST_FLAGS OFF)
+    add_flags(CUDA_NVCC_FLAGS "-std=c++11 -pg -expt-extended-lambda -ftemplate-backtrace-limit=2 -Xcompiler -fPIC -lineinfo -Xcompiler -Wno-unused-but-set-variable -pg -lineinfo")
+  endif()
+endif()
 
+if(WITH_NDARRAY)
 SET(SRC
 ${SRC_DIR}/error.cpp
 ${SRC_DIR}/ndarray_mem.cpp
@@ -42,23 +55,12 @@ ${SRC_DIR}/ndarray_example.cpp
 ${SRC_DIR}/ndarray_example.cu
 )
 
-if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-  if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "4.9.0")
-    message(WARNINGR " ================= Insufficient gcc version ===================")
-    SET(SRC ${SRC_DIR}/dummy.cpp)
-  else()
-    add_flags(CMAKE_CXX_FLAGS "-ggdb --std=c++11 -pg -fPIC -fmax-errors=3 -Wall -Wc++11-compat -Wdiv-by-zero -Wfloat-equal -Wdisabled-optimization -Wno-unused-but-set-variable -Wno-unused-result -Wno-unused-variable -Wno-unused-value") # -Q --help=warnings,joined,separate") #-Q --help=warnings #-Wfatal-errors
-    SET(CUDA_PROPAGATE_HOST_FLAGS OFF)
-    add_flags(CUDA_NVCC_FLAGS "-std=c++11 -pg -expt-extended-lambda -ftemplate-backtrace-limit=2 -Xcompiler -fPIC -lineinfo -Xcompiler -Wno-unused-but-set-variable -pg -lineinfo")
-  endif()
-endif()
-
-message("COMPILER FLAGS for ndarray:")
-message(STATUS "CMAKE_CXX_FLAGS= ${CMAKE_CXX_FLAGS}")
-message(STATUS "CUDA_NVCC_FLAGS= ${CUDA_NVCC_FLAGS}")
-message(STATUS "CUDA_PROPAGATE_HOST_FLAGS= ${CUDA_PROPAGATE_HOST_FLAGS}")
-message(STATUS "CMAKE_SHARED_LINKER_FLAGS = ${CMAKE_SHARED_LINKER_FLAGS}")
-message(STATUS "CMAKE_LIB_LINKER_FLAGS = ${CMAKE_LIB_LINKER_FLAGS}")
+#message("COMPILER FLAGS for ndarray:")
+#message(STATUS "CMAKE_CXX_FLAGS= ${CMAKE_CXX_FLAGS}")
+#message(STATUS "CUDA_NVCC_FLAGS= ${CUDA_NVCC_FLAGS}")
+#message(STATUS "CUDA_PROPAGATE_HOST_FLAGS= ${CUDA_PROPAGATE_HOST_FLAGS}")
+#message(STATUS "CMAKE_SHARED_LINKER_FLAGS = ${CMAKE_SHARED_LINKER_FLAGS}")
+#message(STATUS "CMAKE_LIB_LINKER_FLAGS = ${CMAKE_LIB_LINKER_FLAGS}")
 
 
 my_cuda_add_library(ndarray SHARED ${SRC})
@@ -74,14 +76,6 @@ ${SRC_DIR}/ndarray_example.cpp
 ${SRC_DIR}/ndarray_example.cu
 )
 
-if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-  if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "4.9.0")
-    message(WARNINGR " ================= Insufficient gcc version ===================")
-    SET(SRC ${SRC_DIR}/dummy.cpp)
-  endif()
-endif()
-
-
 my_cuda_add_executable(ndarrayTest ${SRC})
 my_cuda_add_executable(cuda_bug cuda_bug.cu)
 
@@ -96,6 +90,6 @@ install(FILES ${NDARRAY_PUBLIC_HEADERS}
   DESTINATION include/iu/ndarray
   COMPONENT Headers
   )
-
+endif(WITH_NDARRAY)
 #SET(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS_SAVED})
 #SET(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS_SAVED})
