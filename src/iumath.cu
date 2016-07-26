@@ -247,6 +247,10 @@ void fill(iu::LinearDeviceMemory_32f_C1& dst, float value) {iuprivate::math::fil
 void fill(iu::LinearDeviceMemory_32f_C2& dst, float2 value) {iuprivate::math::fill(dst,value);}
 void fill(iu::LinearDeviceMemory_32f_C3& dst, float3 value) {iuprivate::math::fill(dst,value);}
 
+// todo test phase
+void fill(iu::LinearDeviceMemory<float, 2>& dst, float value) {iuprivate::math::fill(dst,value);}
+
+
 void fill(iu::LinearHostMemory_32f_C1& dst, float value) {iuprivate::math::fill(dst,value);}
 void fill(iu::LinearHostMemory_32f_C2& dst, float2 value) {iuprivate::math::fill(dst,value);}
 void fill(iu::LinearHostMemory_32f_C3& dst, float3 value) {iuprivate::math::fill(dst,value);}

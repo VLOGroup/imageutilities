@@ -9,8 +9,9 @@
 
 int main()
 {
+  const unsigned int Ndim = 2;
 
-  iu::Size<1> size;
+  iu::Size<Ndim> size;
   std::cout << size << std::endl;
 
   size.fill(5);
@@ -26,13 +27,13 @@ int main()
 
   //std::cout << size.width << " " << size.height << " " << size.depth << std::endl;
 
-  iu::LinearDeviceMemory<float, 1> test(size);
+  iu::LinearDeviceMemory<float, Ndim> test(size);
   iu::math::fill(test, 5.f);
   std::cout << test << std::endl;
 
   cuda::test(test);
 
-  iu::LinearHostMemory<float, 1> test2(size);
+  iu::LinearHostMemory<float, Ndim> test2(size);
   std::cout << test2 << std::endl;
 
   iu::copy(&test, &test2);

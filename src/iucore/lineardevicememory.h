@@ -28,6 +28,7 @@
 #include "linearmemory.h"
 #include <thrust/device_ptr.h>
 #include "../iucutil.h"
+#include <type_traits>
 
 template<typename, int> class ndarray_ref;
 
@@ -36,7 +37,7 @@ namespace iu {
 /**  \brief Linear device memory class.
  *   \ingroup LinearMemory
  */
-template<typename PixelType, int Ndim = 1>
+template<typename PixelType, unsigned int Ndim = 1>
 class LinearDeviceMemory : public LinearMemory<Ndim>
 {
 public:
@@ -189,17 +190,48 @@ public:
        * @param idx Index to access.
        * @return value at index.
        */
-      __device__ PixelType& operator()(int idx0, int idx1=0, int idx2=0, int idx3=0, int idx4=0)
+
+
+      __device__ PixelType& operator()(int idx)
+      {
+          return data_[idx];
+      }
+
+      template<typename ResultType = PixelType>
+      __device__ typename std::enable_if<(Ndim > 1), ResultType&>::type operator()(int idx0, int idx1)
       {
           int idx = idx0;
-          if(Ndim > 1)
-            idx += size_[0]*idx1;
-          if(Ndim > 2)
-            idx += size_[0]*size_[1]*idx2;
-          if(Ndim > 3)
-            idx += size_[0]*size_[1]*size_[2]*idx3;
-          if(Ndim > 4)
-            idx += size_[0]*size_[1]*size_[2]*size_[3]*idx4;
+          idx += size_[0]*idx1;
+          return data_[idx];
+      }
+
+      template<typename ResultType = PixelType>
+      __device__ typename std::enable_if<(Ndim > 2), ResultType&>::type operator()(int idx0, int idx1, int idx2)
+      {
+          int idx = idx0;
+          idx += size_[0]*idx1;
+          idx += size_[0]*size_[1]*idx2;
+          return data_[idx];
+      }
+
+      template<typename ResultType = PixelType>
+      __device__ typename std::enable_if<(Ndim > 3), ResultType&>::type operator()(int idx0, int idx1, int idx2, int idx3)
+      {
+          int idx = idx0;
+          idx += size_[0]*idx1;
+          idx += size_[0]*size_[1]*idx2;
+          idx += size_[0]*size_[1]*size_[2]*idx3;
+          return data_[idx];
+      }
+
+      template<typename ResultType = PixelType>
+      __device__ typename std::enable_if<(Ndim > 4), ResultType&>::type operator()(int idx0, int idx1, int idx2, int idx3, int idx4)
+      {
+          int idx = idx0;
+          idx += size_[0]*idx1;
+          idx += size_[0]*size_[1]*idx2;
+          idx += size_[0]*size_[1]*size_[2]*idx3;
+          idx += size_[0]*size_[1]*size_[2]*size_[3]*idx4;
           return data_[idx];
       }
 
@@ -220,10 +252,10 @@ public:
   };
 
   /** convert to ndarray_ref -- include ndarray/ndarray_iu.h*/
-  ndarray_ref<PixelType,1> ref() const;
+  ndarray_ref<PixelType,Ndim> ref() const;
 
   /** construct from ndarray_ref  -- include ndarray/ndarray_iu.h*/
-  LinearDeviceMemory(const ndarray_ref<PixelType,1> &x);
+  LinearDeviceMemory(const ndarray_ref<PixelType,Ndim> &x);
 
 protected:
 

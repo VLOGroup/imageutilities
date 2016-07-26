@@ -38,7 +38,7 @@ void minMax(PitchedMemoryType<PixelType, Allocator<PixelType> >& d_img,
   maxval = thrust::get<2>(result);
 }
 
-template<typename PixelType, int Ndim>
+template<typename PixelType, unsigned int Ndim>
 void minMax(iu::LinearDeviceMemory<PixelType, Ndim>& in, PixelType& minval,
             PixelType& maxval, unsigned int& minidx, unsigned int& maxidx)
 {
@@ -51,7 +51,7 @@ void minMax(iu::LinearDeviceMemory<PixelType, Ndim>& in, PixelType& minval,
   maxidx = result.second - in.begin();
 }
 
-template<typename PixelType, int Ndim>
+template<typename PixelType, unsigned int Ndim>
 void minMax(iu::LinearHostMemory<PixelType, Ndim>& in, PixelType& minval,
             PixelType& maxval, unsigned int& minidx, unsigned int& maxidx)
 {
@@ -87,7 +87,7 @@ void summation(PitchedMemoryType<PixelType, Allocator<PixelType> >& d_img,
   sum = thrust::get<1>(result);
 }
 
-template<template<typename, int > class LinearMemoryType, typename PixelType, int Ndim>
+template<template<typename, unsigned int > class LinearMemoryType, typename PixelType, unsigned int Ndim>
 void summation(LinearMemoryType<PixelType, Ndim>& d_img, PixelType init,
                PixelType& sum)
 {

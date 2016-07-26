@@ -40,7 +40,7 @@ namespace iu {
 /**  \brief Linear host memory class.
  *   \ingroup LinearMemory
  */
-template<typename PixelType, int Ndim = 1>
+template<typename PixelType, unsigned int Ndim = 1>
 class LinearHostMemory : public LinearMemory<Ndim>
 {
 public:
@@ -65,6 +65,12 @@ public:
    *  @param size size of linear memory
    */
    LinearHostMemory(const Size<Ndim>& size): LinearMemory<Ndim>(size), data_(0), ext_data_pointer_(false)
+   {
+     data_ = (PixelType*)malloc(this->numel()*sizeof(PixelType));
+     if (data_ == 0) throw std::bad_alloc();
+   }
+
+   LinearHostMemory(const unsigned int& numel): LinearMemory<Ndim>(numel), data_(0), ext_data_pointer_(false)
    {
      data_ = (PixelType*)malloc(this->numel()*sizeof(PixelType));
      if (data_ == 0) throw std::bad_alloc();
@@ -152,10 +158,10 @@ public:
   }
 
   /** convert to ndarray_ref -- include ndarray/ndarray_iu.h*/
-    ndarray_ref<PixelType,1> ref() const;
+    ndarray_ref<PixelType,Ndim> ref() const;
 
     /** construct from ndarray_ref  -- include ndarray/ndarray_iu.h*/
-    LinearHostMemory(const ndarray_ref<PixelType,1> &x);
+    LinearHostMemory(const ndarray_ref<PixelType,Ndim> &x);
 
 protected:
 

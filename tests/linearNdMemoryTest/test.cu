@@ -10,6 +10,16 @@
 __global__ void test_kernel(iu::LinearDeviceMemory<float, 1>::KernelData img)
 {
     int x = blockIdx.x*blockDim.x + threadIdx.x;
+
+    if (x < img.size_[0])
+    {
+        img(x) = img.size_[0];
+    }
+}
+
+__global__ void test_kernel(iu::LinearDeviceMemory<float, 2>::KernelData img)
+{
+    int x = blockIdx.x*blockDim.x + threadIdx.x;
     int y = blockIdx.y*blockDim.y + threadIdx.y;
 
     if (x < img.size_[0] && y < img.size_[1])
@@ -24,6 +34,14 @@ namespace cuda
 {
 
 void test(iu::LinearDeviceMemory<float, 1>& img)
+{
+    dim3 dimBlock(16, 1);
+    dim3 dimGrid(iu::divUp(img.size()[0], dimBlock.x));
+
+    test_kernel <<< dimGrid, dimBlock >>> (img);
+}
+
+void test(iu::LinearDeviceMemory<float, 2>& img)
 {
     dim3 dimBlock(16, 16);
     dim3 dimGrid(iu::divUp(img.size()[0], dimBlock.x),

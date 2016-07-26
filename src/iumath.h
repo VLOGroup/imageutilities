@@ -301,6 +301,10 @@ IUCORE_DLLAPI void fill(iu::VolumeCpu_32f_C1& dst, float value);
 IUCORE_DLLAPI void fill(iu::VolumeCpu_32f_C2& dst, float2 value);
 IUCORE_DLLAPI void fill(iu::VolumeCpu_32f_C3& dst, float3 value);
 
+// todo test phase
+IUCORE_DLLAPI void fill(iu::LinearDeviceMemory<float, 2>& dst, float value);
+
+
 /** Split planes of a two channel image (e.g. complex image)
  * \param[in] src  Combined image (e.g. complex image)
  * \param[out] dst1 First channel (e.g. real part)

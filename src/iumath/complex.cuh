@@ -111,8 +111,8 @@ void abs(
                     abs_functor<ComplexPixelType, RealPixelType>());
 }
 
-template<template<typename, int> class LinearMemoryType, typename ComplexPixelType,
-    typename RealPixelType, int Ndim>
+template<template<typename, unsigned int> class LinearMemoryType, typename ComplexPixelType,
+    typename RealPixelType, unsigned int Ndim>
 void abs(
     LinearMemoryType<ComplexPixelType, Ndim>& complex_img,
     LinearMemoryType<RealPixelType, Ndim>& abs_img)
@@ -137,8 +137,8 @@ void real(
                     real_functor<ComplexPixelType, RealPixelType>());
 }
 
-template<template<typename, int> class LinearMemoryType, typename ComplexPixelType,
-    typename RealPixelType, int Ndim>
+template<template<typename, unsigned int> class LinearMemoryType, typename ComplexPixelType,
+    typename RealPixelType, unsigned int Ndim>
 void real(
     LinearMemoryType<ComplexPixelType, Ndim>& complex_img,
     LinearMemoryType<RealPixelType, Ndim>& real_img)
@@ -163,8 +163,8 @@ void imag(
                     imag_functor<ComplexPixelType, RealPixelType>());
 }
 
-template<template<typename, int> class LinearMemoryType, typename ComplexPixelType,
-    typename RealPixelType, int Ndim>
+template<template<typename, unsigned int> class LinearMemoryType, typename ComplexPixelType,
+    typename RealPixelType, unsigned int Ndim>
 void imag(
     LinearMemoryType<ComplexPixelType, Ndim>& complex_img,
     LinearMemoryType<RealPixelType, Ndim>& imag_img)
@@ -189,8 +189,8 @@ void phase(
                     phase_functor<ComplexPixelType, RealPixelType>());
 }
 
-template<template<typename, int> class LinearMemoryType, typename ComplexPixelType,
-    typename RealPixelType, int Ndim>
+template<template<typename, unsigned int> class LinearMemoryType, typename ComplexPixelType,
+    typename RealPixelType, unsigned int Ndim>
 void phase(
     LinearMemoryType<ComplexPixelType, Ndim>& complex_img,
     LinearMemoryType<RealPixelType, Ndim>& phase_img)
@@ -220,7 +220,7 @@ void multiply(
                     complex_multiply_functor<ComplexPixelType>());
 }
 
-template<template<typename, int> class LinearMemoryType, typename ComplexPixelType, int Ndim>
+template<template<typename, unsigned int> class LinearMemoryType, typename ComplexPixelType, unsigned int Ndim>
 void multiply(
     LinearMemoryType<ComplexPixelType, Ndim>& complex_src1,
     LinearMemoryType<ComplexPixelType, Ndim>& complex_src2,
@@ -256,7 +256,7 @@ void multiplyConjugate(
                     complex_multiply_conjugate_functor<ComplexPixelType>());
 }
 
-template<template<typename, int> class LinearMemoryType, typename ComplexPixelType, int Ndim>
+template<template<typename, unsigned int> class LinearMemoryType, typename ComplexPixelType, unsigned int Ndim>
 void multiplyConjugate(
     LinearMemoryType<ComplexPixelType, Ndim>& complex_src1,
     LinearMemoryType<ComplexPixelType, Ndim>& complex_src2,

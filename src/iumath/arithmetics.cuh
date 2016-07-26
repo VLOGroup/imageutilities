@@ -23,7 +23,7 @@ void addC(PitchedMemoryType<PixelType, Allocator<PixelType> >& src, const PixelT
     thrust::transform(src.begin(),src.end(),thrust::constant_iterator<PixelType>(val),dst.begin(),thrust::plus<PixelType>());
 }
 
-template<template<typename, int> class LinearMemoryType, typename PixelType, int Ndim>
+template<template<typename, unsigned int> class LinearMemoryType, typename PixelType, unsigned int Ndim>
 void addC(LinearMemoryType<PixelType, Ndim>& src, const PixelType& val,
           LinearMemoryType<PixelType, Ndim>& dst)
 {
@@ -43,7 +43,7 @@ void mulC(PitchedMemoryType<PixelType, Allocator<PixelType> >& src, const PixelT
     thrust::transform(src.begin(),src.end(),thrust::constant_iterator<PixelType>(val),dst.begin(),thrust::multiplies<PixelType>());
 }
 
-template<template<typename, int> class LinearMemoryType, typename PixelType, int Ndim>
+template<template<typename, unsigned int> class LinearMemoryType, typename PixelType, unsigned int Ndim>
 void mulC(LinearMemoryType<PixelType, Ndim>& src, const PixelType& val,
           LinearMemoryType<PixelType, Ndim>& dst)
 {
@@ -69,7 +69,7 @@ void addWeighted(PitchedMemoryType<PixelType, Allocator<PixelType> >& src1, cons
                       unary_op);
 }
 
-template<template<typename, int> class LinearMemoryType, typename PixelType, int Ndim>
+template<template<typename, unsigned int> class LinearMemoryType, typename PixelType, unsigned int Ndim>
 void addWeighted(LinearMemoryType<PixelType, Ndim>& src1, const PixelType& weight1,
                  LinearMemoryType<PixelType, Ndim>& src2, const PixelType& weight2,
                  LinearMemoryType<PixelType, Ndim>& dst)
@@ -95,7 +95,7 @@ void mul(PitchedMemoryType<PixelType, Allocator<PixelType> >& src1,
     thrust::transform(src1.begin(), src1.end(), src2.begin(), dst.begin(), thrust::multiplies<PixelType>());
 }
 
-template<template<typename, int> class LinearMemoryType, typename PixelType, int Ndim>
+template<template<typename, unsigned int> class LinearMemoryType, typename PixelType, unsigned int Ndim>
 void mul(LinearMemoryType<PixelType, Ndim>& src1,
          LinearMemoryType<PixelType, Ndim>& src2,
          LinearMemoryType<PixelType, Ndim>& dst)
@@ -115,7 +115,7 @@ void fill(PitchedMemoryType<PixelType, Allocator<PixelType> >& dst,PixelType& va
     thrust::fill(dst.begin(),dst.end(),val);
 }
 
-template<template<typename, int> class LinearMemoryType, typename PixelType, int Ndim>
+template<template<typename, unsigned int> class LinearMemoryType, typename PixelType, unsigned int Ndim>
 void fill(LinearMemoryType<PixelType, Ndim>& dst,PixelType& val)
 {
     thrust::fill(dst.begin(),dst.end(),val);
@@ -143,8 +143,8 @@ void splitPlanes(
       split_planes2_functor<CombinedPixelType, PlanePixelType>());
 }
 
-template<template<typename, int> class LinearMemoryType, typename CombinedPixelType,
-    typename PlanePixelType, int Ndim>
+template<template<typename, unsigned int> class LinearMemoryType, typename CombinedPixelType,
+    typename PlanePixelType, unsigned int Ndim>
 void splitPlanes(
     LinearMemoryType<CombinedPixelType, Ndim>& src,
     LinearMemoryType<PlanePixelType, Ndim>& dst1,
@@ -182,8 +182,8 @@ void splitPlanes(
       split_planes3_functor<CombinedPixelType, PlanePixelType>());
 }
 
-template<template<typename, int> class LinearMemoryType, typename CombinedPixelType,
-    typename PlanePixelType, int Ndim>
+template<template<typename, unsigned int> class LinearMemoryType, typename CombinedPixelType,
+    typename PlanePixelType, unsigned int Ndim>
 void splitPlanes(
     LinearMemoryType<CombinedPixelType, Ndim>& src,
     LinearMemoryType<PlanePixelType, Ndim>& dst1,
@@ -221,8 +221,8 @@ void combinePlanes(
       combine_planes2_functor<CombinedPixelType, PlanePixelType>());
 }
 
-template<template<typename, int> class LinearMemoryType, typename CombinedPixelType,
-    typename PlanePixelType, int Ndim>
+template<template<typename, unsigned int> class LinearMemoryType, typename CombinedPixelType,
+    typename PlanePixelType, unsigned int Ndim>
 void combinePlanes(
     LinearMemoryType<PlanePixelType, Ndim>& src1,
     LinearMemoryType<PlanePixelType, Ndim>& src2,
@@ -262,8 +262,8 @@ void combinePlanes(
       combine_planes3_functor<CombinedPixelType, PlanePixelType>());
 }
 
-template<template<typename, int> class LinearMemoryType, typename CombinedPixelType,
-    typename PlanePixelType, int Ndim>
+template<template<typename, unsigned int> class LinearMemoryType, typename CombinedPixelType,
+    typename PlanePixelType, unsigned int Ndim>
 void combinePlanes(
     LinearMemoryType<PlanePixelType, Ndim>& src1,
     LinearMemoryType<PlanePixelType, Ndim>& src2,

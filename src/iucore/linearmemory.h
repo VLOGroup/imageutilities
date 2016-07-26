@@ -80,7 +80,7 @@ namespace iu {
  */
 
 /** \brief Base class for linear memory classes. */
-template<int Ndim = 1>
+template<unsigned int Ndim = 1>
 class LinearMemory
 {
   IU_ASSERT(Ndim > 0)
@@ -97,6 +97,10 @@ public:
 
   }
 
+  LinearMemory(const unsigned int& numel) : size_()
+  {
+    size_[0] = numel;
+  }
   /** Compares the LinearMemory type to a target LinearMemory.
    *  @param from Target LinearMemory.
    *  @return Returns true if target class is of the same type (using RTTI).
@@ -113,6 +117,13 @@ public:
   /** Returns the number of elements saved in the device buffer. (numel of device buffer) */
   unsigned int numel() const
   {
+    return size_.numel();
+  }
+
+  /** Returns the number of elements saved in the device buffer. (numel of device buffer) */
+  unsigned int length() const
+  {
+    std::cout << "Warning: LinearMemory::length() is deprecated and will be removed in the future. Use numel() instead." << std::endl;
     return size_.numel();
   }
 

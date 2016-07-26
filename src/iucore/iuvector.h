@@ -9,9 +9,10 @@
 #define IUVECTOR_H_
 
 #include "coredefs.h"
+#include <type_traits>
 
 namespace iu {
-template<typename PixelType, int Ndim>
+template<typename PixelType, unsigned int Ndim>
 class VectorBase
 {
 IU_ASSERT(Ndim > 0)
@@ -19,7 +20,7 @@ IU_ASSERT(Ndim > 0)
 public:
   VectorBase()
   {
-    for (int i = 0; i < Ndim; i++)
+    for (unsigned int i = 0; i < Ndim; i++)
     {
       data_[i] = 0.0;
     }
@@ -29,12 +30,12 @@ public:
   {
   }
 
-  inline PixelType operator[](int i) const
+  inline PixelType operator[](unsigned int i) const
   {
     return data_[i];
   }
 
-  inline PixelType &operator[](int i)
+  inline PixelType &operator[](unsigned int i)
   {
     return data_[i];
   }
@@ -46,17 +47,26 @@ public:
 
   void fill(const PixelType& value)
   {
-    for (int i = 0; i < Ndim; i++)
+    for (unsigned int i = 0; i < Ndim; i++)
     {
       data_[i] = value;
     }
   }
 
-  friend std::ostream& operator<<(std::ostream & out,
+  template<typename T = std::ostream>
+  friend typename std::enable_if<(Ndim==1), T&>::type operator<<(std::ostream & out,
+                                  VectorBase<PixelType, Ndim> const& v)
+  {
+    out << "[" << v[0] << "]";
+    return out;
+  }
+
+  template<typename T = std::ostream>
+  friend typename std::enable_if< (Ndim>1), T&>::type operator<<(std::ostream & out,
                                   VectorBase<PixelType, Ndim> const& v)
   {
     out << "[";
-    for (int i = 0; i < Ndim - 1; i++)
+    for (int i = 0; i < static_cast<int>(Ndim - 1); i++)
     {
       out << v[i] << ", ";
     }
@@ -73,11 +83,11 @@ private:
 
 };
 
-template<typename PixelType, int Ndim>
+template<typename PixelType, unsigned int Ndim>
 bool operator==(const VectorBase<PixelType, Ndim> &v1,
                 const VectorBase<PixelType, Ndim> &v2)
 {
-  for (int i = 0; i < Ndim; i++)
+  for (unsigned int i = 0; i < Ndim; i++)
   {
     if (v1[i] != v2[i])
       return false;
@@ -85,11 +95,11 @@ bool operator==(const VectorBase<PixelType, Ndim> &v1,
   return true;
 }
 
-template<typename PixelType, int Ndim>
+template<typename PixelType, unsigned int Ndim>
 bool operator!=(const VectorBase<PixelType, Ndim> &v1,
                 const VectorBase<PixelType, Ndim> &v2)
 {
-  for (int i = 0; i < Ndim; i++)
+  for (unsigned int i = 0; i < Ndim; i++)
   {
     if (v1[i] != v2[i])
       return true;
@@ -97,16 +107,17 @@ bool operator!=(const VectorBase<PixelType, Ndim> &v1,
   return false;
 }
 
-template<int Ndim>
-class SizeBase: public VectorBase<int, Ndim>
+template<unsigned int Ndim>
+class SizeBase: public VectorBase<unsigned int, Ndim>
 {
 public:
   SizeBase() :
-      VectorBase<int, Ndim>()
+      VectorBase<unsigned int, Ndim>()
   {
+    this->fill(1);
   }
 
-  SizeBase(int value) : VectorBase<int, Ndim>()
+  SizeBase(int value) : VectorBase<unsigned int, Ndim>()
   {
     this->fill(value);
   }
@@ -114,10 +125,11 @@ public:
   ~SizeBase()
   {
   }
+
   unsigned int numel() const
   {
-    int num_elements = this->data_[0];
-    for (int i = 1; i < Ndim; i++)
+    unsigned int num_elements = this->data_[0];
+    for (unsigned int i = 1; i < Ndim; i++)
     {
       num_elements *= this->data_[i];
     }
@@ -128,9 +140,9 @@ public:
   SizeBase operator*(const ScalarType& scalar) const
   {
     SizeBase<Ndim> v;
-    for (int i = 0; i < Ndim; i++)
+    for (unsigned int i = 0; i < Ndim; i++)
     {
-      v[i] = static_cast<int>(this->data_[i] * scalar + 0.5f);
+      v[i] = static_cast<unsigned int>(this->data_[i] * scalar + 0.5f);
     }
     return v;
   }
@@ -138,9 +150,9 @@ public:
   template<typename ScalarType>
   void operator*=(const ScalarType &scalar)
   {
-    for (int i = 0; i < Ndim; i++)
+    for (unsigned int i = 0; i < Ndim; i++)
     {
-      this->data_[i] = static_cast<int>(this->data_[i] * scalar + 0.5f);
+      this->data_[i] = static_cast<unsigned int>(this->data_[i] * scalar + 0.5f);
       ;
     }
   }
@@ -161,41 +173,32 @@ public:
     operator*=(invFactor);
   }
 
-  friend std::ostream& operator<<(std::ostream & out, SizeBase<Ndim> const& v)
-  {
-    out << "[";
-    for (int i = 0; i < Ndim - 1; i++)
-      out << v[i] << ", ";
-    out << v[Ndim - 1] << "];";
-    return out;
-  }
-
   SizeBase(const SizeBase& from)
   {
-    for (int i = 0; i < Ndim; i++)
+    for (unsigned int i = 0; i < Ndim; i++)
       this->data_[i] = from[i];
   }
 
   SizeBase& operator=(const SizeBase& from)
   {
-    for (int i = 0; i < Ndim; i++)
+    for (unsigned int i = 0; i < Ndim; i++)
       this->data_[i] = from[i];
     return *this;
   }
 
   // this is only used in kernel data of device memory
-  int* ptr()
+  unsigned int* ptr()
   {
     return this->data_;
   }
 
-  const int* ptr() const
+  const unsigned int* ptr() const
   {
-    return reinterpret_cast<const int*>(this->data_);
+    return reinterpret_cast<const unsigned int*>(this->data_);
   }
 };
 
-template<int Ndim>
+template<unsigned int Ndim>
 class Size: public SizeBase<Ndim>
 {
 public:
@@ -223,16 +226,16 @@ template<>
 class Size<3> : public SizeBase<3>
 {
 public:
-  int& width;
-  int& height;
-  int& depth;
+  unsigned int& width;
+  unsigned int& height;
+  unsigned int& depth;
 
   Size() : SizeBase<3>(),
       width(this->data_[0]), height(this->data_[1]), depth(this->data_[2])
   {
   }
 
-  Size(int width, int height, int depth=0) : SizeBase<3>(),
+  Size(unsigned int width, unsigned int height, unsigned int depth=0) : SizeBase<3>(),
       width(this->data_[0]), height(this->data_[1]), depth(this->data_[2])
   {
     data_[0] = width;
@@ -261,7 +264,7 @@ public:
 };
 
 
-template<typename PixelType, int Ndim>
+template<typename PixelType, unsigned int Ndim>
 class Vector: public VectorBase<PixelType, Ndim>
 {
 public:
@@ -275,7 +278,7 @@ public:
   inline Vector<PixelType, Ndim> operator*(const PixelType &scalar) const
   {
     Vector<PixelType, Ndim> v;
-    for (int i = 0; i < Ndim; i++)
+    for (unsigned int i = 0; i < Ndim; i++)
     {
       v[i] = this->data_[i] * scalar;
     }
@@ -285,7 +288,7 @@ public:
   inline Vector<PixelType, Ndim> operator*(Vector<PixelType, Ndim> &v1) const
   {
     Vector<PixelType, Ndim> v2;
-    for (int i = 0; i < Ndim; i++)
+    for (unsigned int i = 0; i < Ndim; i++)
     {
       v2[i] = this->data_[i] * v1[i];
     }
@@ -294,7 +297,7 @@ public:
 
   void operator*=(const Vector<PixelType, Ndim> &v2)
   {
-    for (int i = 0; i < Ndim; i++)
+    for (unsigned int i = 0; i < Ndim; i++)
     {
       this->data_[i] *= v2[i];
     }
@@ -302,7 +305,7 @@ public:
 
   void operator*=(const PixelType &scalar)
   {
-    for (int i = 0; i < Ndim; i++)
+    for (unsigned int i = 0; i < Ndim; i++)
     {
       this->data_[i] *= scalar;
     }

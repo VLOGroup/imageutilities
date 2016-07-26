@@ -46,7 +46,7 @@ namespace iuprivate {
  **************************************************************************** */
 
 // 1D; copy host -> host
-template <typename PixelType, int Ndim>
+template <typename PixelType, unsigned int Ndim>
 void copy(const iu::LinearHostMemory<PixelType, Ndim> *src, iu::LinearHostMemory<PixelType, Ndim> *dst)
 {
   IU_SIZE_CHECK(src, dst);
@@ -54,7 +54,7 @@ void copy(const iu::LinearHostMemory<PixelType, Ndim> *src, iu::LinearHostMemory
 }
 
 // 1D; copy device -> device
-template <typename PixelType, int Ndim>
+template <typename PixelType, unsigned int Ndim>
 void copy(const iu::LinearDeviceMemory<PixelType, Ndim> *src, iu::LinearDeviceMemory<PixelType, Ndim> *dst)
 {
   IU_SIZE_CHECK(src, dst);
@@ -62,7 +62,7 @@ void copy(const iu::LinearDeviceMemory<PixelType, Ndim> *src, iu::LinearDeviceMe
 }
 
 // 1D; copy host -> device
-template <typename PixelType, int Ndim>
+template <typename PixelType, unsigned int Ndim>
 void copy(const iu::LinearHostMemory<PixelType, Ndim> *src, iu::LinearDeviceMemory<PixelType, Ndim> *dst)
 {
   IU_SIZE_CHECK(src, dst);
@@ -70,7 +70,7 @@ void copy(const iu::LinearHostMemory<PixelType, Ndim> *src, iu::LinearDeviceMemo
 }
 
 // 1D; copy device -> host
-template <typename PixelType, int Ndim>
+template <typename PixelType, unsigned int Ndim>
 void copy(const iu::LinearDeviceMemory<PixelType, Ndim> *src, iu::LinearHostMemory<PixelType, Ndim> *dst)
 {
   IU_SIZE_CHECK(src, dst);
