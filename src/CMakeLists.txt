@@ -429,7 +429,7 @@ ADD_CUSTOM_TARGET( apidoc
 
 
 ##-build ndarray---------------------------------------------------------------
-#add_subdirectory(ndarray)
+add_subdirectory(ndarray)
 message("NDARRAY_LIB" = ${NDARRAY_LIB})
 if(NOT NDARRAY_LIB)
   set(IU_USE_NDARRAY OFF CACHE PATH "IU: Omit NDArray module." FORCE)
