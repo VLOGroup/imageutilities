@@ -10,7 +10,7 @@ namespace iu
  *   \ingroup LinearMemory
  */
 template<typename PixelType>
-class TensorGpu: public LinearDeviceMemory<PixelType>
+class TensorGpu: public LinearDeviceMemory<PixelType, 1>
 {
 public:
   /** \brief Memory layout to access the data elements.
@@ -28,7 +28,7 @@ public:
    *  @param memoryLayout MemoryLayout
    * */
 	TensorGpu(MemoryLayout memoryLayout=NCHW) :
-			LinearDeviceMemory<PixelType>(), samples_(0), channels_(0), height_(0), width_(0), memoryLayout_(
+			LinearDeviceMemory<PixelType, 1>(), samples_(0), channels_(0), height_(0), width_(0), memoryLayout_(
 					memoryLayout)
 	{
 	}

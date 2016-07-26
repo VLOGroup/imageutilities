@@ -46,35 +46,35 @@ namespace iuprivate {
  **************************************************************************** */
 
 // 1D; copy host -> host
-template <typename PixelType>
-void copy(const iu::LinearHostMemory<PixelType> *src, iu::LinearHostMemory<PixelType> *dst)
+template <typename PixelType, int Ndim>
+void copy(const iu::LinearHostMemory<PixelType, Ndim> *src, iu::LinearHostMemory<PixelType, Ndim> *dst)
 {
   IU_SIZE_CHECK(src, dst);
-  memcpy(dst->data(), src->data(), dst->length() * sizeof(PixelType));
+  memcpy(dst->data(), src->data(), dst->numel() * sizeof(PixelType));
 }
 
 // 1D; copy device -> device
-template <typename PixelType>
-void copy(const iu::LinearDeviceMemory<PixelType> *src, iu::LinearDeviceMemory<PixelType> *dst)
+template <typename PixelType, int Ndim>
+void copy(const iu::LinearDeviceMemory<PixelType, Ndim> *src, iu::LinearDeviceMemory<PixelType, Ndim> *dst)
 {
   IU_SIZE_CHECK(src, dst);
-  IU_CUDA_SAFE_CALL(cudaMemcpy(dst->data(), src->data(), dst->length() * sizeof(PixelType), cudaMemcpyDeviceToDevice));
+  IU_CUDA_SAFE_CALL(cudaMemcpy(dst->data(), src->data(), dst->numel() * sizeof(PixelType), cudaMemcpyDeviceToDevice));
 }
 
 // 1D; copy host -> device
-template <typename PixelType>
-void copy(const iu::LinearHostMemory<PixelType> *src, iu::LinearDeviceMemory<PixelType> *dst)
+template <typename PixelType, int Ndim>
+void copy(const iu::LinearHostMemory<PixelType, Ndim> *src, iu::LinearDeviceMemory<PixelType, Ndim> *dst)
 {
   IU_SIZE_CHECK(src, dst);
-  IU_CUDA_SAFE_CALL(cudaMemcpy(dst->data(), src->data(), dst->length() * sizeof(PixelType), cudaMemcpyHostToDevice));
+  IU_CUDA_SAFE_CALL(cudaMemcpy(dst->data(), src->data(), dst->numel() * sizeof(PixelType), cudaMemcpyHostToDevice));
 }
 
 // 1D; copy device -> host
-template <typename PixelType>
-void copy(const iu::LinearDeviceMemory<PixelType> *src, iu::LinearHostMemory<PixelType> *dst)
+template <typename PixelType, int Ndim>
+void copy(const iu::LinearDeviceMemory<PixelType, Ndim> *src, iu::LinearHostMemory<PixelType, Ndim> *dst)
 {
   IU_SIZE_CHECK(src, dst);
-  IU_CUDA_SAFE_CALL(cudaMemcpy(dst->data(), src->data(), dst->length() * sizeof(PixelType), cudaMemcpyDeviceToHost));
+  IU_CUDA_SAFE_CALL(cudaMemcpy(dst->data(), src->data(), dst->numel() * sizeof(PixelType), cudaMemcpyDeviceToHost));
 }
 
 /* ****************************************************************************

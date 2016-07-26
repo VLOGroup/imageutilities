@@ -9,12 +9,12 @@ namespace iu
  *   \ingroup LinearMemory
  */
 template<typename PixelType>
-class TensorCpu : public LinearHostMemory<PixelType>
+class TensorCpu : public LinearHostMemory<PixelType, 1>
 {
 public:
   /** Constructor. */
 	TensorCpu() :
-			LinearHostMemory<PixelType>(), samples_(0), channels_(0), height_(0), width_(0)
+			LinearHostMemory<PixelType, 1>(), samples_(0), channels_(0), height_(0), width_(0)
 	{
 	}
 

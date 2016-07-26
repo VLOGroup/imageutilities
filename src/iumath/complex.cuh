@@ -111,11 +111,11 @@ void abs(
                     abs_functor<ComplexPixelType, RealPixelType>());
 }
 
-template<template<typename> class LinearMemoryType, typename ComplexPixelType,
-    typename RealPixelType>
+template<template<typename, int> class LinearMemoryType, typename ComplexPixelType,
+    typename RealPixelType, int Ndim>
 void abs(
-    LinearMemoryType<ComplexPixelType>& complex_img,
-    LinearMemoryType<RealPixelType>& abs_img)
+    LinearMemoryType<ComplexPixelType, Ndim>& complex_img,
+    LinearMemoryType<RealPixelType, Ndim>& abs_img)
 {
   thrust::transform(complex_img.begin(), complex_img.end(), abs_img.begin(),
                     abs_functor<ComplexPixelType, RealPixelType>());
@@ -137,11 +137,11 @@ void real(
                     real_functor<ComplexPixelType, RealPixelType>());
 }
 
-template<template<typename> class LinearMemoryType, typename ComplexPixelType,
-    typename RealPixelType>
+template<template<typename, int> class LinearMemoryType, typename ComplexPixelType,
+    typename RealPixelType, int Ndim>
 void real(
-    LinearMemoryType<ComplexPixelType>& complex_img,
-    LinearMemoryType<RealPixelType>& real_img)
+    LinearMemoryType<ComplexPixelType, Ndim>& complex_img,
+    LinearMemoryType<RealPixelType, Ndim>& real_img)
 {
   thrust::transform(complex_img.begin(), complex_img.end(), real_img.begin(),
                     real_functor<ComplexPixelType, RealPixelType>());
@@ -163,11 +163,11 @@ void imag(
                     imag_functor<ComplexPixelType, RealPixelType>());
 }
 
-template<template<typename> class LinearMemoryType, typename ComplexPixelType,
-    typename RealPixelType>
+template<template<typename, int> class LinearMemoryType, typename ComplexPixelType,
+    typename RealPixelType, int Ndim>
 void imag(
-    LinearMemoryType<ComplexPixelType>& complex_img,
-    LinearMemoryType<RealPixelType>& imag_img)
+    LinearMemoryType<ComplexPixelType, Ndim>& complex_img,
+    LinearMemoryType<RealPixelType, Ndim>& imag_img)
 {
   thrust::transform(complex_img.begin(), complex_img.end(), imag_img.begin(),
                     imag_functor<ComplexPixelType, RealPixelType>());
@@ -189,11 +189,11 @@ void phase(
                     phase_functor<ComplexPixelType, RealPixelType>());
 }
 
-template<template<typename> class LinearMemoryType, typename ComplexPixelType,
-    typename RealPixelType>
+template<template<typename, int> class LinearMemoryType, typename ComplexPixelType,
+    typename RealPixelType, int Ndim>
 void phase(
-    LinearMemoryType<ComplexPixelType>& complex_img,
-    LinearMemoryType<RealPixelType>& phase_img)
+    LinearMemoryType<ComplexPixelType, Ndim>& complex_img,
+    LinearMemoryType<RealPixelType, Ndim>& phase_img)
 {
   thrust::transform(complex_img.begin(), complex_img.end(), phase_img.begin(),
                     phase_functor<ComplexPixelType, RealPixelType>());
@@ -220,11 +220,11 @@ void multiply(
                     complex_multiply_functor<ComplexPixelType>());
 }
 
-template<template<typename> class LinearMemoryType, typename ComplexPixelType>
+template<template<typename, int> class LinearMemoryType, typename ComplexPixelType, int Ndim>
 void multiply(
-    LinearMemoryType<ComplexPixelType>& complex_src1,
-    LinearMemoryType<ComplexPixelType>& complex_src2,
-    LinearMemoryType<ComplexPixelType>& complex_dst)
+    LinearMemoryType<ComplexPixelType, Ndim>& complex_src1,
+    LinearMemoryType<ComplexPixelType, Ndim>& complex_src2,
+    LinearMemoryType<ComplexPixelType, Ndim>& complex_dst)
 {
   thrust::transform(
       thrust::make_zip_iterator(
@@ -256,11 +256,11 @@ void multiplyConjugate(
                     complex_multiply_conjugate_functor<ComplexPixelType>());
 }
 
-template<template<typename> class LinearMemoryType, typename ComplexPixelType>
+template<template<typename, int> class LinearMemoryType, typename ComplexPixelType, int Ndim>
 void multiplyConjugate(
-    LinearMemoryType<ComplexPixelType>& complex_src1,
-    LinearMemoryType<ComplexPixelType>& complex_src2,
-    LinearMemoryType<ComplexPixelType>& complex_dst)
+    LinearMemoryType<ComplexPixelType, Ndim>& complex_src1,
+    LinearMemoryType<ComplexPixelType, Ndim>& complex_src2,
+    LinearMemoryType<ComplexPixelType, Ndim>& complex_dst)
 {
   thrust::transform(
       thrust::make_zip_iterator(

@@ -31,6 +31,7 @@
 #include <thrust/memory.h>
 
 #include "linearmemory.h"
+#include "iuvector.h"
 
 template<typename, int> class ndarray_ref;
 
@@ -39,13 +40,13 @@ namespace iu {
 /**  \brief Linear host memory class.
  *   \ingroup LinearMemory
  */
-template<typename PixelType>
-class LinearHostMemory : public LinearMemory
+template<typename PixelType, int Ndim = 1>
+class LinearHostMemory : public LinearMemory<Ndim>
 {
 public:
   /** Constructor. */
   LinearHostMemory() :
-    LinearMemory(),
+    LinearMemory<Ndim>(),
     data_(0), ext_data_pointer_(false)
   {
   }
@@ -61,23 +62,21 @@ public:
   }
 
   /** Special constructor.
-   *  @param length Length of linear memory
+   *  @param size size of linear memory
    */
-  LinearHostMemory(const unsigned int& length) :
-    LinearMemory(length),
-    data_(0), ext_data_pointer_(false)
-  {
-    data_ = (PixelType*)malloc(this->length()*sizeof(PixelType));
-    if (data_ == 0) throw std::bad_alloc();
-  }
+   LinearHostMemory(const Size<Ndim>& size): LinearMemory<Ndim>(size), data_(0), ext_data_pointer_(false)
+   {
+     data_ = (PixelType*)malloc(this->numel()*sizeof(PixelType));
+     if (data_ == 0) throw std::bad_alloc();
+   }
 
   /** Special constructor.
    *  @param host_data Host data pointer
-   *  @param length Length of the memory
+   *  @param size size of the memory
    *  @param ext_data_pointer Use external data pointer as internal data pointer
    */
-  LinearHostMemory(PixelType* host_data, const unsigned int& length, bool ext_data_pointer = false) :
-    LinearMemory(length),
+  LinearHostMemory(PixelType* host_data, const Size<Ndim>& size, bool ext_data_pointer = false) :
+    LinearMemory<Ndim>(size),
     data_(0), ext_data_pointer_(ext_data_pointer)
   {
     if (host_data==0) throw IuException("input data not valid", __FILE__, __FUNCTION__, __LINE__);
@@ -89,9 +88,9 @@ public:
     else
     {
       // allocates an internal data pointer and copies the external data onto it.
-      data_ = (PixelType*)malloc(this->length()*sizeof(PixelType));
+      data_ = (PixelType*)malloc(this->numel()*sizeof(PixelType));
       if (data_ == 0) throw std::bad_alloc();
-      memcpy(data_, host_data, this->length() * sizeof(PixelType));
+      memcpy(data_, host_data, this->numel() * sizeof(PixelType));
     }
   }
 
@@ -102,7 +101,7 @@ public:
    */
   PixelType* data(int offset = 0)
   {
-    if ((size_t)offset > this->length()) throw IuException("offset not in range", __FILE__, __FUNCTION__, __LINE__);
+    if ((size_t)offset > this->numel()) throw IuException("offset not in range", __FILE__, __FUNCTION__, __LINE__);
     return &(data_[offset]);
   }
 
@@ -113,14 +112,14 @@ public:
    */
   const PixelType* data(int offset = 0) const
   {
-    if ((size_t)offset > this->length()) throw IuException("offset not in range", __FILE__, __FUNCTION__, __LINE__);
+    if ((size_t)offset > this->numel()) throw IuException("offset not in range", __FILE__, __FUNCTION__, __LINE__);
     return reinterpret_cast<const PixelType*>(&(data_[offset]));
   }
 
   /** Returns the total amount of bytes saved in the data buffer. */
   virtual size_t bytes() const
   {
-    return this->length()*sizeof(PixelType);
+    return this->numel()*sizeof(PixelType);
   }
 
 
@@ -143,7 +142,7 @@ public:
    */
   thrust::pointer<PixelType, thrust::host_system_tag> end(void)
   {
-      return thrust::pointer<PixelType, thrust::host_system_tag>(data()+length());
+      return thrust::pointer<PixelType, thrust::host_system_tag>(data()+this->numel());
   }
 
   /** Returns flag if the image data resides on the device/GPU (TRUE) or host/GPU (FALSE) */

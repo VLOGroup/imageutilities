@@ -29,6 +29,7 @@
 #include "globaldefs.h"
 #include "coredefs.h"
 #include <typeinfo>
+#include "iuvector.h"
 
 namespace iu {
 
@@ -50,7 +51,7 @@ namespace iu {
  *
  * The device memory classes can be easily passed to CUDA kernels using a special
  * struct. This struct gives the possibility to not only access the data pointer
- * of the image but also other useful information such as length/size of the
+ * of the image but also other useful information such as numel/size of the
  * object.
  * - LinearDeviceMemory::KernelData
  * - TensorGpu::TensorKernelData
@@ -71,7 +72,7 @@ namespace iu {
  *
  * The device memory classes can be easily passed to CUDA kernels using a special
  * struct. This struct gives the possibility to not only access the data pointer
- * of the image but also other useful information such as length of the
+ * of the image but also other useful information such as numel of the
  * object.
  * - LinearDeviceMemory::KernelData
  * - TensorGpu::TensorKernelData
@@ -79,20 +80,22 @@ namespace iu {
  */
 
 /** \brief Base class for linear memory classes. */
+template<int Ndim = 1>
 class LinearMemory
 {
+  IU_ASSERT(Ndim > 0)
 public:
   /** Constructor. */
-  LinearMemory() :
-    length_(0)
-  { }
+  LinearMemory() : size_() { }
 
   /** Special constructor.
-   *  @param length Length of linear memory
+   *  @param size size of the linear memory
    */
-  LinearMemory(const unsigned int& length) :
-    length_(length)
-  { }
+  LinearMemory(const Size<Ndim>& size):
+    size_(size)
+  {
+
+  }
 
   /** Compares the LinearMemory type to a target LinearMemory.
    *  @param from Target LinearMemory.
@@ -107,10 +110,16 @@ public:
   virtual ~LinearMemory()
   { }
 
-  /** Returns the number of elements saved in the device buffer. (length of device buffer) */
-  unsigned int length() const
+  /** Returns the number of elements saved in the device buffer. (numel of device buffer) */
+  unsigned int numel() const
   {
-    return length_;
+    return size_.numel();
+  }
+
+  /** Returns size of the linear memory */
+  Size<Ndim> size() const
+  {
+    return size_;
   }
 
   /** Returns the total amount of bytes saved in the data buffer. */
@@ -126,13 +135,13 @@ public:
   friend std::ostream& operator<<(std::ostream & out,
                                   LinearMemory const& linmem)
   {
-    out << "LinearMemory: length=" << linmem.length() << " onDevice=" << linmem.onDevice();
+    out << "LinearMemory: size=" << linmem.size() << " numel=" << linmem.numel() << " onDevice=" << linmem.onDevice();
     return out;
   }
 
 private:
-  /** Length of the memory.*/
-  unsigned int length_;
+  /** size of the memory.*/
+  Size<Ndim> size_;
 
 private:
   /** Private copy constructor. */

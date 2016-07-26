@@ -47,7 +47,8 @@
 namespace iu {
 
 /* ****************************************************************************
- *  Linear Memory
+ *  Linear 1D Memory.
+ *  There are no typdefs for Nd linear memory any more.
  * ****************************************************************************/
 
 /*
@@ -295,26 +296,29 @@ static inline void checkSize(const iu::Image *image1, const iu::Image *image2,
   }
 }
 
-static inline void checkSize(const iu::LinearMemory *linmem1, const iu::LinearMemory *linmem2,
+// todo check size! Should we check size or numel in linmem?
+template<int Ndim>
+static inline void checkSize(const iu::LinearMemory<Ndim> *linmem1, const iu::LinearMemory<Ndim> *linmem2,
                const char* file, const char* function, const int line)
 {
-  if (linmem1->length() != linmem2->length())
+  if (linmem1->size() != linmem2->size())
   {
     std::stringstream msg;
-    msg << "Size mismatch! Length of first LinearMemory is " << linmem1->length() << ". ";
-    msg << "Length of second LinearMemory is " << linmem2->length();
+    msg << "Size mismatch! size of first LinearMemory is " << linmem1->size() << ". ";
+    msg << "size of second LinearMemory is " << linmem2->size();
     throw IuException(msg.str(), file, function, line);
   }
 }
 
-static inline void checkSize(const iu::Image *image, const iu::LinearMemory *linmem,
+// todo check size! Should we check size or numel in linmem?
+static inline void checkSize(const iu::Image *image, const iu::LinearMemory<1> *linmem,
                const char* file, const char* function, const int line)
 {
-  if (image->size().width*image->size().height != linmem->length())
+  if (image->size().width*image->size().height != linmem->numel())
   {
     std::stringstream msg;
     msg << "Size mismatch! Number of elements in Image is " << image->size().width*image->size().height << ". ";
-    msg << "Length of LinearMemory is " << linmem->length();
+    msg << "size of LinearMemory is " << linmem->size();
     throw IuException(msg.str(), file, function, line);
   }
 }

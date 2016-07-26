@@ -36,13 +36,13 @@ namespace iu {
 /**  \brief Linear device memory class.
  *   \ingroup LinearMemory
  */
-template<typename PixelType>
-class LinearDeviceMemory : public LinearMemory
+template<typename PixelType, int Ndim = 1>
+class LinearDeviceMemory : public LinearMemory<Ndim>
 {
 public:
   /** Constructor. */
   LinearDeviceMemory() :
-    LinearMemory(),
+    LinearMemory<Ndim>(),
     data_(0), ext_data_pointer_(false)
   {
   }
@@ -58,23 +58,23 @@ public:
   }
 
   /** Special constructor.
-   *  @param length Length of linear memory
+   *  @param numel numel of linear memory
    */
-  LinearDeviceMemory(const unsigned int& length) :
-    LinearMemory(length),
+  LinearDeviceMemory(const Size<Ndim>& size) :
+    LinearMemory<Ndim>(size),
     data_(0), ext_data_pointer_(false)
   {
-    IU_CUDA_SAFE_CALL(cudaMalloc((void**)&data_, this->length()*sizeof(PixelType)));
+    IU_CUDA_SAFE_CALL(cudaMalloc((void**)&data_, this->numel()*sizeof(PixelType)));
     if (data_ == 0) throw std::bad_alloc();
   }
 
   /** Special constructor.
    *  @param device_data Device data pointer
-   *  @param length Length of the memory
+   *  @param size size of the memory
    *  @param ext_data_pointer Use external data pointer as internal data pointer
    */
-  LinearDeviceMemory(PixelType* device_data, const unsigned int& length, bool ext_data_pointer = false) :
-    LinearMemory(length),
+  LinearDeviceMemory(PixelType* device_data, const Size<Ndim>& size, bool ext_data_pointer = false) :
+    LinearMemory<Ndim>(size),
     data_(0), ext_data_pointer_(ext_data_pointer)
   {
     if (device_data==0) throw IuException("input data not valid", __FILE__, __FUNCTION__, __LINE__);
@@ -86,9 +86,9 @@ public:
     else
     {
       // allocates an internal data pointer and copies the external data onto it.
-      IU_CUDA_SAFE_CALL(cudaMalloc((void**)&data_, this->length()*sizeof(PixelType)));
+      IU_CUDA_SAFE_CALL(cudaMalloc((void**)&data_, this->numel()*sizeof(PixelType)));
       if (data_ == 0) throw std::bad_alloc();
-      IU_CUDA_SAFE_CALL(cudaMemcpy(data_, device_data, this->length() * sizeof(PixelType), cudaMemcpyHostToDevice));
+      IU_CUDA_SAFE_CALL(cudaMemcpy(data_, device_data, this->numel() * sizeof(PixelType), cudaMemcpyHostToDevice));
     }
   }
 
@@ -99,7 +99,7 @@ public:
    */
   PixelType* data(int offset = 0)
   {
-    if (offset > (int)this->length()) throw IuException("offset not in range", __FILE__, __FUNCTION__, __LINE__);
+    if (offset > (int)this->numel()) throw IuException("offset not in range", __FILE__, __FUNCTION__, __LINE__);
     return &(data_[offset]);
   }
 
@@ -110,7 +110,7 @@ public:
    */
   const PixelType* data(int offset = 0) const
   {
-    if (offset > (int)this->length()) throw IuException("offset not in range", __FILE__, __FUNCTION__, __LINE__);
+    if (offset > (int)this->numel()) throw IuException("offset not in range", __FILE__, __FUNCTION__, __LINE__);
     return reinterpret_cast<const PixelType*>(&(data_[offset]));
   }
 
@@ -127,13 +127,13 @@ public:
     */
   thrust::device_ptr<PixelType> end(void)
   {
-      return thrust::device_ptr<PixelType>(data() + length());
+      return thrust::device_ptr<PixelType>(data() + this->numel());
   }
 
   /** Returns the total amount of bytes saved in the data buffer. */
   virtual size_t bytes() const
   {
-    return this->length()*sizeof(PixelType);
+    return this->numel()*sizeof(PixelType);
   }
 
   /** Returns the bit depth of the data pointer. */
@@ -158,7 +158,7 @@ public:
    *  {
    *     const unsigned int x = threadIdx.x + blockIdx.x * blockDim.x;
    *
-   *     if (x < memory.length_ )
+   *     if (x < memory.numel_ )
    *     {
    *        img(x) += value;
    *     }
@@ -168,7 +168,7 @@ public:
    * void doSomethingWithCuda(iu::LinearDeviceMemory<PixelType> *memory, PixelType value)
    * {
    *     dim3 dimBlock(32,1);
-   *     dim3 dimGrid(iu::divUp(img->length(), dimBlock.x), 1);
+   *     dim3 dimGrid(iu::divUp(img->numel(), dimBlock.x), 1);
    *     cudaFunctionKernel<PixelType><<<dimGrid, dimBlock>>>(*memory, value);
    *     IU_CUDA_CHECK;
    * }
@@ -179,22 +179,44 @@ public:
       /** Pointer to device buffer. */
       PixelType* data_;
 
-      /** Length of the memory.*/
-      int length_;
+      /** numel of the memory.*/
+      int numel_;
+
+      /** size of the memory (on device) */
+      int* size_;
 
       /** Access the memory via the () operator.
        * @param idx Index to access.
        * @return value at index.
        */
-      __device__ PixelType& operator()(int idx)
+      __device__ PixelType& operator()(int idx0, int idx1=0, int idx2=0, int idx3=0, int idx4=0)
       {
+          int idx = idx0;
+          if(Ndim > 1)
+            idx += size_[0]*idx1;
+          if(Ndim > 2)
+            idx += size_[0]*size_[1]*idx2;
+          if(Ndim > 3)
+            idx += size_[0]*size_[1]*size_[2]*idx3;
+          if(Ndim > 4)
+            idx += size_[0]*size_[1]*size_[2]*size_[3]*idx4;
           return data_[idx];
       }
 
       /** Constructor */
-      __host__ KernelData(const LinearDeviceMemory<PixelType> &mem)
-          : data_(const_cast<PixelType*>(mem.data())), length_(mem.length())
-      { }
+      __host__ KernelData(const LinearDeviceMemory<PixelType, Ndim> &mem)
+          : data_(const_cast<PixelType*>(mem.data())), numel_(mem.numel())
+      {
+        IU_CUDA_SAFE_CALL(cudaMalloc((void**)&size_, Ndim*sizeof(int)));
+        IU_CUDA_SAFE_CALL(cudaMemcpy(size_, mem.size().ptr(), Ndim * sizeof(int), cudaMemcpyHostToDevice));
+      }
+
+      /** Destructor */
+      __host__ ~KernelData()
+      {
+        IU_CUDA_SAFE_CALL(cudaFree(size_));
+        size_ = 0;
+      }
   };
 
   /** convert to ndarray_ref -- include ndarray/ndarray_iu.h*/

@@ -20,6 +20,8 @@
 project(imageutilities_lib)
 cmake_minimum_required(VERSION 2.8)
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_FORCE_INLINES")
+
 # cleanup
 set(${IU_PUBLIC_HEADERS} "")
 option(IU_BUILD_STATIC "Build static libs too." OFF)
@@ -326,6 +328,7 @@ SET( IU_PUBLIC_CORE_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/volume_allocator_gpu.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/volume_gpu.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/copy.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/iuvector.h
 #   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/imagepyramid.h
   )
 
@@ -408,6 +411,7 @@ set(IU_LIBS_STATIC "") # variable where all libs that are built are saved
 
 set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} "-std=c++11")
 message("Compiler Flags NVCC: " ${CUDA_NVCC_FLAGS})
+
 ##-----------------------------------------------------------------------------
 ## documentation
 SET(DOXYGEN_OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/../doc/html/index.html)
@@ -427,7 +431,7 @@ ADD_CUSTOM_TARGET( apidoc
 
 
 ##-build ndarray---------------------------------------------------------------
-add_subdirectory(ndarray)
+#add_subdirectory(ndarray)
 message("NDARRAY_LIB" = ${NDARRAY_LIB})
 if(NOT NDARRAY_LIB)
   set(IU_USE_NDARRAY OFF CACHE PATH "IU: Omit NDArray module." FORCE)
