@@ -1,8 +1,6 @@
 ImageUtilities - Bridge the gap between CPU and GPU
 ===================================================
 
-[![build status](https://gitlab.icg.tugraz.at/imageutilities/imageutilities/badges/master/build.svg)](https://gitlab.icg.tugraz.at/imageutilities/imageutilities/commits/master)
-
 Installation:
 -------------
 
