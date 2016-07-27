@@ -55,7 +55,10 @@ endif(NOT ANDROID)
 #else(IMAGEUTILITIESLIGHT_INCLUDE_DIR AND IMAGEUTILITIESLIGHT_LIBRARY_DIR)
 
     # derive directories from the environment variable
-  set(IMAGEUTILITIESLIGHT_INCLUDE_DIR "$ENV{IMAGEUTILITIES_ROOT}/include" CACHE PATH "The include directory of the Imageutilities Library")
+  set(IMAGEUTILITIESLIGHT_INCLUDE_DIR 
+  "$ENV{IMAGEUTILITIES_ROOT}/include" 
+  "$ENV{CUDA_SDK_ROOT_DIR}/common/inc"
+  CACHE PATH "The include directory of the Imageutilities Library")
 
   set(POTENTIAL_LIBRARY_PATHS
     $ENV{IMAGEUTILITIES_ROOT}/lib
