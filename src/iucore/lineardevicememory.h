@@ -15,7 +15,7 @@ namespace iu {
 /**  \brief Linear device memory class.
  *   \ingroup LinearMemory
  */
-template<typename PixelType, unsigned int Ndim = 1>
+template<typename PixelType, unsigned int Ndim>
 class LinearDeviceMemory: public LinearMemory<Ndim>
 {
 public:
@@ -441,15 +441,9 @@ public:
     }
   };
 
-  /** convert to ndarray_ref -- include ndarray/ndarray_iu.h*/
-  ndarray_ref<PixelType, Ndim> ref() const;
-
-  /** construct from ndarray_ref  -- include ndarray/ndarray_iu.h*/
-  LinearDeviceMemory(const ndarray_ref<PixelType, Ndim> &x);
-
 protected:
 
-private:
+protected:
   /** Pointer to device buffer. */
   PixelType* data_;
   /** Flag if data pointer is handled outside the LinearDeviceMemory class. */
@@ -460,6 +454,19 @@ private:
   LinearDeviceMemory(const LinearDeviceMemory&);
   /** Private copy assignment operator. */
   LinearDeviceMemory& operator=(const LinearDeviceMemory&);
+};
+
+template<typename PixelType>
+class LinearDeviceMemory1d : public LinearDeviceMemory<PixelType, 1>
+{
+public:
+  LinearDeviceMemory1d(const unsigned int& numel) : LinearDeviceMemory<PixelType, 1>(numel) {}
+
+  /** convert to ndarray_ref -- include ndarray/ndarray_iu.h*/
+  ndarray_ref<PixelType, 1> ref() const;
+
+  /** construct from ndarray_ref  -- include ndarray/ndarray_iu.h*/
+  LinearDeviceMemory1d(const ndarray_ref<PixelType, 1> &x);
 };
 
 }  // namespace iu

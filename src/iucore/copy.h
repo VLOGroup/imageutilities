@@ -152,7 +152,7 @@ void copy(const iu::VolumeGpu<PixelType, AllocatorGpu  > *src,
 }
 
 template<typename PixelType, class AllocatorCpu >
-void copy(const iu::ImageCpu<PixelType, AllocatorCpu  > *src, iu::LinearHostMemory<PixelType> *dst)
+void copy(const iu::ImageCpu<PixelType, AllocatorCpu  > *src, iu::LinearHostMemory<PixelType, 1> *dst)
 {
   IU_SIZE_CHECK(src, dst);
 	PixelType *dstData = dst->data();

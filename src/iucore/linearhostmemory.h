@@ -19,7 +19,7 @@ namespace iu {
 /**  \brief Linear host memory class.
  *   \ingroup LinearMemory
  */
-template<typename PixelType, unsigned int Ndim = 1>
+template<typename PixelType, unsigned int Ndim>
 class LinearHostMemory: public LinearMemory<Ndim>
 {
 public:
@@ -257,15 +257,9 @@ public:
     return data_[getLinearIndex(idx0, idx1, idx2, idx3, idx4)];
   }
 
-  /** convert to ndarray_ref -- include ndarray/ndarray_iu.h*/
-  ndarray_ref<PixelType, Ndim> ref() const;
-
-  /** construct from ndarray_ref  -- include ndarray/ndarray_iu.h*/
-  LinearHostMemory(const ndarray_ref<PixelType, Ndim> &x);
-
 protected:
 
-private:
+protected:
   /** Pointer to host buffer. */
   PixelType* data_;
   /** Flag if data pointer is handled outside the LinearHostMemory class. */
@@ -386,6 +380,20 @@ private:
     return linear_idx;
   }
 };
+
+template<typename PixelType>
+class LinearHostMemory1d : public LinearHostMemory<PixelType, 1>
+{
+public:
+  LinearHostMemory1d(const unsigned int& numel) : LinearHostMemory<PixelType, 1>(numel) {}
+
+  /** convert to ndarray_ref -- include ndarray/ndarray_iu.h*/
+  ndarray_ref<PixelType, 1> ref() const;
+
+  /** construct from ndarray_ref  -- include ndarray/ndarray_iu.h*/
+  LinearHostMemory1d(const ndarray_ref<PixelType, 1> &x);
+};
+
 }  // namespace iu
 
 #endif // IU_LINEARHOSTMEMORY_H
