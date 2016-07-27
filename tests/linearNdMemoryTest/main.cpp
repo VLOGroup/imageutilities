@@ -1,10 +1,11 @@
 #include <iostream>
+
 #include "../config.h"
+
 #include "../../src/iucore.h"
 #include "../../src/iuio.h"
 #include "../../src/iumath.h"
-#include "../../src/iucore/iuvector.h"
-#include "../../src/iucore/linearhostmemory.h"
+
 #include "test.cuh"
 
 void testSize3d()

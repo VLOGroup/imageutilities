@@ -308,7 +308,7 @@ SET( IU_PUBLIC_CORE_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/volume_allocator_gpu.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/volume_gpu.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/copy.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/iuvector.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/vector.h
 #   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/imagepyramid.h
   )
 

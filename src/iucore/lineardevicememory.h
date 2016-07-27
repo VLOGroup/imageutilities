@@ -3,10 +3,11 @@
 #define IUCORE_LINEARDEVICEMEMORY_H
 
 #include <cuda_runtime_api.h>
-#include "linearmemory.h"
 #include <thrust/device_ptr.h>
-#include "../iucutil.h"
 #include <type_traits>
+
+#include "../iucutil.h"
+#include "linearmemory.h"
 
 template<typename, int> class ndarray_ref;
 

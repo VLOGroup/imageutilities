@@ -7,7 +7,6 @@
 #include "../iucutil.h"
 
 #include "coredefs.h"
-#include "iuvector.h"
 
 namespace iuprivate {
 

@@ -5,7 +5,6 @@
 #include <cstring>
 #include <math.h>
 #include "coredefs.h"
-#include "iuvector.h"
 
 /// For internal use only
 namespace iuprivate {

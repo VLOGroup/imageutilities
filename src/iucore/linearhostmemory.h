@@ -10,7 +10,6 @@
 #include <type_traits>
 
 #include "linearmemory.h"
-#include "iuvector.h"
 
 template<typename, int> class ndarray_ref;
 

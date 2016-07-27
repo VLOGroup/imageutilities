@@ -4,6 +4,8 @@
 
 // template includes
 #include "coredefs.h"
+#include "vector.h"
+
 #include "linearhostmemory.h"
 #include "lineardevicememory.h"
 #include "image_allocator_cpu.h"
@@ -17,7 +19,6 @@
 
 #include "tensor_cpu.h"
 #include "tensor_gpu.h"
-#include "iuvector.h"
 
 /* ***************************************************************************
  *  explicit type definitions for template classes
@@ -275,7 +276,6 @@ static inline void checkSize(const iu::Image *image1, const iu::Image *image2,
   }
 }
 
-// todo check size! Should we check size or numel in linmem?
 template<unsigned int Ndim>
 static inline void checkSize(const iu::LinearMemory<Ndim> *linmem1, const iu::LinearMemory<Ndim> *linmem2,
                const char* file, const char* function, const int line)
@@ -289,7 +289,6 @@ static inline void checkSize(const iu::LinearMemory<Ndim> *linmem1, const iu::Li
   }
 }
 
-// todo check size! Should we check size or numel in linmem?
 static inline void checkSize(const iu::Image *image, const iu::LinearMemory<1> *linmem,
                const char* file, const char* function, const int line)
 {

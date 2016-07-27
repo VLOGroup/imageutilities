@@ -8,8 +8,9 @@
 #ifndef IUVECTOR_H_
 #define IUVECTOR_H_
 
-#include "coredefs.h"
 #include <type_traits>
+
+#include "coredefs.h"
 
 namespace iu {
 template<typename PixelType, unsigned int Ndim>
