@@ -1,25 +1,3 @@
-/*
- * Copyright (c) ICG. All rights reserved.
- *
- * Institute for Computer Graphics and Vision
- * Graz University of Technology / Austria
- *
- *
- * This software is distributed WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- * PURPOSE.  See the above copyright notices for more information.
- *
- *
- * Project     : vmgpu
- * Module      : Tools
- * Language    : C++
- * Description : Definition of a Camera using the Fyrefly SDK from Point Grey
- *
- * Author     : Manuel Werlberger
- * EMail      : werlberger@icg.tugraz.at
- *
- * comment: Many code parts are taken from the examples of the FlyCapture SDK examples
- */
 
 
 #ifndef PGRCAMERADATA_H

@@ -1,25 +1,3 @@
-/*
- * Copyright (c) ICG. All rights reserved.
- *
- * Institute for Computer Graphics and Vision
- * Graz University of Technology / Austria
- *
- *
- * This software is distributed WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- * PURPOSE.  See the above copyright notices for more information.
- *
- *
- * Project     : ImageUtilities
- * Module      : Core Module
- * Class       : Wrapper
- * Language    : C
- * Description : Public interfaces to core module
- *
- * Author     : Manuel Werlberger
- * EMail      : werlberger\icg.tugraz.at
- *
- */
 
 #ifndef IU_CORE_MODULE_H
 #define IU_CORE_MODULE_H

@@ -1,26 +1,3 @@
-/*
- * Copyright (c) ICG. All rights reserved.
- *
- * Institute for Computer Graphics and Vision
- * Graz University of Technology / Austria
- *
- *
- * This software is distributed WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- * PURPOSE.  See the above copyright notices for more information.
- *
- *
- * Project     : VMLibraries
- * Module      : Image base class
- * Class       : Image
- * Language    : C++
- * Description : Implementation of image base class
- *
- * Author     : Manuel Werlberger
- * EMail      : werlberger@icg.tugraz.at
-
- *
- */
 
 #ifndef IUCORE_IMAGE_H
 #define IUCORE_IMAGE_H
