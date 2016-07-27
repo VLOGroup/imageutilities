@@ -13,6 +13,8 @@ endif(ANDROID)
 
 cuda_include_directories(${CUDA_INCLUDE_DIRS})
 include_directories(${CUDA_INCLUDE_DIRS})
+cuda_include_directories($ENV{CUDA_SDK_ROOT_DIR}/common/inc)
+include_directories($ENV{CUDA_SDK_ROOT_DIR}/common/inc)
 set(IU_IUCORE_LIB_DEPENDENCIES ${IU_IUCORE_LIB_DEPENDENCIES} ${CUDA_LIBRARIES})
 
 # set compute capability from environment variable (directly useable as nvcc flag)

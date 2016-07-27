@@ -3,7 +3,6 @@
 #define IU_CORE_MODULE_H
 
 #include "iudefs.h"
-
 /// The main namespace
 namespace iu {
 
