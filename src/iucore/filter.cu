@@ -1,25 +1,3 @@
-/*
- * Copyright (c) ICG. All rights reserved.
- *
- * Institute for Computer Graphics and Vision
- * Graz University of Technology / Austria
- *
- *
- * This software is distributed WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- * PURPOSE.  See the above copyright notices for more information.
- *
- *
- * Project     : ImageUtilities
- * Module      : Filter
- * Class       : none
- * Language    : CUDA
- * Description : Definition of CUDA wrappers for filter functions on Npp images
- *
- * Author     : Manuel Werlberger
- * EMail      : werlberger@icg.tugraz.at
- *
- */
 
 #ifndef IUPRIVATE_FILTER_CU
 #define IUPRIVATE_FILTER_CU

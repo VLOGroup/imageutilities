@@ -1,21 +1,3 @@
-# Copyright (c) ICG. All rights reserved.
-#
-# Institute for Computer Graphics and Vision
-# Graz University of Technology / Austria
-#
-#
-# This software is distributed WITHOUT ANY WARRANTY; without even
-# the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-# PURPOSE.  See the above copyright notices for more information.
-#
-#
-# Project     : ImageUtilities
-# Module      : CMakeFile
-# Language    : CMake
-# Description : CMakeFile
-#
-# Author     : Gottfried Graber
-# EMail      : graber@icg.tugraz.at
 
 project(imageutilities_lib)
 cmake_minimum_required(VERSION 2.8)

@@ -1,25 +1,3 @@
-/*
- * Copyright (c) ICG. All rights reserved.
- *
- * Institute for Computer Graphics and Vision
- * Graz University of Technology / Austria
- *
- *
- * This software is distributed WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- * PURPOSE.  See the above copyright notices for more information.
- *
- *
- * Project     : ImageUtilities
- * Module      : Core
- * Class       : IuSize, IuRect
- * Language    : C++
- * Description : Typedefinitions and Macros for ImageUtilities core module.
- *
- * Author     : Manuel Werlberger
- * EMail      : werlberger@icg.tugraz.at
- *
- */
 
 #ifndef IU_COREDEFS_H
 #define IU_COREDEFS_H

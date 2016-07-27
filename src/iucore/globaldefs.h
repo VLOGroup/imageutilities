@@ -1,25 +1,3 @@
-/*
- * Copyright (c) ICG. All rights reserved.
- *
- * Institute for Computer Graphics and Vision
- * Graz University of Technology / Austria
- *
- *
- * This software is distributed WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- * PURPOSE.  See the above copyright notices for more information.
- *
- *
- * Project     : ImageUtilities
- * Module      : Global
- * Class       : none
- * Language    : C++
- * Description : Global typedefinitions and macros for ImageUtilities. (e.g. dll export stuff, ...)
- *
- * Author     : Manuel Werlberger
- * EMail      : werlberger@icg.tugraz.at
- *
- */
 
 #ifndef IU_GLOBALDEFS_H
 #define IU_GLOBALDEFS_H

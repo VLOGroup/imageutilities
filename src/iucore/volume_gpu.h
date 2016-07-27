@@ -1,25 +1,3 @@
-/*
- * Copyright (c) ICG. All rights reserved.
- *
- * Institute for Computer Graphics and Vision
- * Graz University of Technology / Austria
- *
- *
- * This software is distributed WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- * PURPOSE.  See the above copyright notices for more information.
- *
- *
- * Project     : ImageUtilities
- * Module      : Core
- * Class       : VolumeGpu
- * Language    : C++
- * Description : Definition of volume class for Npp
- *
- * Author     : Manuel Werlberger
- * EMail      : werlberger@icg.tugraz.at
- *
- */
 
 #ifndef IUCORE_VOLUME_GPU_H
 #define IUCORE_VOLUME_GPU_H
