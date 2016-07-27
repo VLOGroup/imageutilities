@@ -25,6 +25,39 @@ void testSize3d()
   std::cout << "testSize() finished." << std::endl;
 }
 
+void testVector()
+{
+  std::cout << "testVector() started." << std::endl;
+  const unsigned int Ndim = 3;
+  iu::Vector<float, Ndim> vector(2.1);
+  std::cout << vector << std::endl;
+  vector.fill(5.2);
+  std::cout << vector << std::endl;
+  vector = vector * 0.1;
+  std::cout << vector << std::endl;
+  iu::Vector<float, Ndim> vector2 = vector / 0.5;
+  vector2[1] *= 0.5;
+  vector2[2] *= 2;
+  std::cout << "v2 " << vector2 << std::endl;
+  std::cout << "v1 " << vector << std::endl;
+  std::cout << std::boolalpha;
+  std::cout << "v1==v2 " << (vector == vector2) << std::endl;
+  std::cout << "v1==v1 "<< (vector == vector) << std::endl;
+  std::cout << "v1!=v2 "<< (vector != vector2) << std::endl;
+  std::cout << "v1!=v1 "<< (vector != vector) << std::endl;
+  std::cout << "v1+v2 " << vector+vector2 << std::endl;
+  std::cout << "v1-v2 " << vector-vector2 << std::endl;
+  vector2 += 0.5;
+  std::cout << vector2 << std::endl;
+  vector2 -= 0.5;
+  std::cout << vector2 << std::endl;
+  vector2 += vector;
+  std::cout << vector2 << std::endl;
+  vector2 -= vector;
+  std::cout << vector2 << std::endl;
+  std::cout << "testVector() finished." << std::endl;
+}
+
 void testLinear1dMemory()
 {
   std::cout << "testLinear1dMemory() started." << std::endl;
@@ -78,6 +111,7 @@ void testLinear4dMemory()
 int main()
 {
   testSize3d();
+  testVector();
   testLinear1dMemory();
   testLinear2dMemory();
   testLinear4dMemory();

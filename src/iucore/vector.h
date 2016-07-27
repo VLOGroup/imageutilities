@@ -1,24 +1,20 @@
-/*
- * iuvector.h
- *
- *  Created on: Jul 22, 2016
- *      Author: kerstin
- */
-
-#ifndef IUVECTOR_H_
-#define IUVECTOR_H_
+#ifndef VECTOR_H_
+#define VECTOR_H_
 
 #include <type_traits>
 
 #include "coredefs.h"
 
+////////////////////////////////////////////////////////////////////////////////
 namespace iu {
+/** \brief Base class for N-dimensional vectors. */
 template<typename PixelType, unsigned int Ndim>
 class VectorBase
 {
 IU_ASSERT(Ndim > 0)
 
 public:
+  /** Constructor. */
   VectorBase()
   {
     for (unsigned int i = 0; i < Ndim; i++)
@@ -27,25 +23,38 @@ public:
     }
   }
 
+  /** Special Constructor.
+   *  Init all elements of the vector with a special value.
+   *  @param value value to initialize vector elements.*/
+  VectorBase(const PixelType& value)
+  {
+    this->fill(value);
+  }
+
+  /** Destructor. */
   ~VectorBase()
   {
   }
 
+  /** Overload [] to access the size elements. */
   inline PixelType operator[](unsigned int i) const
   {
     return data_[i];
   }
 
+  /** Overload [] to access the size elements. */
   inline PixelType &operator[](unsigned int i)
   {
     return data_[i];
   }
 
+  /** Get number of dimensions. */
   static unsigned int ndim()
   {
     return Ndim;
   }
 
+  /** Fill the vector with a specific value. */
   void fill(const PixelType& value)
   {
     for (unsigned int i = 0; i < Ndim; i++)
@@ -54,17 +63,19 @@ public:
     }
   }
 
+  /** Operator<< overloading for Ndim==1. Output of VectorBase class. */
   template<typename T = std::ostream>
-  friend typename std::enable_if<(Ndim==1), T&>::type operator<<(std::ostream & out,
-                                  VectorBase<PixelType, Ndim> const& v)
+  friend typename std::enable_if<(Ndim == 1), T&>::type operator<<(
+      std::ostream & out, VectorBase<PixelType, Ndim> const& v)
   {
     out << "[" << v[0] << "]";
     return out;
   }
 
+  /** Operator<< overloading for Ndim>1. Output of VectorBase class. */
   template<typename T = std::ostream>
-  friend typename std::enable_if< (Ndim>1), T&>::type operator<<(std::ostream & out,
-                                  VectorBase<PixelType, Ndim> const& v)
+  friend typename std::enable_if<(Ndim > 1), T&>::type operator<<(
+      std::ostream & out, VectorBase<PixelType, Ndim> const& v)
   {
     out << "[";
     for (int i = 0; i < static_cast<int>(Ndim - 1); i++)
@@ -76,14 +87,18 @@ public:
   }
 
 protected:
+  /** data buffer */
   PixelType data_[Ndim];
 
 private:
+  /** Private copy constructor. */
   VectorBase(const VectorBase& from);
+  /** Private copy assignment operator. */
   VectorBase& operator=(const VectorBase& from);
-
 };
 
+////////////////////////////////////////////////////////////////////////////////
+/** Check two vectors for equality. */
 template<typename PixelType, unsigned int Ndim>
 bool operator==(const VectorBase<PixelType, Ndim> &v1,
                 const VectorBase<PixelType, Ndim> &v2)
@@ -96,6 +111,7 @@ bool operator==(const VectorBase<PixelType, Ndim> &v1,
   return true;
 }
 
+/** Check two vectors for inequality. */
 template<typename PixelType, unsigned int Ndim>
 bool operator!=(const VectorBase<PixelType, Ndim> &v1,
                 const VectorBase<PixelType, Ndim> &v2)
@@ -108,25 +124,204 @@ bool operator!=(const VectorBase<PixelType, Ndim> &v1,
   return false;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+/** \brief Main Class for N-dimensional vectors.
+ *
+ * This class defines also some useful operator overloading
+ */
+template<typename PixelType, unsigned int Ndim>
+class Vector: public VectorBase<PixelType, Ndim>
+{
+public:
+  /** Constructor */
+  Vector() :
+      VectorBase<PixelType, Ndim>()
+  {
+  }
+
+  /** Special Constructor.
+   *  Init all elements of the vector with a special value.
+   *  @param value value to initialize vector elements.*/
+  Vector(const PixelType& value) :
+      VectorBase<PixelType, Ndim>(value)
+  {
+  }
+  /** Destructor. */
+  ~Vector()
+  {
+  }
+
+  /** Overload operator+. Add scalar. */
+  inline Vector<PixelType, Ndim> operator+(const PixelType &scalar) const
+  {
+    Vector<PixelType, Ndim> v;
+    for (unsigned int i = 0; i < Ndim; i++)
+    {
+      v[i] = this->data_[i] + scalar;
+    }
+    return v;
+  }
+
+  /** Overload operator+. Add vector. */
+  inline Vector<PixelType, Ndim> operator+(Vector<PixelType, Ndim> &v1) const
+  {
+    Vector<PixelType, Ndim> v2;
+    for (unsigned int i = 0; i < Ndim; i++)
+    {
+      v2[i] = this->data_[i] + v1[i];
+    }
+    return v2;
+  }
+
+  /** Overload operator+. Subtract scalar. */
+  inline Vector<PixelType, Ndim> operator-(const PixelType &scalar) const
+  {
+    Vector<PixelType, Ndim> v;
+    for (unsigned int i = 0; i < Ndim; i++)
+    {
+      v[i] = this->data_[i] - scalar;
+    }
+    return v;
+  }
+
+  /** Overload operator+. Subtract vector. */
+  inline Vector<PixelType, Ndim> operator-(Vector<PixelType, Ndim> &v1) const
+  {
+    Vector<PixelType, Ndim> v2;
+    for (unsigned int i = 0; i < Ndim; i++)
+    {
+      v2[i] = this->data_[i] - v1[i];
+    }
+    return v2;
+  }
+
+  /** Overload operator*. Multiplication with scalar. */
+  inline Vector<PixelType, Ndim> operator*(const PixelType &scalar) const
+  {
+    Vector<PixelType, Ndim> v;
+    for (unsigned int i = 0; i < Ndim; i++)
+    {
+      v[i] = this->data_[i] * scalar;
+    }
+    return v;
+  }
+
+  /** Overload operator*. Multiplication with vector. */
+  inline Vector<PixelType, Ndim> operator*(Vector<PixelType, Ndim> &v1) const
+  {
+    Vector<PixelType, Ndim> v2;
+    for (unsigned int i = 0; i < Ndim; i++)
+    {
+      v2[i] = this->data_[i] * v1[i];
+    }
+    return v2;
+  }
+
+  /** Overload operator+=. Add scalar. */
+  void operator+=(const PixelType &scalar)
+  {
+    for (unsigned int i = 0; i < Ndim; i++)
+    {
+      this->data_[i] += scalar;
+    }
+  }
+
+  /** Overload operator+=. Add vector. */
+  void operator+=(const Vector<PixelType, Ndim> &v2)
+  {
+    for (unsigned int i = 0; i < Ndim; i++)
+    {
+      this->data_[i] += v2[i];
+    }
+  }
+
+  /** Overload operator-=. Subtract scalar. */
+  void operator-=(const PixelType &scalar)
+  {
+    for (unsigned int i = 0; i < Ndim; i++)
+    {
+      this->data_[i] -= scalar;
+    }
+  }
+
+  /** Overload operator-=. Subtract vector. */
+  void operator-=(const Vector<PixelType, Ndim> &v2)
+  {
+    for (unsigned int i = 0; i < Ndim; i++)
+    {
+      this->data_[i] -= v2[i];
+    }
+  }
+
+  /** Overload operator*=. Multiplication with scalar. */
+  void operator*=(const PixelType &scalar)
+  {
+    for (unsigned int i = 0; i < Ndim; i++)
+    {
+      this->data_[i] *= scalar;
+    }
+  }
+
+  /** Overload operator*=. Multiplication with vector. */
+  void operator*=(const Vector<PixelType, Ndim> &v2)
+  {
+    for (unsigned int i = 0; i < Ndim; i++)
+    {
+      this->data_[i] *= v2[i];
+    }
+  }
+
+  /** Overload operator/. Division by vector. */
+  Vector operator/(const PixelType scalar) const
+  {
+    IU_ASSERT(scalar != 0);
+    PixelType invFactor = 1 / scalar;
+    return operator*(invFactor);
+  }
+
+  /** Public copy constructor. */
+  Vector(const Vector& from)
+  {
+    for (unsigned int i = 0; i < Ndim; i++)
+      this->data_[i] = from[i];
+  }
+
+  /** Public copy assignment operator. */
+  Vector& operator=(const Vector& from)
+  {
+    for (unsigned int i = 0; i < Ndim; i++)
+      this->data_[i] = from[i];
+    return *this;
+  }
+};
+
+////////////////////////////////////////////////////////////////////////////////
+/** \brief Base class for N-dimensional unsigned int vectors (size vectors). */
 template<unsigned int Ndim>
 class SizeBase: public VectorBase<unsigned int, Ndim>
 {
 public:
+  // Constructor. Init the size vector with ones.
   SizeBase() :
       VectorBase<unsigned int, Ndim>()
   {
     this->fill(1);
   }
 
-  SizeBase(unsigned int value) : VectorBase<unsigned int, Ndim>()
+  /** Special Constructor.
+   *  Init all elements of the size vector with a special value.
+   *  @param value value to initialize size vector elements.*/
+  SizeBase(unsigned int value) :
+      VectorBase<unsigned int, Ndim>(value)
   {
-    this->fill(value);
   }
 
+  /** Destructor. */
   ~SizeBase()
   {
   }
 
+  /** Multiply all entries of the size vector to get the total number of elements. */
   unsigned int numel() const
   {
     unsigned int num_elements = this->data_[0];
@@ -137,6 +332,7 @@ public:
     return num_elements;
   }
 
+  /** Overload operator*. Multiplication with scalar and perform round operation. */
   template<typename ScalarType>
   SizeBase operator*(const ScalarType& scalar) const
   {
@@ -148,16 +344,19 @@ public:
     return v;
   }
 
+  /** Overload operator*=. Multiplication with scalar and perform round operation. */
   template<typename ScalarType>
   void operator*=(const ScalarType &scalar)
   {
     for (unsigned int i = 0; i < Ndim; i++)
     {
-      this->data_[i] = static_cast<unsigned int>(this->data_[i] * scalar + 0.5f);
+      this->data_[i] =
+          static_cast<unsigned int>(this->data_[i] * scalar + 0.5f);
       ;
     }
   }
 
+  /** Overload operator/. Divide by scalar and perform round operation. */
   template<typename ScalarType>
   SizeBase operator/(const ScalarType& scalar) const
   {
@@ -166,6 +365,7 @@ public:
     return operator*(invFactor);
   }
 
+  /** Overload operator/=. Divide by scalar and perform round operation. */
   template<typename ScalarType>
   void operator/=(const ScalarType &scalar)
   {
@@ -174,12 +374,14 @@ public:
     operator*=(invFactor);
   }
 
+  /** Public copy constructor. */
   SizeBase(const SizeBase& from)
   {
     for (unsigned int i = 0; i < Ndim; i++)
       this->data_[i] = from[i];
   }
 
+  /** Public copy assignment operator. */
   SizeBase& operator=(const SizeBase& from)
   {
     for (unsigned int i = 0; i < Ndim; i++)
@@ -187,35 +389,64 @@ public:
     return *this;
   }
 
-  // this is only used in kernel data of device memory
+  /** Get data buffer. This is used in LinearDeviceMemory::KernelData,
+   *  ImageGpu::KernelData and VolumeGpu::KernelData to copy the size vector
+   *  from host to device.
+   */
   unsigned int* ptr()
   {
     return this->data_;
   }
 
+  /** Get const data buffer. This is used in LinearDeviceMemory::KernelData,
+   *  ImageGpu::KernelData and VolumeGpu::KernelData to copy the size vector
+   *  from host to device.
+   */
   const unsigned int* ptr() const
   {
     return reinterpret_cast<const unsigned int*>(this->data_);
   }
 };
 
+////////////////////////////////////////////////////////////////////////////////
+/** \brief Main class for N-dimensional unsigned int vectors (size vectors). */
 template<unsigned int Ndim>
 class Size: public SizeBase<Ndim>
 {
 public:
-  Size() : SizeBase<Ndim>() {}
-  Size(unsigned int value) : SizeBase<Ndim>(value) {}
+  /** Constructor. */
+  Size() :
+      SizeBase<Ndim>()
+  {
+  }
 
-  ~Size() {}
+  /** Special Constructor.
+   *  Init all elements of the size vector with a special value.
+   *  @param value value to initialize size vector elements.*/
+  Size(unsigned int value) :
+      SizeBase<Ndim>(value)
+  {
+  }
 
-  Size(const Size& from) : SizeBase<Ndim>(from) {}
+  /** Destructor. */
+  ~Size()
+  {
+  }
 
+  /** Public copy constructor. */
+  Size(const Size& from) :
+      SizeBase<Ndim>(from)
+  {
+  }
+
+  /** Public copy assignment operator. */
   Size& operator=(const Size& from)
   {
     SizeBase<Ndim>::operator=(from);
     return *this;
   }
 
+  /** Public copy assignment operator. */
   Size& operator=(const SizeBase<Ndim>& from)
   {
     SizeBase<Ndim>::operator=(from);
@@ -224,45 +455,75 @@ public:
 
 };
 
+////////////////////////////////////////////////////////////////////////////////
+/** \brief Template specialization for 3-d unsigned int vectors (size vectors).
+ *
+ * This class additionally has public members width, height, depth and implements
+ * the previous IuSize class. There exists a typedef iu::Size<3> IuSize to be
+ * compatible with previously written code.
+ */
 template<>
 class Size<3> : public SizeBase<3>
 {
 public:
+  /** Width: Reference to 0th entry of data buffer */
   unsigned int& width;
+  /** Height: Reference to 1st entry of data buffer */
   unsigned int& height;
+  /** Depth: Reference to 2nd entry of data buffer */
   unsigned int& depth;
 
-  Size() : SizeBase<3>(),
-      width(this->data_[0]), height(this->data_[1]), depth(this->data_[2])
+  /** Constructor. */
+  Size() :
+      SizeBase<3>(), width(this->data_[0]), height(this->data_[1]),
+      depth(this->data_[2])
   {
   }
 
-  Size(unsigned int value) : SizeBase<3>(value),
-      width(this->data_[0]), height(this->data_[1]), depth(this->data_[2])
+  /** Special Constructor.
+   *  Init all elements of the size vector with a special value.
+   *  @param value value to initialize size vector elements.*/
+  Size(unsigned int value) :
+      SizeBase<3>(value), width(this->data_[0]), height(this->data_[1]),
+      depth(this->data_[2])
   {
   }
 
-  Size(unsigned int width, unsigned int height, unsigned int depth=0) : SizeBase<3>(),
-      width(this->data_[0]), height(this->data_[1]), depth(this->data_[2])
+  /** Special Constructor. Init size with width, height, depth. Depth equals
+   *  zero for Image.
+   *  @param width Set 0th entry of data buffer
+   *  @param height Set 1st entry of data buffer
+   *  @param depth Set 2nd entry of data buffer
+   */
+  Size(unsigned int width, unsigned int height, unsigned int depth = 0) :
+      SizeBase<3>(), width(this->data_[0]), height(this->data_[1]),
+      depth(this->data_[2])
   {
     data_[0] = width;
     data_[1] = height;
     data_[2] = depth;
   }
 
-  Size(const Size& from) : SizeBase<3>(from),
-      width(this->data_[0]), height(this->data_[1]), depth(this->data_[2])
+  /** Destructor. */
+  ~Size()
   {
   }
 
-  ~Size() {}
+  /** Public copy constructor. */
+  Size(const Size& from) :
+      SizeBase<3>(from), width(this->data_[0]), height(this->data_[1]),
+      depth(this->data_[2])
+  {
+  }
 
+  /** Public copy assignment operator. */
   Size& operator=(const Size& from)
   {
     SizeBase::operator=(from);
     return *this;
   }
 
+  /** Public copy assignment operator. */
   Size& operator=(const SizeBase<3>& from)
   {
     SizeBase::operator=(from);
@@ -270,64 +531,9 @@ public:
   }
 };
 
-
-template<typename PixelType, unsigned int Ndim>
-class Vector: public VectorBase<PixelType, Ndim>
-{
-public:
-  Vector() :
-      VectorBase<PixelType, Ndim>()
-  {
-  }
-  ~Vector()
-  {
-  }
-  inline Vector<PixelType, Ndim> operator*(const PixelType &scalar) const
-  {
-    Vector<PixelType, Ndim> v;
-    for (unsigned int i = 0; i < Ndim; i++)
-    {
-      v[i] = this->data_[i] * scalar;
-    }
-    return v;
-  }
-
-  inline Vector<PixelType, Ndim> operator*(Vector<PixelType, Ndim> &v1) const
-  {
-    Vector<PixelType, Ndim> v2;
-    for (unsigned int i = 0; i < Ndim; i++)
-    {
-      v2[i] = this->data_[i] * v1[i];
-    }
-    return v2;
-  }
-
-  void operator*=(const Vector<PixelType, Ndim> &v2)
-  {
-    for (unsigned int i = 0; i < Ndim; i++)
-    {
-      this->data_[i] *= v2[i];
-    }
-  }
-
-  void operator*=(const PixelType &scalar)
-  {
-    for (unsigned int i = 0; i < Ndim; i++)
-    {
-      this->data_[i] *= scalar;
-    }
-  }
-
-  Vector operator/(const PixelType scalar) const
-  {
-    IU_ASSERT(scalar != 0);
-    PixelType invFactor = 1 / scalar;
-    return operator*(invFactor);
-  }
-};
-
 }  //namespace iu
 
+/** Typedef to be compatible with previously written code. */
 typedef iu::Size<3> IuSize;
 
-#endif /* IUVECTOR_H_ */
+#endif /* VECTOR_H_ */
