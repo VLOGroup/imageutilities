@@ -9,12 +9,12 @@ namespace iu
  *   \ingroup LinearMemory
  */
 template<typename PixelType>
-class TensorCpu : public LinearHostMemory<PixelType, 1>
+class TensorCpu : public LinearHostMemory<PixelType>
 {
 public:
   /** Constructor. */
 	TensorCpu() :
-			LinearHostMemory<PixelType, 1>(), samples_(0), channels_(0), height_(0), width_(0)
+			LinearHostMemory<PixelType>(), samples_(0), channels_(0), height_(0), width_(0)
 	{
 	}
 
@@ -92,10 +92,10 @@ public:
   }
 
   /** convert to ndarray_ref -- include ndarray/ndarray_iu.h*/
-  ndarray_ref<PixelType,4> ref() const;
+  ndarray_ref<PixelType,1> ref() const;
 
   /** construct from ndarray_ref  -- include ndarray/ndarray_iu.h*/
-  TensorCpu(const ndarray_ref<PixelType,4> &x);
+  TensorCpu(const ndarray_ref<PixelType,1> &x);
 
 private:
   /** Number of samples. */
