@@ -8,9 +8,9 @@ Installation:
 
 Set up environment variable IMAGEUTILITIES_ROOT pointing to the root folder of the repository.
 
-Set up environment variable COMPUTE_CAPABILITY with the CC of your CUDA-enabled GPU 
+Set up environment variable COMPUTE_CAPABILITY with the CC of your CUDA-enabled GPU
 
-In the root directory (where this file is): 
+In the root directory (where this file is):
 
 ~~~
 $ cd build
@@ -65,7 +65,7 @@ iu::math::addWeighted(*I1,1,*I2,-1,result);
 iu::imsave(&result,RESULTS_PATH("army_1_minus_2.png"));
 ~~~
 
-They also make it easy to use images in CUDA kernels by providing additional 
+They also make it easy to use images in CUDA kernels by providing additional
 information about the image that can be easily passed to kernels. Host code:
 
 ~~~{.c}
