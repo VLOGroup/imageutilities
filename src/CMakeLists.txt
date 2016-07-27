@@ -54,9 +54,11 @@ SET(CMAKE_INSTALL_RPATH "$ORIGIN")
 if(ANDROID)
 option(IU_USE_IO "Including IO module." ON)
 option(IU_USE_GUI "Including GUI module." OFF)
-option(WITH_FLYCAPTURE2 "Use FlyCapture2." OFF)
 option(IU_USE_MATH "Including Math module." OFF)
-option(WITH_OPENEXR "Use OpenEXR." OFF)
+option(IU_USE_NDARRAY "Include NDArray module" OFF)
+option(WITH_FLYCAPTURE2 "Use FlyCapture2 - build pgrvideosource class." OFF)
+option(WITH_OPENEXR "Use OpenEXR - build OpenEXRIO classes." OFF)
+option(WITH_PYTHON "Use Python - include imageutilities <-> python interface. Requires boost.python and Eigen" OFF)
 set(ANDROID_TOOLCHAIN_NAME arm-linux-androideabi-4.6)
 set(CUDA_PROPAGATE_HOST_FLAGS OFF)
 else(ANDROID)
@@ -64,8 +66,9 @@ option(IU_USE_IO "Including IO module." ON)
 option(IU_USE_GUI "Including GUI module." ON)
 option(IU_USE_MATH "Including Math module." ON)
 option(IU_USE_NDARRAY "Include NDArray module" ON)
-option(WITH_FLYCAPTURE2 "Use FlyCapture2." ON)
-option(WITH_OPENEXR "Use OpenEXR." ON)
+option(WITH_FLYCAPTURE2 "Use FlyCapture2 - build pgrvideosource class." ON)
+option(WITH_OPENEXR "Use OpenEXR - build OpenEXRIO classes." ON)
+option(WITH_PYTHON "Use Python - include imageutilities <-> python interface. Requires numpy, boost.python and Eigen" ON)
 endif(ANDROID)
 
 ##-----------------------------------------------------------------------------
@@ -73,6 +76,12 @@ endif(ANDROID)
 set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-Wall -std=c++11")
 
 
+if(WITH_PYTHON)
+    find_package(Boost REQUIRED COMPONENTS python)
+    find_package(PythonLibs 2.7 REQUIRED)
+    find_package(NumPy REQUIRED)
+    FIND_PACKAGE(Eigen3 REQUIRED)
+endif(WITH_PYTHON)
 
 
 ##-----------------------------------------------------------------------------
@@ -285,8 +294,14 @@ SET( IU_PUBLIC_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/iucutil.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore.h
   ${CMAKE_CURRENT_SOURCE_DIR}/helper_math.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/iupython.h
   )
+if(WITH_PYTHON)
+  SET( IU_PUBLIC_HEADERS
+      ${IU_PUBLIC_HEADERS}
+      ${CMAKE_CURRENT_SOURCE_DIR}/iupython.h
+  )
+endif(WITH_PYTHON)
+
 # 
 SET( IU_PUBLIC_CORE_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/globaldefs.h

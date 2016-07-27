@@ -9,6 +9,18 @@
 //#include "ndarray/ndarray_ref.host.h"
 template<typename type, int dims> class ndarray_ref;
 
+namespace boost
+{
+    namespace python
+    {
+        namespace api
+        {
+            class object;
+        }
+    }
+}
+
+
 namespace iu {
 
 template<typename PixelType, class Allocator>
@@ -171,6 +183,8 @@ public:
 
   /** construct from ndarray_ref  -- include ndarray/ndarray_iu.h*/
    ImageCpu(const ndarray_ref<PixelType,2> &x);
+
+   ImageCpu(boost::python::api::object& py_arr);
 
 protected:
   /** Pointer to host buffer. */

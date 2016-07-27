@@ -43,10 +43,12 @@ endmacro(iu_add_test)
 
 
 add_subdirectory(coreTest_copy)
+if(WITH_PYTHON)
+add_subdirectory(pythonTest)
+endif(WITH_PYTHON)
 if(IU_USE_NDARRAY)
 add_subdirectory(ndarrayTest)
 endif(IU_USE_NDARRAY)
-#add_subdirectory(pythonTest)
 if(IU_USE_IO)
   add_subdirectory(ioTest)
   if(IU_USE_MATH)

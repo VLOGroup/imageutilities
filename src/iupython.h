@@ -3,6 +3,7 @@
 #define NPY_NO_DEPRECATED_API NPY_1_9_API_VERSION
 #include <exception>
 #include <string>
+#include <climits>
 #include <boost/python.hpp>
 #include <numpy/ndarrayobject.h>
 #include <eigen3/Eigen/Dense>
@@ -17,10 +18,14 @@
 namespace bp = boost::python;
 using std::string;
 
+namespace iu {
+
+namespace python {
+
+
+
 /**
   * @brief Python exception class
-
-  *
   */
 class Exc
 {
@@ -34,13 +39,22 @@ private:
     std::string what_;
 };
 
+/**
+ * @brief ExcTranslator Custom exception translator to map c++ exceptions -> python.
+ * Call "bp::register_exception_translator<Exc>(&iu::python::ExcTranslator);" in your BOOST_PYTHON_MODULE
+ * @param err
+ */
+static void ExcTranslator(const Exc& err)
+{
+    PyErr_SetString(PyExc_RuntimeError, err.what());
+}
 
 /**
  * @brief getPyArrayFromPyObject get a PyArray from a generic PyObject. The memory referenced by the numpy array must be c-contiguous
- * @param obj a PyObject* wrapped in boost::python
+ * @param obj a PyObject* wrapped in boost::python::object
  * @param kind datatype kind. <b>ool, <i>nt (signed) <u>int, <f>loat, <c>omplex... See numpy C-API. Default 'x' = disable check
  * @param type <b>yte, <i>int, <f>loat, <d>ouble... See numpy C-API. Default 'x' = disable check
- * @param writeable bool to indicate writable
+ * @param writeable bool to indicate writable. Default true
  * @return a PyArrayObject pointer
  */
 PyArrayObject* getPyArrayFromPyObject(const bp::object& obj, char kind = 'x', char type = 'x', bool writeable = true)
@@ -94,6 +108,7 @@ PyArrayObject* getPyArrayFromPyObject(const bp::object& obj, char kind = 'x', ch
 //        NPY_COMPLEXLTR = 'c'
 //   };
 
+
     if (!PyArray_Check(obj.ptr()))
         throw Exc("Argument is not a numpy array");
 
@@ -122,43 +137,46 @@ PyArrayObject* getPyArrayFromPyObject(const bp::object& obj, char kind = 'x', ch
     return pyarr;
 }
 
-/**
- * @brief imageCpu_from_PyArray iu::imageCpu from a boost::python::object holding a PyArray
- * @param py_arr boost::python::object from a numpy array
- * @param img The ImageCpu. It should be empty (i.e. size 0), its size will get set according to
- * the size of the numpy array. The resulting ImageCpu wraps the memory of the numpy array,
- * it is not a deep copy. If the pixeltype of the ImageCpu does not match the datatype of
- * the numpy array an exception is thrown.
- */
-template<typename PixelType, class Allocator>
-void imageCpu_from_PyArray(const bp::object& py_arr,
-                           iu::ImageCpu<PixelType, Allocator> &img)
-{
-    if (img.data())
-        throw Exc("imageCpu_from_PyArray(): Expected emtpy image (data pointer will be set to external memory)! ");
-    PyArrayObject* py_img = NULL;
+///**
+// * @brief imageCpu_from_PyArray iu::imageCpu from a boost::python::object holding a PyArray
+// * @param py_arr boost::python::object representing a numpy array
+// * @param img The ImageCpu. It should be empty (i.e. size 0), its size will get set according to
+// * the size of the numpy array. The resulting ImageCpu wraps the memory of the numpy array,
+// * it is not a deep copy. If the pixeltype of the ImageCpu does not match the datatype of
+// * the numpy array an exception is thrown.
+// */
+//template<typename PixelType, class Allocator>
+//void imageCpu_from_PyArray(const bp::object& py_arr,
+//                           iu::ImageCpu<PixelType, Allocator> &img)
+//{
+//    if (img.data())
+//        throw Exc("imageCpu_from_PyArray(): Expected emtpy image (data pointer will be set to external memory)! ");
+//    PyArrayObject* py_img = NULL;
 
-    py_img = getPyArrayFromPyObject(py_arr);  // don't care what datatype, just to get dimensions
-    int ndim = PyArray_NDIM(py_img);
-    if (ndim != 2)
-        throw Exc("imageCpu_from_PyArray(): Image must be a 2d numpy array");
-    npy_intp* dims = PyArray_DIMS(py_img);
+//    py_img = getPyArrayFromPyObject(py_arr);  // don't care what datatype, just to get dimensions
+//    int ndim = PyArray_NDIM(py_img);
+//    if (ndim != 2)
+//        throw Exc("imageCpu_from_PyArray(): Image must be a 2d numpy array");
+//    npy_intp* dims = PyArray_DIMS(py_img);
 
 
-    if (dynamic_cast<iu::ImageCpu_32f_C1*>(&img))
-        py_img = getPyArrayFromPyObject(py_arr, 'f', 'f', false);
-    else if (dynamic_cast<iu::ImageCpu_8u_C1*>(&img))
-        py_img = getPyArrayFromPyObject(py_arr, 'u', 'b', false);
-    else
-        throw Exc("imageCpu_from_PyArray(): conversion for this image type not implemented");
+//    if (dynamic_cast<iu::ImageCpu_32f_C1*>(&img))
+//        py_img = getPyArrayFromPyObject(py_arr, 'f', 'f', false);
+//    else if (dynamic_cast<iu::ImageCpu_8u_C1*>(&img))
+//        py_img = getPyArrayFromPyObject(py_arr, 'u', 'b', false);
+//    else
+//        throw Exc("imageCpu_from_PyArray(): conversion for this image type not implemented");
 
-    PixelType* data = static_cast<PixelType*>(PyArray_DATA(py_img));          // get data pointer
-    img = iu::ImageCpu<PixelType, Allocator>(data, dims[1], dims[0], dims[1]*sizeof(PixelType), true);  // wrap it in imagecpu
-}
+//    PixelType* data = static_cast<PixelType*>(PyArray_DATA(py_img));          // get data pointer
+//    img = iu::ImageCpu<PixelType, Allocator>(data, dims[1], dims[0], dims[1]*sizeof(PixelType), true);  // wrap it in imagecpu
+//}
+
+
+
 
 /**
  * @brief imageGpu_from_PyArray iu::imageGpu from a boost::python::object holding a PyArray
- * @param py_arr boost::python::object from a numpy array
+ * @param py_arr boost::python::object representing a numpy array
  * @param img The ImageGpu. It should be empty (i.e. size 0), a new ImageGpu with the right size
  * will be created. If the pixeltype of the ImageGpu does not match the datatype of
  * the numpy array an exception is thrown.
@@ -293,12 +311,95 @@ void Matrix4f_from_PyArray(const bp::object& py_arr, Eigen::Ref<Eigen::Matrix4f>
     }
 }
 
-/**
- * @brief ExcTranslator Custom exception translator to map c++ exceptions -> python.
- * Call "bp::register_exception_translator<Exc>(&ExcTranslator);" in your BOOST_PYTHON_MODULE
- * @param err
- */
-static void ExcTranslator(const Exc& err)     //custom excpetion translator for boost.python
+
+
+} // namespace python
+
+} // namepsace iu
+
+
+namespace iu {
+
+
+template<typename PixelType, class Allocator>
+ImageCpu<PixelType, Allocator>::ImageCpu(boost::python::object &py_arr) : data_(0), pitch_(0), ext_data_pointer_(true)
 {
-    PyErr_SetString(PyExc_RuntimeError, err.what());
+    PyArrayObject* py_img = NULL;
+
+    py_img = python::getPyArrayFromPyObject(py_arr);  // don't care what datatype, just to get dimensions
+    int ndim = PyArray_NDIM(py_img);
+    if (ndim != 2)
+        throw python::Exc("imageCpu_from_PyArray(): Image must be a 2d numpy array");
+    npy_intp* dims = PyArray_DIMS(py_img);
+    size_ = IuSize(dims[1], dims[0]);
+
+    npy_intp* strides = PyArray_STRIDES(py_img);
+//    printf("strides %ld %ld\n", strides[0], strides[1]);
+
+//    PyArray_Descr* dtype = PyArray_DTYPE(py_img);
+//    if (dtype->kind == 'u')
+//    {
+//        printf("unsigned ");
+//        if (dtype->type == 'B')
+//        {
+//            printf("byte\n");
+//        }
+//        else if (dtype->type == 'I')
+//        {
+//            printf("int32\n");
+//        }
+//        else
+//        {
+//            printf("unknown (%c)\n", dtype->type);
+//        }
+//    }
+//    if (dtype->kind == 'i')
+//    {
+//        printf("signed ");
+//        if (dtype->type == 'b')
+//        {
+//            printf("byte\n");
+//        }
+//        else if (dtype->type == 'i')
+//        {
+//            printf("int32\n");
+//        }
+//        else
+//        {
+//            printf("unknown (%c)\n", dtype->type);
+//        }
+//    }
+//    else if (dtype->kind == 'f')
+//    {
+//        printf("floating point ");
+//        if (dtype->type == 'f')
+//        {
+//            printf("float\n");
+//        }
+//        else if (dtype->type == 'd')
+//        {
+//            printf("double\n");
+//        }
+//        else
+//        {
+//            printf("unknown (%c)\n", dtype->type);
+//        }
+//    }
+
+    if (strides[1] != sizeof(PixelType))
+    {
+        char msg[250];
+        sprintf(msg, "ImageCpu from PyArray datatype mismatch.\n"
+                     "Tried to construct Image with %ld-bit type, PyArray has "
+                     "%ld-bit type\n", sizeof(PixelType)*CHAR_BIT, strides[1]*CHAR_BIT);
+        throw python::Exc(msg);
+    }
+
+    pitch_ = strides[0];
+    data_ = reinterpret_cast<PixelType*>(PyArray_DATA(py_img));
 }
+
+
+
+
+} // namespace iu

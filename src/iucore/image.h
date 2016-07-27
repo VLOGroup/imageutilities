@@ -124,7 +124,7 @@ public:
     return out;
   }
 
-private:
+protected:
   /** Size of the Image. */
   IuSize size_;
 
