@@ -8,7 +8,7 @@ Installation:
 
 - Set up environment variable `COMPUTE_CAPABILITY` with the CC of your CUDA-enabled GPU
 - Set up environment variable `CUDA_SDK_ROOT_DIR` to point to the NVidia CUDA examples
-- Set up environment vaiable `ImageUtilitiesLight_DIR` to point to the path of this directory
+- Set up environment vaiable `IMAGEUTILITIES_ROOT` to point to the path of this directory
 
 To build simply perform the following steps:
 
@@ -29,16 +29,16 @@ Usage:
 
 In your cmake-based project include the following lines
 ~~~
-set(ImageUtilitiesLight_DIR $ENV{IMAGEUTILITIES_ROOT})
-find_package(ImageUtilitiesLight REQUIRED COMPONENTS iucore)
-include_directories(${IMAGEUTILITIESLIGHT_INCLUDE_DIR})
+set(ImageUtilities_DIR $ENV{IMAGEUTILITIES_ROOT})
+find_package(ImageUtilities REQUIRED COMPONENTS iucore)
+include_directories(${IMAGEUTILITIES_INCLUDE_DIR})
 ~~~
 
 and link your application with
 ~~~
 target_link_libraries(your_application
   your_libraries
-  ${IMAGEUTILITIESLIGHT_LIBRARIES}
+  ${IMAGEUTILITIES_LIBRARIES}
 )
 ~~~
 
