@@ -247,13 +247,29 @@ void fill(iu::LinearDeviceMemory_32f_C1& dst, float value) {iuprivate::math::fil
 void fill(iu::LinearDeviceMemory_32f_C2& dst, float2 value) {iuprivate::math::fill(dst,value);}
 void fill(iu::LinearDeviceMemory_32f_C3& dst, float3 value) {iuprivate::math::fill(dst,value);}
 
-// todo test phase
 void fill(iu::LinearDeviceMemory<float, 2>& dst, float value) {iuprivate::math::fill(dst,value);}
-
+void fill(iu::LinearDeviceMemory<float, 3>& dst, float value) {iuprivate::math::fill(dst,value);}
+void fill(iu::LinearDeviceMemory<float, 4>& dst, float value) {iuprivate::math::fill(dst,value);}
+void fill(iu::LinearDeviceMemory<float2, 2>& dst, float2 value) {iuprivate::math::fill(dst,value);}
+void fill(iu::LinearDeviceMemory<float2, 3>& dst, float2 value) {iuprivate::math::fill(dst,value);}
+void fill(iu::LinearDeviceMemory<float2, 4>& dst, float2 value) {iuprivate::math::fill(dst,value);}
+void fill(iu::LinearDeviceMemory<float3, 2>& dst, float3 value) {iuprivate::math::fill(dst,value);}
+void fill(iu::LinearDeviceMemory<float3, 3>& dst, float3 value) {iuprivate::math::fill(dst,value);}
+void fill(iu::LinearDeviceMemory<float3, 4>& dst, float3 value) {iuprivate::math::fill(dst,value);}
 
 void fill(iu::LinearHostMemory_32f_C1& dst, float value) {iuprivate::math::fill(dst,value);}
 void fill(iu::LinearHostMemory_32f_C2& dst, float2 value) {iuprivate::math::fill(dst,value);}
 void fill(iu::LinearHostMemory_32f_C3& dst, float3 value) {iuprivate::math::fill(dst,value);}
+
+void fill(iu::LinearHostMemory<float, 2>& dst, float value) {iuprivate::math::fill(dst,value);}
+void fill(iu::LinearHostMemory<float, 3>& dst, float value) {iuprivate::math::fill(dst,value);}
+void fill(iu::LinearHostMemory<float, 4>& dst, float value) {iuprivate::math::fill(dst,value);}
+void fill(iu::LinearHostMemory<float2, 2>& dst, float2 value) {iuprivate::math::fill(dst,value);}
+void fill(iu::LinearHostMemory<float2, 3>& dst, float2 value) {iuprivate::math::fill(dst,value);}
+void fill(iu::LinearHostMemory<float2, 4>& dst, float2 value) {iuprivate::math::fill(dst,value);}
+void fill(iu::LinearHostMemory<float3, 2>& dst, float3 value) {iuprivate::math::fill(dst,value);}
+void fill(iu::LinearHostMemory<float3, 3>& dst, float3 value) {iuprivate::math::fill(dst,value);}
+void fill(iu::LinearHostMemory<float3, 4>& dst, float3 value) {iuprivate::math::fill(dst,value);}
 
 void fill(iu::VolumeGpu_32f_C1& dst, float value) {iuprivate::math::fill(dst,value);}
 void fill(iu::VolumeGpu_32f_C2& dst, float2 value) {iuprivate::math::fill(dst,value);}

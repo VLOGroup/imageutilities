@@ -117,7 +117,7 @@ public:
     this->fill(1);
   }
 
-  SizeBase(int value) : VectorBase<unsigned int, Ndim>()
+  SizeBase(unsigned int value) : VectorBase<unsigned int, Ndim>()
   {
     this->fill(value);
   }
@@ -203,6 +203,7 @@ class Size: public SizeBase<Ndim>
 {
 public:
   Size() : SizeBase<Ndim>() {}
+  Size(unsigned int value) : SizeBase<Ndim>(value) {}
 
   ~Size() {}
 
@@ -231,6 +232,11 @@ public:
   unsigned int& depth;
 
   Size() : SizeBase<3>(),
+      width(this->data_[0]), height(this->data_[1]), depth(this->data_[2])
+  {
+  }
+
+  Size(unsigned int value) : SizeBase<3>(value),
       width(this->data_[0]), height(this->data_[1]), depth(this->data_[2])
   {
   }

@@ -301,9 +301,24 @@ IUCORE_DLLAPI void fill(iu::VolumeCpu_32f_C1& dst, float value);
 IUCORE_DLLAPI void fill(iu::VolumeCpu_32f_C2& dst, float2 value);
 IUCORE_DLLAPI void fill(iu::VolumeCpu_32f_C3& dst, float3 value);
 
-// todo test phase
 IUCORE_DLLAPI void fill(iu::LinearDeviceMemory<float, 2>& dst, float value);
-
+IUCORE_DLLAPI void fill(iu::LinearDeviceMemory<float, 3>& dst, float value);
+IUCORE_DLLAPI void fill(iu::LinearDeviceMemory<float, 4>& dst, float value);
+IUCORE_DLLAPI void fill(iu::LinearDeviceMemory<float2, 2>& dst, float value);
+IUCORE_DLLAPI void fill(iu::LinearDeviceMemory<float2, 3>& dst, float value);
+IUCORE_DLLAPI void fill(iu::LinearDeviceMemory<float2, 4>& dst, float value);
+IUCORE_DLLAPI void fill(iu::LinearDeviceMemory<float3, 2>& dst, float value);
+IUCORE_DLLAPI void fill(iu::LinearDeviceMemory<float3, 3>& dst, float value);
+IUCORE_DLLAPI void fill(iu::LinearDeviceMemory<float3, 4>& dst, float value);
+IUCORE_DLLAPI void fill(iu::LinearHostMemory<float, 2>& dst, float value);
+IUCORE_DLLAPI void fill(iu::LinearHostMemory<float, 3>& dst, float value);
+IUCORE_DLLAPI void fill(iu::LinearHostMemory<float, 4>& dst, float value);
+IUCORE_DLLAPI void fill(iu::LinearHostMemory<float2, 2>& dst, float value);
+IUCORE_DLLAPI void fill(iu::LinearHostMemory<float2, 3>& dst, float value);
+IUCORE_DLLAPI void fill(iu::LinearHostMemory<float2, 4>& dst, float value);
+IUCORE_DLLAPI void fill(iu::LinearHostMemory<float3, 2>& dst, float value);
+IUCORE_DLLAPI void fill(iu::LinearHostMemory<float3, 3>& dst, float value);
+IUCORE_DLLAPI void fill(iu::LinearHostMemory<float3, 4>& dst, float value);
 
 /** Split planes of a two channel image (e.g. complex image)
  * \param[in] src  Combined image (e.g. complex image)

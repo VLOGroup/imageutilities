@@ -86,7 +86,7 @@ class LinearMemory
   IU_ASSERT(Ndim > 0)
 public:
   /** Constructor. */
-  LinearMemory() : size_() { }
+  LinearMemory() : size_(), stride_() { }
 
   /** Special constructor.
    *  @param size size of the linear memory
@@ -94,12 +94,17 @@ public:
   LinearMemory(const Size<Ndim>& size):
     size_(size)
   {
-
+    computeStride();
   }
 
+  /** Special constructor.
+   *  @param numel number of elements of linear memory. Size[0] equals the number of elements,
+   *  the other dimensions are 1.
+   */
   LinearMemory(const unsigned int& numel) : size_()
   {
     size_[0] = numel;
+    computeStride();
   }
   /** Compares the LinearMemory type to a target LinearMemory.
    *  @param from Target LinearMemory.
@@ -114,13 +119,13 @@ public:
   virtual ~LinearMemory()
   { }
 
-  /** Returns the number of elements saved in the device buffer. (numel of device buffer) */
+  /** Returns the number of elements saved in the buffer. (numel of buffer) */
   unsigned int numel() const
   {
     return size_.numel();
   }
 
-  /** Returns the number of elements saved in the device buffer. (numel of device buffer) */
+  /** Returns the number of elements saved in the buffer. (numel of buffer) */
   unsigned int length() const
   {
     std::cout << "Warning: LinearMemory::length() is deprecated and will be removed in the future. Use numel() instead." << std::endl;
@@ -131,6 +136,12 @@ public:
   Size<Ndim> size() const
   {
     return size_;
+  }
+
+  /** Returns size of the linear memory */
+  Size<Ndim> stride() const
+  {
+    return stride_;
   }
 
   /** Returns the total amount of bytes saved in the data buffer. */
@@ -146,13 +157,28 @@ public:
   friend std::ostream& operator<<(std::ostream & out,
                                   LinearMemory const& linmem)
   {
-    out << "LinearMemory: size=" << linmem.size() << " numel=" << linmem.numel() << " onDevice=" << linmem.onDevice();
+    out << "LinearMemory: size=" << linmem.size() << " strides=" << linmem.stride() << " numel=" << linmem.numel() << " onDevice=" << linmem.onDevice();
     return out;
   }
 
 private:
   /** size of the memory.*/
   Size<Ndim> size_;
+
+  /** Stride of the memory. First dimension is always one.*/
+  Size<Ndim> stride_;
+
+  /** Compute the strides of the memory*/
+  void computeStride()
+  {
+    for(unsigned int i = 0; i < Ndim; i++)
+    {
+      if(i == 0)
+        stride_[i] = 1;
+      else
+        stride_[i] = stride_[i-1]*size_[i-1];
+    }
+  }
 
 private:
   /** Private copy constructor. */

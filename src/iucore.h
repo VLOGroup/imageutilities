@@ -180,9 +180,6 @@ IUCORE_DLLAPI void copy(const LinearDeviceMemory_32f_C2* src, LinearHostMemory_3
 IUCORE_DLLAPI void copy(const LinearDeviceMemory_32f_C3* src, LinearHostMemory_32f_C3* dst);
 IUCORE_DLLAPI void copy(const LinearDeviceMemory_32f_C4* src, LinearHostMemory_32f_C4* dst);
 
-/** \} */ // end of Copy1D
-
-// TODO test phase
 IUCORE_DLLAPI void copy(const LinearHostMemory<float, 2>* src, LinearDeviceMemory<float, 2>* dst);
 IUCORE_DLLAPI void copy(const LinearDeviceMemory<float, 2>* src, LinearHostMemory<float, 2>* dst);
 IUCORE_DLLAPI void copy(const LinearDeviceMemory<float, 2>* src, LinearDeviceMemory<float, 2>* dst);
@@ -195,6 +192,33 @@ IUCORE_DLLAPI void copy(const LinearDeviceMemory<float, 4>* src, LinearDeviceMem
 IUCORE_DLLAPI void copy(const LinearHostMemory<float, 5>* src, LinearDeviceMemory<float, 5>* dst);
 IUCORE_DLLAPI void copy(const LinearDeviceMemory<float, 5>* src, LinearHostMemory<float, 5>* dst);
 IUCORE_DLLAPI void copy(const LinearDeviceMemory<float, 5>* src, LinearDeviceMemory<float, 5>* dst);
+
+IUCORE_DLLAPI void copy(const LinearHostMemory<float2, 2>* src, LinearDeviceMemory<float2, 2>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float2, 2>* src, LinearHostMemory<float2, 2>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float2, 2>* src, LinearDeviceMemory<float2, 2>* dst);
+IUCORE_DLLAPI void copy(const LinearHostMemory<float2, 3>* src, LinearDeviceMemory<float2, 3>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float2, 3>* src, LinearHostMemory<float2, 3>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float2, 3>* src, LinearDeviceMemory<float2, 3>* dst);
+IUCORE_DLLAPI void copy(const LinearHostMemory<float2, 4>* src, LinearDeviceMemory<float2, 4>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float2, 4>* src, LinearHostMemory<float2, 4>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float2, 4>* src, LinearDeviceMemory<float2, 4>* dst);
+IUCORE_DLLAPI void copy(const LinearHostMemory<float2, 5>* src, LinearDeviceMemory<float2, 5>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float2, 5>* src, LinearHostMemory<float2, 5>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float2, 5>* src, LinearDeviceMemory<float2, 5>* dst);
+
+IUCORE_DLLAPI void copy(const LinearHostMemory<float3, 2>* src, LinearDeviceMemory<float3, 2>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float3, 2>* src, LinearHostMemory<float3, 2>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float3, 2>* src, LinearDeviceMemory<float3, 2>* dst);
+IUCORE_DLLAPI void copy(const LinearHostMemory<float3, 3>* src, LinearDeviceMemory<float3, 3>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float3, 3>* src, LinearHostMemory<float3, 3>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float3, 3>* src, LinearDeviceMemory<float3, 3>* dst);
+IUCORE_DLLAPI void copy(const LinearHostMemory<float3, 4>* src, LinearDeviceMemory<float3, 4>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float3, 4>* src, LinearHostMemory<float3, 4>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float3, 4>* src, LinearDeviceMemory<float3, 4>* dst);
+IUCORE_DLLAPI void copy(const LinearHostMemory<float3, 5>* src, LinearDeviceMemory<float3, 5>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float3, 5>* src, LinearHostMemory<float3, 5>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float3, 5>* src, LinearDeviceMemory<float3, 5>* dst);
+/** \} */ // end of Copy1D
 
 //////////////////////////////////////////////////////////////////////////////
 /** \defgroup Copy2D 2D Memory Copy
