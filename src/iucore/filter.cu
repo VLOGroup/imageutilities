@@ -14,7 +14,7 @@
 
 #include "filterbspline_kernels.cu"
 #include "filter.cuh"
-#include "../helper_math.h"
+#include "../iuhelpermath.h"
 
 namespace iuprivate {
 

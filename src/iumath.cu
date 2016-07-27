@@ -5,7 +5,7 @@
 #include "iumath/arithmetics.cuh"
 #include "iumath/statistics.cuh"
 #include "iumath/complex.cuh"
-
+#include "iuhelpermath.h"
 namespace iu {
 namespace math {
 
