@@ -6,11 +6,11 @@ ImageUtilities - Bridge the gap between CPU and GPU
 Installation:
 -------------
 
-Set up environment variable IMAGEUTILITIES_ROOT pointing to the root folder of the repository.
+- Set up environment variable `COMPUTE_CAPABILITY` with the CC of your CUDA-enabled GPU
+- Set up environment variable `CUDA_SDK_ROOT_DIR` to point to the NVidia CUDA examples
+- Set up environment vaiable `ImageUtilitiesLight_DIR` to point to the path of this directory
 
-Set up environment variable COMPUTE_CAPABILITY with the CC of your CUDA-enabled GPU
-
-In the root directory (where this file is):
+To build simply perform the following steps:
 
 ~~~
 $ cd build
@@ -27,7 +27,7 @@ $ make apidoc
 Usage:
 ------
 
-In your cmake-based project include the following lines 
+In your cmake-based project include the following lines
 ~~~
 set(ImageUtilitiesLight_DIR $ENV{IMAGEUTILITIES_ROOT})
 find_package(ImageUtilitiesLight REQUIRED COMPONENTS iucore)
