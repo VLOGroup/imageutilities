@@ -5,6 +5,8 @@ set(CMAKE_MODULE_PATH ${OT_IU_CMAKE_MODULE_PATH})
 
 set(SOURCES
     pyTest.cpp
+    test.cuh
+    test.cu
 )
 
 

@@ -184,6 +184,16 @@ public:
   /** construct from ndarray_ref  -- include ndarray/ndarray_iu.h*/
    ImageCpu(const ndarray_ref<PixelType,2> &x);
 
+   /**
+    * ImageCpu constructor from numpy array. It wraps the numpy data pointer
+    * i.e. does not perform a deep copy. This means that changes to the ImageCpu are transparent to python.
+    * <b>Attention:</b> It performs just a basic check if the datatyps are compatible: If you have a numpy array with
+    * uint8 and you try to construct a ImageCpu_32f_C1 from it, it will throw an exception. Constructing a ImageCpu_32u_C1
+    * from a numpy float32 array will not give an error (both are 32-bit datatypes)!
+    *
+    * include iuypthon.h!
+    * @param py_arr a boost::python::object representing a numpy array
+    */
    ImageCpu(boost::python::api::object& py_arr);
 
 protected:
