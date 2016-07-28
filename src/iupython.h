@@ -32,7 +32,7 @@ namespace python {
 
 
 /**
-  * @brief Python exception class
+   * @brief Python exception class
   */
 class Exc
 {
