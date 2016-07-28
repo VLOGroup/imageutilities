@@ -1,0 +1,8 @@
+\form#0:$ \sum\limits_{i=1}^N \vert x_i - y_i \vert $
+\form#1:$ N $
+\form#2:$ x $
+\form#3:$ y $
+\form#4:$ \sum\limits_{i=1}^N \vert x_i - y \vert $
+\form#5:$ \sqrt{\sum\limits_{i=1}^N ( x_i - y_i )^2}$
+\form#6:$ \sqrt{\sum\limits_{i=1}^N ( x_i - y )^2}$
+\form#7:$ \frac{\sum\limits_{i=1}^N ( x_i - y_i )^2}{N}$
