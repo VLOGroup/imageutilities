@@ -109,6 +109,9 @@ IUCORE_DLLAPI void mulC(iu::ImageGpu_32u_C1& src, const unsigned int& val, iu::I
 IUCORE_DLLAPI void mulC(iu::ImageGpu_16u_C1& src, const unsigned short& val, iu::ImageGpu_16u_C1& dst);
 
 IUCORE_DLLAPI void mulC(iu::VolumeGpu_32f_C1& src, const float& val, iu::VolumeGpu_32f_C1& dst);
+IUCORE_DLLAPI void mulC(iu::VolumeGpu_32f_C2& src, const float2& val, iu::VolumeGpu_32f_C2& dst);
+IUCORE_DLLAPI void mulC(iu::VolumeGpu_32f_C3& src, const float3& val, iu::VolumeGpu_32f_C3& dst);
+IUCORE_DLLAPI void mulC(iu::VolumeGpu_32f_C4& src, const float4& val, iu::VolumeGpu_32f_C4& dst);
 
 IUCORE_DLLAPI void mulC(iu::LinearDeviceMemory_32f_C1& src, const float& val, iu::LinearDeviceMemory_32f_C1& dst);
 IUCORE_DLLAPI void mulC(iu::LinearDeviceMemory_32f_C2& src, const float2& val, iu::LinearDeviceMemory_32f_C2& dst);
@@ -141,6 +144,9 @@ IUCORE_DLLAPI void mulC(iu::ImageCpu_32u_C1& src, const unsigned int& val, iu::I
 IUCORE_DLLAPI void mulC(iu::ImageCpu_16u_C1& src, const unsigned short& val, iu::ImageCpu_16u_C1& dst);
 
 IUCORE_DLLAPI void mulC(iu::VolumeCpu_32f_C1& src, const float& val, iu::VolumeCpu_32f_C1& dst);
+IUCORE_DLLAPI void mulC(iu::VolumeCpu_32f_C2& src, const float2& val, iu::VolumeCpu_32f_C2& dst);
+IUCORE_DLLAPI void mulC(iu::VolumeCpu_32f_C3& src, const float3& val, iu::VolumeCpu_32f_C3& dst);
+IUCORE_DLLAPI void mulC(iu::VolumeCpu_32f_C4& src, const float4& val, iu::VolumeCpu_32f_C4& dst);
 
 IUCORE_DLLAPI void mulC(iu::LinearHostMemory_32f_C1& src, const float& val, iu::LinearHostMemory_32f_C1& dst);
 IUCORE_DLLAPI void mulC(iu::LinearHostMemory_32f_C2& src, const float2& val, iu::LinearHostMemory_32f_C2& dst);
