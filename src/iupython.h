@@ -137,64 +137,30 @@ PyArrayObject* getPyArrayFromPyObject(const bp::object& obj, char kind = 'x', ch
     return pyarr;
 }
 
+
 ///**
-// * @brief imageCpu_from_PyArray iu::imageCpu from a boost::python::object holding a PyArray
+// * @brief imageGpu_from_PyArray iu::imageGpu from a boost::python::object holding a PyArray
 // * @param py_arr boost::python::object representing a numpy array
-// * @param img The ImageCpu. It should be empty (i.e. size 0), its size will get set according to
-// * the size of the numpy array. The resulting ImageCpu wraps the memory of the numpy array,
-// * it is not a deep copy. If the pixeltype of the ImageCpu does not match the datatype of
+// * @param img The ImageGpu. It should be empty (i.e. size 0), a new ImageGpu with the right size
+// * will be created. If the pixeltype of the ImageGpu does not match the datatype of
 // * the numpy array an exception is thrown.
 // */
 //template<typename PixelType, class Allocator>
-//void imageCpu_from_PyArray(const bp::object& py_arr,
-//                           iu::ImageCpu<PixelType, Allocator> &img)
+//void imageGpu_from_PyArray(const bp::object& py_arr,
+//                           iu::ImageGpu<PixelType, Allocator> &img)
 //{
 //    if (img.data())
-//        throw Exc("imageCpu_from_PyArray(): Expected emtpy image (data pointer will be set to external memory)! ");
-//    PyArrayObject* py_img = NULL;
+//        throw Exc("imageGpu_from_PyArray(): Expected emtpy image (will be created with right size)! ");
 
-//    py_img = getPyArrayFromPyObject(py_arr);  // don't care what datatype, just to get dimensions
-//    int ndim = PyArray_NDIM(py_img);
-//    if (ndim != 2)
-//        throw Exc("imageCpu_from_PyArray(): Image must be a 2d numpy array");
-//    npy_intp* dims = PyArray_DIMS(py_img);
+//    iu::ImageCpu<PixelType, iuprivate::ImageAllocatorCpu<PixelType> > h_img;
+//    imageCpu_from_PyArray(py_arr, h_img);
 
+//    img = iu::ImageGpu<PixelType, Allocator>(h_img.size());  // allocate new gpu image
 
-//    if (dynamic_cast<iu::ImageCpu_32f_C1*>(&img))
-//        py_img = getPyArrayFromPyObject(py_arr, 'f', 'f', false);
-//    else if (dynamic_cast<iu::ImageCpu_8u_C1*>(&img))
-//        py_img = getPyArrayFromPyObject(py_arr, 'u', 'b', false);
-//    else
-//        throw Exc("imageCpu_from_PyArray(): conversion for this image type not implemented");
-
-//    PixelType* data = static_cast<PixelType*>(PyArray_DATA(py_img));          // get data pointer
-//    img = iu::ImageCpu<PixelType, Allocator>(data, dims[1], dims[0], dims[1]*sizeof(PixelType), true);  // wrap it in imagecpu
+//    iuprivate::copy(&h_img, &img);
 //}
 
 
-
-
-/**
- * @brief imageGpu_from_PyArray iu::imageGpu from a boost::python::object holding a PyArray
- * @param py_arr boost::python::object representing a numpy array
- * @param img The ImageGpu. It should be empty (i.e. size 0), a new ImageGpu with the right size
- * will be created. If the pixeltype of the ImageGpu does not match the datatype of
- * the numpy array an exception is thrown.
- */
-template<typename PixelType, class Allocator>
-void imageGpu_from_PyArray(const bp::object& py_arr,
-                           iu::ImageGpu<PixelType, Allocator> &img)
-{
-    if (img.data())
-        throw Exc("imageGpu_from_PyArray(): Expected emtpy image (will be created with right size)! ");
-
-    iu::ImageCpu<PixelType, iuprivate::ImageAllocatorCpu<PixelType> > h_img;
-    imageCpu_from_PyArray(py_arr, h_img);
-
-    img = iu::ImageGpu<PixelType, Allocator>(h_img.size());  // allocate new gpu image
-
-    iuprivate::copy(&h_img, &img);
-}
 
 
 /**
@@ -206,7 +172,6 @@ void imageGpu_from_PyArray(const bp::object& py_arr,
 template<typename PixelType, class Allocator>
 PyObject* PyArray_from_ImageCpu(iu::ImageCpu<PixelType, Allocator> &img)
 {
-
     npy_intp dims[2] = { img.height(), img.width() };
     PyObject* res = NULL;
 
@@ -234,10 +199,22 @@ PyObject* PyArray_from_ImageCpu(iu::ImageCpu<PixelType, Allocator> &img)
 template<typename PixelType, class Allocator>
 PyObject* PyArray_from_ImageGpu(iu::ImageGpu<PixelType, Allocator> &img)
 {
-    iu::ImageCpu<PixelType, iuprivate::ImageAllocatorCpu<PixelType> > h_img(img.size());
-    iuprivate::copy(&img, &h_img);
+    npy_intp dims[2] = { img.height(), img.width() };
+    PyObject* res = NULL;
 
-    return PyArray_from_ImageCpu(h_img);
+    if (dynamic_cast<iu::ImageGpu_32f_C1*>(&img))
+        res = PyArray_SimpleNew(2, dims, NPY_FLOAT32);        // new numpy array
+    else if (dynamic_cast<iu::ImageGpu_8u_C1*>(&img))
+        res = PyArray_SimpleNew(2, dims, NPY_UINT8);        // new numpy array
+    else
+        throw Exc("PyArray_from_ImageGpu(): conversion for this image type not implemented");
+
+
+    PixelType* data = static_cast<PixelType*>(PyArray_DATA((PyArrayObject*)res));    // data pointer
+    iu::ImageCpu<PixelType, iuprivate::ImageAllocatorCpu<PixelType> > h_pyRef(data, dims[1], dims[0], dims[1]*sizeof(PixelType), true);  // wrapped in imagecpu
+
+    iuprivate::copy(&img, &h_pyRef);
+    return res;
 }
 
 
@@ -320,7 +297,15 @@ void Matrix4f_from_PyArray(const bp::object& py_arr, Eigen::Ref<Eigen::Matrix4f>
 
 namespace iu {
 
-
+/**
+ * @brief ImageCpu<PixelType, Allocator>::ImageCpu constructor from numpy array. It just wraps the numpy data pointer
+ * i.e. does not perform a deep copy. This means that changes to the ImageCpu are transparent to python.
+ * Attention: It performs just a basic check if the datatyps are compatible: If you have a numpy array with
+ * uint8 and you try to construct a ImageCpu_32f_C1 from it, it will throw an exception. Constructing a ImageCpu_32u_C1
+ * from a numpy float32 array will not give an error (both are 32-bit datatypes)!
+ *
+ * @param py_arr a boost::python::object representing a numpy array
+ */
 template<typename PixelType, class Allocator>
 ImageCpu<PixelType, Allocator>::ImageCpu(boost::python::object &py_arr) : data_(0), pitch_(0), ext_data_pointer_(true)
 {

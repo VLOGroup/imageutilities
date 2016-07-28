@@ -6,7 +6,7 @@
 #include <thrust/transform_reduce.h>
 #include <thrust/iterator/constant_iterator.h>
 
-#include "helper_math.h"
+#include "iuhelpermath.h"
 
 namespace iuprivate {
 namespace math {
