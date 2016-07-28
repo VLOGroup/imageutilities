@@ -20,7 +20,14 @@ using std::string;
 
 namespace iu {
 
+/// python interface
 namespace python {
+
+/** \defgroup IuPython iupython
+ * \brief Interface to python. Contains functions to convert between ImageUtilities classes and
+ * python objects through boost.python.
+ * \{
+ */
 
 
 
@@ -40,7 +47,7 @@ private:
 };
 
 /**
- * @brief ExcTranslator Custom exception translator to map c++ exceptions -> python.
+ * Custom exception translator to map c++ exceptions -> python.
  * Call "bp::register_exception_translator<Exc>(&iu::python::ExcTranslator);" in your BOOST_PYTHON_MODULE
  * @param err
  */
@@ -50,10 +57,10 @@ static void ExcTranslator(const Exc& err)
 }
 
 /**
- * @brief getPyArrayFromPyObject get a PyArray from a generic PyObject. The memory referenced by the numpy array must be c-contiguous
+ * @brief get a PyArray from a generic PyObject. The memory referenced by the numpy array must be c-contiguous
  * @param obj a PyObject* wrapped in boost::python::object
- * @param kind datatype kind. <b>ool, <i>nt (signed) <u>int, <f>loat, <c>omplex... See numpy C-API. Default 'x' = disable check
- * @param type <b>yte, <i>int, <f>loat, <d>ouble... See numpy C-API. Default 'x' = disable check
+ * @param kind datatype kind. \<b\>ool, \<i\>nt (signed) \<u\>int, \<f\>loat, \<c\>omplex... See numpy C-API. Default 'x' = disable check
+ * @param type \<b\>yte, \<i\>int, \<f\>loat, \<d\>ouble... See numpy C-API. Default 'x' = disable check
  * @param writeable bool to indicate writable. Default true
  * @return a PyArrayObject pointer
  */
@@ -138,7 +145,7 @@ PyArrayObject* getPyArrayFromPyObject(const bp::object& obj, char kind = 'x', ch
 }
 
 
-///**
+//*
 // * @brief imageGpu_from_PyArray iu::imageGpu from a boost::python::object holding a PyArray
 // * @param py_arr boost::python::object representing a numpy array
 // * @param img The ImageGpu. It should be empty (i.e. size 0), a new ImageGpu with the right size
@@ -164,7 +171,7 @@ PyArrayObject* getPyArrayFromPyObject(const bp::object& obj, char kind = 'x', ch
 
 
 /**
- * @brief PyArray_from_ImageCpu PyArray from an ImageCpu
+ * @brief PyArray from an ImageCpu
  * @param img An ImageCpu
  * @return A PyObject* representing a numpy array that can be returned directly to python. The PyObject* contains
  * a deep copy of the ImageCpu data and can be manipulated in python independent from the ImageCpu
@@ -192,7 +199,7 @@ PyObject* PyArray_from_ImageCpu(iu::ImageCpu<PixelType, Allocator> &img)
 
 
 /**
- * @brief PyArray_from_ImageGpu PyArray from an ImageGpu
+ * @brief PyArray from an ImageGpu
  * @param img An ImageGpu
  * @return A PyObject* representing a numpy array that can be returned directly to python.
  */
@@ -220,7 +227,7 @@ PyObject* PyArray_from_ImageGpu(iu::ImageGpu<PixelType, Allocator> &img)
 
 
 /**
- * @brief Matrix3f_from_PyArray Get an Eigen::Matrix3f from a numpy array
+ * @brief Get an Eigen::Matrix3f from a numpy array
  * @param py_arr numpy array (must contain floating point data, double will be cast to float)
  * @param m Matrix3f to fill
  */
@@ -254,7 +261,7 @@ void Matrix3f_from_PyArray(const bp::object& py_arr, Eigen::Ref<Eigen::Matrix3f>
 }
 
 /**
- * @brief Matrix4f_from_PyArray Get an Eigen::Matrix4f from a numpy array
+ * @brief Get an Eigen::Matrix4f from a numpy array
  * @param py_arr numpy array (must contain floating point data, double will be cast to float)
  * @param m Matrix4f to fill
  */
@@ -288,7 +295,7 @@ void Matrix4f_from_PyArray(const bp::object& py_arr, Eigen::Ref<Eigen::Matrix4f>
     }
 }
 
-
+/** \} */ // end of iupython
 
 } // namespace python
 
@@ -297,15 +304,9 @@ void Matrix4f_from_PyArray(const bp::object& py_arr, Eigen::Ref<Eigen::Matrix4f>
 
 namespace iu {
 
-/**
- * @brief ImageCpu<PixelType, Allocator>::ImageCpu constructor from numpy array. It just wraps the numpy data pointer
- * i.e. does not perform a deep copy. This means that changes to the ImageCpu are transparent to python.
- * Attention: It performs just a basic check if the datatyps are compatible: If you have a numpy array with
- * uint8 and you try to construct a ImageCpu_32f_C1 from it, it will throw an exception. Constructing a ImageCpu_32u_C1
- * from a numpy float32 array will not give an error (both are 32-bit datatypes)!
- *
- * @param py_arr a boost::python::object representing a numpy array
- */
+/** \ingroup IuPython
+ *  \{ */
+
 template<typename PixelType, class Allocator>
 ImageCpu<PixelType, Allocator>::ImageCpu(boost::python::object &py_arr) : data_(0), pitch_(0), ext_data_pointer_(true)
 {
@@ -384,7 +385,8 @@ ImageCpu<PixelType, Allocator>::ImageCpu(boost::python::object &py_arr) : data_(
     data_ = reinterpret_cast<PixelType*>(PyArray_DATA(py_img));
 }
 
-
+/** \} */ // end of ingroup copy
 
 
 } // namespace iu
+
