@@ -6,6 +6,7 @@
 #ifndef  __CUDA_ARCH__
 #include <algorithm>
 #include <error.h>
+#include <stddef.h>
 #endif
 
 template<typename T, typename U> constexpr size_t offsetOf(U T::*member){
