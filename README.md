@@ -1,7 +1,7 @@
 ImageUtilities - Bridge the gap between CPU and GPU
 ===================================================
 
-Installation:
+Installation
 -------------
 
 - Set up environment variable `COMPUTE_CAPABILITY` with the CC of your CUDA-enabled GPU
@@ -17,12 +17,15 @@ $ make
 $ make install
 ~~~
 
-To build the documentation (requires doxygen), additionally
+Documentation
+-------------
+A pre-built documentation is available [here](https://vlogroup.github.io/imageutilities/).
+To build the documentation on your own (requires doxygen), additionally do
 ~~~
 $ make apidoc
 ~~~
 
-Usage:
+Usage
 ------
 
 In your cmake-based project include the following lines
@@ -40,7 +43,7 @@ target_link_libraries(your_application
 )
 ~~~
 
-Example:
+Example
 --------
 
 Image Utilities take away the hassle of memory management when dealing with CUDA
