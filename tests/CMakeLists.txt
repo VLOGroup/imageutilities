@@ -1,101 +1,63 @@
-# Copyright (c) ICG. All rights reserved.
-#
-# Institute for Computer Graphics and Vision
-# Graz University of Technology / Austria
-#
-#
-# This software is distributed WITHOUT ANY WARRANTY; without even
-# the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-# PURPOSE.  See the above copyright notices for more information.
-#
-#
-# Project     : ImageUtilities
-# Module      : overall CMake
-# Language    : CMake
-# Description : overall CMakeFile for building the ImageUtilities library
-#
-# Author     : Manuel Werlberger
-# EMail      : werlberger@icg.tugraz.at
+project (tests)
 
-PROJECT(imageutilities_tests CXX C)
+cmake_minimum_required(VERSION 2.8)
 
-cmake_minimum_required(VERSION 2.8.0)
-if(COMMAND cmake_policy)
-  cmake_policy(SET CMP0003 NEW)
-endif(COMMAND cmake_policy)
 
-FILE(TO_CMAKE_PATH "$ENV{VMLIBRARIES_ROOT}/imageutilities/cmake" OT_VMLIBRARIES_CMAKE_MODULE_PATH)
-SET(CMAKE_MODULE_PATH ${OT_VMLIBRARIES_CMAKE_MODULE_PATH})
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/tests)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/tests)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/tests)
 
-# install settings
-OPTION(VMLIBRARIES_IU_UNITTESTS_INSTALL_LOCAL "Installation of the ImageUtilities unittest binaries in the local vmlibraries tree." ON)
-if(VMLIBRARIES_IU_UNITTESTS_INSTALL_LOCAL )
-  if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-    set(CMAKE_INSTALL_PREFIX $ENV{VMLIBRARIES_ROOT} CACHE PATH "ImageUtilities install prefix" FORCE)
-  endif(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-endif(VMLIBRARIES_IU_UNITTESTS_INSTALL_LOCAL)
-if(NOT VMLIBRARIES_IU_UNITTESTS_INSTALL_LOCAL OR NOT CMAKE_INSTALL_PREFIX)
-  if(NOT UNIX)
-    set(CMAKE_INSTALL_PREFIX $ENV{ProgramFiles}/VMLibraries CACHE PATH "ImageUtilities install prefix" FORCE)
-  else(NOT UNIX)
-    set(CMAKE_INSTALL_PREFIX /usr/local CACHE PATH "ImageUtilities install prefix" FORCE)
-  endif(NOT UNIX)
-endif(NOT VMLIBRARIES_IU_UNITTESTS_INSTALL_LOCAL OR NOT CMAKE_INSTALL_PREFIX)
+# Include the private copy of the imageutilities (not the installed one)
+#include_directories(${CMAKE_CURRENT_SOURCE_DIR}/..)
 
+include_directories(${CMAKE_CURRENT_LIST_DIR}/../src/)
+
+## Compiler Flags (to be added on demand)
+#set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-Wall --std=c++11")
+#set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} "-expt-extended-lambda -ftemplate-backtrace-limit=2 -Xcompiler -fPIC -lineinfo -Xcompiler -Wno-unused-but-set-variable -pg -lineinfo")
+
+# This is the path where the images and testdata are stored
+SET( DATA_DIR ${CMAKE_CURRENT_SOURCE_DIR}/data)
+SET( RESULTS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/results)
+file(MAKE_DIRECTORY ${RESULTS_DIR})
+# process the config file to embed the DATA_DIR to the test programs
+CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_SOURCE_DIR}/config.h )
+
+file(TO_CMAKE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../cmake" OT_IU_CMAKE_MODULE_PATH)
+set(CMAKE_MODULE_PATH ${OT_IU_CMAKE_MODULE_PATH})
+
+## add subdirectories which should be actually built
 ##-----------------------------------------------------------------------------
-## Compiler Flags
-if(UNIX)
-  # enable warnings
-  add_definitions( -Wall)
-  # and debug flags
-  add_definitions( -g )
-endif()
 
-IF(WIN32)
-  ADD_DEFINITIONS(-DWIN32)
-  # for msvc 8 deprecated warning removal
-  ADD_DEFINITIONS(-D_CRT_SECURE_NO_DEPRECATE)
-  ADD_DEFINITIONS(-D_CRT_NONSTDC_NO_DEPRECATE)
-  ADD_DEFINITIONS(-D_CRT_SECURE_NO_DEPRECATE_GLOBALS)
+# include the test projects
+#add_custom_target(build_and_test ${CMAKE_CTEST_COMMAND} -V)
 
-  SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /NODEFAULTLIB:LIBCMT.lib")
-endif(WIN32)
+macro(iu_add_test target)
+  #add_test(NAME ${target} COMMAND ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${target} )
+  #add_dependencies(build_and_test ${target})
 
-## test if ipp is available
-find_package(IPP QUIET)
+  add_test(NAME ${target}_build COMMAND "${CMAKE_COMMAND}" --build ${CMAKE_BINARY_DIR} --target ${target})# ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${target} )
+  ADD_TEST(NAME ${target}_run COMMAND ${target})
+  SET_TESTS_PROPERTIES ( ${target}_run PROPERTIES DEPENDS ${target}_build)
+endmacro(iu_add_test)
 
-## combine different tests:
-include(CTest)
-enable_testing()
 
-message(STATUS "iucore unittests:")
-add_subdirectory(iucore_unittests)
+add_subdirectory(coreTest_copy)
+if(WITH_PYTHON)
+add_subdirectory(pythonTest)
+endif(WITH_PYTHON)
+if(IU_USE_NDARRAY)
+add_subdirectory(ndarrayTest)
+endif(IU_USE_NDARRAY)
+if(IU_USE_IO)
+  add_subdirectory(ioTest)
+  if(IU_USE_MATH)
+    add_subdirectory(mathTest)
+  endif(IU_USE_MATH)
+  if(WITH_OPENEXR)
+    find_package(OpenEXR REQUIRED)
+    include_directories(${OPENEXR_INCLUDE_DIRS})
+    add_subdirectory(exrTest)
+  endif(WITH_OPENEXR)
+endif(IU_USE_IO)
 
- if(IPP_FOUND)
-   message(STATUS "iuipp unittests:")
-   add_subdirectory(iuipp_unittests)
- endif(IPP_FOUND)
-
-message(STATUS "iumath unittests:")
-add_subdirectory(iumath_unittests)
-
-#message(STATUS "iusparse unittests:")
-#add_subdirectory(iusparse_unittests)
-
-message(STATUS "iugui unittests:")
-add_subdirectory(iugui_unittests)
-
-message(STATUS "iuio unittests:")
-add_subdirectory(iuio_unittests)
-
-message(STATUS "iufilter unittests:")
-add_subdirectory(iufilter_unittests)
-
-message(STATUS "iutransform unittests:")
-add_subdirectory(iutransform_unittests)
-
-## install the tests into the bin directory if you want to
-
-## Two different types of installation supported:
-## *) local: for developement (e.g. svn checkout -- currently the default)
-## *) global: for usage only (care about mixing up the two -> the global one will be preffered!)

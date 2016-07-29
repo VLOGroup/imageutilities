@@ -1,26 +1,3 @@
-/*
- * Copyright (c) ICG. All rights reserved.
- *
- * Institute for Computer Graphics and Vision
- * Graz University of Technology / Austria
- *
- *
- * This software is distributed WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- * PURPOSE.  See the above copyright notices for more information.
- *
- *
- * Project     : VMLibraries
- * Module      : Image base class
- * Class       : Image
- * Language    : C++
- * Description : Implementation of image base class
- *
- * Author     : Manuel Werlberger
- * EMail      : werlberger@icg.tugraz.at
-
- *
- */
 
 #ifndef IUCORE_IMAGE_H
 #define IUCORE_IMAGE_H
@@ -28,77 +5,96 @@
 #include "globaldefs.h"
 #include "coredefs.h"
 
+#include <ostream>
+#include <typeinfo>
+
 namespace iu{
 
-//! \todo We maybe do not want to have the Image class in the public dll interface??
+/** \defgroup Image Pitched memory: Image
+ *  \ingroup MemoryManagement
+ *  \brief Memory management for Image classes.
+ *
+ *  This handles the memory management for following pitched memory classes:
+ *  - ImageCpu
+ *  - ImageGpu
+ *
+ * The device memory class can be easily passed to CUDA kernels using a special
+ * struct. This struct gives the possibility to not only access the data pointer
+ * of the image but also other useful information such as size and strides of the
+ * object.
+ * - ImageGpu::KernelData
+ *
+ * \todo We maybe do not want to have the Image class in the public dll interface??
+ *
+ * \{
+ */
+
+/** \brief Base class for 2D images (pitched memory). */
 class Image
 {
 public:
-  Image(IuPixelType pixel_type) :
-    pixel_type_(pixel_type), size_(0,0), roi_(0,0,0,0)
+  /** Constructor. */
+  Image() :
+   size_(0,0)
   {
   }
 
+  /** Destructor. */
   virtual ~Image()
   {
   }
 
-  Image(const Image &from) :
-    pixel_type_(from.pixelType()), size_(from.size_), roi_(from.roi_)
+  /** Special constructor.
+   *  @param width Width of the Image
+   *  @param height Height of the Image
+   */
+  Image( unsigned int width, unsigned int height) :
+       size_(width, height)
   {
   }
 
-  Image(IuPixelType pixel_type, unsigned int width, unsigned int height) :
-      pixel_type_(pixel_type), size_(width, height), roi_(0, 0, width, height)
+  /** Special constructor.
+   *  @param size Size of the Image
+   */
+  Image( const IuSize &size) :
+      size_(size)
   {
   }
 
-  Image(IuPixelType pixel_type, const IuSize &size) :
-      pixel_type_(pixel_type), size_(size), roi_(0, 0, size.width, size.height)
-  {
-  }
-
-  Image& operator= (const Image &from)
-  {
-    // TODO == operator
-    this->pixel_type_ = from.pixel_type_;
-    this->size_ = from.size_;
-    this->roi_ = from.roi_;
-    return *this;
-  }
-
-  void setRoi(const IuRect& roi)
-  {
-    roi_ = roi;
-  }
-
-  /** Returns the element types. */
-  IuPixelType pixelType() const
-  {
-    return pixel_type_;
-  }
-
+  /** Get the size of the Image
+   *  @return Size of the Image
+   */
   IuSize size() const
   {
     return size_;
   }
 
-  IuRect roi() const
-  {
-    return roi_;
-  }
-
+  /** Get the width of the Image.
+   *  @return Width of the Image
+   */
   unsigned int width() const
   {
     return size_.width;
   }
 
+  /** Get the height of the Image.
+   *  @return Height of the Image
+   */
   unsigned int height() const
   {
     return size_.height;
   }
 
-  /** Returns the number of pixels in the image. */
+  /** Compares the Image type to a target Image.
+   *  @param from Target Image.
+   *  @return Returns true if target class is of the same type (using RTTI).
+   */
+  bool sameType(const Image &from)
+  {
+      return typeid(from)==typeid(*this);
+  }
+
+  /** Returns the number of pixels in the Image. */
   size_t numel() const
   {
     return (size_.width * size_.height);
@@ -110,7 +106,7 @@ public:
   /** Returns the distance in bytes between starts of consecutive rows. */
   virtual size_t pitch() const {return 0;};
 
-  /** Returns the distnace in pixels between starts of consecutive rows. */
+  /** Returns the distance in pixels between starts of consecutive rows. */
   virtual size_t stride() const {return 0;};
 
   /** Returns the bit depth of the data pointer. */
@@ -119,12 +115,28 @@ public:
   /** Returns flag if the image data resides on the device/GPU (TRUE) or host/GPU (FALSE) */
   virtual bool onDevice() const {return false;};
 
-private:
-  IuPixelType pixel_type_;
+  /** Operator<< overloading. Output of Image class. */
+  friend std::ostream& operator<<(std::ostream & out,
+                                  Image const& image)
+  {
+    out << "Image: " << image.size() << " stride="
+        << image.stride() << " onDevice=" << image.onDevice();
+    return out;
+  }
+
+protected:
+  /** Size of the Image. */
   IuSize size_;
-  IuRect roi_;
+
+private:
+  /** Private copy constructor. */
+  Image(const Image&);
+  /** Private copy assignment operator. */
+  Image& operator=(const Image&);
 };
 
-} // namespace iuprivate
+/** \} */ // end of Image
+
+} // namespace iu
 
 #endif // IUCORE_IMAGE_H

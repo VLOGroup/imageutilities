@@ -1,0 +1,105 @@
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8.9)
+
+# function to find header files
+function(find_headers out_header_list_name) # example: find_headers(HH ${SRCLIST})
+	LIST(REMOVE_AT ARGV 0) # remove the first argument = out_header_list_name
+	SET(HH)
+	FOREACH(file ${ARGV})
+		#message(${file})
+		get_filename_component(ffile ${file} REALPATH) # full absolute path
+		get_filename_component(dir ${ffile} PATH) # just path
+		#message(${dir})
+		set(H)
+		set(HXX)
+		set(HPP)
+		set(CUH)
+		file(GLOB_RECURSE H "${dir}/*.h")
+		file(GLOB_RECURSE HXX "${dir}/*.hxx")
+		file(GLOB_RECURSE HPP "${dir}/*.hpp")
+		file(GLOB_RECURSE CUH "${dir}/*.cuh")
+		LIST(APPEND HH ${H} ${HXX} ${HPP} ${CUH})
+	ENDFOREACH()
+	if(HH MATCHES "")
+	else()
+		LIST(REMOVE_DUPLICATES HH)
+	endif()
+	#message(${HH})
+	set(${out_header_list_name} ${HH} PARENT_SCOPE)
+endfunction(find_headers)
+
+# function to generate nice project files for IDEs
+function(source_group_path srcdir)
+	get_filename_component(SRCDIR ${srcdir} REALPATH) # make sure relative pathes does not get confused
+	#MESSAGE(${SRCDIR})
+	LIST(REMOVE_AT ARGV 0) # remove the first argument = srcdir
+	FOREACH(file ${ARGV})
+		get_filename_component(ffile ${file} REALPATH)
+		#MESSAGE(${ffile})
+		FILE(RELATIVE_PATH pth ${SRCDIR} ${ffile})
+		#MESSAGE(${pth})
+		get_filename_component(rdir ${pth} PATH)
+		if(rdir MATCHES "")
+			SET(rrdir ${rdir})
+		else()
+			#MESSAGE(${rdir})
+			string(REPLACE "/" "\\" rrdir ${rdir})
+		endif()
+		get_filename_component(name ${pth} NAME)
+       		#MESSAGE(${rrdir} : ${name})
+		source_group(${rrdir} FILES ${file})
+		#ALLILUJA!
+	ENDFOREACH()
+endfunction(source_group_path)
+
+#_______________libraries___________________
+function(my_add_library TARGET CPP) # example: my_add_library(mylib ${CPP})
+	LIST(REMOVE_AT ARGV 0)
+	SET(CPP ${ARGV}) # this is the hack around to pass in a list
+	#message(STATUS "my_add_library(" ${TARGET} ",[" ${CPP} "])")
+	find_headers(HH ${CPP})
+	source_group_path(${SRC_DIR} ${CPP})
+	source_group_path(${SRC_DIR} ${HH})
+	add_library(${TARGET} ${CPP} ${HH})
+
+	target_link_libraries(${TARGET} ${MYLIBS} ${LIBRARY_DEPENDENCIES})
+	# copy that into lib folder
+	add_custom_command(TARGET ${TARGET} POST_BUILD COMMAND ${CMAKE_COMMAND} -E make_directory ${MY_LIB_PATH})
+	add_custom_command(TARGET ${TARGET} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${TARGET}> ${MY_LIB_PATH})
+	# add to list
+	SET(MYLIBS ${TARGET} ${MYLIBS} PARENT_SCOPE) # insert in front, which is important for linking
+endfunction()
+
+#_______________cuda libraries___________________
+function(my_cuda_add_library TARGET CPP) # example: my_add_library(mylib ${CPP})
+	LIST(REMOVE_AT ARGV 0)
+	SET(CPP ${ARGV}) # this is the hack around to pass in a list
+	#message(STATUS "my_cuda_add_library(" ${TARGET} ",[" ${CPP} "])")
+	find_headers(HH ${CPP})
+	source_group_path(${SRC_DIR} ${CPP})
+	source_group_path(${SRC_DIR} ${HH})
+	cuda_add_library(${TARGET} ${CPP} ${HH})
+
+	target_link_libraries(${TARGET} ${MYLIBS} ${LIBRARY_DEPENDENCIES})
+	# copy that into lib folder
+	add_custom_command(TARGET ${TARGET} POST_BUILD COMMAND ${CMAKE_COMMAND} -E make_directory ${MY_LIB_PATH})
+	add_custom_command(TARGET ${TARGET} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${TARGET}> ${MY_LIB_PATH})
+	# add to list
+	SET(MYLIBS ${TARGET} ${MYLIBS} PARENT_SCOPE) # insert in front, which is important for linking
+endfunction()
+
+#___________________TESTS_____________________
+function(my_cuda_add_executable TARGET CPP) # example: my_add_executable(TARGET ${CPP})
+	LIST(REMOVE_AT ARGV 0)
+	SET(CPP ${ARGV}) # this is the hack around to pass in a list
+	#message(STATUS "my_cuda_add_executable(" ${TARGET} ",[" ${CPP} "])")
+
+	source_group("\\" FILES ${CPP})
+	cuda_add_executable(${TARGET} ${CPP} ${HH})
+
+	message(STATUS "libs =" ${MYLIBS})
+	target_link_libraries(${TARGET} ${MYLIBS} ${LIBRARY_DEPENDENCIES})
+	# copy that into bin folder
+	add_custom_command(TARGET ${TARGET} POST_BUILD COMMAND ${CMAKE_COMMAND} -E make_directory ${MY_BIN_PATH})
+	add_custom_command(TARGET ${TARGET} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${TARGET}> ${MY_BIN_PATH})
+endfunction()
+

@@ -1,29 +1,7 @@
-/*
- * Copyright (c) ICG. All rights reserved.
- *
- * Institute for Computer Graphics and Vision
- * Graz University of Technology / Austria
- *
- *
- * This software is distributed WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- * PURPOSE.  See the above copyright notices for more information.
- *
- *
- * Project     : ImageUtilities
- * Module      : IO Module
- * Class       : Wrapper
- * Language    : C
- * Description : Implementation of public interfaces to IO module
- *
- * Author     : Manuel Werlberger
- * EMail      : werlberger@icg.tugraz.at
- *
- */
 
 #include "iuio.h"
 #include "iuio/imageio.h"
-#include "iuio/imageiopgm.h"
+//#include "iuio/imageiopgm.h"
 
 namespace iu {
 
@@ -77,9 +55,6 @@ bool imsave(iu::ImageCpu_8u_C4* image, const std::string& filename, const bool& 
 bool imsave(iu::ImageCpu_32f_C1* image, const std::string& filename, const bool& normalize)
 { return iuprivate::imsave(image, filename, normalize); }
 
-bool imsave(iu::ImageCpu_32s_C1* image, const std::string& filename, const bool& normalize)
-{ return iuprivate::imsave(image, filename, normalize); }
-
 bool imsave(iu::ImageCpu_32f_C3* image, const std::string& filename, const bool& normalize)
 { return iuprivate::imsave(image, filename, normalize); }
 
@@ -93,9 +68,6 @@ bool imsave(iu::ImageGpu_8u_C4* image, const std::string& filename, const bool& 
 { return iuprivate::imsave(image, filename, normalize); }
 
 bool imsave(iu::ImageGpu_32f_C1* image, const std::string& filename, const bool& normalize)
-{ return iuprivate::imsave(image, filename, normalize); }
-
-bool imsave(iu::ImageGpu_32s_C1* image, const std::string& filename, const bool& normalize)
 { return iuprivate::imsave(image, filename, normalize); }
 
 bool imsave(iu::ImageGpu_32f_C4* image, const std::string& filename, const bool& normalize)
@@ -135,27 +107,5 @@ void imshow(iu::ImageGpu_32f_C1* image, const std::string& winname, const bool& 
 void imshow(iu::ImageGpu_32f_C4* image, const std::string& winname, const bool& normalize)
 { iuprivate::imshow(image, winname, normalize); }
 
-
-/* ***************************************************************************
-     print device memory to file
- * ***************************************************************************/
-
-void printToFile(iu::ImageGpu_32f_C1 *image, const std::string &name)
-{ iuprivate::printToFile(image, name); }
-
-void printToFile(iu::ImageGpu_8u_C1 *image, const std::string &name)
-{ iuprivate::printToFile(image, name); }
-
-void printToFile(iu::ImageCpu_32f_C1 *image, const std::string &name)
-{ iuprivate::printToFile(image, name); }
-
-void printToFile(iu::ImageCpu_8u_C1 *image, const std::string &name)
-{ iuprivate::printToFile(image, name); }
-
-void printToFile(iu::LinearDeviceMemory_32f_C1 *data, const std::string &name)
-{ iuprivate::printToFile(data, name); }
-
-void printToFile(iu::LinearHostMemory_32f_C1 *data, const std::string &name)
-{ iuprivate::printToFile(data, name); }
 
 } // namespace iu

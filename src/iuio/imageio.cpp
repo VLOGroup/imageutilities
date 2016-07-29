@@ -1,29 +1,12 @@
-/*
- * Copyright (c) ICG. All rights reserved.
- *
- * Institute for Computer Graphics and Vision
- * Graz University of Technology / Austria
- *
- *
- * This software is distributed WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- * PURPOSE.  See the above copyright notices for more information.
- *
- *
- * Project     : ImageUtilities
- * Module      : IO;
- * Class       : none
- * Language    : C++
- * Description : Implementation of image I/O functions
- *
- * Author     : Manuel Werlberger
- * EMail      : werlberger@icg.tugraz.at
- *
- */
 
 #include <stdio.h>
-#include <cv.h>
-#include <highgui.h>
+#ifdef OPENCV_3
+#include <opencv2/highgui.hpp>
+#include <opencv2/imgproc.hpp>
+#else
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+#endif
 #include <iucore/copy.h>
 #include "imageio.h"
 
@@ -296,22 +279,6 @@ bool imsave(iu::ImageCpu_32f_C4* image, const std::string& filename, const bool&
   return cv::imwrite(filename, bgr);
 }
 
-
-//-----------------------------------------------------------------------------
-bool imsave(iu::ImageCpu_32s_C1* image, const std::string& filename, const bool& normalize)
-{
-  IuSize sz = image->size();
-  cv::Mat mat_imageCpu(sz.height, sz.width, CV_32SC1, image->data(), image->pitch());
-  cv::Mat mat_32f(sz.height, sz.width, CV_32FC1);
-  mat_imageCpu.convertTo(mat_32f, mat_32f.type());
-  if(normalize)
-    cv::normalize(mat_32f, mat_32f, 0.0, 255.0, cv::NORM_MINMAX);
-  cv::Mat mat_8u(sz.height, sz.width, CV_8UC1);
-  mat_32f.convertTo(mat_8u, mat_8u.type());
-  return cv::imwrite(filename, mat_8u);
-}
-
-
 //-----------------------------------------------------------------------------
 bool imsave(iu::ImageGpu_8u_C1* image, const std::string& filename, const bool& normalize)
 {
@@ -343,15 +310,6 @@ bool imsave(iu::ImageGpu_32f_C4* image, const std::string& filename, const bool&
   iuprivate::copy(image, &cpu_image);
   return iuprivate::imsave(&cpu_image, filename, normalize);
 }
-
-//-----------------------------------------------------------------------------
-bool imsave(iu::ImageGpu_32s_C1* image, const std::string& filename, const bool& normalize)
-{
-  iu::ImageCpu_32s_C1 cpu_image(image->size());
-  iuprivate::copy(image, &cpu_image);
-  return iuprivate::imsave(&cpu_image, filename, normalize);
-}
-
 
 
 /* ****************************************************************************
@@ -433,6 +391,8 @@ void imshow(iu::ImageCpu_32f_C4* image, const std::string& winname, const bool& 
 {
   IuSize sz = image->size();
   cv::Mat mat_32f(sz.height, sz.width, CV_32FC4, (float*)image->data(), image->pitch());
+  if(normalize)
+    cv::normalize(mat_32f, mat_32f, 0.0, 1.0, cv::NORM_MINMAX);
   cv::Mat bgr;
   cv::cvtColor(mat_32f, bgr, CV_RGBA2BGR);
 
@@ -473,98 +433,6 @@ void imshow(iu::ImageGpu_32f_C4* image, const std::string& winname, const bool& 
   iuprivate::copy(image, &cpu_image);
 
   iuprivate::imshow(&cpu_image, winname, normalize);
-}
-
-
-void printToFile(iu::ImageCpu_32f_C1 *image, const std::string &name)
-{
-  printf("Writing file %s\n", name.c_str());
-
-  FILE *fh = fopen(name.c_str(), "w");
-  if (!fh)
-  {
-    printf("Error: Could not open file %s for writing\n", name.c_str());
-    return;
-  }
-
-  fprintf(fh, "%d %d\n", image->width(), image->height());
-  for (unsigned int y=0; y < image->height(); y++)
-  {
-    for (unsigned int x=0; x < image->width(); x++)
-    {
-      fprintf(fh, "%.7f ", *image->data(x,y));
-    }
-    fprintf(fh, "\n");
-  }
-
-  fclose(fh);
-}
-
-void printToFile(iu::ImageCpu_8u_C1 *image, const std::string &name)
-{
-  printf("Writing file %s\n", name.c_str());
-
-  FILE *fh = fopen(name.c_str(), "w");
-  if (!fh)
-  {
-    printf("Error: Could not open file %s for writing\n", name.c_str());
-    return;
-  }
-
-  fprintf(fh, "%d %d\n", image->width(), image->height());
-  for (unsigned int y=0; y < image->height(); y++)
-  {
-    for (unsigned int x=0; x < image->width(); x++)
-    {
-      fprintf(fh, "%.0f ", static_cast<float>(*image->data(x,y)));
-    }
-    fprintf(fh, "\n");
-  }
-
-  fclose(fh);
-}
-
-
-void printToFile(iu::ImageGpu_8u_C1 *image, const std::string &name)
-{
-  iu::ImageCpu_8u_C1 host_image(image->size());
-  iuprivate::copy(image, &host_image);
-
-  printToFile(&host_image, name);
-}
-
-void printToFile(iu::ImageGpu_32f_C1 *image, const std::string &name)
-{
-  iu::ImageCpu_32f_C1 host_image(image->size());
-  iuprivate::copy(image, &host_image);
-
-  printToFile(&host_image, name);
-}
-
-
-void printToFile(iu::LinearDeviceMemory_32f_C1 *data, const std::string &name)
-{
-  iu::LinearHostMemory_32f_C1 host_data(data->length());
-  iuprivate::copy(data, &host_data);
-
-  iuprivate::printToFile(&host_data, name);
-}
-
-void printToFile(iu::LinearHostMemory_32f_C1 *data, const std::string &name)
-{
-  printf("Writing file %s\n", name.c_str());
-
-  FILE *fh = fopen(name.c_str(), "w");
-  if (!fh)
-  {
-    printf("Error: Could not open file %s for writing\n", name.c_str());
-    return;
-  }
-
-  for (unsigned int x=0; x < data->length(); x++)
-    fprintf(fh, "%.6f ", *data->data(x));
-
-  fclose(fh);
 }
 
 

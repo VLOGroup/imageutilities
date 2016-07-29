@@ -1,31 +1,11 @@
-/*
- * Copyright (c) ICG. All rights reserved.
- *
- * Institute for Computer Graphics and Vision
- * Graz University of Technology / Austria
- *
- *
- * This software is distributed WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- * PURPOSE.  See the above copyright notices for more information.
- *
- *
- * Project     : ImageUtilities
- * Module      : Core Module
- * Class       : Wrapper
- * Language    : C
- * Description : Implementation of public interfaces to core module
- *
- * Author     : Manuel Werlberger
- * EMail      : werlberger@icg.tugraz.at
- *
- */
 
 #include "iucore.h"
-#include <iucore/copy.h>
-#include <iucore/setvalue.h>
-#include <iucore/clamp.h>
-#include <iucore/convert.h>
+#include "iucore/copy.h"
+#include "iucore/convert.h"
+#include "iucore/filter.h"
+#include "iucore/reduce.h"
+#include "iucore/remap.h"
+#include "iucore/prolongate.h"
 
 namespace iu {
 
@@ -54,6 +34,9 @@ void copy(const LinearDeviceMemory_32s_C1* src, LinearDeviceMemory_32s_C1* dst){
 void copy(const LinearDeviceMemory_32s_C2* src, LinearDeviceMemory_32s_C2* dst){ iuprivate::copy(src,dst); }
 void copy(const LinearDeviceMemory_32s_C3* src, LinearDeviceMemory_32s_C3* dst){ iuprivate::copy(src,dst); }
 void copy(const LinearDeviceMemory_32s_C4* src, LinearDeviceMemory_32s_C4* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearDeviceMemory_32u_C1* src, LinearDeviceMemory_32u_C1* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearDeviceMemory_32u_C2* src, LinearDeviceMemory_32u_C2* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearDeviceMemory_32u_C4* src, LinearDeviceMemory_32u_C4* dst){ iuprivate::copy(src,dst); }
 void copy(const LinearDeviceMemory_32f_C1* src, LinearDeviceMemory_32f_C1* dst){ iuprivate::copy(src,dst); }
 void copy(const LinearDeviceMemory_32f_C2* src, LinearDeviceMemory_32f_C2* dst){ iuprivate::copy(src,dst); }
 void copy(const LinearDeviceMemory_32f_C3* src, LinearDeviceMemory_32f_C3* dst){ iuprivate::copy(src,dst); }
@@ -72,6 +55,9 @@ void copy(const LinearHostMemory_32s_C1* src, LinearDeviceMemory_32s_C1* dst){ i
 void copy(const LinearHostMemory_32s_C2* src, LinearDeviceMemory_32s_C2* dst){ iuprivate::copy(src,dst); }
 void copy(const LinearHostMemory_32s_C3* src, LinearDeviceMemory_32s_C3* dst){ iuprivate::copy(src,dst); }
 void copy(const LinearHostMemory_32s_C4* src, LinearDeviceMemory_32s_C4* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory_32u_C1* src, LinearDeviceMemory_32u_C1* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory_32u_C2* src, LinearDeviceMemory_32u_C2* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory_32u_C4* src, LinearDeviceMemory_32u_C4* dst){ iuprivate::copy(src,dst); }
 void copy(const LinearHostMemory_32f_C1* src, LinearDeviceMemory_32f_C1* dst){ iuprivate::copy(src,dst); }
 void copy(const LinearHostMemory_32f_C2* src, LinearDeviceMemory_32f_C2* dst){ iuprivate::copy(src,dst); }
 void copy(const LinearHostMemory_32f_C3* src, LinearDeviceMemory_32f_C3* dst){ iuprivate::copy(src,dst); }
@@ -90,6 +76,9 @@ void copy(const LinearDeviceMemory_32s_C1* src, LinearHostMemory_32s_C1* dst){ i
 void copy(const LinearDeviceMemory_32s_C2* src, LinearHostMemory_32s_C2* dst){ iuprivate::copy(src,dst); }
 void copy(const LinearDeviceMemory_32s_C3* src, LinearHostMemory_32s_C3* dst){ iuprivate::copy(src,dst); }
 void copy(const LinearDeviceMemory_32s_C4* src, LinearHostMemory_32s_C4* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearDeviceMemory_32u_C1* src, LinearHostMemory_32u_C1* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearDeviceMemory_32u_C2* src, LinearHostMemory_32u_C2* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearDeviceMemory_32u_C4* src, LinearHostMemory_32u_C4* dst){ iuprivate::copy(src,dst); }
 void copy(const LinearDeviceMemory_32f_C1* src, LinearHostMemory_32f_C1* dst){ iuprivate::copy(src,dst); }
 void copy(const LinearDeviceMemory_32f_C2* src, LinearHostMemory_32f_C2* dst){ iuprivate::copy(src,dst); }
 void copy(const LinearDeviceMemory_32f_C3* src, LinearHostMemory_32f_C3* dst){ iuprivate::copy(src,dst); }
@@ -127,6 +116,11 @@ void copy(const ImageCpu_8u_C2* src, ImageGpu_8u_C2* dst) { iuprivate::copy(src,
 void copy(const ImageCpu_8u_C3* src, ImageGpu_8u_C3* dst) { iuprivate::copy(src, dst); }
 void copy(const ImageCpu_8u_C4* src, ImageGpu_8u_C4* dst) { iuprivate::copy(src, dst); }
 void copy(const ImageCpu_32s_C1* src, ImageGpu_32s_C1* dst) { iuprivate::copy(src, dst); }
+void copy(const ImageCpu_32s_C2* src, ImageGpu_32s_C2* dst) { iuprivate::copy(src, dst); }
+void copy(const ImageCpu_32s_C4* src, ImageGpu_32s_C4* dst) { iuprivate::copy(src, dst); }
+void copy(const ImageCpu_32u_C1* src, ImageGpu_32u_C1* dst) { iuprivate::copy(src, dst); }
+void copy(const ImageCpu_32u_C2* src, ImageGpu_32u_C2* dst) { iuprivate::copy(src, dst); }
+void copy(const ImageCpu_32u_C4* src, ImageGpu_32u_C4* dst) { iuprivate::copy(src, dst); }
 void copy(const ImageCpu_32f_C1* src, ImageGpu_32f_C1* dst) { iuprivate::copy(src, dst); }
 void copy(const ImageCpu_32f_C2* src, ImageGpu_32f_C2* dst) { iuprivate::copy(src, dst); }
 void copy(const ImageCpu_32f_C3* src, ImageGpu_32f_C3* dst) { iuprivate::copy(src, dst); }
@@ -138,6 +132,11 @@ void copy(const ImageGpu_8u_C2* src, ImageCpu_8u_C2* dst) { iuprivate::copy(src,
 void copy(const ImageGpu_8u_C3* src, ImageCpu_8u_C3* dst) { iuprivate::copy(src, dst); }
 void copy(const ImageGpu_8u_C4* src, ImageCpu_8u_C4* dst) { iuprivate::copy(src, dst); }
 void copy(const ImageGpu_32s_C1* src, ImageCpu_32s_C1* dst) { iuprivate::copy(src, dst); }
+void copy(const ImageGpu_32s_C2* src, ImageCpu_32s_C2* dst) { iuprivate::copy(src, dst); }
+void copy(const ImageGpu_32s_C4* src, ImageCpu_32s_C4* dst) { iuprivate::copy(src, dst); }
+void copy(const ImageGpu_32u_C1* src, ImageCpu_32u_C1* dst) { iuprivate::copy(src, dst); }
+void copy(const ImageGpu_32u_C2* src, ImageCpu_32u_C2* dst) { iuprivate::copy(src, dst); }
+void copy(const ImageGpu_32u_C4* src, ImageCpu_32u_C4* dst) { iuprivate::copy(src, dst); }
 void copy(const ImageGpu_32f_C1* src, ImageCpu_32f_C1* dst) { iuprivate::copy(src, dst); }
 void copy(const ImageGpu_32f_C2* src, ImageCpu_32f_C2* dst) { iuprivate::copy(src, dst); }
 void copy(const ImageGpu_32f_C3* src, ImageCpu_32f_C3* dst) { iuprivate::copy(src, dst); }
@@ -216,93 +215,96 @@ void copy(const VolumeGpu_32s_C2* src, VolumeCpu_32s_C2* dst) { iuprivate::copy(
 void copy(const VolumeGpu_32s_C4* src, VolumeCpu_32s_C4* dst) { iuprivate::copy(src, dst); }
 
 
+void copy(const ImageCpu_8u_C1 *src, LinearHostMemory_8u_C1 *dst) { iuprivate::copy(src, dst); }
+void copy(const ImageCpu_16u_C1 *src, LinearHostMemory_16u_C1 *dst) { iuprivate::copy(src, dst); }
+void copy(const ImageCpu_32f_C1 *src, LinearHostMemory_32f_C1 *dst) { iuprivate::copy(src, dst); }
 
+void copy(const ImageGpu_32f_C1* src, LinearDeviceMemory_32f_C1* dst) { iuprivate::copy(src, dst); }
 /* ***************************************************************************
      SET
  * ***************************************************************************/
 
-// 1D set value; host; 8-bit
-void setValue(const unsigned char& value, LinearHostMemory_8u_C1* srcdst)
-{iuprivate::setValue(value, srcdst);}
-void setValue(const int& value, LinearHostMemory_32s_C1* srcdst)
-{iuprivate::setValue(value, srcdst);}
-void setValue(const float& value, LinearHostMemory_32f_C1* srcdst)
-{iuprivate::setValue(value, srcdst);}
-void setValue(const unsigned char& value, LinearDeviceMemory_8u_C1* srcdst)
-{iuprivate::setValue(value, srcdst);}
-void setValue(const int& value, LinearDeviceMemory_32s_C1* srcdst)
-{iuprivate::setValue(value, srcdst);}
-void setValue(const float& value, LinearDeviceMemory_32f_C1* srcdst)
-{iuprivate::setValue(value, srcdst);}
+//// 1D set value; host; 8-bit
+//void setValue(const unsigned char& value, LinearHostMemory_8u_C1* srcdst)
+//{iuprivate::setValue(value, srcdst);}
+//void setValue(const int& value, LinearHostMemory_32s_C1* srcdst)
+//{iuprivate::setValue(value, srcdst);}
+//void setValue(const float& value, LinearHostMemory_32f_C1* srcdst)
+//{iuprivate::setValue(value, srcdst);}
+//void setValue(const unsigned char& value, LinearDeviceMemory_8u_C1* srcdst)
+//{iuprivate::setValue(value, srcdst);}
+//void setValue(const int& value, LinearDeviceMemory_32s_C1* srcdst)
+//{iuprivate::setValue(value, srcdst);}
+//void setValue(const float& value, LinearDeviceMemory_32f_C1* srcdst)
+//{iuprivate::setValue(value, srcdst);}
 
-void setValue(const unsigned char &value, ImageCpu_8u_C1* srcdst, const IuRect& roi) {iuprivate::setValue(value, srcdst, roi);}
-void setValue(const uchar2 &value, ImageCpu_8u_C2* srcdst, const IuRect& roi) {iuprivate::setValue(value, srcdst, roi);}
-void setValue(const uchar3 &value, ImageCpu_8u_C3* srcdst, const IuRect& roi) {iuprivate::setValue(value, srcdst, roi);}
-void setValue(const uchar4 &value, ImageCpu_8u_C4* srcdst, const IuRect& roi) {iuprivate::setValue(value, srcdst, roi);}
-void setValue(const int &value, ImageCpu_32s_C1* srcdst, const IuRect& roi) {iuprivate::setValue(value, srcdst, roi);}
-void setValue(const float &value, ImageCpu_32f_C1* srcdst, const IuRect& roi) {iuprivate::setValue(value, srcdst, roi);}
-void setValue(const float2 &value, ImageCpu_32f_C2* srcdst, const IuRect& roi) {iuprivate::setValue(value, srcdst, roi);}
-void setValue(const float3 &value, ImageCpu_32f_C3* srcdst, const IuRect& roi) {iuprivate::setValue(value, srcdst, roi);}
-void setValue(const float4 &value, ImageCpu_32f_C4* srcdst, const IuRect& roi) {iuprivate::setValue(value, srcdst, roi);}
+//void setValue(const unsigned char &value, ImageCpu_8u_C1* srcdst, const IuRect& roi) {iuprivate::setValue(value, srcdst, roi);}
+//void setValue(const uchar2 &value, ImageCpu_8u_C2* srcdst, const IuRect& roi) {iuprivate::setValue(value, srcdst, roi);}
+//void setValue(const uchar3 &value, ImageCpu_8u_C3* srcdst, const IuRect& roi) {iuprivate::setValue(value, srcdst, roi);}
+//void setValue(const uchar4 &value, ImageCpu_8u_C4* srcdst, const IuRect& roi) {iuprivate::setValue(value, srcdst, roi);}
+//void setValue(const int &value, ImageCpu_32s_C1* srcdst, const IuRect& roi) {iuprivate::setValue(value, srcdst, roi);}
+//void setValue(const float &value, ImageCpu_32f_C1* srcdst, const IuRect& roi) {iuprivate::setValue(value, srcdst, roi);}
+//void setValue(const float2 &value, ImageCpu_32f_C2* srcdst, const IuRect& roi) {iuprivate::setValue(value, srcdst, roi);}
+//void setValue(const float3 &value, ImageCpu_32f_C3* srcdst, const IuRect& roi) {iuprivate::setValue(value, srcdst, roi);}
+//void setValue(const float4 &value, ImageCpu_32f_C4* srcdst, const IuRect& roi) {iuprivate::setValue(value, srcdst, roi);}
 
-void setValue(const unsigned char &value, ImageGpu_8u_C1* srcdst, const IuRect& roi) {iuprivate::setValue(value, srcdst, roi);}
-void setValue(const uchar2 &value, ImageGpu_8u_C2* srcdst, const IuRect& roi) {iuprivate::setValue(value, srcdst, roi);}
-void setValue(const uchar3 &value, ImageGpu_8u_C3* srcdst, const IuRect& roi) {iuprivate::setValue(value, srcdst, roi);}
-void setValue(const uchar4 &value, ImageGpu_8u_C4* srcdst, const IuRect& roi) {iuprivate::setValue(value, srcdst, roi);}
-void setValue(const int &value, ImageGpu_32s_C1* srcdst, const IuRect& roi) {iuprivate::setValue(value, srcdst, roi);}
-void setValue(const float &value, ImageGpu_32f_C1* srcdst, const IuRect& roi) {iuprivate::setValue(value, srcdst, roi);}
-void setValue(const float2 &value, ImageGpu_32f_C2* srcdst, const IuRect& roi) {iuprivate::setValue(value, srcdst, roi);}
-void setValue(const float3 &value, ImageGpu_32f_C3* srcdst, const IuRect& roi) {iuprivate::setValue(value, srcdst, roi);}
-void setValue(const float4 &value, ImageGpu_32f_C4* srcdst, const IuRect& roi) {iuprivate::setValue(value, srcdst, roi);}
+//void setValue(const unsigned char &value, ImageGpu_8u_C1* srcdst, const IuRect& roi) {iuprivate::setValue(value, srcdst, roi);}
+//void setValue(const uchar2 &value, ImageGpu_8u_C2* srcdst, const IuRect& roi) {iuprivate::setValue(value, srcdst, roi);}
+//void setValue(const uchar3 &value, ImageGpu_8u_C3* srcdst, const IuRect& roi) {iuprivate::setValue(value, srcdst, roi);}
+//void setValue(const uchar4 &value, ImageGpu_8u_C4* srcdst, const IuRect& roi) {iuprivate::setValue(value, srcdst, roi);}
+//void setValue(const int &value, ImageGpu_32s_C1* srcdst, const IuRect& roi) {iuprivate::setValue(value, srcdst, roi);}
+//void setValue(const float &value, ImageGpu_32f_C1* srcdst, const IuRect& roi) {iuprivate::setValue(value, srcdst, roi);}
+//void setValue(const float2 &value, ImageGpu_32f_C2* srcdst, const IuRect& roi) {iuprivate::setValue(value, srcdst, roi);}
+//void setValue(const float3 &value, ImageGpu_32f_C3* srcdst, const IuRect& roi) {iuprivate::setValue(value, srcdst, roi);}
+//void setValue(const float4 &value, ImageGpu_32f_C4* srcdst, const IuRect& roi) {iuprivate::setValue(value, srcdst, roi);}
 
-void setValue(const unsigned char &value, VolumeCpu_8u_C1* srcdst, const IuCube& roi) {iuprivate::setValue(value, srcdst, roi);}
-void setValue(const uchar2 &value, VolumeCpu_8u_C2* srcdst, const IuCube& roi) {iuprivate::setValue(value, srcdst, roi);}
-void setValue(const uchar4 &value, VolumeCpu_8u_C4* srcdst, const IuCube& roi) {iuprivate::setValue(value, srcdst, roi);}
-void setValue(const float &value, VolumeCpu_32f_C1* srcdst, const IuCube& roi) {iuprivate::setValue(value, srcdst, roi);}
-void setValue(const float2 &value, VolumeCpu_32f_C2* srcdst, const IuCube& roi) {iuprivate::setValue(value, srcdst, roi);}
-void setValue(const float4 &value, VolumeCpu_32f_C4* srcdst, const IuCube& roi) {iuprivate::setValue(value, srcdst, roi);}
-void setValue(const unsigned int &value, VolumeCpu_32u_C1* srcdst, const IuCube& roi) {iuprivate::setValue(value, srcdst, roi);}
-void setValue(const uint2 &value, VolumeCpu_32u_C2* srcdst, const IuCube& roi) {iuprivate::setValue(value, srcdst, roi);}
-void setValue(const uint4 &value, VolumeCpu_32u_C4* srcdst, const IuCube& roi) {iuprivate::setValue(value, srcdst, roi);}
-void setValue(const int &value, VolumeCpu_32s_C1* srcdst, const IuCube& roi) {iuprivate::setValue(value, srcdst, roi);}
-void setValue(const int2 &value, VolumeCpu_32s_C2* srcdst, const IuCube& roi) {iuprivate::setValue(value, srcdst, roi);}
-void setValue(const int4 &value, VolumeCpu_32s_C4* srcdst, const IuCube& roi) {iuprivate::setValue(value, srcdst, roi);}
+//void setValue(const unsigned char &value, VolumeCpu_8u_C1* srcdst, const IuCube& roi) {iuprivate::setValue(value, srcdst, roi);}
+//void setValue(const uchar2 &value, VolumeCpu_8u_C2* srcdst, const IuCube& roi) {iuprivate::setValue(value, srcdst, roi);}
+//void setValue(const uchar4 &value, VolumeCpu_8u_C4* srcdst, const IuCube& roi) {iuprivate::setValue(value, srcdst, roi);}
+//void setValue(const float &value, VolumeCpu_32f_C1* srcdst, const IuCube& roi) {iuprivate::setValue(value, srcdst, roi);}
+//void setValue(const float2 &value, VolumeCpu_32f_C2* srcdst, const IuCube& roi) {iuprivate::setValue(value, srcdst, roi);}
+//void setValue(const float4 &value, VolumeCpu_32f_C4* srcdst, const IuCube& roi) {iuprivate::setValue(value, srcdst, roi);}
+//void setValue(const unsigned int &value, VolumeCpu_32u_C1* srcdst, const IuCube& roi) {iuprivate::setValue(value, srcdst, roi);}
+//void setValue(const uint2 &value, VolumeCpu_32u_C2* srcdst, const IuCube& roi) {iuprivate::setValue(value, srcdst, roi);}
+//void setValue(const uint4 &value, VolumeCpu_32u_C4* srcdst, const IuCube& roi) {iuprivate::setValue(value, srcdst, roi);}
+//void setValue(const int &value, VolumeCpu_32s_C1* srcdst, const IuCube& roi) {iuprivate::setValue(value, srcdst, roi);}
+//void setValue(const int2 &value, VolumeCpu_32s_C2* srcdst, const IuCube& roi) {iuprivate::setValue(value, srcdst, roi);}
+//void setValue(const int4 &value, VolumeCpu_32s_C4* srcdst, const IuCube& roi) {iuprivate::setValue(value, srcdst, roi);}
 
 
 
-void setValue(const unsigned char &value, VolumeGpu_8u_C1* srcdst, const IuCube& roi) {iuprivate::setValue(value, srcdst, roi);}
-void setValue(const uchar2 &value, VolumeGpu_8u_C2* srcdst, const IuCube& roi) {iuprivate::setValue(value, srcdst, roi);}
-void setValue(const uchar4 &value, VolumeGpu_8u_C4* srcdst, const IuCube& roi) {iuprivate::setValue(value, srcdst, roi);}
-void setValue(const unsigned short &value, VolumeGpu_16u_C1* srcdst, const IuCube& roi) {iuprivate::setValue(value, srcdst, roi);}
-void setValue(const float &value, VolumeGpu_32f_C1* srcdst, const IuCube& roi) {iuprivate::setValue(value, srcdst, roi);}
-void setValue(const float2 &value, VolumeGpu_32f_C2* srcdst, const IuCube& roi) {iuprivate::setValue(value, srcdst, roi);}
-void setValue(const float4 &value, VolumeGpu_32f_C4* srcdst, const IuCube& roi) {iuprivate::setValue(value, srcdst, roi);}
-void setValue(const unsigned int &value, VolumeGpu_32u_C1* srcdst, const IuCube& roi) {iuprivate::setValue(value, srcdst, roi);}
-void setValue(const uint2 &value, VolumeGpu_32u_C2* srcdst, const IuCube& roi) {iuprivate::setValue(value, srcdst, roi);}
-void setValue(const uint4 &value, VolumeGpu_32u_C4* srcdst, const IuCube& roi) {iuprivate::setValue(value, srcdst, roi);}
-void setValue(const int &value, VolumeGpu_32s_C1* srcdst, const IuCube& roi) {iuprivate::setValue(value, srcdst, roi);}
-void setValue(const int2 &value, VolumeGpu_32s_C2* srcdst, const IuCube& roi) {iuprivate::setValue(value, srcdst, roi);}
-void setValue(const int4 &value, VolumeGpu_32s_C4* srcdst, const IuCube& roi) {iuprivate::setValue(value, srcdst, roi);}
+//void setValue(const unsigned char &value, VolumeGpu_8u_C1* srcdst, const IuCube& roi) {iuprivate::setValue(value, srcdst, roi);}
+//void setValue(const uchar2 &value, VolumeGpu_8u_C2* srcdst, const IuCube& roi) {iuprivate::setValue(value, srcdst, roi);}
+//void setValue(const uchar4 &value, VolumeGpu_8u_C4* srcdst, const IuCube& roi) {iuprivate::setValue(value, srcdst, roi);}
+//void setValue(const unsigned short &value, VolumeGpu_16u_C1* srcdst, const IuCube& roi) {iuprivate::setValue(value, srcdst, roi);}
+//void setValue(const float &value, VolumeGpu_32f_C1* srcdst, const IuCube& roi) {iuprivate::setValue(value, srcdst, roi);}
+//void setValue(const float2 &value, VolumeGpu_32f_C2* srcdst, const IuCube& roi) {iuprivate::setValue(value, srcdst, roi);}
+//void setValue(const float4 &value, VolumeGpu_32f_C4* srcdst, const IuCube& roi) {iuprivate::setValue(value, srcdst, roi);}
+//void setValue(const unsigned int &value, VolumeGpu_32u_C1* srcdst, const IuCube& roi) {iuprivate::setValue(value, srcdst, roi);}
+//void setValue(const uint2 &value, VolumeGpu_32u_C2* srcdst, const IuCube& roi) {iuprivate::setValue(value, srcdst, roi);}
+//void setValue(const uint4 &value, VolumeGpu_32u_C4* srcdst, const IuCube& roi) {iuprivate::setValue(value, srcdst, roi);}
+//void setValue(const int &value, VolumeGpu_32s_C1* srcdst, const IuCube& roi) {iuprivate::setValue(value, srcdst, roi);}
+//void setValue(const int2 &value, VolumeGpu_32s_C2* srcdst, const IuCube& roi) {iuprivate::setValue(value, srcdst, roi);}
+//void setValue(const int4 &value, VolumeGpu_32s_C4* srcdst, const IuCube& roi) {iuprivate::setValue(value, srcdst, roi);}
 
 
 /* ***************************************************************************
      CLAMP
  * ***************************************************************************/
 
-void clamp(const float& min, const float& max, iu::ImageGpu_32f_C1 *srcdst, const IuRect &roi)
-{ iuprivate::clamp(min, max, srcdst, roi); }
+//void clamp(const float& min, const float& max, iu::ImageGpu_32f_C1 *srcdst, const IuRect &roi)
+//{ iuprivate::clamp(min, max, srcdst, roi); }
 
 
 /* ***************************************************************************
  *  MEMORY CONVERSIONS
  * ***************************************************************************/
-
 // conversion; device; 32-bit 3-channel -> 32-bit 4-channel
-void convert(const ImageGpu_32f_C3* src, const IuRect& src_roi, ImageGpu_32f_C4* dst, const IuRect& dst_roi)
-{iuprivate::convert(src, src_roi, dst, dst_roi);}
+void convert(const ImageGpu_32f_C3* src, ImageGpu_32f_C4* dst)
+{iuprivate::convert(src, dst);}
 // conversion; device; 32-bit 4-channel -> 32-bit 3-channel
-void convert(const ImageGpu_32f_C4* src, const IuRect& src_roi, ImageGpu_32f_C3* dst, const IuRect& dst_roi)
-{iuprivate::convert(src, src_roi, dst, dst_roi);}
+void convert(const ImageGpu_32f_C4* src, ImageGpu_32f_C3* dst)
+{iuprivate::convert(src, dst);}
 
 // [host] 2D bit depth conversion; 32f_C1 -> 8u_C1;
 void convert_32f8u_C1(const iu::ImageCpu_32f_C1* src, iu::ImageCpu_8u_C1* dst,
@@ -315,24 +317,44 @@ void convert_16u32f_C1(const iu::ImageCpu_16u_C1* src, iu::ImageCpu_32f_C1 *dst,
 {iuprivate::convert_16u32f_C1(src, dst, mul_constant, add_constant);}
 
 // [device] 2D bit depth conversion: 32f_C1 -> 8u_C1
-void convert_32f8u_C1(const iu::ImageGpu_32f_C1* src, const IuRect& src_roi, iu::ImageGpu_8u_C1* dst, const IuRect& dst_roi,
+void convert_32f8u_C1(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_8u_C1* dst,
                      float mul_constant, unsigned char add_constant)
-{iuprivate::convert_32f8u_C1(src, src_roi, dst, dst_roi, mul_constant, add_constant);}
+{iuprivate::convert_32f8u_C1(src, dst, mul_constant, add_constant);}
 
 // [device] 2D bit depth conversion: 32f_C4 -> 8u_C4
-void convert_32f8u_C4(const iu::ImageGpu_32f_C4* src, const IuRect& src_roi, iu::ImageGpu_8u_C4* dst, const IuRect& dst_roi,
+void convert_32f8u_C4(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_8u_C4* dst,
                      float mul_constant, unsigned char add_constant)
-{iuprivate::convert_32f8u_C4(src, src_roi, dst, dst_roi, mul_constant, add_constant);}
+{iuprivate::convert_32f8u_C4(src, dst, mul_constant, add_constant);}
 
 
 // [device] 2D bit depth conversion: 8u_C1 -> 32f_C1
-void convert_8u32f_C1(const iu::ImageGpu_8u_C1* src, const IuRect& src_roi, iu::ImageGpu_32f_C1* dst, const IuRect& dst_roi,
+void convert_8u32f_C1(const iu::ImageGpu_8u_C1* src, iu::ImageGpu_32f_C1* dst,
                      float mul_constant, float add_constant)
-{iuprivate::convert_8u32f_C1(src, src_roi, dst, dst_roi, mul_constant, add_constant);}
+{iuprivate::convert_8u32f_C1(src, dst, mul_constant, add_constant);}
 
-void convert_8u32f_C3C4(const iu::ImageGpu_8u_C3* src, const IuRect& src_roi, iu::ImageGpu_32f_C4* dst, const IuRect& dst_roi,
+// [device] 2D bit depth conversion: 32u_C1 -> 32f_C1
+void convert_32u32f_C1(const iu::ImageGpu_32u_C1* src, iu::ImageGpu_32f_C1* dst,
                                 float mul_constant, float add_constant)
-{iuprivate::convert_8u32f_C3C4(src, src_roi, dst, dst_roi, mul_constant, add_constant);}
+{
+    iuprivate::convert_32u32f_C1(src, dst, mul_constant, add_constant);
+}
+
+// [host] 2D bit depth conversion: 32u_C1 -> 32f_C1
+void convert_32u32f_C1(const iu::ImageCpu_32u_C1* src, iu::ImageCpu_32f_C1* dst,
+                                float mul_constant, float add_constant)
+{
+    iuprivate::convert_32u32f_C1(src, dst, mul_constant, add_constant);
+}
+
+void convert_32s32f_C1_lin(iu::LinearDeviceMemory_32s_C1* src, iu::LinearDeviceMemory_32f_C1* dst)
+{
+	iuprivate::convert_32s32f_C1_lin(src, dst);
+}
+
+
+void convert_8u32f_C3C4(const iu::ImageGpu_8u_C3* src, iu::ImageGpu_32f_C4* dst,
+                                float mul_constant, float add_constant)
+{iuprivate::convert_8u32f_C3C4(src, dst, mul_constant, add_constant);}
 
 
 // [device] 2D Color conversion from RGB to HSV (32-bit 4-channel)
@@ -353,5 +375,138 @@ void convert_RgbLab(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst, bo
 void convert_LabRgb(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst)
 { iuprivate::convertLabRgb(src, dst); }
 
+//double summation(ImageGpu_32f_C1 *src)
+//{
+//    return iuprivate::summation(src);
+//}
+
+/* ***************************************************************************
+     Denoising Filter
+ * ***************************************************************************/
+
+// 2D device; 32-bit; 1-channel
+void filterMedian3x3(const ImageGpu_32f_C1* src, ImageGpu_32f_C1* dst)
+{iuprivate::filterMedian3x3(src, dst);}
+
+/* ***************************************************************************/
+// device; 32-bit; 1-channel
+void filterGauss(const ImageGpu_32f_C1* src, ImageGpu_32f_C1* dst,
+                 float sigma, int kernel_size, ImageGpu_32f_C1 *temp)
+{iuprivate::filterGauss(src, dst, sigma, kernel_size, temp);}
+// device; volume; 32-bit; 1-channel
+void filterGauss(const VolumeGpu_32f_C1* src, VolumeGpu_32f_C1* dst,
+                 float sigma, int kernel_size)
+{iuprivate::filterGauss(src, dst, sigma, kernel_size);}
+// device; 32-bit; 4-channel
+void filterGauss(const ImageGpu_32f_C4* src, ImageGpu_32f_C4* dst,
+                 float sigma, int kernel_size)
+{iuprivate::filterGauss(src, dst, sigma, kernel_size);}
+
+
+/* ***************************************************************************
+     edge calculation
+ * ***************************************************************************/
+
+// edge filter; device; 32-bit; 1-channel
+void filterEdge(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C2* dst)
+{ iuprivate::filterEdge(src, dst); }
+
+// edge filter + evaluation; device; 32-bit; 1-channel
+void filterEdge(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
+                float alpha, float beta, float minval)
+{ iuprivate::filterEdge(src, dst, alpha, beta, minval); }
+
+// edge filter + evaluation (4n); device; 32-bit; 1-channel
+void filterEdge(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C2* dst,
+                float alpha, float beta, float minval)
+{ iuprivate::filterEdge(src, dst, alpha, beta, minval); }
+
+// edge filter + evaluation (8n); device; 32-bit; 1-channel
+void filterEdge(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C4* dst,
+                float alpha, float beta, float minval)
+{ iuprivate::filterEdge(src, dst, alpha, beta, minval); }
+
+// edge filter + evaluation; device; 32-bit; 4-channel (RGB)
+void filterEdge(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C1* dst,
+                float alpha, float beta, float minval)
+{ iuprivate::filterEdge(src, dst, alpha, beta, minval); }
+
+// edge filter + evaluation; device; 32-bit; 4-channel (RGB)
+void filterEdge(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C2* dst,
+                float alpha, float beta, float minval)
+{ iuprivate::filterEdge(src, dst, alpha, beta, minval); }
+
+// edge filter + evaluation; device; 32-bit; 4-channel (RGB)
+void filterEdge(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst,
+                float alpha, float beta, float minval)
+{ iuprivate::filterEdge(src, dst, alpha, beta, minval); }
+
+
+
+/* ***************************************************************************
+     other filters
+ * ***************************************************************************/
+void cubicBSplinePrefilter(iu::ImageGpu_32f_C1* srcdst)
+{ iuprivate::cubicBSplinePrefilter(srcdst); }
+
+/* ***************************************************************************
+     Geometric Transformation
+ * ***************************************************************************/
+
+/*
+  image reduction
+ */
+void reduce(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
+            IuInterpolationType interpolation,
+            bool gauss_prefilter)
+{iuprivate::reduce(src, dst, interpolation, gauss_prefilter);}
+
+
+/*
+  image prolongation
+ */
+void prolongate(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
+                IuInterpolationType interpolation)
+{iuprivate::prolongate(src, dst, interpolation);}
+
+void prolongate(const iu::ImageGpu_32f_C2* src, iu::ImageGpu_32f_C2* dst,
+                IuInterpolationType interpolation)
+{iuprivate::prolongate(src, dst, interpolation);}
+
+void prolongate(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst,
+                IuInterpolationType interpolation)
+{iuprivate::prolongate(src, dst, interpolation);}
+
+/*
+  image remapping (warping)
+ */
+// 8u_C1
+void remap(iu::ImageGpu_8u_C1* src,
+           iu::ImageGpu_32f_C1* dx_map, iu::ImageGpu_32f_C1* dy_map,
+           iu::ImageGpu_8u_C1* dst, IuInterpolationType interpolation)
+{iuprivate::remap(src, dx_map, dy_map, dst, interpolation);}
+
+// 32f_C1
+void remap(iu::ImageGpu_32f_C1* src,
+           iu::ImageGpu_32f_C1* dx_map, iu::ImageGpu_32f_C1* dy_map,
+           iu::ImageGpu_32f_C1* dst, IuInterpolationType interpolation)
+{iuprivate::remap(src, dx_map, dy_map, dst, interpolation);}
+
+
+//IuStatus remap(iu::ImageGpu_32f_C2* src,
+//           iu::ImageGpu_32f_C1* dx_map, iu::ImageGpu_32f_C1* dy_map,
+//           iu::ImageGpu_32f_C2* dst, IuInterpolationType interpolation)
+//{return iuprivate::remap(src, dx_map, dy_map, dst, interpolation);}
+
+// 32f_C4
+void remap(iu::ImageGpu_32f_C4* src,
+               iu::ImageGpu_32f_C1* dx_map, iu::ImageGpu_32f_C1* dy_map,
+               iu::ImageGpu_32f_C4* dst, IuInterpolationType interpolation)
+{iuprivate::remap(src, dx_map, dy_map, dst, interpolation);}
+
+void remapAffine(iu::ImageGpu_32f_C1* src,
+                 float a1, float a2, float a3, float a4, float b1, float b2,
+                 iu::ImageGpu_32f_C1* dst)
+{iuprivate::remapAffine(src, a1, a2, a3, a4, b1, b2, dst);}
 
 } // namespace iu

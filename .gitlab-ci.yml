@@ -1,0 +1,29 @@
+stages:
+  - build
+
+before_script:
+  - export COMPUTE_CAPABILITY="5.2"
+  - export IMAGEUTILITIES_ROOT=`pwd`
+  - export CUDA_SDK_ROOT_DIR="/usr/local/cuda/samples/"
+  - export ImageUtilitiesLight_DIR=$IMAGEUTILITIES_ROOT
+
+#cuda_samples:
+#  stage: build
+#  script:
+#    - apt-get update
+#    - apt-get install -y --no-install-recommends cuda-drivers
+#    - nvidia-smi
+#    - cd /usr/local/cuda-7.5/samples/0_Simple/simpleTexture
+#    - make
+#    - ./simpleTexture
+mvlib:
+  tags:
+    - cuda-7.5
+  stage: build
+  script:
+    - mkdir -p build 
+    - cd build
+    - cmake -DCMAKE_C_COMPILER=/usr/bin/gcc-4.9 -DCMAKE_CXX_COMPILER=/usr/bin/g++-4.9 ..
+    - make
+    - make test
+    - make install

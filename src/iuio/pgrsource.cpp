@@ -1,10 +1,16 @@
 #include "pgrsource.h"
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wignored-qualifiers"  // We have no control over FlyCapture2.h
 #include <FlyCapture2.h>
+#pragma GCC diagnostic pop
 #include "pgrcameradata.h"
+
+
+namespace iu {
 
 PGRSource::PGRSource(unsigned int camId, bool gray)
 {
-  data_ = new PGRCameraData();
+  data_ = new iuprivate::PGRCameraData();
   gray_ = gray;
 
   // initializes the camera, set width and height member variables
@@ -63,8 +69,6 @@ bool PGRSource::init(unsigned int camId)
   if (!this->startCapture())
     return false;
 
-
-  //this->grab();
   return true;
 }
 
@@ -149,9 +153,6 @@ void PGRSource::grab()
     printf( "PGRSource::grab(): %s\n", error.GetDescription() );
 
   frameNr_++;
-
-  if (frameNr_ > (1 << 30))    // bound is not tight for an unsigned int but i don't care
-    frameNr_ = 0;
 }
 
 
@@ -163,3 +164,5 @@ void PGRSource::printError(FlyCapture2::Error *error)
   printf("PGRSource Error: %s\n", error->GetDescription());
 }
 
+
+} // namespace iu

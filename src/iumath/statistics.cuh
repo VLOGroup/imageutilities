@@ -1,163 +1,231 @@
-/*
- * Copyright (c) ICG. All rights reserved.
- *
- * Institute for Computer Graphics and Vision
- * Graz University of Technology / Austria
- *
- *
- * This software is distributed WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- * PURPOSE.  See the above copyright notices for more information.
- *
- *
- * Project     : ImageUtilities
- * Module      : Math
- * Class       : none
- * Language    : C++
- * Description : Definition of Cuda wrappers for statistics functions
- *
- * Author     : Manuel Werlberger
- * EMail      : werlberger@icg.tugraz.at
- *
- */
+///@file statistics.cuh
+///@brief statistics functions for CUDA code
+///@author Christian Reinbacher <reinbacher@icg.tugraz.at>
 
-#ifndef IUMATH_STATISTICS_CUH
-#define IUMATH_STATISTICS_CUH
+#ifndef STATISTICS_CUH
+#define STATISTICS_CUH
 
-#include <iucore/coredefs.h>
-#include <iucore/memorydefs.h>
+#include "iucore.h"
+#include "thrust_kernels.cuh"
+#include <thrust/extrema.h>
 
 namespace iuprivate {
+namespace math {
 
-/* ***************************************************************************
-   MIN/MAX
-*/
-
-/** Cuda wrappers for finding the minimum and maximum value of an image in a certain ROI.
- * \param src Source image [device]
- * \param src_roi Region of interest in the source image.
+/** Finds the minimum and maximum value of an image.
+ * \param[in] src Source image [device]
  * \param[out] min Minium value found in the source image.
  * \param[out] max Maximum value found in the source image.
  *
- * \note supported gpu: 8u_C1, 8u_C4, 32f_C1, 32f_C4
- * \note 3-channel stuff not supported due to texture usage!
  */
-void cuMinMax(const iu::ImageGpu_8u_C1 *src, const IuRect &roi, unsigned char& min, unsigned char& max);
-void cuMinMax(const iu::ImageGpu_8u_C4 *src, const IuRect &roi, uchar4& min, uchar4& max);
-void cuMinMax(const iu::ImageGpu_32f_C1 *src, const IuRect &roi, float& min, float& max);
-void cuMinMax(const iu::ImageGpu_32f_C2 *src, const IuRect &roi, float2& min, float2& max);
-void cuMinMax(const iu::ImageGpu_32f_C4 *src, const IuRect &roi, float4& min, float4& max);
-
-/** Cuda wrappers for finding the minimum and maximum value of a volume
- * \param src Source volume [device]
- * \param[out] min Minium value found in the source volume.
- * \param[out] max Maximum value found in the source volume.
- *
- * \note supported gpu: 32f_C1
- */
-void cuMinMax(const iu::VolumeGpu_32f_C1 *src, float& min_C1, float& max_C1);
-
-/** Cuda wrappers for finding the minimum value of an image in a certain ROI and the minimums coordinates.
- * \param src Source image [device]
- * \param src_roi Region of interest in the source image.
- * \param[out] min minimum value found in the source image.
- * \param[out] x x-coordinate of minimum value
- * \param[out] y y-coordinate of minimum value
- *
- * \note supported gpu: 32f_C1
- */
-void cuMin(const iu::ImageGpu_32f_C1 *src, const IuRect &roi, float& min, int& min_x, int& min_y);
-
-/** Cuda wrappers for finding the maximum value of an image in a certain ROI and the maximums coordinates.
- * \param src Source image [device]
- * \param src_roi Region of interest in the source image.
- * \param[out] max Maximum value found in the source image.
- * \param[out] x x-coordinate of maximum value
- * \param[out] y y-coordinate of maximum value
- *
- * \note supported gpu: 32f_C1
- */
-void cuMax(const iu::ImageGpu_32f_C1 *src, const IuRect &roi, float& max, int& max_x, int& max_y);
-
-
-
-/* ***************************************************************************
-   SUMMATION
-*/
-
-/** Cuda wrappers for computing the sum of an image in a certain ROI.
- * \param src Source image [device]
- * \param src_roi Region of interest in the source image.
- * \param[out] sum Contains computed sum.
- *
- * \note supported gpu: 8u_C1, 8u_C4, 32f_C1, 32f_C4
- * \note 3-channel stuff not supported due to texture usage!
- */
-void cuSummation(const iu::ImageGpu_8u_C1 *src, const IuRect &roi, long& sum);
-//void cuSummation(const iu::ImageGpu_8u_C4 *src, const IuRect &roi, long sum[4]);
-void cuSummation(const iu::ImageGpu_32f_C1 *src, const IuRect &roi, double& sum,
-                 iu::LinearDeviceMemory_32f_C1* sum_temp=NULL);
-//void cuSummation(const iu::ImageGpu_32f_C4 *src, const IuRect &roi, double sum[4]);
-
-/* ***************************************************************************
-   NORMS (L1/L2)
-*/
-
-/** Cuda wrapper computing the L1 norm of differences between pixel values two images.
- * \param src1 Pointer to the first source image.
- * \param src2 Pointer to the second source image.
- * \param roi Region of interest in the source image.
- * \param norm Contains computed L1 norm.
- */
-void cuNormDiffL1(const iu::ImageGpu_32f_C1* src1, const iu::ImageGpu_32f_C1* src2, const IuRect& roi, double& norm);
-
-/** Cuda wrapper coputing the L1 norm of differences between pixel values of an image and a constant value. |src-value|
- * \param src1 Pointer to the first source image.
- * \param value Subtrahend applied to every pixel on \a src image before calculating the L1 norm.
- * \param roi Region of interest in the source image.
- * \param norm Contains computed L1 norm.
- */
-void cuNormDiffL1(const iu::ImageGpu_32f_C1* src, const float& value, const IuRect& roi, double& norm);
-
-/** Cuda wrapper computing the L2 norm of differences between pixel values two images.
- * \param src1 Pointer to the first source image.
- * \param src2 Pointer to the second source image.
- * \param roi Region of interest in the source image.
- * \param norm Contains computed L2 norm.
- */
-void cuNormDiffL2(const iu::ImageGpu_32f_C1* src1, const iu::ImageGpu_32f_C1* src2, const IuRect& roi, double& norm);
-
-/** Cuda wrapper coputing the L2 norm of differences between pixel values of an image and a constant value. |src-value|
- * \param src1 Pointer to the first source image.
- * \param value Subtrahend applied to every pixel on \a src image before calculating the L2 norm.
- * \param roi Region of interest in the source image.
- * \param norm Contains computed L2 norm.
- */
-void cuNormDiffL2(const iu::ImageGpu_32f_C1* src, const float& value, const IuRect& roi, double& norm);
-
-/* ***************************************************************************
-   ERROR MEASUREMENTS
-*/
-
-/** Cuda wrapper to compute the mean-squared error between the src and the reference image.
- *
- *
- */
-void cuMse(const iu::ImageGpu_32f_C1* src, const iu::ImageGpu_32f_C1* reference, const IuRect& roi, double& mse);
-
-/** Cuda wrapper to compute structural similarity index between the src and the reference image.
- *
- *
- */
-void cuSsim(const iu::ImageGpu_32f_C1* src, const iu::ImageGpu_32f_C1* reference, const IuRect& roi, double& ssim);
-
-
-/* ***************************************************************************
-   HISTOGRAMS
-*/
-
-void cuColorHistogram(const iu::ImageGpu_8u_C4* binned_image, const iu::ImageGpu_8u_C1* mask,
-                          iu::VolumeGpu_32f_C1* hist, unsigned char mask_val);
-
+template<template<typename, typename > class PitchedMemoryType, template<
+    typename > class Allocator, typename PixelType>
+void minMax(PitchedMemoryType<PixelType, Allocator<PixelType> >& d_img,
+            PixelType& minval, PixelType& maxval)
+{
+  typedef thrust::tuple<bool, PixelType, PixelType> result_type;
+  result_type init(true, 10e10f, -10e10f);  // initial value
+  minmax_transform_tuple<PixelType, int> unary_op(d_img.width(),
+                                                  d_img.stride());  // transformation operator
+  minmax_reduce_tuple<PixelType, int> binary_op;  // reduction operator
+  result_type result = thrust::transform_reduce(
+      thrust::make_zip_iterator(
+          thrust::make_tuple(d_img.begin(),thrust::counting_iterator<int>(0))),
+      thrust::make_zip_iterator(
+          thrust::make_tuple(d_img.end(),thrust::counting_iterator<int>(0))),
+      unary_op, init, binary_op);
+  minval = thrust::get<1>(result);
+  maxval = thrust::get<2>(result);
 }
-#endif // IUMATH_STATISTICS_CUH
+
+template<typename PixelType>
+void minMax(iu::LinearDeviceMemory<PixelType>& in, PixelType& minval,
+            PixelType& maxval, unsigned int& minidx, unsigned int& maxidx)
+{
+//  typedef thrust::pair<thrust::device_ptr<PixelType>,
+//      thrust::device_ptr<PixelType> > result_type;
+  auto result = thrust::minmax_element(in.begin(), in.end());
+  minval = *result.first;
+  maxval = *result.second;
+  minidx = result.first - in.begin();
+  maxidx = result.second - in.begin();
+}
+
+template<typename PixelType>
+void minMax(iu::LinearHostMemory<PixelType>& in, PixelType& minval,
+            PixelType& maxval, unsigned int& minidx, unsigned int& maxidx)
+{
+//  typedef thrust::pair<thrust::pointer<PixelType, thrust::host_system_tag>,
+//      thrust::pointer<PixelType, thrust::host_system_tag> > result_type;
+  auto result = thrust::minmax_element(in.begin(), in.end());
+  minval = *result.first;
+  maxval = *result.second;
+  minidx = result.first - in.begin();
+  maxidx = result.second - in.begin();
+}
+/** Returns the sum of the values of an image.
+ * \param[in] src Source image [device]
+ * \param[out] min Minium value found in the source image.
+ * \param[out] max Maximum value found in the source image.
+ *
+ */
+template<template<typename, typename > class PitchedMemoryType, template<
+    typename > class Allocator, typename PixelType>
+void summation(PitchedMemoryType<PixelType, Allocator<PixelType> >& d_img,
+               PixelType initval, PixelType& sum)
+{
+  typedef thrust::tuple<bool, PixelType> result_type;
+  result_type init(true, initval);  // initial value
+  sum_transform_tuple<PixelType, int> unary_op(d_img.width(), d_img.stride());  // transformation operator
+  sum_reduce_tuple<PixelType, int> binary_op;  // reduction operator
+  result_type result = thrust::transform_reduce(
+      thrust::make_zip_iterator(
+          thrust::make_tuple(d_img.begin(),thrust::counting_iterator<int>(0))),
+      thrust::make_zip_iterator(
+          thrust::make_tuple(d_img.end(),thrust::counting_iterator<int>(0))),
+      unary_op, init, binary_op);
+  sum = thrust::get<1>(result);
+}
+
+template<template<typename > class LinearMemoryType, typename PixelType>
+void summation(LinearMemoryType<PixelType>& d_img, PixelType init,
+               PixelType& sum)
+{
+  sum = thrust::reduce(d_img.begin(), d_img.end(), init,
+                       thrust::plus<PixelType>());
+}
+
+/** Calculate the L1-Norm \f$ \sum\limits_{i=1}^N \vert x_i - y_i \vert \f$
+ *  where \f$ N \f$ is the total number of pixels.
+ * \param[in] src Source array \f$ x \f$
+ * \param[in] ref Reference array \f$ y \f$
+ * \param[out] norm Resulting norm
+ */
+template<template<typename, typename > class PitchedMemoryType, template<
+    typename > class Allocator, typename PixelType>
+void normDiffL1(PitchedMemoryType<PixelType, Allocator<PixelType> >& src,
+                PitchedMemoryType<PixelType, Allocator<PixelType> >& ref,
+                PixelType& norm)
+{
+  typedef thrust::tuple<bool, PixelType> result_type;
+  result_type init(true, 0);  // initial value
+  diffabs_transform_tuple<PixelType, int> unary_op(src.width(), src.stride());  // transformation operator
+  sum_reduce_tuple<PixelType, int> binary_op;  // reduction operator
+  result_type result = thrust::transform_reduce(
+      thrust::make_zip_iterator(
+          thrust::make_tuple(src.begin(),
+                             ref.begin(),
+                             thrust::counting_iterator<int>(0))),
+      thrust::make_zip_iterator(
+          thrust::make_tuple(src.end(),
+                             ref.end(),
+                             thrust::counting_iterator<int>(0))),
+      unary_op, init, binary_op);
+  norm = thrust::get<1>(result);
+}
+
+/** Calculate the L1-Norm \f$ \sum\limits_{i=1}^N \vert x_i - y \vert \f$
+ *  where \f$ N \f$ is the total number of pixels.
+ * \param[in] src Source array \f$ x \f$
+ * \param[in] ref Reference value \f$ y \f$
+ * \param[out] norm Resulting norm
+ */
+template<template<typename, typename > class PitchedMemoryType, template<
+    typename > class Allocator, typename PixelType>
+void normDiffL1(PitchedMemoryType<PixelType, Allocator<PixelType> >& src,
+                PixelType& ref, PixelType& norm)
+{
+  typedef thrust::tuple<bool, PixelType> result_type;
+  result_type init(true, 0);  // initial value
+  diffabs_transform_tuple<PixelType, int> unary_op(src.width(), src.stride());  // transformation operator
+  sum_reduce_tuple<PixelType, int> binary_op;  // reduction operator
+  result_type result = thrust::transform_reduce(
+      thrust::make_zip_iterator(
+          thrust::make_tuple(src.begin(),
+                             thrust::constant_iterator<PixelType>(ref),
+                             thrust::counting_iterator<int>(0))),
+      thrust::make_zip_iterator(
+          thrust::make_tuple(src.end(),
+                             thrust::constant_iterator<PixelType>(ref),
+                             thrust::counting_iterator<int>(0))),
+      unary_op, init, binary_op);
+  norm = thrust::get<1>(result);
+}
+
+/** Calculate the L2-Norm \f$ \sqrt{\sum\limits_{i=1}^N ( x_i - y_i )^2}\f$
+ *  where \f$ N \f$ is the total number of pixels.
+ * \param[in] src Source array \f$ x \f$
+ * \param[in] ref Reference array \f$ y \f$
+ * \param[out] norm Resulting norm
+ */
+template<template<typename, typename > class PitchedMemoryType, template<
+    typename > class Allocator, typename PixelType>
+void normDiffL2(PitchedMemoryType<PixelType, Allocator<PixelType> >& src,
+                PitchedMemoryType<PixelType, Allocator<PixelType> >& ref,
+                PixelType& norm)
+{
+  typedef thrust::tuple<bool, PixelType> result_type;
+  result_type init(true, 0);  // initial value
+  diffsqr_transform_tuple<PixelType, int> unary_op(src.width(), src.stride());  // transformation operator
+  sum_reduce_tuple<PixelType, int> binary_op;  // reduction operator
+  result_type result = thrust::transform_reduce(
+      thrust::make_zip_iterator(
+          thrust::make_tuple(src.begin(),
+                             ref.begin(),
+                             thrust::counting_iterator<int>(0))),
+      thrust::make_zip_iterator(
+          thrust::make_tuple(src.end(),
+                             ref.end(),
+                             thrust::counting_iterator<int>(0))),
+      unary_op, init, binary_op);
+  norm = sqrt(thrust::get<1>(result));
+}
+
+/** Calculate the L2-Norm \f$ \sqrt{\sum\limits_{i=1}^N ( x_i - y )^2}\f$
+ *  where \f$ N \f$ is the total number of pixels.
+ * \param[in] src Source array \f$ x \f$
+ * \param[in] ref Reference value \f$ y \f$
+ * \param[out] norm Resulting norm
+ */
+template<template<typename, typename > class PitchedMemoryType, template<
+    typename > class Allocator, typename PixelType>
+void normDiffL2(PitchedMemoryType<PixelType, Allocator<PixelType> >& src,
+                PixelType& ref, PixelType& norm)
+{
+  typedef thrust::tuple<bool, PixelType> result_type;
+  result_type init(true, 0);  // initial value
+  diffsqr_transform_tuple<PixelType, int> unary_op(src.width(), src.stride());  // transformation operator
+  sum_reduce_tuple<PixelType, int> binary_op;  // reduction operator
+  result_type result = thrust::transform_reduce(
+      thrust::make_zip_iterator(
+          thrust::make_tuple(src.begin(),
+                             thrust::constant_iterator<PixelType>(ref),
+                             thrust::counting_iterator<int>(0))),
+      thrust::make_zip_iterator(
+          thrust::make_tuple(src.end(),
+                             thrust::constant_iterator<PixelType>(ref),
+                             thrust::counting_iterator<int>(0))),
+      unary_op, init, binary_op);
+  norm = sqrt(thrust::get<1>(result));
+}
+
+/** Calculate the mean-squared error (MSE) \f$ \frac{\sum\limits_{i=1}^N ( x_i - y_i )^2}{N}\f$
+ *  where \f$ N \f$ is the total number of pixels.
+ * \param[in] src Source array \f$ x \f$
+ * \param[in] ref Reference array  \f$ y \f$
+ * \param[out] mse mean-squared error
+ */
+template<template<typename, typename > class PitchedMemoryType, template<
+    typename > class Allocator, typename PixelType>
+void mse(PitchedMemoryType<PixelType, Allocator<PixelType> >& src,
+         PitchedMemoryType<PixelType, Allocator<PixelType> >& ref,
+         PixelType& mse)
+{
+  normDiffL2(src, ref, mse);
+  mse = (mse * mse) / (src.numel());
+}
+
+}  //namespace math
+}  // namespace iuprivate
+
+#endif //STATISTICS_CUH

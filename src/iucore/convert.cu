@@ -1,33 +1,33 @@
-/*
- * Copyright (c) ICG. All rights reserved.
- *
- * Institute for Computer Graphics and Vision
- * Graz University of Technology / Austria
- *
- *
- * This software is distributed WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- * PURPOSE.  See the above copyright notices for more information.
- *
- *
- * Project     : ImageUtilities
- * Module      : Core
- * Class       : none
- * Language    : C/CUDA
- * Description : CUDA kernels for core functions
- *
- * Author     : Manuel Werlberger
- * EMail      : werlberger@icg.tugraz.at
- *
- */
-
 #ifndef IUCORE_CONVERT_CU
 #define IUCORE_CONVERT_CU
 
-#include <helper_math.h>
+//#include <helper_math.h>
 #include "coredefs.h"
 #include "memorydefs.h"
-#include "iutextures.cuh"
+//#include "iutextures.cuh"
+#include <assert.h>
+#include <cuda.h>
+
+
+/**
+  Atomic add for double using comapre-and-swap (CAS)
+  Taken from nVidia CUDA Programming Guide
+  http://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html
+  */
+//__device__ double atomicAdd(double* address, double val)
+//{
+
+//    unsigned long long int* address_as_ull = (unsigned long long int*)address;
+//    unsigned long long int old = *address_as_ull, assumed;
+//    do
+//    {
+//        assumed = old;
+//        old = atomicCAS(address_as_ull, assumed, __double_as_longlong(val + __longlong_as_double(assumed)));
+
+//    } while (assumed != old);  // Note: uses integer comparison to avoid hang in case of NaN (since NaN != NaN)
+
+//    return __longlong_as_double(old);
+//}
 
 namespace iuprivate {
 
@@ -39,33 +39,33 @@ namespace iuprivate {
 //-----------------------------------------------------------------------------
 /** convert kernel 32f_C3 -> 32f_C4 (float3 -> float4)
  */
-__global__ void cuConvertC3ToC4Kernel(const float3* src, size_t src_stride, int src_width, int src_height,
-                                      float4* dst, size_t dst_stride, int dst_width, int dst_height)
+__global__ void cuConvertC3ToC4Kernel(const float3* src, size_t src_stride,
+                                      float4* dst, size_t dst_stride, int width, int height)
 {
   const int x = blockIdx.x*blockDim.x + threadIdx.x;
   const int y = blockIdx.y*blockDim.y + threadIdx.y;
-  int src_c = y*src_stride + x;
-  int dst_c = y*dst_stride + x;
+  int c_src = y*src_stride + x;
+  int c_dst = y*dst_stride + x;
 
-  if (x<src_width && y<src_height && x<dst_width && y<dst_height)
+  if (x<width && y<height)
   {
-    float3 val=src[src_c];
-    dst[dst_c] =  make_float4(val.x, val.y, val.z, 1.0f);
+    float3 val=src[c_src];
+    dst[c_dst] =  make_float4(val.x, val.y, val.z, 1.0f);
   }
 }
 
 //-----------------------------------------------------------------------------
 /** convert kernel 32f_C4 -> 32f_C3 (float4 -> float3)
  */
-__global__ void cuConvertC4ToC3Kernel(const float4* src, size_t src_stride, int src_width, int src_height,
-                                      float3* dst, size_t dst_stride, int dst_width, int dst_height)
+__global__ void cuConvertC4ToC3Kernel(const float4* src, size_t src_stride,
+                                      float3* dst, size_t dst_stride, int width, int height)
 {
   const int x = blockIdx.x*blockDim.x + threadIdx.x;
   const int y = blockIdx.y*blockDim.y + threadIdx.y;
   int src_c = y*src_stride + x;
   int dst_c = y*dst_stride + x;
 
-  if (x<src_width && y<src_height && x<dst_width && y<dst_height)
+  if (x<width && y<height)
   {
     float4 val=src[src_c];
     dst[dst_c] = make_float3(val.x, val.y, val.z);
@@ -76,34 +76,54 @@ __global__ void cuConvertC4ToC3Kernel(const float4* src, size_t src_stride, int 
 //-----------------------------------------------------------------------------
 /** convert kernel 8u_C1 -> 32f_C1 (unsigned char -> float)
  */
-__global__ void cuConvert8uC1To32fC1Kernel(const unsigned char *src, size_t src_stride, int src_width, int src_height,
-                                           float* dst, size_t dst_stride, int dst_width, int dst_height, float mul_constant,
-                                           float add_constant)
+__global__ void cuConvert8uC1To32fC1Kernel(const unsigned char *src, size_t src_stride,
+                                           float* dst, size_t dst_stride, float mul_constant,
+                                           float add_constant, int width, int height)
 {
   const int x = blockIdx.x*blockDim.x + threadIdx.x;
   const int y = blockIdx.y*blockDim.y + threadIdx.y;
   int src_c = y*src_stride + x;
   int dst_c = y*dst_stride + x;
 
-  if (x<src_width && y<src_height && x<dst_width && y<dst_height)
+  if (x<width && y<height)
   {
     dst[dst_c] = src[src_c] * mul_constant + add_constant;
   }
 }
 
 
+//-----------------------------------------------------------------------------
+/** convert kernel 32u_C1 -> 32f_C1 (unsigned int -> float)
+ */
+__global__ void cuConvert32uC1To32fC1Kernel(const unsigned int *src, size_t src_stride,
+                                           float* dst, size_t dst_stride, float mul_constant,
+                                           float add_constant, int width, int height)
+{
+  const int x = blockIdx.x*blockDim.x + threadIdx.x;
+  const int y = blockIdx.y*blockDim.y + threadIdx.y;
+  int src_c = y*src_stride + x;
+  int dst_c = y*dst_stride + x;
+
+  if (x<width && y<height)
+  {
+    dst[dst_c] = src[src_c] * mul_constant + add_constant;
+  }
+}
+
+
+
 /** convert kernel 8u_C3 -> 32f_C4 (unsigned char -> float)
  */
-__global__ void cuConvert8uC3To32fC4Kernel(const unsigned char *src, size_t src_pitch, int src_width, int src_height,
-                                           float4* dst, size_t dst_stride, int dst_width, int dst_height, float mul_constant,
-                                           float add_constant)
+__global__ void cuConvert8uC3To32fC4Kernel(const unsigned char *src, size_t src_pitch,
+                                           float4* dst, size_t dst_stride, float mul_constant,
+                                           float add_constant, int width, int height)
 {
   const int x = blockIdx.x*blockDim.x + threadIdx.x;
   const int y = blockIdx.y*blockDim.y + threadIdx.y;
   int src_c = y*src_pitch + x*3;
   int dst_c = y*dst_stride + x;
 
-  if (x<src_width && y<src_height && x<dst_width && y<dst_height)
+  if (x<width && y<height)
   {
     dst[dst_c] = make_float4(src[src_c]/255.0f, src[src_c+1]/255.0f, src[src_c+2]/255.0f, 1.0f);// * mul_constant + add_constant;
   }
@@ -113,16 +133,16 @@ __global__ void cuConvert8uC3To32fC4Kernel(const unsigned char *src, size_t src_
 //-----------------------------------------------------------------------------
 /** convert kernel 32f_C1 -> 8u_C1 (float -> unsigned char)
  */
-__global__ void cuConvert32fC1To8uC1Kernel(const float* src, size_t src_stride, int src_width, int src_height,
-                                           unsigned char* dst, size_t dst_stride, int dst_width, int dst_height, float mul_constant,
-                                           unsigned char add_constant)
+__global__ void cuConvert32fC1To8uC1Kernel(const float* src, size_t src_stride,
+                                           unsigned char* dst, size_t dst_stride, float mul_constant,
+                                           unsigned char add_constant, int width, int height)
 {
   const int x = blockIdx.x*blockDim.x + threadIdx.x;
   const int y = blockIdx.y*blockDim.y + threadIdx.y;
   int src_c = y*src_stride + x;
   int dst_c = y*dst_stride + x;
 
-  if (x<src_width && y<src_height && x<dst_width && y<dst_height)
+  if (x<width && y<height)
   {
     dst[dst_c] = src[src_c] * mul_constant + add_constant;
   }
@@ -131,16 +151,16 @@ __global__ void cuConvert32fC1To8uC1Kernel(const float* src, size_t src_stride, 
 //-----------------------------------------------------------------------------
 /** convert kernel 32f_C4 -> 8u_C4 (float4 -> unsigned char4)
  */
-__global__ void cuConvert32fC4To8uC4Kernel(const float4* src, size_t src_stride, int src_width, int src_height,
-                                           uchar4* dst, size_t dst_stride, int dst_width, int dst_height, float mul_constant,
-                                           unsigned char add_constant)
+__global__ void cuConvert32fC4To8uC4Kernel(const float4* src, size_t src_stride,
+                                           uchar4* dst, size_t dst_stride, float mul_constant,
+                                           unsigned char add_constant, int width, int height)
 {
   const int x = blockIdx.x*blockDim.x + threadIdx.x;
   const int y = blockIdx.y*blockDim.y + threadIdx.y;
   int src_c = y*src_stride + x;
   int dst_c = y*dst_stride + x;
 
-  if (x<src_width && y<src_height && x<dst_width && y<dst_height)
+  if (x<width && y<height)
   {
     float4 val = src[src_c];
     uchar4 res;
@@ -170,8 +190,8 @@ __global__ void cuConvertRGBToHSVKernel(const float4* src, float4* dst, size_t s
     float G = in.y;
     float B = in.z;
 
-    float Ma = IUMAX(R, IUMAX(G, B));
-    float mi = IUMIN(R, IUMIN(G, B));
+    float Ma = fmaxf(R, fmaxf(G, B));
+    float mi = fminf(R, fminf(G, B));
     float C = Ma-mi;
 
     // Hue
@@ -309,7 +329,12 @@ __global__ void cuConvertRGBToLABKernel(const float4* src, float4* dst, size_t s
     // Read
     float4 in = src[c];
     if (!isNormalized)
-      in /= 255.0f;
+    {
+      in.x /= 255.0f;
+      in.y /= 255.0f;
+      in.z /= 255.0f;
+      in.w /= 255.0f;
+    }
     
     float R = in.x;
     float G = in.y;
@@ -418,130 +443,143 @@ __global__ void cuConvertLABToRGBKernel(const float4* src, float4* dst, size_t s
 //-----------------------------------------------------------------------------
 /** convert kernel 32f_C3 -> 32f_C4 (float3 -> float4)
  */
-void cuConvert(const iu::ImageGpu_32f_C3* src, const IuRect& src_roi,
-                   iu::ImageGpu_32f_C4* dst, const IuRect& dst_roi)
+void cuConvert(const iu::ImageGpu_32f_C3* src,
+                   iu::ImageGpu_32f_C4* dst)
 {
+    assert(src->size() == dst->size());
   // fragmentation
   const unsigned int block_size = 16;
   dim3 dimBlock(block_size, block_size);
-  dim3 dimGrid(iu::divUp(dst_roi.width - dst_roi.x, dimBlock.x),
-               iu::divUp(dst_roi.height - dst_roi.y, dimBlock.y));
+  dim3 dimGrid(iu::divUp(src->width(), dimBlock.x),
+               iu::divUp(src->height(), dimBlock.y));
 
-  cuConvertC3ToC4Kernel<<<dimGrid, dimBlock>>>(src->data(src_roi.x, src_roi.y), src->stride(),
-                                               src_roi.width, src_roi.height,
-                                               dst->data(dst_roi.x, dst_roi.y), dst->stride(),
-                                               dst_roi.width, dst_roi.height);
+  cuConvertC3ToC4Kernel<<<dimGrid, dimBlock>>>(src->data(), src->stride(),
+                                               dst->data(), dst->stride(), src->width(), src->height());
 
-  IU_CUDA_CHECK();
 }
 
 //-----------------------------------------------------------------------------
 /** convert kernel 32f_C4 -> 32f_C3 (float4 -> float3)
  */
-void cuConvert(const iu::ImageGpu_32f_C4* src, const IuRect& src_roi,
-                   iu::ImageGpu_32f_C3* dst, const IuRect& dst_roi)
+void cuConvert(const iu::ImageGpu_32f_C4* src,
+                   iu::ImageGpu_32f_C3* dst)
 {
+    assert(src->size() == dst->size());
   // fragmentation
   const unsigned int block_size = 16;
   dim3 dimBlock(block_size, block_size);
-  dim3 dimGrid(iu::divUp(dst_roi.width - dst_roi.x, dimBlock.x),
-               iu::divUp(dst_roi.height - dst_roi.y, dimBlock.y));
+  dim3 dimGrid(iu::divUp(src->width(), dimBlock.x),
+               iu::divUp(src->height(), dimBlock.y));
 
-  cuConvertC4ToC3Kernel<<<dimGrid, dimBlock>>>(src->data(src_roi.x, src_roi.y), src->stride(),
-                                               src_roi.width, src_roi.height,
-                                               dst->data(dst_roi.x, dst_roi.y), dst->stride(),
-                                               dst_roi.width, dst_roi.height);
+  cuConvertC4ToC3Kernel<<<dimGrid, dimBlock>>>(src->data(), src->stride(),
+                                               dst->data(), dst->stride(), src->width(), src->height());
 
-  IU_CUDA_CHECK();
 }
 
 
 //-----------------------------------------------------------------------------
-void cuConvert_8u_32f(const iu::ImageGpu_8u_C1* src, const IuRect& src_roi,
-                          iu::ImageGpu_32f_C1* dst, const IuRect& dst_roi, float mul_constant,
+void cuConvert_8u_32f(const iu::ImageGpu_8u_C1* src,
+                          iu::ImageGpu_32f_C1* dst, float mul_constant,
                           float add_constant)
 {
+    assert(src->size() == dst->size());
   // fragmentation
   const unsigned int block_size = 16;
   dim3 dimBlock(block_size, block_size);
-  dim3 dimGrid(iu::divUp(dst_roi.width - dst_roi.x, dimBlock.x),
-               iu::divUp(dst_roi.height - dst_roi.y, dimBlock.y));
+  dim3 dimGrid(iu::divUp(src->width(), dimBlock.x),
+               iu::divUp(src->height(), dimBlock.y));
 
-  cuConvert8uC1To32fC1Kernel<<<dimGrid, dimBlock>>>(src->data(src_roi.x, src_roi.y),
-                                                    src->stride(), src_roi.width, src_roi.height,
-                                                    dst->data(dst_roi.x, dst_roi.y),
-                                                    dst->stride(), dst_roi.width, dst_roi.height,
-                                                    mul_constant, add_constant);
+  cuConvert8uC1To32fC1Kernel<<<dimGrid, dimBlock>>>(src->data(), src->stride(), dst->data(), dst->stride(),
+                                                    mul_constant, add_constant, src->width(), src->height());
 
-  IU_CUDA_CHECK();
 }
 
-
-//-----------------------------------------------------------------------------
-void cuConvert_8u_32f_C3C4(const iu::ImageGpu_8u_C3* src, const IuRect& src_roi,
-                          iu::ImageGpu_32f_C4* dst, const IuRect& dst_roi, float mul_constant,
-                          float add_constant)
+void cuConvert_32u_32f(const iu::ImageGpu_32u_C1* src,
+                                 iu::ImageGpu_32f_C1* dst,
+                                 float mul_constant,  float add_constant)
 {
+    assert(src->size() == dst->size());
   // fragmentation
   const unsigned int block_size = 16;
   dim3 dimBlock(block_size, block_size);
-  dim3 dimGrid(iu::divUp(dst_roi.width - dst_roi.x, dimBlock.x),
-               iu::divUp(dst_roi.height - dst_roi.y, dimBlock.y));
+  dim3 dimGrid(iu::divUp(src->width(), dimBlock.x),
+               iu::divUp(src->height(), dimBlock.y));
+
+  cuConvert32uC1To32fC1Kernel<<<dimGrid, dimBlock>>>(src->data(), src->stride(), dst->data(), dst->stride(),
+                                                    mul_constant, add_constant, src->width(), src->height());
+}
+
+//-----------------------------------------------------------------------------
+struct int2float
+{
+	__host__ __device__ float operator()(int x) const
+	{
+		return (float)x;
+	}
+};
+
+void cuConvert_32s_32f_lin(iu::LinearDeviceMemory_32s_C1 *src, iu::LinearDeviceMemory_32f_C1 *dest)
+{
+	thrust::transform(src->begin(), src->end(), dest->begin(), int2float());
+}
+
+//-----------------------------------------------------------------------------
+void cuConvert_8u_32f_C3C4(const iu::ImageGpu_8u_C3* src,
+                          iu::ImageGpu_32f_C4* dst, float mul_constant,
+                          float add_constant)
+{
+    assert(src->size() == dst->size());
+  // fragmentation
+  const unsigned int block_size = 16;
+  dim3 dimBlock(block_size, block_size);
+  dim3 dimGrid(iu::divUp(src->width(), dimBlock.x),
+               iu::divUp(src->height(), dimBlock.y));
   
-  cuConvert8uC3To32fC4Kernel<<<dimGrid, dimBlock>>>(&(src->data(src_roi.x, src_roi.y)->x),
-                                                    src->pitch(), src_roi.width, src_roi.height,
-                                                    dst->data(dst_roi.x, dst_roi.y),
-                                                    dst->stride(), dst_roi.width, dst_roi.height,
-                                                    mul_constant, add_constant);
+  cuConvert8uC3To32fC4Kernel<<<dimGrid, dimBlock>>>(&(src->data()->x), src->pitch(), dst->data(), dst->stride(),
+                                                    mul_constant, add_constant, src->width(), src->height());
 
-  IU_CUDA_CHECK();
 }
 
 
 //-----------------------------------------------------------------------------
-void cuConvert_32f_8u(const iu::ImageGpu_32f_C1* src, const IuRect& src_roi,
-                          iu::ImageGpu_8u_C1* dst, const IuRect& dst_roi, float mul_constant,
+void cuConvert_32f_8u(const iu::ImageGpu_32f_C1* src,
+                          iu::ImageGpu_8u_C1* dst, float mul_constant,
                           unsigned char add_constant)
 {
+    assert(src->size() == dst->size());
   // fragmentation
   const unsigned int block_size = 16;
   dim3 dimBlock(block_size, block_size);
-  dim3 dimGrid(iu::divUp(dst_roi.width - dst_roi.x, dimBlock.x),
-               iu::divUp(dst_roi.height - dst_roi.y, dimBlock.y));
+  dim3 dimGrid(iu::divUp(src->width(), dimBlock.x),
+               iu::divUp(src->height(), dimBlock.y));
 
-  cuConvert32fC1To8uC1Kernel<<<dimGrid, dimBlock>>>(src->data(src_roi.x, src_roi.y), src->stride(),
-                                                    src_roi.width, src_roi.height,
-                                                    dst->data(dst_roi.x, dst_roi.y),
-                                                    dst->stride(), dst_roi.width, dst_roi.height,
-                                                    mul_constant, add_constant);
+  cuConvert32fC1To8uC1Kernel<<<dimGrid, dimBlock>>>(src->data(), src->stride(), dst->data(), dst->stride(),
+                                                    mul_constant, add_constant, src->width(), src->height());
 
-  IU_CUDA_CHECK();
 }
 
 //-----------------------------------------------------------------------------
-void cuConvert_32f_8u(const iu::ImageGpu_32f_C4* src, const IuRect& src_roi,
-                          iu::ImageGpu_8u_C4* dst, const IuRect& dst_roi, float mul_constant,
+void cuConvert_32f_8u(const iu::ImageGpu_32f_C4* src,
+                          iu::ImageGpu_8u_C4* dst, float mul_constant,
                           unsigned char add_constant)
 {
+    assert(src->size() == dst->size());
   // fragmentation
   const unsigned int block_size = 16;
   dim3 dimBlock(block_size, block_size);
-  dim3 dimGrid(iu::divUp(dst_roi.width - dst_roi.x, dimBlock.x),
-               iu::divUp(dst_roi.height - dst_roi.y, dimBlock.y));
+  dim3 dimGrid(iu::divUp(src->width(), dimBlock.x),
+               iu::divUp(src->height(), dimBlock.y));
 
-  cuConvert32fC4To8uC4Kernel<<<dimGrid, dimBlock>>>(src->data(src_roi.x, src_roi.y),
-                                                    src->stride(), src_roi.width, src_roi.height,
-                                                    dst->data(dst_roi.x, dst_roi.y),
-                                                    dst->stride(), dst_roi.width,
-                                                    dst_roi.height, mul_constant, add_constant);
+  cuConvert32fC4To8uC4Kernel<<<dimGrid, dimBlock>>>(src->data(), src->stride(), dst->data(), dst->stride(),
+                                                    mul_constant, add_constant, src->width(), src->height());
 
-  IU_CUDA_CHECK();
 }
 
 //-----------------------------------------------------------------------------
 void cuConvert_rgb_to_hsv(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst,
                               bool normalize)
 {
+    assert(src->size() == dst->size());
   // fragmentation
   const unsigned int block_size = 16;
   dim3 dimBlock(block_size, block_size);
@@ -551,13 +589,13 @@ void cuConvert_rgb_to_hsv(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* d
   cuConvertRGBToHSVKernel<<<dimGrid, dimBlock>>>(src->data(), dst->data(), src->stride(),
                                                  src->width(), src->height(), normalize);
 
-  IU_CUDA_CHECK();
 }
 
 //-----------------------------------------------------------------------------
 void cuConvert_hsv_to_rgb(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst,
                               bool denormalize)
 {
+    assert(src->size() == dst->size());
   // fragmentation
   const unsigned int block_size = 16;
   dim3 dimBlock(block_size, block_size);
@@ -567,13 +605,13 @@ void cuConvert_hsv_to_rgb(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* d
   cuConvertHSVToRGBKernel<<<dimGrid, dimBlock>>>(src->data(), dst->data(), src->stride(),
                                                  src->width(), src->height(), denormalize);
 
-  IU_CUDA_CHECK();
 }
 
 
 //-----------------------------------------------------------------------------
 void cuConvert_rgb_to_lab(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst, bool isNormalized)
 {
+    assert(src->size() == dst->size());
   // fragmentation
   const unsigned int block_size = 16;
   dim3 dimBlock(block_size, block_size);
@@ -583,12 +621,12 @@ void cuConvert_rgb_to_lab(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* d
   cuConvertRGBToLABKernel<<<dimGrid, dimBlock>>>(src->data(), dst->data(), src->stride(),
                                                  src->width(), src->height(), isNormalized);
 
-  IU_CUDA_CHECK();
 }
 
 //-----------------------------------------------------------------------------
 void cuConvert_lab_to_rgb(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst)
 {
+    assert(src->size() == dst->size());
   // fragmentation
   const unsigned int block_size = 16;
   dim3 dimBlock(block_size, block_size);
@@ -598,9 +636,74 @@ void cuConvert_lab_to_rgb(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* d
   cuConvertLABToRGBKernel<<<dimGrid, dimBlock>>>(src->data(), dst->data(), src->stride(),
                                                  src->width(), src->height());
 
-  IU_CUDA_CHECK();
 }
 
+
+
+
+
+//typedef float num_t;
+
+//__global__ void sum_reduce(iu::ImageGpu_32f_C1::KernelData g_data, num_t* sum)
+//{
+//    const unsigned int x = blockDim.x * blockIdx.x + threadIdx.x;
+//    const unsigned int y = blockDim.y * blockIdx.y + threadIdx.y;
+//    const int linId = threadIdx.x + threadIdx.y*blockDim.x;
+
+//    extern volatile __shared__ num_t reduction[];
+
+//    if (x<g_data.width_ && y<g_data.height_)
+//    {
+//        reduction[linId] = g_data(x,y);
+//    }
+//    else
+//        reduction[linId] = 0;
+
+//    __syncthreads();
+
+//    if (linId < 128) { reduction[linId] += reduction[linId+128]; }
+//    __syncthreads();
+//    if (linId < 64) { reduction[linId] += reduction[linId+64]; }
+//    __syncthreads();
+
+//    if (linId < 32)
+//    {
+//        reduction[linId] += reduction[linId+32];
+//        reduction[linId] += reduction[linId+16];
+//        reduction[linId] += reduction[linId+8];
+//        reduction[linId] += reduction[linId+4];
+//        reduction[linId] += reduction[linId+2];
+//        reduction[linId] += reduction[linId+1];
+//    }
+//    __syncthreads();
+
+
+
+//    if (linId == 0)
+//        atomicAdd(sum, reduction[0]);
+//}
+
+
+//double cuSummation(iu::ImageGpu_32f_C1* src)
+//{
+//    // fragmentation
+//    unsigned int block_size = 16;
+//    dim3 dimBlock(block_size, block_size);
+//    dim3 dimGrid(iu::divUp(src->width(), dimBlock.x), iu::divUp(src->height(), dimBlock.y));
+
+//    num_t* s;
+//    cudaMalloc(&s, sizeof(num_t));
+//    cudaMemset(s, 0, sizeof(num_t));
+
+//    int shared_sz = block_size*block_size*sizeof(num_t);
+//    sum_reduce<<< dimGrid, dimBlock, shared_sz >>> (*src, s);
+
+//    num_t sum = 0;
+//    cudaMemcpy(&sum, s, sizeof(num_t), cudaMemcpyDeviceToHost);
+
+//    cudaFree(s);
+//    return sum;
+//}
 
 
 } // namespace iuprivate

@@ -1,321 +1,585 @@
-/*
- * Copyright (c) ICG. All rights reserved.
- *
- * Institute for Computer Graphics and Vision
- * Graz University of Technology / Austria
- *
- *
- * This software is distributed WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- * PURPOSE.  See the above copyright notices for more information.
- *
- *
- * Project     : ImageUtilities
- * Module      : Math Module
- * Class       : Wrapper
- * Language    : C
- * Description : Public interfaces to math module
- *
- * Author     : Manuel Werlberger
- * EMail      : werlberger@icg.tugraz.at
- *
- */
-
-#ifndef IU_MATH_MODULE_H
-#define IU_MATH_MODULE_H
+#ifndef IUMATH_H
+#define IUMATH_H
 
 #include "iudefs.h"
 
 namespace iu {
+/// Math related functions
+namespace math {
 
-/** \defgroup Math
- *  \brief The math module.
- *  TODO more detailed docu
- *  @{
+/** \defgroup Math iumath
+ * \brief Provides basic mathematics on arrays and images
  */
 
-/* ***************************************************************************
-     ARITHMETIC
- * ***************************************************************************/
-
-//////////////////////////////////////////////////////////////////////////////
-/** @defgroup Arithmetics
- *  @ingroup Math
- *  TODO more detailed docu
- *  @{
+/** \defgroup MathArithmetics Arithmetics
+ \ingroup Math
+ \brief Pointwise image arithmetics
+ * \{
  */
+//---------------------------------------------------------------------------------------------------
+// ARITHMETICS
 
-/** Adding an image with an additional weighting factor to another.
- * \param src1 Source image 1.
- * \param src2 Source image 2.
- * \param weight Weighting of image 2 before its added to image 1.
- * \param dst Result image dst=weight1*src1 + weight1*src2.
- * \param roi Region of interest in the source and destination image
+// add constant
+/** Add a constant to an array (can be called in-place)
+ * \param src Source array
+ * \param val Value to add
+ * \param[out] dst Destination array
+ */
+IUCORE_DLLAPI void addC(iu::ImageGpu_32f_C1& src, const float& val, iu::ImageGpu_32f_C1& dst);
+IUCORE_DLLAPI void addC(iu::ImageGpu_32f_C2& src, const float2& val, iu::ImageGpu_32f_C2& dst);
+IUCORE_DLLAPI void addC(iu::ImageGpu_32f_C3& src, const float3& val, iu::ImageGpu_32f_C3& dst);
+IUCORE_DLLAPI void addC(iu::ImageGpu_32f_C4& src, const float4& val, iu::ImageGpu_32f_C4& dst);
+
+IUCORE_DLLAPI void addC(iu::ImageGpu_8u_C1& src, const unsigned char& val, iu::ImageGpu_8u_C1& dst);
+IUCORE_DLLAPI void addC(iu::ImageGpu_8u_C2& src, const uchar2& val, iu::ImageGpu_8u_C2& dst);
+IUCORE_DLLAPI void addC(iu::ImageGpu_8u_C3& src, const uchar3& val, iu::ImageGpu_8u_C3& dst);
+IUCORE_DLLAPI void addC(iu::ImageGpu_8u_C4& src, const uchar4& val, iu::ImageGpu_8u_C4& dst);
+
+IUCORE_DLLAPI void addC(iu::ImageGpu_32s_C1& src, const int& val, iu::ImageGpu_32s_C1& dst);
+IUCORE_DLLAPI void addC(iu::ImageGpu_32u_C1& src, const unsigned int& val, iu::ImageGpu_32u_C1& dst);
+IUCORE_DLLAPI void addC(iu::ImageGpu_16u_C1& src, const unsigned short& val, iu::ImageGpu_16u_C1& dst);
+
+IUCORE_DLLAPI void addC(iu::VolumeGpu_32f_C1& src, const float& val, iu::VolumeGpu_32f_C1& dst);
+IUCORE_DLLAPI void addC(iu::VolumeGpu_32f_C2& src, const float2& val, iu::VolumeGpu_32f_C2& dst);
+
+IUCORE_DLLAPI void addC(iu::LinearDeviceMemory_32f_C1& src, const float& val, iu::LinearDeviceMemory_32f_C1& dst);
+IUCORE_DLLAPI void addC(iu::LinearDeviceMemory_32f_C2& src, const float2& val, iu::LinearDeviceMemory_32f_C2& dst);
+IUCORE_DLLAPI void addC(iu::LinearDeviceMemory_32f_C3& src, const float3& val, iu::LinearDeviceMemory_32f_C3& dst);
+IUCORE_DLLAPI void addC(iu::LinearDeviceMemory_32f_C4& src, const float4& val, iu::LinearDeviceMemory_32f_C4& dst);
+
+IUCORE_DLLAPI void addC(iu::LinearDeviceMemory_8u_C1& src, const unsigned char& val, iu::LinearDeviceMemory_8u_C1& dst);
+IUCORE_DLLAPI void addC(iu::LinearDeviceMemory_8u_C2& src, const uchar2& val, iu::LinearDeviceMemory_8u_C2& dst);
+IUCORE_DLLAPI void addC(iu::LinearDeviceMemory_8u_C3& src, const uchar3& val, iu::LinearDeviceMemory_8u_C3& dst);
+IUCORE_DLLAPI void addC(iu::LinearDeviceMemory_8u_C4& src, const uchar4& val, iu::LinearDeviceMemory_8u_C4& dst);
+
+IUCORE_DLLAPI void addC(iu::LinearDeviceMemory_32s_C1& src, const int& val, iu::LinearDeviceMemory_32s_C1& dst);
+IUCORE_DLLAPI void addC(iu::LinearDeviceMemory_32u_C1& src, const unsigned int& val, iu::LinearDeviceMemory_32u_C1& dst);
+IUCORE_DLLAPI void addC(iu::LinearDeviceMemory_16u_C1& src, const unsigned short& val, iu::LinearDeviceMemory_16u_C1& dst);
+
+IUCORE_DLLAPI void addC(iu::ImageCpu_32f_C1& src, const float& val, iu::ImageCpu_32f_C1& dst);
+IUCORE_DLLAPI void addC(iu::ImageCpu_32f_C2& src, const float2& val, iu::ImageCpu_32f_C2& dst);
+IUCORE_DLLAPI void addC(iu::ImageCpu_32f_C3& src, const float3& val, iu::ImageCpu_32f_C3& dst);
+IUCORE_DLLAPI void addC(iu::ImageCpu_32f_C4& src, const float4& val, iu::ImageCpu_32f_C4& dst);
+
+IUCORE_DLLAPI void addC(iu::ImageCpu_8u_C1& src, const unsigned char& val, iu::ImageCpu_8u_C1& dst);
+IUCORE_DLLAPI void addC(iu::ImageCpu_8u_C2& src, const uchar2& val, iu::ImageCpu_8u_C2& dst);
+IUCORE_DLLAPI void addC(iu::ImageCpu_8u_C3& src, const uchar3& val, iu::ImageCpu_8u_C3& dst);
+IUCORE_DLLAPI void addC(iu::ImageCpu_8u_C4& src, const uchar4& val, iu::ImageCpu_8u_C4& dst);
+
+IUCORE_DLLAPI void addC(iu::ImageCpu_32s_C1& src, const int& val, iu::ImageCpu_32s_C1& dst);
+IUCORE_DLLAPI void addC(iu::ImageCpu_32u_C1& src, const unsigned int& val, iu::ImageCpu_32u_C1& dst);
+IUCORE_DLLAPI void addC(iu::ImageCpu_16u_C1& src, const unsigned short& val, iu::ImageCpu_16u_C1& dst);
+
+IUCORE_DLLAPI void addC(iu::VolumeCpu_32f_C1& src, const float& val, iu::VolumeCpu_32f_C1& dst);
+IUCORE_DLLAPI void addC(iu::VolumeCpu_32f_C2& src, const float2& val, iu::VolumeCpu_32f_C2& dst);
+
+IUCORE_DLLAPI void addC(iu::LinearHostMemory_32f_C1& src, const float& val, iu::LinearHostMemory_32f_C1& dst);
+IUCORE_DLLAPI void addC(iu::LinearHostMemory_32f_C2& src, const float2& val, iu::LinearHostMemory_32f_C2& dst);
+IUCORE_DLLAPI void addC(iu::LinearHostMemory_32f_C3& src, const float3& val, iu::LinearHostMemory_32f_C3& dst);
+IUCORE_DLLAPI void addC(iu::LinearHostMemory_32f_C4& src, const float4& val, iu::LinearHostMemory_32f_C4& dst);
+
+IUCORE_DLLAPI void addC(iu::LinearHostMemory_8u_C1& src, const unsigned char& val, iu::LinearHostMemory_8u_C1& dst);
+IUCORE_DLLAPI void addC(iu::LinearHostMemory_8u_C2& src, const uchar2& val, iu::LinearHostMemory_8u_C2& dst);
+IUCORE_DLLAPI void addC(iu::LinearHostMemory_8u_C3& src, const uchar3& val, iu::LinearHostMemory_8u_C3& dst);
+IUCORE_DLLAPI void addC(iu::LinearHostMemory_8u_C4& src, const uchar4& val, iu::LinearHostMemory_8u_C4& dst);
+
+IUCORE_DLLAPI void addC(iu::LinearHostMemory_32s_C1& src, const int& val, iu::LinearHostMemory_32s_C1& dst);
+IUCORE_DLLAPI void addC(iu::LinearHostMemory_32u_C1& src, const unsigned int& val, iu::LinearHostMemory_32u_C1& dst);
+IUCORE_DLLAPI void addC(iu::LinearHostMemory_16u_C1& src, const unsigned short& val, iu::LinearHostMemory_16u_C1& dst);
+
+// multiply constant
+/** Multiply a constant to an array (can be called in-place)
+ * \param src Source array
+ * \param val Value to add
+ * \param[out] dst Destination array
+ */
+IUCORE_DLLAPI void mulC(iu::ImageGpu_32f_C1& src, const float& val, iu::ImageGpu_32f_C1& dst);
+IUCORE_DLLAPI void mulC(iu::ImageGpu_32f_C2& src, const float2& val, iu::ImageGpu_32f_C2& dst);
+IUCORE_DLLAPI void mulC(iu::ImageGpu_32f_C3& src, const float3& val, iu::ImageGpu_32f_C3& dst);
+IUCORE_DLLAPI void mulC(iu::ImageGpu_32f_C4& src, const float4& val, iu::ImageGpu_32f_C4& dst);
+
+IUCORE_DLLAPI void mulC(iu::ImageGpu_8u_C1& src, const unsigned char& val, iu::ImageGpu_8u_C1& dst);
+IUCORE_DLLAPI void mulC(iu::ImageGpu_8u_C2& src, const uchar2& val, iu::ImageGpu_8u_C2& dst);
+IUCORE_DLLAPI void mulC(iu::ImageGpu_8u_C3& src, const uchar3& val, iu::ImageGpu_8u_C3& dst);
+IUCORE_DLLAPI void mulC(iu::ImageGpu_8u_C4& src, const uchar4& val, iu::ImageGpu_8u_C4& dst);
+
+IUCORE_DLLAPI void mulC(iu::ImageGpu_8u_C1& src, const unsigned char& val, iu::ImageGpu_8u_C1& dst);
+IUCORE_DLLAPI void mulC(iu::ImageGpu_32s_C1& src, const int& val, iu::ImageGpu_32s_C1& dst);
+IUCORE_DLLAPI void mulC(iu::ImageGpu_32u_C1& src, const unsigned int& val, iu::ImageGpu_32u_C1& dst);
+IUCORE_DLLAPI void mulC(iu::ImageGpu_16u_C1& src, const unsigned short& val, iu::ImageGpu_16u_C1& dst);
+
+IUCORE_DLLAPI void mulC(iu::VolumeGpu_32f_C1& src, const float& val, iu::VolumeGpu_32f_C1& dst);
+IUCORE_DLLAPI void mulC(iu::VolumeGpu_32f_C2& src, const float2& val, iu::VolumeGpu_32f_C2& dst);
+IUCORE_DLLAPI void mulC(iu::VolumeGpu_32f_C3& src, const float3& val, iu::VolumeGpu_32f_C3& dst);
+IUCORE_DLLAPI void mulC(iu::VolumeGpu_32f_C4& src, const float4& val, iu::VolumeGpu_32f_C4& dst);
+
+IUCORE_DLLAPI void mulC(iu::LinearDeviceMemory_32f_C1& src, const float& val, iu::LinearDeviceMemory_32f_C1& dst);
+IUCORE_DLLAPI void mulC(iu::LinearDeviceMemory_32f_C2& src, const float2& val, iu::LinearDeviceMemory_32f_C2& dst);
+IUCORE_DLLAPI void mulC(iu::LinearDeviceMemory_32f_C3& src, const float3& val, iu::LinearDeviceMemory_32f_C3& dst);
+IUCORE_DLLAPI void mulC(iu::LinearDeviceMemory_32f_C4& src, const float4& val, iu::LinearDeviceMemory_32f_C4& dst);
+
+IUCORE_DLLAPI void mulC(iu::LinearDeviceMemory_8u_C1& src, const unsigned char& val, iu::LinearDeviceMemory_8u_C1& dst);
+IUCORE_DLLAPI void mulC(iu::LinearDeviceMemory_8u_C2& src, const uchar2& val, iu::LinearDeviceMemory_8u_C2& dst);
+IUCORE_DLLAPI void mulC(iu::LinearDeviceMemory_8u_C3& src, const uchar3& val, iu::LinearDeviceMemory_8u_C3& dst);
+IUCORE_DLLAPI void mulC(iu::LinearDeviceMemory_8u_C4& src, const uchar4& val, iu::LinearDeviceMemory_8u_C4& dst);
+
+IUCORE_DLLAPI void mulC(iu::LinearDeviceMemory_8u_C1& src, const unsigned char& val, iu::LinearDeviceMemory_8u_C1& dst);
+IUCORE_DLLAPI void mulC(iu::LinearDeviceMemory_32s_C1& src, const int& val, iu::LinearDeviceMemory_32s_C1& dst);
+IUCORE_DLLAPI void mulC(iu::LinearDeviceMemory_32u_C1& src, const unsigned int& val, iu::LinearDeviceMemory_32u_C1& dst);
+IUCORE_DLLAPI void mulC(iu::LinearDeviceMemory_16u_C1& src, const unsigned short& val, iu::LinearDeviceMemory_16u_C1& dst);
+
+IUCORE_DLLAPI void mulC(iu::ImageCpu_32f_C1& src, const float& val, iu::ImageCpu_32f_C1& dst);
+IUCORE_DLLAPI void mulC(iu::ImageCpu_32f_C2& src, const float2& val, iu::ImageCpu_32f_C2& dst);
+IUCORE_DLLAPI void mulC(iu::ImageCpu_32f_C3& src, const float3& val, iu::ImageCpu_32f_C3& dst);
+IUCORE_DLLAPI void mulC(iu::ImageCpu_32f_C4& src, const float4& val, iu::ImageCpu_32f_C4& dst);
+
+IUCORE_DLLAPI void mulC(iu::ImageCpu_8u_C1& src, const unsigned char& val, iu::ImageCpu_8u_C1& dst);
+IUCORE_DLLAPI void mulC(iu::ImageCpu_8u_C2& src, const uchar2& val, iu::ImageCpu_8u_C2& dst);
+IUCORE_DLLAPI void mulC(iu::ImageCpu_8u_C3& src, const uchar3& val, iu::ImageCpu_8u_C3& dst);
+IUCORE_DLLAPI void mulC(iu::ImageCpu_8u_C4& src, const uchar4& val, iu::ImageCpu_8u_C4& dst);
+
+IUCORE_DLLAPI void mulC(iu::ImageCpu_8u_C1& src, const unsigned char& val, iu::ImageCpu_8u_C1& dst);
+IUCORE_DLLAPI void mulC(iu::ImageCpu_32s_C1& src, const int& val, iu::ImageCpu_32s_C1& dst);
+IUCORE_DLLAPI void mulC(iu::ImageCpu_32u_C1& src, const unsigned int& val, iu::ImageCpu_32u_C1& dst);
+IUCORE_DLLAPI void mulC(iu::ImageCpu_16u_C1& src, const unsigned short& val, iu::ImageCpu_16u_C1& dst);
+
+IUCORE_DLLAPI void mulC(iu::VolumeCpu_32f_C1& src, const float& val, iu::VolumeCpu_32f_C1& dst);
+IUCORE_DLLAPI void mulC(iu::VolumeCpu_32f_C2& src, const float2& val, iu::VolumeCpu_32f_C2& dst);
+IUCORE_DLLAPI void mulC(iu::VolumeCpu_32f_C3& src, const float3& val, iu::VolumeCpu_32f_C3& dst);
+IUCORE_DLLAPI void mulC(iu::VolumeCpu_32f_C4& src, const float4& val, iu::VolumeCpu_32f_C4& dst);
+
+IUCORE_DLLAPI void mulC(iu::LinearHostMemory_32f_C1& src, const float& val, iu::LinearHostMemory_32f_C1& dst);
+IUCORE_DLLAPI void mulC(iu::LinearHostMemory_32f_C2& src, const float2& val, iu::LinearHostMemory_32f_C2& dst);
+IUCORE_DLLAPI void mulC(iu::LinearHostMemory_32f_C3& src, const float3& val, iu::LinearHostMemory_32f_C3& dst);
+IUCORE_DLLAPI void mulC(iu::LinearHostMemory_32f_C4& src, const float4& val, iu::LinearHostMemory_32f_C4& dst);
+
+IUCORE_DLLAPI void mulC(iu::LinearHostMemory_8u_C1& src, const unsigned char& val, iu::LinearHostMemory_8u_C1& dst);
+IUCORE_DLLAPI void mulC(iu::LinearHostMemory_8u_C2& src, const uchar2& val, iu::LinearHostMemory_8u_C2& dst);
+IUCORE_DLLAPI void mulC(iu::LinearHostMemory_8u_C3& src, const uchar3& val, iu::LinearHostMemory_8u_C3& dst);
+IUCORE_DLLAPI void mulC(iu::LinearHostMemory_8u_C4& src, const uchar4& val, iu::LinearHostMemory_8u_C4& dst);
+
+IUCORE_DLLAPI void mulC(iu::LinearHostMemory_8u_C1& src, const unsigned char& val, iu::LinearHostMemory_8u_C1& dst);
+IUCORE_DLLAPI void mulC(iu::LinearHostMemory_32s_C1& src, const int& val, iu::LinearHostMemory_32s_C1& dst);
+IUCORE_DLLAPI void mulC(iu::LinearHostMemory_32u_C1& src, const unsigned int& val, iu::LinearHostMemory_32u_C1& dst);
+IUCORE_DLLAPI void mulC(iu::LinearHostMemory_16u_C1& src, const unsigned short& val, iu::LinearHostMemory_16u_C1& dst);
+
+// pointwise weighted add
+/** Add an array to another array with weighting factors (dst = weight1*src1 + weight2*src2) (can be called in-place)
+ * \param src1 First source array
+ * \param weight1 First weight
+ * \param src2 Second source array
+ * \param weight2 Second weight
+ * \param[out] dst Destination array
+ */
+IUCORE_DLLAPI void addWeighted(iu::ImageGpu_32f_C1& src1, const float& weight1,
+                 iu::ImageGpu_32f_C1& src2, const float& weight2,iu::ImageGpu_32f_C1& dst);
+IUCORE_DLLAPI void addWeighted(iu::ImageGpu_32f_C2& src1, const float2& weight1,
+                 iu::ImageGpu_32f_C2& src2, const float2& weight2,iu::ImageGpu_32f_C2& dst);
+IUCORE_DLLAPI void addWeighted(iu::ImageGpu_32f_C3& src1, const float3& weight1,
+                 iu::ImageGpu_32f_C3& src2, const float3& weight2,iu::ImageGpu_32f_C3& dst);
+IUCORE_DLLAPI void addWeighted(iu::ImageGpu_32f_C4& src1, const float4& weight1,
+                 iu::ImageGpu_32f_C4& src2, const float4& weight2,iu::ImageGpu_32f_C4& dst);
+IUCORE_DLLAPI void addWeighted(iu::ImageGpu_8u_C1& src1, const unsigned char& weight1,
+                 iu::ImageGpu_8u_C1& src2, const unsigned char& weight2,iu::ImageGpu_8u_C1& dst);
+IUCORE_DLLAPI void addWeighted(iu::ImageGpu_8u_C4& src1, const uchar4& weight1,
+                 iu::ImageGpu_8u_C4& src2, const uchar4& weight2,iu::ImageGpu_8u_C4& dst);
+
+IUCORE_DLLAPI void addWeighted(iu::VolumeGpu_32f_C1& src1, const float& weight1,
+                 iu::VolumeGpu_32f_C1& src2, const float& weight2,iu::VolumeGpu_32f_C1& dst);
+
+IUCORE_DLLAPI void addWeighted(iu::LinearDeviceMemory_32f_C1& src1, const float& weight1,
+                 iu::LinearDeviceMemory_32f_C1& src2, const float& weight2,iu::LinearDeviceMemory_32f_C1& dst);
+IUCORE_DLLAPI void addWeighted(iu::LinearDeviceMemory_32f_C2& src1, const float2& weight1,
+                 iu::LinearDeviceMemory_32f_C2& src2, const float2& weight2,iu::LinearDeviceMemory_32f_C2& dst);
+IUCORE_DLLAPI void addWeighted(iu::LinearDeviceMemory_32f_C3& src1, const float3& weight1,
+                 iu::LinearDeviceMemory_32f_C3& src2, const float3& weight2,iu::LinearDeviceMemory_32f_C3& dst);
+IUCORE_DLLAPI void addWeighted(iu::LinearDeviceMemory_32f_C4& src1, const float4& weight1,
+                 iu::LinearDeviceMemory_32f_C4& src2, const float4& weight2,iu::LinearDeviceMemory_32f_C4& dst);
+IUCORE_DLLAPI void addWeighted(iu::LinearDeviceMemory_8u_C1& src1, const unsigned char& weight1,
+                 iu::LinearDeviceMemory_8u_C1& src2, const unsigned char& weight2,iu::LinearDeviceMemory_8u_C1& dst);
+IUCORE_DLLAPI void addWeighted(iu::LinearDeviceMemory_8u_C4& src1, const uchar4& weight1,
+                 iu::LinearDeviceMemory_8u_C4& src2, const uchar4& weight2,iu::LinearDeviceMemory_8u_C4& dst);
+
+IUCORE_DLLAPI void addWeighted(iu::ImageCpu_32f_C1& src1, const float& weight1,
+                 iu::ImageCpu_32f_C1& src2, const float& weight2,iu::ImageCpu_32f_C1& dst);
+IUCORE_DLLAPI void addWeighted(iu::ImageCpu_32f_C2& src1, const float2& weight1,
+                 iu::ImageCpu_32f_C2& src2, const float2& weight2,iu::ImageCpu_32f_C2& dst);
+IUCORE_DLLAPI void addWeighted(iu::ImageCpu_32f_C3& src1, const float3& weight1,
+                 iu::ImageCpu_32f_C3& src2, const float3& weight2,iu::ImageCpu_32f_C3& dst);
+IUCORE_DLLAPI void addWeighted(iu::ImageCpu_32f_C4& src1, const float4& weight1,
+                 iu::ImageCpu_32f_C4& src2, const float4& weight2,iu::ImageCpu_32f_C4& dst);
+IUCORE_DLLAPI void addWeighted(iu::ImageCpu_8u_C1& src1, const unsigned char& weight1,
+                 iu::ImageCpu_8u_C1& src2, const unsigned char& weight2,iu::ImageCpu_8u_C1& dst);
+IUCORE_DLLAPI void addWeighted(iu::ImageCpu_8u_C4& src1, const uchar4& weight1,
+                 iu::ImageCpu_8u_C4& src2, const uchar4& weight2,iu::ImageCpu_8u_C4& dst);
+
+IUCORE_DLLAPI void addWeighted(iu::VolumeCpu_32f_C1& src1, const float& weight1,
+                 iu::VolumeCpu_32f_C1& src2, const float& weight2,iu::VolumeCpu_32f_C1& dst);
+
+IUCORE_DLLAPI void addWeighted(iu::LinearHostMemory_32f_C1& src1, const float& weight1,
+                 iu::LinearHostMemory_32f_C1& src2, const float& weight2,iu::LinearHostMemory_32f_C1& dst);
+IUCORE_DLLAPI void addWeighted(iu::LinearHostMemory_32f_C2& src1, const float2& weight1,
+                 iu::LinearHostMemory_32f_C2& src2, const float2& weight2,iu::LinearHostMemory_32f_C2& dst);
+IUCORE_DLLAPI void addWeighted(iu::LinearHostMemory_32f_C3& src1, const float3& weight1,
+                 iu::LinearHostMemory_32f_C3& src2, const float3& weight2,iu::LinearHostMemory_32f_C3& dst);
+IUCORE_DLLAPI void addWeighted(iu::LinearHostMemory_32f_C4& src1, const float4& weight1,
+                 iu::LinearHostMemory_32f_C4& src2, const float4& weight2,iu::LinearHostMemory_32f_C4& dst);
+IUCORE_DLLAPI void addWeighted(iu::LinearHostMemory_8u_C1& src1, const unsigned char& weight1,
+                 iu::LinearHostMemory_8u_C1& src2, const unsigned char& weight2,iu::LinearHostMemory_8u_C1& dst);
+IUCORE_DLLAPI void addWeighted(iu::LinearHostMemory_8u_C4& src1, const uchar4& weight1,
+                 iu::LinearHostMemory_8u_C4& src2, const uchar4& weight2,iu::LinearHostMemory_8u_C4& dst);
+
+// pointwise multiply
+/** Multiply an array to another array pointwise (can be called in-place)
+ * \param src1 First source array
+ * \param src2 Second source array
+ * \param[out] dst Destination array
+ */
+IUCORE_DLLAPI void mul(iu::ImageGpu_32f_C1& src1, iu::ImageGpu_32f_C1& src2, iu::ImageGpu_32f_C1& dst);
+IUCORE_DLLAPI void mul(iu::ImageGpu_32f_C2& src1, iu::ImageGpu_32f_C2& src2, iu::ImageGpu_32f_C2& dst);
+IUCORE_DLLAPI void mul(iu::ImageGpu_32f_C3& src1, iu::ImageGpu_32f_C3& src2, iu::ImageGpu_32f_C3& dst);
+IUCORE_DLLAPI void mul(iu::ImageGpu_32f_C4& src1, iu::ImageGpu_32f_C4& src2, iu::ImageGpu_32f_C4& dst);
+
+IUCORE_DLLAPI void mul(iu::ImageGpu_8u_C1& src1, iu::ImageGpu_8u_C1& src2, iu::ImageGpu_8u_C1& dst);
+IUCORE_DLLAPI void mul(iu::ImageGpu_8u_C4& src1, iu::ImageGpu_8u_C4& src2, iu::ImageGpu_8u_C4& dst);
+
+IUCORE_DLLAPI void mul(iu::VolumeGpu_32f_C1& src1, iu::VolumeGpu_32f_C1& src2, iu::VolumeGpu_32f_C1& dst);
+
+IUCORE_DLLAPI void mul(iu::LinearDeviceMemory_32f_C1& src1, iu::LinearDeviceMemory_32f_C1& src2, iu::LinearDeviceMemory_32f_C1& dst);
+IUCORE_DLLAPI void mul(iu::LinearDeviceMemory_32f_C2& src1, iu::LinearDeviceMemory_32f_C2& src2, iu::LinearDeviceMemory_32f_C2& dst);
+IUCORE_DLLAPI void mul(iu::LinearDeviceMemory_32f_C3& src1, iu::LinearDeviceMemory_32f_C3& src2, iu::LinearDeviceMemory_32f_C3& dst);
+IUCORE_DLLAPI void mul(iu::LinearDeviceMemory_32f_C4& src1, iu::LinearDeviceMemory_32f_C4& src2, iu::LinearDeviceMemory_32f_C4& dst);
+
+IUCORE_DLLAPI void mul(iu::LinearDeviceMemory_8u_C1& src1, iu::LinearDeviceMemory_8u_C1& src2, iu::LinearDeviceMemory_8u_C1& dst);
+IUCORE_DLLAPI void mul(iu::LinearDeviceMemory_8u_C4& src1, iu::LinearDeviceMemory_8u_C4& src2, iu::LinearDeviceMemory_8u_C4& dst);
+
+IUCORE_DLLAPI void mul(iu::ImageCpu_32f_C1& src1, iu::ImageCpu_32f_C1& src2, iu::ImageCpu_32f_C1& dst);
+IUCORE_DLLAPI void mul(iu::ImageCpu_32f_C2& src1, iu::ImageCpu_32f_C2& src2, iu::ImageCpu_32f_C2& dst);
+IUCORE_DLLAPI void mul(iu::ImageCpu_32f_C3& src1, iu::ImageCpu_32f_C3& src2, iu::ImageCpu_32f_C3& dst);
+IUCORE_DLLAPI void mul(iu::ImageCpu_32f_C4& src1, iu::ImageCpu_32f_C4& src2, iu::ImageCpu_32f_C4& dst);
+
+IUCORE_DLLAPI void mul(iu::ImageCpu_8u_C1& src1, iu::ImageCpu_8u_C1& src2, iu::ImageCpu_8u_C1& dst);
+IUCORE_DLLAPI void mul(iu::ImageCpu_8u_C4& src1, iu::ImageCpu_8u_C4& src2, iu::ImageCpu_8u_C4& dst);
+
+IUCORE_DLLAPI void mul(iu::VolumeCpu_32f_C1& src1, iu::VolumeCpu_32f_C1& src2, iu::VolumeCpu_32f_C1& dst);
+
+IUCORE_DLLAPI void mul(iu::LinearHostMemory_32f_C1& src1, iu::LinearHostMemory_32f_C1& src2, iu::LinearHostMemory_32f_C1& dst);
+IUCORE_DLLAPI void mul(iu::LinearHostMemory_32f_C2& src1, iu::LinearHostMemory_32f_C2& src2, iu::LinearHostMemory_32f_C2& dst);
+IUCORE_DLLAPI void mul(iu::LinearHostMemory_32f_C3& src1, iu::LinearHostMemory_32f_C3& src2, iu::LinearHostMemory_32f_C3& dst);
+IUCORE_DLLAPI void mul(iu::LinearHostMemory_32f_C4& src1, iu::LinearHostMemory_32f_C4& src2, iu::LinearHostMemory_32f_C4& dst);
+
+IUCORE_DLLAPI void mul(iu::LinearHostMemory_8u_C1& src1, iu::LinearHostMemory_8u_C1& src2, iu::LinearHostMemory_8u_C1& dst);
+IUCORE_DLLAPI void mul(iu::LinearHostMemory_8u_C4& src1, iu::LinearHostMemory_8u_C4& src2, iu::LinearHostMemory_8u_C4& dst);
+
+// set value
+/** Set array to a specified value
+ * \param dst Destination array
+ * \param value Value to set
+ */
+IUCORE_DLLAPI void fill(iu::ImageGpu_32f_C1& dst, float value);
+IUCORE_DLLAPI void fill(iu::ImageGpu_32f_C2& dst, float2 value);
+IUCORE_DLLAPI void fill(iu::ImageGpu_32f_C4& dst, float4 value);
+IUCORE_DLLAPI void fill(iu::ImageGpu_32u_C1& dst, unsigned int value);
+IUCORE_DLLAPI void fill(iu::ImageGpu_8u_C1& dst, unsigned char value);
+IUCORE_DLLAPI void fill(iu::ImageGpu_8u_C2& dst, uchar2 value);
+IUCORE_DLLAPI void fill(iu::ImageGpu_8u_C4& dst, uchar4 value);
+
+IUCORE_DLLAPI void fill(iu::ImageCpu_32f_C1& dst, float value);
+IUCORE_DLLAPI void fill(iu::ImageCpu_32f_C2& dst, float2 value);
+IUCORE_DLLAPI void fill(iu::ImageCpu_32f_C4& dst, float4 value);
+IUCORE_DLLAPI void fill(iu::ImageCpu_8u_C1& dst, unsigned char value);
+IUCORE_DLLAPI void fill(iu::ImageCpu_8u_C2& dst, uchar2 value);
+IUCORE_DLLAPI void fill(iu::ImageCpu_8u_C4& dst, uchar4 value);
+
+IUCORE_DLLAPI void fill(iu::LinearDeviceMemory_32f_C1& dst, float value);
+IUCORE_DLLAPI void fill(iu::LinearDeviceMemory_32f_C2& dst, float2 value);
+IUCORE_DLLAPI void fill(iu::LinearDeviceMemory_32f_C3& dst, float3 value);
+
+IUCORE_DLLAPI void fill(iu::LinearHostMemory_32f_C1& dst, float value);
+IUCORE_DLLAPI void fill(iu::LinearHostMemory_32f_C2& dst, float2 value);
+IUCORE_DLLAPI void fill(iu::LinearHostMemory_32f_C3& dst, float3 value);
+
+IUCORE_DLLAPI void fill(iu::VolumeGpu_32f_C1& dst, float value);
+IUCORE_DLLAPI void fill(iu::VolumeGpu_32f_C2& dst, float2 value);
+IUCORE_DLLAPI void fill(iu::VolumeGpu_32f_C3& dst, float3 value);
+
+IUCORE_DLLAPI void fill(iu::VolumeCpu_32f_C1& dst, float value);
+IUCORE_DLLAPI void fill(iu::VolumeCpu_32f_C2& dst, float2 value);
+IUCORE_DLLAPI void fill(iu::VolumeCpu_32f_C3& dst, float3 value);
+
+/** Split planes of a two channel image (e.g. complex image)
+ * \param[in] src  Combined image (e.g. complex image)
+ * \param[out] dst1 First channel (e.g. real part)
+ * \param[out] dst2 Second channel (e.g. imaginary part)
  *
- * \note supported gpu: 32f_C1
  */
-// [device] weighted add; Not-in-place; 32-bit;
-IUCORE_DLLAPI void addWeighted(const iu::ImageGpu_32f_C1* src1, const float& weight1,
-                               const iu::ImageGpu_32f_C1* src2, const float& weight2,
-                               iu::ImageGpu_32f_C1* dst, const IuRect& roi);
+IUCORE_DLLAPI void splitPlanes(iu::VolumeCpu_32f_C2& src, iu::VolumeCpu_32f_C1& dst1, iu::VolumeCpu_32f_C1& dst2);
+IUCORE_DLLAPI void splitPlanes(iu::VolumeGpu_32f_C2& src, iu::VolumeGpu_32f_C1& dst1, iu::VolumeGpu_32f_C1& dst2);
+IUCORE_DLLAPI void splitPlanes(iu::ImageCpu_32f_C2& src, iu::ImageCpu_32f_C1& dst1, iu::ImageCpu_32f_C1& dst2);
+IUCORE_DLLAPI void splitPlanes(iu::ImageGpu_32f_C2& src, iu::ImageGpu_32f_C1& dst1, iu::ImageGpu_32f_C1& dst2);
+IUCORE_DLLAPI void splitPlanes(iu::LinearDeviceMemory_32f_C2& src, iu::LinearDeviceMemory_32f_C1& dst1, iu::LinearDeviceMemory_32f_C1& dst2);
+IUCORE_DLLAPI void splitPlanes(iu::LinearHostMemory_32f_C2& src, iu::LinearHostMemory_32f_C1& dst1, iu::LinearHostMemory_32f_C1& dst2);
 
-/** Adding an image with an additional weighting factor to another.
- * \param src1 Source image 1.
- * \param src2 Source image 2.
- * \param weight Weighting of image 2 before its added to image 1.
- * \param dst Result image dst=weight1*src1 + weight1*src2.
- * \param roi Region of interest in the source and destination image
+/** Split planes of a three channel image (e.g. rgb image)
+ * \param[in] src  Combined image (e.g. rgb image)
+ * \param[out] dst1 First channel (e.g. r channel)
+ * \param[out] dst2 Second channel (e.g. g channel)
+ * \param[out] dst3 Third channel (e.g. b channel)
  *
- * \note supported cpu: 32f_C1
  */
-// [host] weighted add; Not-in-place; 32-bit;
-IUCORE_DLLAPI void addWeighted(const iu::ImageCpu_32f_C1* src1, const float& weight1,
-                               const iu::ImageCpu_32f_C1* src2, const float& weight2,
-                               iu::ImageCpu_32f_C1* dst, const IuRect& roi);
+IUCORE_DLLAPI void splitPlanes(iu::VolumeCpu_32f_C3& src, iu::VolumeCpu_32f_C1& dst1, iu::VolumeCpu_32f_C1& dst2, iu::VolumeCpu_32f_C1& dst3);
+IUCORE_DLLAPI void splitPlanes(iu::VolumeGpu_32f_C3& src, iu::VolumeGpu_32f_C1& dst1, iu::VolumeGpu_32f_C1& dst2, iu::VolumeGpu_32f_C1& dst3);
+IUCORE_DLLAPI void splitPlanes(iu::ImageCpu_32f_C3& src, iu::ImageCpu_32f_C1& dst1, iu::ImageCpu_32f_C1& dst2, iu::ImageCpu_32f_C1& dst3);
+IUCORE_DLLAPI void splitPlanes(iu::ImageGpu_32f_C3& src, iu::ImageGpu_32f_C1& dst1, iu::ImageGpu_32f_C1& dst2, iu::ImageGpu_32f_C1& dst3);
+IUCORE_DLLAPI void splitPlanes(iu::LinearHostMemory_32f_C3& src, iu::LinearHostMemory_32f_C1& dst1, iu::LinearHostMemory_32f_C1& dst2, iu::LinearHostMemory_32f_C1& dst3);
+IUCORE_DLLAPI void splitPlanes(iu::LinearDeviceMemory_32f_C3& src, iu::LinearDeviceMemory_32f_C1& dst1, iu::LinearDeviceMemory_32f_C1& dst2, iu::LinearDeviceMemory_32f_C1& dst3);
 
-
-/** Multiplication of every pixel with a constant factor. (can be called in-place)
- * \param src Source image.
- * \param factor Multiplication factor applied to each pixel.
- * \param dst Destination image.
- * \param roi Region of interest in the source and destination image
+/** Combine planes to a two channel image (e.g. complex image)
+ * \param[in] src1 First channel (e.g. real part)
+ * \param[in] src2 Second channel (e.g. imaginary part)
+ * \param[out] dst Combined image (e.g. complex image)
  *
- * \note supported gpu: 8u_C1, 8u_C4, 32f_C1, 32f_C4,
  */
-// [gpu] multiplication with factor; Not-in-place; 8-bit;
-IUCORE_DLLAPI void mulC(const iu::ImageGpu_8u_C1* src, const unsigned char& factor, iu::ImageGpu_8u_C1* dst, const IuRect& roi);
-IUCORE_DLLAPI void mulC(const iu::ImageGpu_8u_C4* src, const uchar4& factor, iu::ImageGpu_8u_C4* dst, const IuRect& roi);
+IUCORE_DLLAPI void combinePlanes(iu::VolumeCpu_32f_C1& src1, iu::VolumeCpu_32f_C1& src2, iu::VolumeCpu_32f_C2& dst);
+IUCORE_DLLAPI void combinePlanes(iu::VolumeGpu_32f_C1& src1, iu::VolumeGpu_32f_C1& src2, iu::VolumeGpu_32f_C2& dst);
+IUCORE_DLLAPI void combinePlanes(iu::ImageCpu_32f_C1& src1, iu::ImageCpu_32f_C1& src2, iu::ImageCpu_32f_C2& dst);
+IUCORE_DLLAPI void combinePlanes(iu::ImageGpu_32f_C1& src1, iu::ImageGpu_32f_C1& src2, iu::ImageGpu_32f_C2& dst);
+IUCORE_DLLAPI void combinePlanes(iu::LinearHostMemory_32f_C1& src1, iu::LinearHostMemory_32f_C1& src2, iu::LinearHostMemory_32f_C2& dst);
+IUCORE_DLLAPI void combinePlanes(iu::LinearDeviceMemory_32f_C1& src1, iu::LinearDeviceMemory_32f_C1& src2, iu::LinearDeviceMemory_32f_C2& dst);
 
-// [gpu] multiplication with factor; Not-in-place; 32-bit;
-IUCORE_DLLAPI void mulC(const iu::ImageGpu_32f_C1* src, const float& factor, iu::ImageGpu_32f_C1* dst, const IuRect& roi);
-IUCORE_DLLAPI void mulC(const iu::ImageGpu_32f_C2* src, const float2& factor, iu::ImageGpu_32f_C2* dst, const IuRect& roi);
-IUCORE_DLLAPI void mulC(const iu::ImageGpu_32f_C4* src, const float4& factor, iu::ImageGpu_32f_C4* dst, const IuRect& roi);
-
-/** Multiplication of every pixel in a volume with a constant factor. (can be called in-place)
- * \param src Source volume.
- * \param factor Multiplication factor applied to each pixel.
- * \param dst Destination volume.
+/** Combine planes to a three channel image (e.g. rgb image)
+ * \param[in] src1 First channel (e.g. r channel)
+ * \param[in] src2 Second channel (e.g. g channel)
+ * \param[in] src3 Third channel (e.g. b channel)
+ * \param[out] dst Combined image (e.g. rgb image)
  *
- * \note supported gpu: 32f_C1
  */
-// [gpu] multiplication with factor; Not-in-place; 32-bit;
-IUCORE_DLLAPI void mulC(const iu::VolumeGpu_32f_C1* src, const float& factor, iu::VolumeGpu_32f_C1* dst);
+IUCORE_DLLAPI void combinePlanes(iu::VolumeCpu_32f_C1& src1, iu::VolumeCpu_32f_C1& src2, iu::VolumeCpu_32f_C1& src3, iu::VolumeCpu_32f_C3& dst);
+IUCORE_DLLAPI void combinePlanes(iu::VolumeGpu_32f_C1& src1, iu::VolumeGpu_32f_C1& src2, iu::VolumeGpu_32f_C1& src3, iu::VolumeGpu_32f_C3& dst);
+IUCORE_DLLAPI void combinePlanes(iu::ImageCpu_32f_C1& src1, iu::ImageCpu_32f_C1& src2, iu::ImageCpu_32f_C1& src3, iu::ImageCpu_32f_C3& dst);
+IUCORE_DLLAPI void combinePlanes(iu::ImageGpu_32f_C1& src1, iu::ImageGpu_32f_C1& src2, iu::ImageGpu_32f_C1& src3, iu::ImageGpu_32f_C3& dst);
+IUCORE_DLLAPI void combinePlanes(iu::LinearHostMemory_32f_C1& src1, iu::LinearHostMemory_32f_C1& src2, iu::LinearHostMemory_32f_C1& src3, iu::LinearHostMemory_32f_C3& dst);
+IUCORE_DLLAPI void combinePlanes(iu::LinearDeviceMemory_32f_C1& src1, iu::LinearDeviceMemory_32f_C1& src2, iu::LinearDeviceMemory_32f_C1& src3, iu::LinearDeviceMemory_32f_C3& dst);
 
-/** In-place multiplication of every pixel with a constant factor.
- * \param factor Multiplication factor applied to each pixel.
- * \param srcdst Source and destination
- * \param roi Region of interest in the source/destination image
+/** \} */ // end of MathArithmetics
+
+/** \defgroup MathStatistics Statistics
+ \ingroup Math
+ \brief Image statistics
+ * \{
+ */
+//---------------------------------------------------------------------------------------------------
+// STATISTICS
+/** Return minimum and maximum value of an array
+ * \param[in] src Source array
+ * \param[out] minVal Minimum of src
+ * \param[out] maxVal Maximum of src
+ */
+IUCORE_DLLAPI void minMax(iu::ImageGpu_32f_C1& src, float& minVal, float& maxVal);
+IUCORE_DLLAPI void minMax(iu::VolumeGpu_32f_C1& src, float& minVal, float& maxVal);
+
+IUCORE_DLLAPI void minMax(iu::ImageCpu_32f_C1& src, float& minVal, float& maxVal);
+IUCORE_DLLAPI void minMax(iu::VolumeCpu_32f_C1& src, float& minVal, float& maxVal);
+
+/** Return minimum and maximum value of an array as well as their positions
+ * \param[in] src Source array
+ * \param[out] minVal Minimum of src
+ * \param[out] maxVal Maximum of src
+ * \param[out] minIdx Location of minimum of src
+ * \param[out] maxIdx Location of maximum of src
+ */
+IUCORE_DLLAPI void minMax(iu::LinearDeviceMemory_32f_C1& src, float& minVal, float& maxVal, unsigned int& minIdx, unsigned int& maxIdx);
+IUCORE_DLLAPI void minMax(iu::LinearHostMemory_32f_C1& src, float& minVal, float& maxVal, unsigned int& minIdx, unsigned int& maxIdx);
+
+/** Calculate the sum of an array
+ * \param[in] src Source array
+ * \param[out] sum Resulting sum
+ */
+IUCORE_DLLAPI void summation(iu::ImageGpu_32f_C1& src, float& sum);
+IUCORE_DLLAPI void summation(iu::VolumeGpu_32f_C1& src, float& sum);
+IUCORE_DLLAPI void summation(iu::LinearDeviceMemory_32f_C1& src, float& sum);
+
+IUCORE_DLLAPI void summation(iu::ImageCpu_32f_C1& src, float& sum);
+IUCORE_DLLAPI void summation(iu::VolumeCpu_32f_C1& src, float& sum);
+IUCORE_DLLAPI void summation(iu::LinearHostMemory_32f_C1& src, float& sum);
+
+/** Calculate the L1-Norm \f$ \sum\limits_{i=1}^N \vert x_i - y_i \vert \f$
+ *  where \f$ N \f$ is the total number of pixels.
+ * \param[in] src Source array \f$ x \f$
+ * \param[in] ref Reference array \f$ y \f$
+ * \param[out] norm Resulting norm
+ */
+IUCORE_DLLAPI void normDiffL1(iu::ImageGpu_32f_C1& src, iu::ImageGpu_32f_C1& ref, float& norm);
+IUCORE_DLLAPI void normDiffL1(iu::VolumeGpu_32f_C1& src, iu::VolumeGpu_32f_C1& ref, float& norm);
+
+IUCORE_DLLAPI void normDiffL1(iu::ImageCpu_32f_C1& src, iu::ImageCpu_32f_C1& ref, float& norm);
+IUCORE_DLLAPI void normDiffL1(iu::VolumeCpu_32f_C1& src, iu::VolumeCpu_32f_C1& ref, float& norm);
+
+/** Calculate the L1-Norm \f$ \sum\limits_{i=1}^N \vert x_i - y \vert \f$
+ *  where \f$ N \f$ is the total number of pixels.
+ * \param[in] src Source array \f$ x \f$
+ * \param[in] ref Reference value \f$ y \f$
+ * \param[out] norm Resulting norm
+ */
+IUCORE_DLLAPI void normDiffL1(iu::ImageGpu_32f_C1& src, float& ref, float& norm);
+IUCORE_DLLAPI void normDiffL1(iu::VolumeGpu_32f_C1& src, float& ref, float& norm);
+
+IUCORE_DLLAPI void normDiffL1(iu::ImageCpu_32f_C1& src, float& ref, float& norm);
+IUCORE_DLLAPI void normDiffL1(iu::VolumeCpu_32f_C1& src, float& ref, float& norm);
+
+/** Calculate the L2-Norm \f$ \sqrt{\sum\limits_{i=1}^N ( x_i - y_i )^2}\f$
+ *  where \f$ N \f$ is the total number of pixels.
+ * \param[in] src Source array \f$ x \f$
+ * \param[in] ref Reference array \f$ y \f$
+ * \param[out] norm Resulting norm
+ */
+IUCORE_DLLAPI void normDiffL2(iu::ImageGpu_32f_C1& src, iu::ImageGpu_32f_C1& ref, float& norm);
+IUCORE_DLLAPI void normDiffL2(iu::VolumeGpu_32f_C1& src, iu::VolumeGpu_32f_C1& ref, float& norm);
+
+IUCORE_DLLAPI void normDiffL2(iu::ImageCpu_32f_C1& src, iu::ImageCpu_32f_C1& ref, float& norm);
+IUCORE_DLLAPI void normDiffL2(iu::VolumeCpu_32f_C1& src, iu::VolumeCpu_32f_C1& ref, float& norm);
+
+/** Calculate the L2-Norm \f$ \sqrt{\sum\limits_{i=1}^N ( x_i - y )^2}\f$
+ *  where \f$ N \f$ is the total number of pixels.
+ * \param[in] src Source array \f$ x \f$
+ * \param[in] ref Reference value \f$ y \f$
+ * \param[out] norm Resulting norm
+ */
+IUCORE_DLLAPI void normDiffL2(iu::ImageGpu_32f_C1& src, float& ref, float& norm);
+IUCORE_DLLAPI void normDiffL2(iu::VolumeGpu_32f_C1& src, float& ref, float& norm);
+
+IUCORE_DLLAPI void normDiffL2(iu::ImageCpu_32f_C1& src, float& ref, float& norm);
+IUCORE_DLLAPI void normDiffL2(iu::VolumeCpu_32f_C1& src, float& ref, float& norm);
+
+/** Calculate the mean-squared error (MSE) \f$ \frac{\sum\limits_{i=1}^N ( x_i - y_i )^2}{N}\f$
+ *  where \f$ N \f$ is the total number of pixels.
+ * \param[in] src Source array \f$ x \f$
+ * \param[in] ref Reference array \f$ y \f$
+ * \param[out] mse mean-squared error
+ */
+IUCORE_DLLAPI void mse(iu::ImageGpu_32f_C1& src, iu::ImageGpu_32f_C1& ref, float& mse);
+IUCORE_DLLAPI void mse(iu::VolumeGpu_32f_C1& src, iu::VolumeGpu_32f_C1& ref, float& mse);
+
+IUCORE_DLLAPI void mse(iu::ImageCpu_32f_C1& src, iu::ImageCpu_32f_C1& ref, float& mse);
+IUCORE_DLLAPI void mse(iu::VolumeCpu_32f_C1& src, iu::VolumeCpu_32f_C1& ref, float& mse);
+
+
+/** \} */ // end of MathStatistics
+
+//---------------------------------------------------------------------------------------------------
+/// Complex math
+namespace complex {
+
+/** \defgroup MathComplex Complex
+ \ingroup Math
+ \brief Complex math operations
+ * \{
+ */
+
+/** Compute the absolute image of a complex (two channel) image
+ * \param[in] complex_img Complex source image
+ * \param[out] abs_img Absolute image
  *
- * \note supported gpu: 8u_C1, 8u_C4, 32f_C1, 32f_C4,
  */
-// multiplication with factor; host; 8-bit
-// :TODO: \todo implement inplace interfaces.
+IUCORE_DLLAPI void abs(iu::VolumeCpu_32f_C2& complex, iu::VolumeCpu_32f_C1& real);
+IUCORE_DLLAPI void abs(iu::VolumeGpu_32f_C2& complex, iu::VolumeGpu_32f_C1& real);
+IUCORE_DLLAPI void abs(iu::ImageCpu_32f_C2& complex, iu::ImageCpu_32f_C1& real);
+IUCORE_DLLAPI void abs(iu::ImageGpu_32f_C2& complex, iu::ImageGpu_32f_C1& real);
+IUCORE_DLLAPI void abs(iu::LinearHostMemory_32f_C2& complex, iu::LinearHostMemory_32f_C1& real);
+IUCORE_DLLAPI void abs(iu::LinearDeviceMemory_32f_C2& complex, iu::LinearDeviceMemory_32f_C1& real);
 
-/** Addition to every pixel of a constant value. (can be called in-place)
- * \param src Source image.
- * \param val Value to be added.
- * \param dst Destination image.
- * \param roi Region of interest in the source and destination image
+/** Compute the real image of a complex (two channel) image
+ * \param[in] complex_img Complex source image
+ * \param[out] real_img Real image
  *
- * \note supported gpu: 8u_C1, 8u_C4, 32f_C1, 32f_C4,
  */
-// [gpu] add val; Not-in-place; 8-bit;
-IUCORE_DLLAPI void addC(const iu::ImageGpu_8u_C1* src, const unsigned char& val, iu::ImageGpu_8u_C1* dst, const IuRect& roi);
-IUCORE_DLLAPI void addC(const iu::ImageGpu_8u_C4* src, const uchar4& val, iu::ImageGpu_8u_C4* dst, const IuRect& roi);
+IUCORE_DLLAPI void real(iu::VolumeCpu_32f_C2& complex, iu::VolumeCpu_32f_C1& real);
+IUCORE_DLLAPI void real(iu::VolumeGpu_32f_C2& complex, iu::VolumeGpu_32f_C1& real);
+IUCORE_DLLAPI void real(iu::ImageCpu_32f_C2& complex, iu::ImageCpu_32f_C1& real);
+IUCORE_DLLAPI void real(iu::ImageGpu_32f_C2& complex, iu::ImageGpu_32f_C1& real);
+IUCORE_DLLAPI void real(iu::LinearHostMemory_32f_C2& complex, iu::LinearHostMemory_32f_C1& real);
+IUCORE_DLLAPI void real(iu::LinearDeviceMemory_32f_C2& complex, iu::LinearDeviceMemory_32f_C1& real);
 
-// [gpu] add val; Not-in-place; 32-bit;
-IUCORE_DLLAPI void addC(const iu::ImageGpu_32f_C1* src, const float& val, iu::ImageGpu_32f_C1* dst, const IuRect& roi);
-IUCORE_DLLAPI void addC(const iu::ImageGpu_32f_C2* src, const float2& val, iu::ImageGpu_32f_C2* dst, const IuRect& roi);
-IUCORE_DLLAPI void addC(const iu::ImageGpu_32f_C4* src, const float4& val, iu::ImageGpu_32f_C4* dst, const IuRect& roi);
-
-
-/** @} */ // end of Arithmetics
-
-/* ***************************************************************************
-     STATISTICS
- * ***************************************************************************/
-
-//////////////////////////////////////////////////////////////////////////////
-/** @defgroup Statistics
- *  @ingroup Math
- *  TODO more detailed docu
- *  @{
- */
-
-/** Finds the minimum and maximum value of an image in a certain ROI.
- * \param src Source image [device]
- * \param src_roi Region of interest in the source image.
- * \param[out] min Minium value found in the source image.
- * \param[out] max Maximum value found in the source image.
+/** Compute the imaginary image of a complex (two channel) image
+ * \param[in] complex_img Complex source image
+ * \param[out] imag_img Imaginary image
  *
- * \note supported gpu: 8u_C1, 8u_C4, 32f_C1, 32f_C4,
  */
-// find min/max; device; 8-bit
-IUCORE_DLLAPI void minMax(const ImageGpu_8u_C1* src, const IuRect& roi, unsigned char& min, unsigned char& max);
-IUCORE_DLLAPI void minMax(const ImageGpu_8u_C4* src, const IuRect& roi, uchar4& min, uchar4& max);
-// find min/max; device; 32-bit
-IUCORE_DLLAPI void minMax(const ImageGpu_32f_C1* src, const IuRect& roi, float& min, float& max);
-IUCORE_DLLAPI void minMax(const ImageGpu_32f_C2* src, const IuRect& roi, float2& min, float2& max);
-IUCORE_DLLAPI void minMax(const ImageGpu_32f_C4* src, const IuRect& roi, float4& min, float4& max);
+IUCORE_DLLAPI void imag(iu::VolumeCpu_32f_C2& complex, iu::VolumeCpu_32f_C1& real);
+IUCORE_DLLAPI void imag(iu::VolumeGpu_32f_C2& complex, iu::VolumeGpu_32f_C1& real);
+IUCORE_DLLAPI void imag(iu::ImageCpu_32f_C2& complex, iu::ImageCpu_32f_C1& real);
+IUCORE_DLLAPI void imag(iu::ImageGpu_32f_C2& complex, iu::ImageGpu_32f_C1& real);
+IUCORE_DLLAPI void imag(iu::LinearHostMemory_32f_C2& complex, iu::LinearHostMemory_32f_C1& real);
+IUCORE_DLLAPI void imag(iu::LinearDeviceMemory_32f_C2& complex, iu::LinearDeviceMemory_32f_C1& real);
 
-// find min/max; host; 8-bit
-IUCORE_DLLAPI void minMax(const ImageCpu_8u_C1* src, const IuRect& roi, unsigned char& min, unsigned char& max);
-IUCORE_DLLAPI void minMax(const ImageCpu_8u_C4* src, const IuRect& roi, uchar4& min, uchar4& max);
-// find min/max; host; 32-bit
-IUCORE_DLLAPI void minMax(const ImageCpu_32f_C1* src, const IuRect& roi, float& min, float& max);
-IUCORE_DLLAPI void minMax(const ImageCpu_32f_C2* src, const IuRect& roi, float2& min, float2& max);
-IUCORE_DLLAPI void minMax(const ImageCpu_32f_C4* src, const IuRect& roi, float4& min, float4& max);
-
-
-
-/** Finds the minimum and maximum value of a volume.
- * \param src Source image [device]
- * \param[out] min Minium value found in the source volume.
- * \param[out] max Maximum value found in the source volume.
+/** Compute the phase of a complex (two channel) image
+ * \param[in] complex_img Complex source image
+ * \param[out] phase_img Phase image
  *
- * \note supported gpu: 32f_C1
  */
-// find min/max; volume; device; 32-bit
-IUCORE_DLLAPI void minMax(const iu::VolumeGpu_32f_C1* src, float& min, float& max);
+IUCORE_DLLAPI void phase(iu::VolumeCpu_32f_C2& complex, iu::VolumeCpu_32f_C1& real);
+IUCORE_DLLAPI void phase(iu::VolumeGpu_32f_C2& complex, iu::VolumeGpu_32f_C1& real);
+IUCORE_DLLAPI void phase(iu::ImageCpu_32f_C2& complex, iu::ImageCpu_32f_C1& real);
+IUCORE_DLLAPI void phase(iu::ImageGpu_32f_C2& complex, iu::ImageGpu_32f_C1& real);
+IUCORE_DLLAPI void phase(iu::LinearHostMemory_32f_C2& complex, iu::LinearHostMemory_32f_C1& real);
+IUCORE_DLLAPI void phase(iu::LinearDeviceMemory_32f_C2& complex, iu::LinearDeviceMemory_32f_C1& real);
 
-IUCORE_DLLAPI void minMax(const iu::VolumeCpu_32f_C4* src, float4& min, float4& max);
-
-
-/** Finds the minimum value of an image in a certain ROI and the minimums coordinates.
- * \param src Source image [device]
- * \param src_roi Region of interest in the source image.
- * \param[out] min minimum value found in the source image.
- * \param[out] x x-coordinate of minimum value
- * \param[out] y y-coordinate of minimum value
+/** Scale a complex (two channel) image with a scalar
+ * \param[in] complex_src Complex source image
+ * \param[in] scale Scaling factor
+ * \param[out] complex_dst Complex result image
  *
- * \note supported gpu: 32f_C1
  */
-// find min+coords; device; 32-bit
-IUCORE_DLLAPI void min(const iu::ImageGpu_32f_C1* src, const IuRect&roi, float& min, int& x, int& y);
+IUCORE_DLLAPI void scale(iu::VolumeCpu_32f_C2& complex_src, const float& scale, iu::VolumeCpu_32f_C2& complex_dst);
+IUCORE_DLLAPI void scale(iu::VolumeGpu_32f_C2& complex_src, const float& scale, iu::VolumeGpu_32f_C2& complex_dst);
+IUCORE_DLLAPI void scale(iu::ImageCpu_32f_C2& complex_src, const float& scale, iu::ImageCpu_32f_C2& complex_dst);
+IUCORE_DLLAPI void scale(iu::ImageGpu_32f_C2& complex_src, const float& scale, iu::ImageGpu_32f_C2& complex_dst);
+IUCORE_DLLAPI void scale(iu::LinearHostMemory_32f_C2& complex_src, const float& scale, iu::LinearHostMemory_32f_C2& complex_dst);
+IUCORE_DLLAPI void scale(iu::LinearDeviceMemory_32f_C2& complex_src, const float& scale, iu::LinearDeviceMemory_32f_C2& complex_dst);
 
-/** Finds the maximum value of an image in a certain ROI and the maximums coordinates.
- * \param src Source image [device]
- * \param src_roi Region of interest in the source image.
- * \param[out] max Maximum value found in the source image.
- * \param[out] x x-coordinate of maximum value
- * \param[out] y y-coordinate of maximum value
+/** Multiply a complex (two channel) image with a real image
+ * \param[in] complex_src First complex source image
+ * \param[in] real Real source image
+ * \param[out] complex_dst Complex result image
  *
- * \note supported gpu: 32f_C1
  */
-// find max+coords; device; 32-bit
-IUCORE_DLLAPI void max(const iu::ImageGpu_32f_C1* src, const IuRect&roi, float& max, int& x, int& y);
+IUCORE_DLLAPI void multiply(iu::VolumeCpu_32f_C2& complex_src, iu::VolumeCpu_32f_C1& real, iu::VolumeCpu_32f_C2& complex_dst);
+IUCORE_DLLAPI void multiply(iu::VolumeGpu_32f_C2& complex_src, iu::VolumeGpu_32f_C1& real, iu::VolumeGpu_32f_C2& complex_dst);
+IUCORE_DLLAPI void multiply(iu::ImageCpu_32f_C2& complex_src, iu::ImageCpu_32f_C1& real, iu::ImageCpu_32f_C2& complex_dst);
+IUCORE_DLLAPI void multiply(iu::ImageGpu_32f_C2& complex_src, iu::ImageGpu_32f_C1& real, iu::ImageGpu_32f_C2& complex_dst);
+IUCORE_DLLAPI void multiply(iu::LinearHostMemory_32f_C2& complex_src, iu::LinearHostMemory_32f_C1& real, iu::LinearHostMemory_32f_C2& complex_dst);
+IUCORE_DLLAPI void multiply(iu::LinearDeviceMemory_32f_C2& complex_src, iu::LinearDeviceMemory_32f_C1& real, iu::LinearDeviceMemory_32f_C2& complex_dst);
 
-
-/** Computes the sum of pixels in a certain ROI of an image.
- * \param src Source image [device]
- * \param src_roi Region of interest in the source image.
- * \param[out] sum Contains computed sum.
- * \param[in] sum_temp Temporary memory for the summation. Defaults to NULL. If supplied, a device
- * allocation/deallocation is saved during execution of the function (speedup)
+/** Multiply two complex (two channel) images
+ * \param[in] complex_src1 First complex source image
+ * \param[in] complex_src2 Second complex source image
+ * \param[out] complex_dst Complex result image
  *
- * \note supported gpu: 8u_C1, 8u_C4, 32f_C1, 32f_C4,
  */
-// compute sum; device; 8-bit
-IUCORE_DLLAPI void summation(const ImageGpu_8u_C1* src, const IuRect& roi, long& sum);
-//IUCORE_DLLAPI void summation(const ImageGpu_8u_C4* src, const IuRect& roi, long sum[4]);
+IUCORE_DLLAPI void multiply(iu::VolumeCpu_32f_C2& complex_src1, iu::VolumeCpu_32f_C2& complex_src2, iu::VolumeCpu_32f_C2& complex_dst);
+IUCORE_DLLAPI void multiply(iu::VolumeGpu_32f_C2& complex_src1, iu::VolumeGpu_32f_C2& complex_src2, iu::VolumeGpu_32f_C2& complex_dst);
+IUCORE_DLLAPI void multiply(iu::ImageCpu_32f_C2& complex_src1, iu::ImageCpu_32f_C2& complex_src2, iu::ImageCpu_32f_C2& complex_dst);
+IUCORE_DLLAPI void multiply(iu::ImageGpu_32f_C2& complex_src1, iu::ImageGpu_32f_C2& complex_src2, iu::ImageGpu_32f_C2& complex_dst);
+IUCORE_DLLAPI void multiply(iu::LinearHostMemory_32f_C2& complex_src1, iu::LinearHostMemory_32f_C2& complex_src2, iu::LinearHostMemory_32f_C2& complex_dst);
+IUCORE_DLLAPI void multiply(iu::LinearDeviceMemory_32f_C2& complex_src1, iu::LinearDeviceMemory_32f_C2& complex_src2, iu::LinearDeviceMemory_32f_C2& complex_dst);
 
-// compute sum; device; 32-bit
-IUCORE_DLLAPI void summation(const ImageGpu_32f_C1* src, const IuRect& roi, double& sum,
-                             iu::LinearDeviceMemory_32f_C1* sum_temp=NULL);
-IUCORE_DLLAPI void summation(VolumeGpu_32f_C1* src, const IuCube& roi, double& sum);
-//IUCORE_DLLAPI void summation(const ImageGpu_32f_C4* src, const IuRect& roi, double sum[4]);
-
-
-/** Computes the L1 norm of differences between pixel values of two images. |src1-src2|
- * \param src1 Pointer to the first source image.
- * \param src2 Pointer to the second source image.
- * \param roi Region of interest in the source image.
- * \param norm Contains computed L1 norm.
+/** Multiply one complex (two channel) image with the complex conjugate of a second complex image
+ * \param[in] complex_src1 First complex source image
+ * \param[in] complex_src2 Second complex source image
+ * \param[out] complex_dst Complex result image
+ *
  */
-IUCORE_DLLAPI void normDiffL1(const ImageGpu_32f_C1* src1, const ImageGpu_32f_C1* src2, const IuRect& roi, double& norm);
+IUCORE_DLLAPI void multiplyConjugate(iu::VolumeCpu_32f_C2& complex_src1, iu::VolumeCpu_32f_C2& complex_src2, iu::VolumeCpu_32f_C2& complex_dst);
+IUCORE_DLLAPI void multiplyConjugate(iu::VolumeGpu_32f_C2& complex_src1, iu::VolumeGpu_32f_C2& complex_src2, iu::VolumeGpu_32f_C2& complex_dst);
+IUCORE_DLLAPI void multiplyConjugate(iu::ImageCpu_32f_C2& complex_src1, iu::ImageCpu_32f_C2& complex_src2, iu::ImageCpu_32f_C2& complex_dst);
+IUCORE_DLLAPI void multiplyConjugate(iu::ImageGpu_32f_C2& complex_src1, iu::ImageGpu_32f_C2& complex_src2, iu::ImageGpu_32f_C2& complex_dst);
+IUCORE_DLLAPI void multiplyConjugate(iu::LinearHostMemory_32f_C2& complex_src1, iu::LinearHostMemory_32f_C2& complex_src2, iu::LinearHostMemory_32f_C2& complex_dst);
+IUCORE_DLLAPI void multiplyConjugate(iu::LinearDeviceMemory_32f_C2& complex_src1, iu::LinearDeviceMemory_32f_C2& complex_src2, iu::LinearDeviceMemory_32f_C2& complex_dst);
+/** \} */ // end of MathComplex
 
-/** Computes the L1 norm of differences between pixel values of an image and a constant value. |src-value|
- * \param src1 Pointer to the first source image.
- * \param value Subtrahend applied to every pixel on \a src image before calculating the L1 norm.
- * \param roi Region of interest in the source image.
- * \param norm Contains computed L1 norm.
- */
-IUCORE_DLLAPI void normDiffL1(const ImageGpu_32f_C1* src, const float& value, const IuRect& roi, double& norm);
+} // namespace complex
 
-/** Computes the L2 norm of differences between pixel values of two images. ||src1-src2||
- * \param src1 Pointer to the first source image.
- * \param src2 Pointer to the second source image.
- * \param roi Region of interest in the source image.
- * \param norm Contains computed L2 norm.
- */
-IUCORE_DLLAPI void normDiffL2(const ImageGpu_32f_C1* src1, const ImageGpu_32f_C1* src2, const IuRect& roi, double& norm);
-
-/** Computes the L2 norm of differences between pixel values of an image and a constant value. ||src-value||
- * \param src Pointer to the first source image.
- * \param value Subtrahend applied to every pixel on \a src image before calculating the L2 norm.
- * \param roi Region of interest in the source image.
- * \param norm Contains computed L2 norm.
- */
-IUCORE_DLLAPI void normDiffL2(const ImageGpu_32f_C1* src, const float& value, const IuRect& roi, double& norm);
-
-/** @} */ // end of Statistics
-
-/* ***************************************************************************
-     ERROR MEASUREMENTS
- * ***************************************************************************/
-
-//////////////////////////////////////////////////////////////////////////////
-/** @defgroup Error Measurements
- *  @ingroup Math
- *  TODO more detailed docu
- *  @{
- */
-
-/** Computes the mean-squared error between the src and the reference image.
- * \param src Pointer to the source image.
- * \param reference Pointer to the refernce image.
- * \param roi Region of interest in the source and reference image.
- * \param mse Contains the computed mean-squared error.
- */
-IUCORE_DLLAPI void mse(const iu::ImageGpu_32f_C1* src, const iu::ImageGpu_32f_C1* reference, const IuRect& roi, double& mse);
-
-/** Computes the structural similarity index between the src and the reference image.
- * \param src Pointer to the source image.
- * \param reference Pointer to the refernce image.
- * \param roi Region of interest in the source and reference image.
- * \param mse Contains the computed  structural similarity index.
- */
-IUCORE_DLLAPI void ssim(const iu::ImageGpu_32f_C1* src, const iu::ImageGpu_32f_C1* reference, const IuRect& roi, double& ssim);
-
-/** @} */ // end of Error Measurements
-
-
-/* ***************************************************************************
-     HISTOGRAMS
- * ***************************************************************************/
-
-//////////////////////////////////////////////////////////////////////////////
-/** @defgroup Histograms
- *  @ingroup Math
- *  TODO more detailed docu
- *  @{
- */
-
-/** Computes the color histogram of an already binned image
- * \param binned_image Already binned image (make sure this fits to actual hist
- * \param mask         A mask image (only pixels where the mask value equals mask_val will be taken into account)
- * \param hist         The output histogram
- * \param mask_val     The mask value
- */
-IUCORE_DLLAPI void colorHistogram(const iu::ImageGpu_8u_C4* binned_image, const iu::ImageGpu_8u_C1* mask,
-                                  iu::VolumeGpu_32f_C1* hist, unsigned char mask_val);
-
-/** @} */ // end of Histograms
-
-
-
-/** @} */ // end of Math
-
+} // namespace math
 } // namespace iu
 
-#endif // IU_MATH_MODULE_H
+#endif

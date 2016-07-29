@@ -1,39 +1,77 @@
-#ifndef OPENCVSOURCE_H
-#define OPENCVSOURCE_H
+#ifndef OPENCV_SOURCE_H
+#define OPENCV_SOURCE_H
 
 #include "videosource.h"
-#include <opencv2/highgui/highgui.hpp>
+#include <string>
 
+namespace iu {
 
+/** \defgroup VideoIO Video
+  * \ingroup IO
+  * \brief Read from cameras and video files
+  * \{
+  */
 
-/** A videosource derived from opencv videocapture */
+/**
+ * @brief The OpenCVSource class uses OpenCV to read images from cameras or files
+ */
 class OpenCVSource : public VideoSource
 {
-  Q_OBJECT
 public:
-  /** initialize camera camId */
-  OpenCVSource(unsigned int camId=0);
-  virtual ~OpenCVSource();
 
-  /** get image from camera */
-  cv::Mat getImage();
+    /**
+     * @brief OpenCVSource constructor. Initialize the camera \p camId
+     * @param camId id of camera to initialize
+     * @param gray if true, capture 8-bit grayscale, otherwise 24-bit RGB
+     */
+    OpenCVSource(unsigned int camId=0, bool gray=true);
 
-  /** get image width */
-  unsigned int getWidth() { return width_; }
+    /**
+     * @brief OpenCVSource constructor to read from a video file
+     * @param filename video file name
+     * @param gray if true, capture 8-bit grayscale, otherwise 24-bit RGB
+     */
+    OpenCVSource(const std::string& filename, bool gray=true);
+    virtual ~OpenCVSource();
 
-  /** get image height */
-  unsigned int getHeight() { return height_; }
+    /**
+     * @brief get new image
+     * @return cv::Mat
+     */
+    cv::Mat getImage();
 
-  /** get current frame number */
-  unsigned int getCurrentFrameNr() { return frameNr_; }
+    /**
+     * @brief get image width
+     * @return width
+     */
+    unsigned int getWidth() { return width_; }
+
+    /**
+     * @brief get image height
+     * @return height
+     */
+    unsigned int getHeight() { return height_; }
+
+    /**
+     * @brief get frame index. Upon camera initilaization, the counter is set to 0
+     * @return
+     */
+    unsigned int getCurrentFrameNr() { return frameNr_; }
 
 private:
-  cv::VideoCapture *videocapture_;
 
-  float fps_;
-  cv::Mat imageBGR_;
-  cv::Mat imageRGB_;
+    cv::VideoCapture* videocapture_;
+    int numFrames_;
 
+    cv::Mat frame_;
+    bool gray_;
 };
 
-#endif // OPENCVSOURCE_H
+/** \}  */ // end of videoIO
+
+
+
+} // namespace iu
+
+
+#endif

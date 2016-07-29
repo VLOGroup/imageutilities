@@ -1,25 +1,3 @@
-/*
- * Copyright (c) ICG. All rights reserved.
- *
- * Institute for Computer Graphics and Vision
- * Graz University of Technology / Austria
- *
- *
- * This software is distributed WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- * PURPOSE.  See the above copyright notices for more information.
- *
- *
- * Project     : ImageUtilities
- * Module      : Core
- * Class       : ImageAllocatorCpu
- * Language    : C++
- * Description : Image allocation functions for Cpu images.
- *
- * Author     : Manuel Werlberger
- * EMail      : werlberger@icg.tugraz.at
- *
- */
 
 #ifndef IMAGE_ALLOCATOR_CPU_H
 #define IMAGE_ALLOCATOR_CPU_H
@@ -28,6 +6,7 @@
 #include <math.h>
 #include "coredefs.h"
 
+/// For internal use only
 namespace iuprivate {
 
 //--------------------------------------------------------------------------
@@ -37,8 +16,6 @@ class ImageAllocatorCpu
 public:
   static PixelType* alloc(unsigned int width, unsigned int height, size_t *pitch)
   {
-    //! @todo use sse malloc stuff so that pointers are aligned to 16/32-bytes! is there an optimal way to do that in windows and linux?
-
     if ((width == 0) || (height == 0)) throw IuException("width or height is 0", __FILE__,__FUNCTION__, __LINE__);
 
     // manually pitch the memory to 32-byte alignment (for better support of eg. IPP functions)
@@ -66,7 +43,7 @@ public:
                    PixelType *dst, size_t dst_pitch, IuSize size)
   {
     size_t src_stride = src_pitch/sizeof(PixelType);
-    size_t dst_stride = src_pitch/sizeof(PixelType);
+    size_t dst_stride = dst_pitch/sizeof(PixelType);
 
     for(unsigned int y=0; y< size.height; ++y)
     {

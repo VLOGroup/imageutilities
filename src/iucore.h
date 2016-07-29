@@ -1,42 +1,29 @@
-/*
- * Copyright (c) ICG. All rights reserved.
- *
- * Institute for Computer Graphics and Vision
- * Graz University of Technology / Austria
- *
- *
- * This software is distributed WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- * PURPOSE.  See the above copyright notices for more information.
- *
- *
- * Project     : ImageUtilities
- * Module      : Core Module
- * Class       : Wrapper
- * Language    : C
- * Description : Public interfaces to core module
- *
- * Author     : Manuel Werlberger
- * EMail      : werlberger\icg.tugraz.at
- *
- */
 
 #ifndef IU_CORE_MODULE_H
 #define IU_CORE_MODULE_H
 
 #include "iudefs.h"
-#include "iucontainers.h"
-
+/// The main namespace
 namespace iu {
 
-/** \defgroup Core The core module.
- *  TODO more detailed docu
+/** \defgroup Core iucore
+ * \brief Core classes, memory management and basic operations.
+ * \{
  */
 
 
+/**
+ * @brief The IuCudaTimer class can be used to do high-precision GPU timing measurements.
+ *
+ * It uses GPU hardware timers with a resolution of around to 0.5 microseconds. It is not necessary
+ * to put workload on the GPU, i.e. this class can also be used for high-precision CPU timings.
+ */
 class IuCudaTimer
 {
 public:
+    /**
+   * @brief IuCudaTimer constructor
+   */
   IuCudaTimer() {
     cudaEventCreate(&start_);
     cudaEventCreate(&stop_);
@@ -47,10 +34,17 @@ public:
     cudaEventDestroy(stop_);
   }
 
+  /**
+   * @brief start timing
+   */
   void start() {
     cudaEventRecord(start_, 0);
   }
 
+  /**
+   * @brief stop timing
+   * @return elapsed time since \ref start was called in milliseconds
+   */
   float elapsed() {
     cudaEventRecord(stop_);
     cudaEventSynchronize(stop_);
@@ -68,11 +62,14 @@ private:
 /* ***************************************************************************
      COPY
  * ***************************************************************************/
-
+/** \defgroup Copy
+ *  \brief Copy methods.
+ *  \{
+ */
 //////////////////////////////////////////////////////////////////////////////
 /** \defgroup Copy1D 1D Memory Copy
- *  \ingroup Core
- *  TODO more detailed docu
+ *  \ingroup Copy
+ *  \brief Copy methods for 1D images of various types.
  *  \{
  */
 
@@ -102,6 +99,9 @@ IUCORE_DLLAPI void copy(const LinearDeviceMemory_32s_C1* src, LinearDeviceMemory
 IUCORE_DLLAPI void copy(const LinearDeviceMemory_32s_C2* src, LinearDeviceMemory_32s_C2* dst);
 IUCORE_DLLAPI void copy(const LinearDeviceMemory_32s_C3* src, LinearDeviceMemory_32s_C3* dst);
 IUCORE_DLLAPI void copy(const LinearDeviceMemory_32s_C4* src, LinearDeviceMemory_32s_C4* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory_32u_C1* src, LinearDeviceMemory_32u_C1* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory_32u_C2* src, LinearDeviceMemory_32u_C2* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory_32u_C4* src, LinearDeviceMemory_32u_C4* dst);
 IUCORE_DLLAPI void copy(const LinearDeviceMemory_32f_C1* src, LinearDeviceMemory_32f_C1* dst);
 IUCORE_DLLAPI void copy(const LinearDeviceMemory_32f_C2* src, LinearDeviceMemory_32f_C2* dst);
 IUCORE_DLLAPI void copy(const LinearDeviceMemory_32f_C3* src, LinearDeviceMemory_32f_C3* dst);
@@ -124,6 +124,9 @@ IUCORE_DLLAPI void copy(const LinearHostMemory_32s_C1* src, LinearDeviceMemory_3
 IUCORE_DLLAPI void copy(const LinearHostMemory_32s_C2* src, LinearDeviceMemory_32s_C2* dst);
 IUCORE_DLLAPI void copy(const LinearHostMemory_32s_C3* src, LinearDeviceMemory_32s_C3* dst);
 IUCORE_DLLAPI void copy(const LinearHostMemory_32s_C4* src, LinearDeviceMemory_32s_C4* dst);
+IUCORE_DLLAPI void copy(const LinearHostMemory_32u_C1* src, LinearDeviceMemory_32u_C1* dst);
+IUCORE_DLLAPI void copy(const LinearHostMemory_32u_C2* src, LinearDeviceMemory_32u_C2* dst);
+IUCORE_DLLAPI void copy(const LinearHostMemory_32u_C4* src, LinearDeviceMemory_32u_C4* dst);
 IUCORE_DLLAPI void copy(const LinearHostMemory_32f_C1* src, LinearDeviceMemory_32f_C1* dst);
 IUCORE_DLLAPI void copy(const LinearHostMemory_32f_C2* src, LinearDeviceMemory_32f_C2* dst);
 IUCORE_DLLAPI void copy(const LinearHostMemory_32f_C3* src, LinearDeviceMemory_32f_C3* dst);
@@ -146,6 +149,9 @@ IUCORE_DLLAPI void copy(const LinearDeviceMemory_32s_C1* src, LinearHostMemory_3
 IUCORE_DLLAPI void copy(const LinearDeviceMemory_32s_C2* src, LinearHostMemory_32s_C2* dst);
 IUCORE_DLLAPI void copy(const LinearDeviceMemory_32s_C3* src, LinearHostMemory_32s_C3* dst);
 IUCORE_DLLAPI void copy(const LinearDeviceMemory_32s_C4* src, LinearHostMemory_32s_C4* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory_32u_C1* src, LinearHostMemory_32u_C1* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory_32u_C2* src, LinearHostMemory_32u_C2* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory_32u_C4* src, LinearHostMemory_32u_C4* dst);
 IUCORE_DLLAPI void copy(const LinearDeviceMemory_32f_C1* src, LinearHostMemory_32f_C1* dst);
 IUCORE_DLLAPI void copy(const LinearDeviceMemory_32f_C2* src, LinearHostMemory_32f_C2* dst);
 IUCORE_DLLAPI void copy(const LinearDeviceMemory_32f_C3* src, LinearHostMemory_32f_C3* dst);
@@ -155,8 +161,8 @@ IUCORE_DLLAPI void copy(const LinearDeviceMemory_32f_C4* src, LinearHostMemory_3
 
 //////////////////////////////////////////////////////////////////////////////
 /** \defgroup Copy2D 2D Memory Copy
- *  \ingroup Core
- *  Copy methods for 2D images of various types.
+ *  \ingroup Copy
+ *  \brief Copy methods for 2D images of various types.
  *  \{
  */
 
@@ -200,6 +206,11 @@ IUCORE_DLLAPI void copy(const ImageCpu_8u_C2* src, ImageGpu_8u_C2* dst);
 IUCORE_DLLAPI void copy(const ImageCpu_8u_C3* src, ImageGpu_8u_C3* dst);
 IUCORE_DLLAPI void copy(const ImageCpu_8u_C4* src, ImageGpu_8u_C4* dst);
 IUCORE_DLLAPI void copy(const ImageCpu_32s_C1* src, ImageGpu_32s_C1* dst);
+IUCORE_DLLAPI void copy(const ImageCpu_32s_C2* src, ImageGpu_32s_C2* dst);
+IUCORE_DLLAPI void copy(const ImageCpu_32s_C4* src, ImageGpu_32s_C4* dst);
+IUCORE_DLLAPI void copy(const ImageCpu_32u_C1* src, ImageGpu_32u_C1* dst);
+IUCORE_DLLAPI void copy(const ImageCpu_32u_C2* src, ImageGpu_32u_C2* dst);
+IUCORE_DLLAPI void copy(const ImageCpu_32u_C4* src, ImageGpu_32u_C4* dst);
 IUCORE_DLLAPI void copy(const ImageCpu_32f_C1* src, ImageGpu_32f_C1* dst);
 IUCORE_DLLAPI void copy(const ImageCpu_32f_C2* src, ImageGpu_32f_C2* dst);
 IUCORE_DLLAPI void copy(const ImageCpu_32f_C3* src, ImageGpu_32f_C3* dst);
@@ -215,12 +226,24 @@ IUCORE_DLLAPI void copy(const ImageGpu_8u_C2* src, ImageCpu_8u_C2* dst);
 IUCORE_DLLAPI void copy(const ImageGpu_8u_C3* src, ImageCpu_8u_C3* dst);
 IUCORE_DLLAPI void copy(const ImageGpu_8u_C4* src, ImageCpu_8u_C4* dst);
 IUCORE_DLLAPI void copy(const ImageGpu_32s_C1* src, ImageCpu_32s_C1* dst);
+IUCORE_DLLAPI void copy(const ImageGpu_32s_C2* src, ImageCpu_32s_C2* dst);
+IUCORE_DLLAPI void copy(const ImageGpu_32s_C4* src, ImageCpu_32s_C4* dst);
+IUCORE_DLLAPI void copy(const ImageGpu_32u_C1* src, ImageCpu_32u_C1* dst);
+IUCORE_DLLAPI void copy(const ImageGpu_32u_C2* src, ImageCpu_32u_C2* dst);
+IUCORE_DLLAPI void copy(const ImageGpu_32u_C4* src, ImageCpu_32u_C4* dst);
 IUCORE_DLLAPI void copy(const ImageGpu_32f_C1* src, ImageCpu_32f_C1* dst);
 IUCORE_DLLAPI void copy(const ImageGpu_32f_C2* src, ImageCpu_32f_C2* dst);
 IUCORE_DLLAPI void copy(const ImageGpu_32f_C3* src, ImageCpu_32f_C3* dst);
 IUCORE_DLLAPI void copy(const ImageGpu_32f_C4* src, ImageCpu_32f_C4* dst);
 
 /** \} */ // end of Copy2D
+
+//////////////////////////////////////////////////////////////////////////////
+/** \defgroup Copy3D 3D Memory Copy
+ *  \ingroup Copy
+ *  \brief Copy methods for 3D images of various types.
+ *  \{
+ */
 
 // 3D; copy host -> host;
 /** Copy methods for host to host 3D copy
@@ -308,158 +331,35 @@ IUCORE_DLLAPI void copy(const VolumeGpu_32s_C2* src, VolumeCpu_32s_C2* dst);
 IUCORE_DLLAPI void copy(const VolumeGpu_32s_C4* src, VolumeCpu_32s_C4* dst);
 
 
+// convert to linear (contiguous) memory
+IUCORE_DLLAPI void copy(const ImageCpu_8u_C1* src, LinearHostMemory_8u_C1* dst);
+IUCORE_DLLAPI void copy(const ImageCpu_16u_C1* src, LinearHostMemory_16u_C1* dst);
+IUCORE_DLLAPI void copy(const ImageCpu_32f_C1* src, LinearHostMemory_32f_C1* dst);
+
+IUCORE_DLLAPI void copy(const ImageGpu_32f_C1* src, LinearDeviceMemory_32f_C1* dst);
+
 /** \} */ // end of Copy3D
+/** \} */ // end of Copy
 
-
-/* ***************************************************************************
-     SET
- * ***************************************************************************/
-//////////////////////////////////////////////////////////////////////////////
-/** \defgroup Set1D 1D Memory Set
- * \ingroup Core
- * Set methods for 1D buffers.
- * \{
- */
-
-/** Sets all the pixels in the given buffer to a certain value.
- * \param value The pixel value to be set.
- * \param buffer Pointer to the buffer
- */
-IUCORE_DLLAPI void setValue(const unsigned char& value, LinearHostMemory_8u_C1* srcdst);
-IUCORE_DLLAPI void setValue(const int& value, LinearHostMemory_32s_C1* srcdst);
-IUCORE_DLLAPI void setValue(const float& value, LinearHostMemory_32f_C1* srcdst);
-IUCORE_DLLAPI void setValue(const unsigned char& value, LinearDeviceMemory_8u_C1* srcdst);
-IUCORE_DLLAPI void setValue(const int& value, LinearDeviceMemory_32s_C1* srcdst);
-IUCORE_DLLAPI void setValue(const float& value, LinearDeviceMemory_32f_C1* srcdst);
-
-/** \} */ // end of Set1D
-
-
-//////////////////////////////////////////////////////////////////////////////
-/** \defgroup Set2D 2D Memory Set
- * \ingroup Core
- * Set methods for 2D images.
- * \{
- */
-
-//TODO this is not shown because signature does not exist. use Qt documentation system??
-/** \fn void setValue(<datatype> value, Image<datatype>* srcdst, const IuRect& roi)
- * \brief Sets all pixel in the region of interest to a certain value.
- * \ingroup Set2D
- * \param value The pixel value to be set.
- * \param image Pointer to the image.
- * \param roi Region of interest which should be set.
- */
-// host:
-IUCORE_DLLAPI void setValue(const unsigned char& value, ImageCpu_8u_C1* srcdst, const IuRect& roi);
-IUCORE_DLLAPI void setValue(const uchar2& value, ImageCpu_8u_C2* srcdst, const IuRect& roi);
-IUCORE_DLLAPI void setValue(const uchar3& value, ImageCpu_8u_C3* srcdst, const IuRect& roi);
-IUCORE_DLLAPI void setValue(const uchar4& value, ImageCpu_8u_C4* srcdst, const IuRect& roi);
-IUCORE_DLLAPI void setValue(const int& value, ImageCpu_32s_C1* srcdst, const IuRect& roi);
-IUCORE_DLLAPI void setValue(const float& value, ImageCpu_32f_C1* srcdst, const IuRect& roi);
-IUCORE_DLLAPI void setValue(const float2& value, ImageCpu_32f_C2* srcdst, const IuRect& roi);
-IUCORE_DLLAPI void setValue(const float3& value, ImageCpu_32f_C3* srcdst, const IuRect& roi);
-IUCORE_DLLAPI void setValue(const float4& value, ImageCpu_32f_C4* srcdst, const IuRect& roi);
-// device:
-IUCORE_DLLAPI void setValue(const unsigned char& value, ImageGpu_8u_C1* srcdst, const IuRect& roi);
-IUCORE_DLLAPI void setValue(const uchar2& value, ImageGpu_8u_C2* srcdst, const IuRect& roi);
-IUCORE_DLLAPI void setValue(const uchar3& value, ImageGpu_8u_C3* srcdst, const IuRect& roi);
-IUCORE_DLLAPI void setValue(const uchar4& value, ImageGpu_8u_C4* srcdst, const IuRect& roi);
-IUCORE_DLLAPI void setValue(const int& value, ImageGpu_32s_C1* srcdst, const IuRect& roi);
-IUCORE_DLLAPI void setValue(const float& value, ImageGpu_32f_C1* srcdst, const IuRect& roi);
-IUCORE_DLLAPI void setValue(const float2& value, ImageGpu_32f_C2* srcdst, const IuRect& roi);
-IUCORE_DLLAPI void setValue(const float3& value, ImageGpu_32f_C3* srcdst, const IuRect& roi);
-IUCORE_DLLAPI void setValue(const float4& value, ImageGpu_32f_C4* srcdst, const IuRect& roi);
-
-/** \} */ // end of Set2D
-
-
-//////////////////////////////////////////////////////////////////////////////
-/** \defgroup Set3D 3D Memory Set
- * \ingroup Core
- * Set methods for 3D images.
- * \{
- */
-
-/** \fn void setValue(<datatype> value, Image<datatype>* srcdst, const IuCube& roi)
- * \brief Sets all pixel in the region of interest to a certain value.
- * \ingroup Set3D
- * \param value The pixel value to be set.
- * \param image Pointer to the image.
- * \param roi Region of interest which should be set.
- */
-// host:
-IUCORE_DLLAPI void setValue(const unsigned char& value, VolumeCpu_8u_C1* srcdst, const IuCube& roi);
-IUCORE_DLLAPI void setValue(const uchar2& value, VolumeCpu_8u_C2* srcdst, const IuCube& roi);
-IUCORE_DLLAPI void setValue(const uchar4& value, VolumeCpu_8u_C4* srcdst, const IuCube& roi);
-IUCORE_DLLAPI void setValue(const float& value, VolumeCpu_32f_C1* srcdst, const IuCube& roi);
-IUCORE_DLLAPI void setValue(const float2& value, VolumeCpu_32f_C2* srcdst, const IuCube& roi);
-IUCORE_DLLAPI void setValue(const float4& value, VolumeCpu_32f_C4* srcdst, const IuCube& roi);
-IUCORE_DLLAPI void setValue(const unsigned int& value, VolumeCpu_32u_C1* srcdst, const IuCube& roi);
-IUCORE_DLLAPI void setValue(const uint2& value, VolumeCpu_32u_C2* srcdst, const IuCube& roi);
-IUCORE_DLLAPI void setValue(const uint4& value, VolumeCpu_32u_C4* srcdst, const IuCube& roi);
-
-IUCORE_DLLAPI void setValue(const int& value, VolumeCpu_32s_C1* srcdst, const IuCube& roi);
-IUCORE_DLLAPI void setValue(const int2& value, VolumeCpu_32s_C2* srcdst, const IuCube& roi);
-IUCORE_DLLAPI void setValue(const int4& value, VolumeCpu_32s_C4* srcdst, const IuCube& roi);
-
-// device:
-IUCORE_DLLAPI void setValue(const unsigned char& value, VolumeGpu_8u_C1* srcdst, const IuCube& roi);
-IUCORE_DLLAPI void setValue(const uchar2& value, VolumeGpu_8u_C2* srcdst, const IuCube& roi);
-IUCORE_DLLAPI void setValue(const uchar4& value, VolumeGpu_8u_C4* srcdst, const IuCube& roi);
-IUCORE_DLLAPI void setValue(const unsigned short& value, VolumeGpu_16u_C1* srcdst, const IuCube& roi);
-IUCORE_DLLAPI void setValue(const float& value, VolumeGpu_32f_C1* srcdst, const IuCube& roi);
-IUCORE_DLLAPI void setValue(const float2& value, VolumeGpu_32f_C2* srcdst, const IuCube& roi);
-IUCORE_DLLAPI void setValue(const float4& value, VolumeGpu_32f_C4* srcdst, const IuCube& roi);
-IUCORE_DLLAPI void setValue(const unsigned int& value, VolumeGpu_32u_C1* srcdst, const IuCube& roi);
-IUCORE_DLLAPI void setValue(const uint2& value, VolumeGpu_32u_C2* srcdst, const IuCube& roi);
-IUCORE_DLLAPI void setValue(const uint4& value, VolumeGpu_32u_C4* srcdst, const IuCube& roi);
-
-IUCORE_DLLAPI void setValue(const int& value, VolumeGpu_32s_C1* srcdst, const IuCube& roi);
-IUCORE_DLLAPI void setValue(const int2& value, VolumeGpu_32s_C2* srcdst, const IuCube& roi);
-IUCORE_DLLAPI void setValue(const int4& value, VolumeGpu_32s_C4* srcdst, const IuCube& roi);
-
-/** \} */ // end of Set3D
-
-//////////////////////////////////////////////////////////////////////////////
-/** \defgroup Clamp
- * \ingroup Core
- * Clamping methods for 2D images.
- * \{
- */
-
-/** Clamps all values of srcdst to the interval min/max.
- * \param min Minimum value for the clamping.
- * \param max Maximum value for the clamping.
- * \param srcdst Image which pixels are clamped.
- * \param roi Region of interest of processed pixels.
- */
-void clamp(const float& min, const float& max, iu::ImageGpu_32f_C1* srcdst, const IuRect& roi);
-
-/** \} */ // end of Clamp
 
 //////////////////////////////////////////////////////////////////////////////
 /** \defgroup Conversions
  * \ingroup Core
- * Conversion methods for 2D images.
+ * \brief Conversion methods for 2D images.
  * \{
  */
 
 /** Converts an 32-bit 3-channel image to a 32-bit 4-channel image (adds alpha channel with value 1.0 everywhere).
  * \param src 3-channel source image [device].
- * \param src_roi Region of interest in the source image.
  * \param dst 4-channel destination image [device]
- * \param dst_roi Region of interest in the dsetination image.
  */
-IUCORE_DLLAPI void convert(const ImageGpu_32f_C3* src, const IuRect& src_roi, ImageGpu_32f_C4* dst, const IuRect& dst_roi);
+IUCORE_DLLAPI void convert(const ImageGpu_32f_C3* src, ImageGpu_32f_C4* dst);
 
 /** Converts an 32-bit 4-channel image to a 32-bit 3-channel image (simply neglects the alpha channel).
  * \param src 4-channel source image [device].
- * \param src_roi Region of interest in the source image.
  * \param dst 3-channel destination image [device]
- * \param dst_roi Region of interest in the dsetination image.
  */
-IUCORE_DLLAPI void convert(const ImageGpu_32f_C4* src, const IuRect& src_roi, ImageGpu_32f_C3* dst, const IuRect& dst_roi);
+IUCORE_DLLAPI void convert(const ImageGpu_32f_C4* src, ImageGpu_32f_C3* dst);
 
 /** Converts an 32-bit single-channel image to a 8-bit single-channel image.
  * \param src 1-channel source image [host].
@@ -476,7 +376,7 @@ IUCORE_DLLAPI void convert_32f8u_C1(const iu::ImageCpu_32f_C1* src, iu::ImageCpu
  * \param mul_constant The optional scale factor.
  * \param add_constant The optional delta, added to the scaled values.
  */
-IUCORE_DLLAPI void convert_32f8u_C1(const iu::ImageGpu_32f_C1* src, const IuRect& src_roi, iu::ImageGpu_8u_C1* dst, const IuRect& dst_roi,
+IUCORE_DLLAPI void convert_32f8u_C1(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_8u_C1* dst,
                                 float mul_constant=255.0f, unsigned char add_constant=0);
 
 /** Converts an 32-bit 4-channel image to a 8-bit 4-channel image.
@@ -485,7 +385,7 @@ IUCORE_DLLAPI void convert_32f8u_C1(const iu::ImageGpu_32f_C1* src, const IuRect
  * \param mul_constant The optional scale factor.
  * \param add_constant The optional delta, added to the scaled values.
  */
-IUCORE_DLLAPI void convert_32f8u_C4(const iu::ImageGpu_32f_C4* src, const IuRect& src_roi, iu::ImageGpu_8u_C4* dst, const IuRect& dst_roi,
+IUCORE_DLLAPI void convert_32f8u_C4(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_8u_C4* dst,
                                 float mul_constant=255.0f, unsigned char add_constant=0);
 
 /** Converts an 8-bit single-channel image to a 32-bit single-channel image.
@@ -494,8 +394,34 @@ IUCORE_DLLAPI void convert_32f8u_C4(const iu::ImageGpu_32f_C4* src, const IuRect
  * \param mul_constant The optional scale factor.
  * \param add_constant The optional delta, added to the scaled values.
  */
-IUCORE_DLLAPI void convert_8u32f_C1(const iu::ImageGpu_8u_C1* src, const IuRect& src_roi, iu::ImageGpu_32f_C1* dst, const IuRect& dst_roi,
+IUCORE_DLLAPI void convert_8u32f_C1(const iu::ImageGpu_8u_C1* src, iu::ImageGpu_32f_C1* dst,
                                 float mul_constant=1/255.0f, float add_constant=0.0f);
+
+/** Converts a 32-bit single-channel uint image to a 32-bit single-channel float image.
+ * \param src 1-channel source image [device].
+ * \param dst 1-channel destination image [device].
+ * \param mul_constant The optional scale factor.
+ * \param add_constant The optional delta, added to the scaled values.
+ */
+IUCORE_DLLAPI void convert_32u32f_C1(const iu::ImageGpu_32u_C1* src, iu::ImageGpu_32f_C1* dst,
+                                float mul_constant, float add_constant=0.0f);
+
+
+/** Converts a 32-bit single-channel uint image to a 32-bit single-channel float image.
+ * \param src 1-channel source image [host].
+ * \param dst 1-channel destination image [host].
+ * \param mul_constant The optional scale factor.
+ * \param add_constant The optional delta, added to the scaled values.
+ */
+IUCORE_DLLAPI void convert_32u32f_C1(const iu::ImageCpu_32u_C1* src, iu::ImageCpu_32f_C1* dst,
+                                float mul_constant, float add_constant=0.0f);
+
+/** Converts a 32-bit single-channel linear memory to a 32-bit single-channel linear memory.
+ * Inplace conversion is possible.
+ * \param src 1-channel src linear memory [device].
+ * \param dst 1-channel destination linear memory [device].
+ */
+IUCORE_DLLAPI void convert_32s32f_C1_lin(iu::LinearDeviceMemory_32s_C1* src, iu::LinearDeviceMemory_32f_C1* dst);
 
 
 /** Converts an 8-bit 3-channel image to a 32-bit 4-channel image.
@@ -504,7 +430,7 @@ IUCORE_DLLAPI void convert_8u32f_C1(const iu::ImageGpu_8u_C1* src, const IuRect&
  * \param mul_constant The optional scale factor.
  * \param add_constant The optional delta, added to the scaled values.
  */
-IUCORE_DLLAPI void convert_8u32f_C3C4(const iu::ImageGpu_8u_C3* src, const IuRect& src_roi, iu::ImageGpu_32f_C4* dst, const IuRect& dst_roi,
+IUCORE_DLLAPI void convert_8u32f_C3C4(const iu::ImageGpu_8u_C3* src, iu::ImageGpu_32f_C4* dst,
                                 float mul_constant=1/255.0f, float add_constant=0.0f);
 
 
@@ -528,7 +454,7 @@ IUCORE_DLLAPI void convert_RgbHsv(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_3
 /** Converts a HSV image to an RGB image.
  * \param src 4-channel source image [device].
  * \param dst 4-channel destination image [device].
- * \param normalize Normalizes all channels to [0, 1]
+ * \param denormalize Denormalizes all channels to [0, 1]
  */
 IUCORE_DLLAPI void convert_HsvRgb(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst, bool denormalize=false);
 
@@ -549,10 +475,168 @@ IUCORE_DLLAPI void convert_LabRgb(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_3
 
 /** \} */ // end of Conversions
 
+//IUCORE_DLLAPI double summation(iu::ImageGpu_32f_C1* src);
 
+
+/* ***************************************************************************
+     Filters
+ * ***************************************************************************/
+
+//////////////////////////////////////////////////////////////////////////////
+/* ***************************************************************************
+     Denoising
+ * ***************************************************************************/
+/** @defgroup Filters
+    \brief Filters for 2D images
+ *  \ingroup Core
+ *  @{
+ */
+
+/** 2D Median Filter
+ * \brief Filters a device image using a 3x3 median filter
+ * \param src Source image [device].
+ * \param dst Destination image [device]
+ */
+IUCORE_DLLAPI void filterMedian3x3(const ImageGpu_32f_C1* src, ImageGpu_32f_C1* dst );
+
+/** Gaussian Convolution
+ * \brief Filters a device image using a Gaussian filter
+ * \param src Source image [device].
+ * \param dst Destination image [device]
+ * \param sigma Controls the amount of smoothing
+ * \param kernel_size Sets the size of the used Gaussian kernel. If =0 the size is calculated.
+ */
+IUCORE_DLLAPI void filterGauss(const ImageGpu_32f_C1* src, ImageGpu_32f_C1* dst,
+                               float sigma, int kernel_size=0, ImageGpu_32f_C1* temp=NULL);
+IUCORE_DLLAPI void filterGauss(const VolumeGpu_32f_C1* src, VolumeGpu_32f_C1* dst,
+                               float sigma, int kernel_size=0);
+IUCORE_DLLAPI void filterGauss(const ImageGpu_32f_C4* src, ImageGpu_32f_C4* dst,
+                               float sigma, int kernel_size=0);
+
+
+
+/* ***************************************************************************
+     edge calculation
+ * ***************************************************************************/
+
+/** Edge image calculation
+ * \param src Source image [device].
+ * \param dst Destination image [device]
+ */
+IUCORE_DLLAPI void filterEdge(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C2* dst );
+
+/** Edge image calculation
+ * \param src Source image [device].
+ * \param dst Destination image [device]
+ * \param alpha
+ * \param beta
+ * \param minval
+ */
+IUCORE_DLLAPI void filterEdge(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst ,
+                              float alpha, float beta, float minval);
+
+IUCORE_DLLAPI void filterEdge(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C2* dst ,
+                              float alpha, float beta, float minval);
+
+IUCORE_DLLAPI void filterEdge(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C4* dst,
+                              float alpha, float beta, float minval);
+
+IUCORE_DLLAPI void filterEdge(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C1* dst,                               float alpha, float beta, float minval);
+
+IUCORE_DLLAPI void filterEdge(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C2* dst,
+                              float alpha, float beta, float minval);
+
+IUCORE_DLLAPI void filterEdge(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst,
+                              float alpha, float beta, float minval);
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+/* ***************************************************************************
+     other filters
+ * ***************************************************************************/
+
+IUCORE_DLLAPI void cubicBSplinePrefilter(iu::ImageGpu_32f_C1* srcdst);
+/** @} */ // end of Filters
+
+/** \defgroup Geometric Transformation
+    \brief Up- and Downscaling of images
+    \ingroup Core
+ *  @{
+ */
+
+/* ***************************************************************************
+     Geometric Transformations
+ * ***************************************************************************/
+
+//////////////////////////////////////////////////////////////////////////////
+/* ***************************************************************************
+     Image resize
+ * ***************************************************************************/
+
+/** Image reduction.
+ * \brief Scaling the image \a src down to the size of \a dst.
+ * \param[in] src Source image [device]
+ * \param[out] dst Destination image [device]
+ * \param[in] interpolation The type of interpolation used for scaling down the image.
+ * \param[in] gauss_prefilter Toggles gauss prefiltering. The sigma and kernel size is chosen dependent on the scale factor.
+ *
+ * \note The bcubic_bspline_prefilter yields sharper results when switched on. Note that this only works nicely with a scale_factor=0.5f.
+ */
+IUCORE_DLLAPI void reduce(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
+                          IuInterpolationType interpolation = IU_INTERPOLATE_LINEAR,
+                          bool gauss_prefilter = true);
+
+/** Image prolongation.
+ * \brief Scaling the image \a src up to the size of \a dst.
+ * \param[in] src Source image [device]
+ * \param[out] dst Destination image [device]
+ * \param[in] interpolation The type of interpolation used for scaling up the image.
+ *
+ * \note The bcubic_bspline_prefilter yields sharper results when switched on. Note that this only works nicely with a scale_factor=0.5f.
+ */
+IUCORE_DLLAPI void prolongate(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
+                              IuInterpolationType interpolation = IU_INTERPOLATE_NEAREST);
+IUCORE_DLLAPI void prolongate(const iu::ImageGpu_32f_C2* src, iu::ImageGpu_32f_C2* dst,
+                              IuInterpolationType interpolation = IU_INTERPOLATE_NEAREST);
+IUCORE_DLLAPI void prolongate(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst,
+                              IuInterpolationType interpolation = IU_INTERPOLATE_NEAREST);
+
+/** Image remapping (warping).
+ * \brief Remapping the image \a src with the given disparity fields dx, dy.
+ * \param[in] src Source image [device]
+ * \param[in] dx_map Disparities (dense) in x direction [device]
+ * \param[in] dy_map Disparities (dense) in y direction [device]
+ * \param[out] dst Destination image [device]
+ * \param[in] interpolation The type of interpolation used for scaling up the image.
+ *
+ * \note The bcubic_bspline_prefilter yields sharper results when switched on. Note that this only works nicely with a scale_factor=0.5f.
+ */
+IUCORE_DLLAPI void remap(iu::ImageGpu_8u_C1* src,
+                         iu::ImageGpu_32f_C1* dx_map, iu::ImageGpu_32f_C1* dy_map,
+                         iu::ImageGpu_8u_C1* dst,
+                         IuInterpolationType interpolation = IU_INTERPOLATE_LINEAR);
+IUCORE_DLLAPI void remap(iu::ImageGpu_32f_C1* src,
+                         iu::ImageGpu_32f_C1* dx_map, iu::ImageGpu_32f_C1* dy_map,
+                         iu::ImageGpu_32f_C1* dst,
+                         IuInterpolationType interpolation = IU_INTERPOLATE_LINEAR);
+//IUCORE_DLLAPI IuStatus remap(iu::ImageGpu_32f_C2* src,
+//                     iu::ImageGpu_32f_C1* dx_map, iu::ImageGpu_32f_C1* dy_map,
+//                     iu::ImageGpu_32f_C2* dst,
+//                     IuInterpolationType interpolation = IU_INTERPOLATE_LINEAR);
+IUCORE_DLLAPI void remap(iu::ImageGpu_32f_C4* src,
+                         iu::ImageGpu_32f_C1* dx_map, iu::ImageGpu_32f_C1* dy_map,
+                         iu::ImageGpu_32f_C4* dst,
+                         IuInterpolationType interpolation = IU_INTERPOLATE_LINEAR);
+
+IUCORE_DLLAPI void remapAffine(iu::ImageGpu_32f_C1* src,
+                               float a1, float a2, float a3, float a4, float b1, float b2,
+                               iu::ImageGpu_32f_C1* dst);
+
+
+/** @} */ // end of Image Transformations
 
 /** \} */ // end of Core module
-
 } // namespace iu
 
 #endif // IU_CORE_MODULE_H

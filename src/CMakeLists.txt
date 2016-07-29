@@ -1,427 +1,97 @@
-# Copyright (c) ICG. All rights reserved.
-#
-# Institute for Computer Graphics and Vision
-# Graz University of Technology / Austria
-#
-#
-# This software is distributed WITHOUT ANY WARRANTY; without even
-# the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-# PURPOSE.  See the above copyright notices for more information.
-#
-#
-# Project     : ImageUtilities
-# Module      : CMakeFile
-# Language    : CMake
-# Description : CMakeFile
-#
-# Author     : Manuel Werlberger
-# EMail      : werlberger@icg.tugraz.at
 
-project(imageutilities_lib CXX C)
-#set(CMAKE_BUILD_TYPE Debug)
-cmake_minimum_required(VERSION 2.8.0)
+project(imageutilities_lib)
+cmake_minimum_required(VERSION 2.8)
 
 # cleanup
 set(${IU_PUBLIC_HEADERS} "")
+option(IU_BUILD_STATIC "Build static libs too." OFF)
 
 # general settings
-set( CMAKE_DEBUG_POSTFIX "d" )
+#set(CMAKE_DEBUG_POSTFIX "d")
+set(CMAKE_BUILD_TYPE Release)
+set(CUDA_PROPAGATE_HOST_FLAGS OFF)
 
-#FILE(TO_CMAKE_PATH "$ENV{CMAKE_MODULE_PATH}" OT_CMAKE_MODULE_PATH)
-FILE(TO_CMAKE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../cmake" OT_IU_CMAKE_MODULE_PATH)
-SET(CMAKE_MODULE_PATH ${OT_IU_CMAKE_MODULE_PATH})
+file(TO_CMAKE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../cmake" OT_IU_CMAKE_MODULE_PATH)
+set(CMAKE_MODULE_PATH ${OT_IU_CMAKE_MODULE_PATH})
 
-# convert env variable to internal path to circumvent win32 backslash problems
-FILE(TO_CMAKE_PATH "$ENV{VMLIBRARIES_ROOT}" FL_VMLIBRARIES_ROOT)
 
 ##-----------------------------------------------------------------------------
 ## Current version number:
 ##-----------------------------------------------------------------------------
-set(IMAGEUTILITIES_VERSION "1.3.0")
+set(IMAGEUTILITIES_VERSION "2.0.0")
 
 string(REGEX MATCHALL "[0-9]" IMAGEUTILITIES_VERSION_PARTS "${IMAGEUTILITIES_VERSION}")
 
 list(GET IMAGEUTILITIES_VERSION_PARTS 0 IMAGEUTILITIES_VERSION_MAJOR)
 list(GET IMAGEUTILITIES_VERSION_PARTS 1 IMAGEUTILITIES_VERSION_MINOR)
 list(GET IMAGEUTILITIES_VERSION_PARTS 2 IMAGEUTILITIES_VERSION_PATCH)
-set(IMAGEUTILITIES_SOVERSION "${IMAGEUTILITIES_VERSION_MAJOR}.${IMAGEUTILITIES_VERSION_MINOR}")
+set(IMAGEUTILITIES_SOVERSION "${IMAGEUTILITIES_VERSION_MAJOR}.${IMAGEUTILITIES_VERSION_MINOR}${IMAGEUTILITIES_VERSION_PATCH}")
+set(IMAGEUTILITIES_DLLVERSION "${IMAGEUTILITIES_VERSION_MAJOR}${IMAGEUTILITIES_VERSION_MINOR}${IMAGEUTILITIES_VERSION_PATCH}")
 
 if(WIN32)
     # Postfix of DLLs:
-    set(IMAGEUTILITIES_DLLVERSION "${IMAGEUTILITIES_VERSION_MAJOR}${IMAGEUTILITIES_VERSION_MINOR}${IMAGEUTILITIES_VERSION_PATCH}")
-    set(IMAGEUTILITIES_DEBUG_POSTFIX d)
+    #set(IMAGEUTILITIES_DEBUG_POSTFIX d)
 else()
     # Postfix of so's:
     #set(IMAGEUTILITIES_DLLVERSION "${IMAGEUTILITIES_VERSION_MAJOR}${IMAGEUTILITIES_VERSION_MINOR}${IMAGEUTILITIES_VERSION_PATCH}")
-    set(IMAGEUTILITIES_DLLVERSION "")
-    set(IMAGEUTILITIES_DEBUG_POSTFIX)
+    #set(IMAGEUTILITIES_DLLVERSION "")
+    #set(IMAGEUTILITIES_DEBUG_POSTFIX)
 endif()
+
+##------------------------INSTALL RPATH----------------------------------------
+#---Configure Install RPATH, see https://cmake.org/Wiki/CMake_RPATH_handling; Relative Rpath: http://stackoverflow.com/questions/3960641/how-to-link-to-shared-lib-from-shared-lib-with-relative-path
+SET(CMAKE_INSTALL_RPATH "$ORIGIN")
+###SET(CMAKE_SKIP_BUILD_RPATH  FALSE)
+###SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE) 
+###SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+###SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
 ##-----------------------------------------------------------------------------
 ## Flags if modules are used.
 ## The modules are included per default unless dependencies not found or omitted by the user.
 ## (the core module is always included!)
-OPTION(VMLIBRARIES_IU_USE_SPARSE "Including Sparse Matrix module." ON)
-OPTION(VMLIBRARIES_IU_USE_IPP "Including IPP module." ON)
-OPTION(VMLIBRARIES_IU_USE_MATLAB "Including Matlab module." ON)
-OPTION(VMLIBRARIES_IU_USE_GUI "Including GUI module." ON)
-OPTION(VMLIBRARIES_IU_USE_IO "Including IO module." ON)
-OPTION(VMLIBRARIES_IU_USE_IOPGM "Including IOPGM module." ON)
-#OPTION(VMLIBRARIES_IU_USE_VIDEOCAPTURE "Including VideCapture IO module." ON)
-OPTION(VMLIBRARIES_IU_USE_PGRCAMERA "Including PointGray IO module." ON)
-OPTION(VMLIBRARIES_IU_USE_VIDEOSOURCE "Including Videosource IO module." ON)
 
-
-##-----------------------------------------------------------------------------
-## Compiler Flags
-if(UNIX)
-  # enable all warnings
-  add_definitions(-Wall)
-  # and debug flags
-  add_definitions(-g)
-  add_definitions(-Werror)
-
-  add_definitions(-fPIC)
-endif()
-
-IF(WIN32)
-  ADD_DEFINITIONS(-DWIN32)
-  # for msvc 8 deprecated warning removal
-  ADD_DEFINITIONS(-D_CRT_SECURE_NO_DEPRECATE)
-  ADD_DEFINITIONS(-D_CRT_NONSTDC_NO_DEPRECATE)
-  ADD_DEFINITIONS(-D_CRT_SECURE_NO_DEPRECATE_GLOBALS)
-
-  SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /NODEFAULTLIB:LIBCMT.lib")
-endif(WIN32)
+if(ANDROID)
+option(IU_USE_IO "Including IO module." ON)
+option(IU_USE_GUI "Including GUI module." OFF)
+option(IU_USE_MATH "Including Math module." OFF)
+option(IU_USE_NDARRAY "Include NDArray module" OFF)
+option(WITH_FLYCAPTURE2 "Use FlyCapture2 - build pgrvideosource class." OFF)
+option(WITH_OPENEXR "Use OpenEXR - build OpenEXRIO classes." OFF)
+option(WITH_PYTHON "Use Python - include imageutilities <-> python interface. Requires boost.python and Eigen" OFF)
+set(ANDROID_TOOLCHAIN_NAME arm-linux-androideabi-4.6)
+set(CUDA_PROPAGATE_HOST_FLAGS OFF)
+else(ANDROID)
+option(IU_USE_IO "Including IO module." ON)
+option(IU_USE_GUI "Including GUI module." ON)
+option(IU_USE_MATH "Including Math module." ON)
+option(IU_USE_NDARRAY "Include NDArray module" ON)
+option(WITH_FLYCAPTURE2 "Use FlyCapture2 - build pgrvideosource class." ON)
+option(WITH_OPENEXR "Use OpenEXR - build OpenEXRIO classes." ON)
+option(WITH_PYTHON "Use Python - include imageutilities <-> python interface. Requires numpy, boost.python and Eigen" OFF)
+endif(ANDROID)
 
 ##-----------------------------------------------------------------------------
-# CUDA + SDK
-find_package(CUDA 3.1 REQUIRED)
-find_package(CUDASDK REQUIRED)
-if(CUDA_VERSION_MAJOR GREATER 4)
-  message("Using CUDA >= 5.0")
-  file(REMOVE "${FL_VMLIBRARIES_ROOT}/include/iu/helper_math.h")
-else()
-  message("Using CUDA < 5.0, copy old 'cutil_math.h' to new '${FL_VMLIBRARIES_ROOT}/include/helper_math.h'")
-  file(COPY ${CUDA_SDK_INCLUDE_DIR}/cutil_math.h DESTINATION "${FL_VMLIBRARIES_ROOT}/include")
-  file(RENAME "${FL_VMLIBRARIES_ROOT}/include/cutil_math.h" "${FL_VMLIBRARIES_ROOT}/include/helper_math.h")
-  cuda_include_directories("${FL_VMLIBRARIES_ROOT}/include/")
-  include_directories("${FL_VMLIBRARIES_ROOT}/include/")
-endif(CUDA_VERSION_MAJOR GREATER 4)
-
-cuda_include_directories(${CUDA_INCLUDE_DIRS} ${CUDA_SDK_INCLUDE_DIR})
-include_directories(${CUDA_INCLUDE_DIRS} ${CUDA_SDK_INCLUDE_DIR})
-message("Cuda include dirs: " ${CUDA_INCLUDE_DIRS})
-message("Cuda sdk dir: " ${CUDA_SDK_ROOT_DIR})
-message("Cuda sdk include dir: " ${CUDA_SDK_INCLUDE_DIR})
-message("Cuda toolkit: " ${CUDA_TOOLKIT_ROOT_DIR})
-set(IU_IUCORE_LIB_DEPENDENCIES ${IU_IUCORE_LIB_DEPENDENCIES} ${CUDA_LIBRARIES})
-
-# Checking cuda version
-# set defines due to some missing functions in cuda 3.1
-if(CUDA_VERSION_STRING STREQUAL "3.1")
-  # using CUDA 3.1
-  message(STATUS "IU: using CUDA 3.1")
-  add_definitions(-DCUDA_VERSION_31)
-elseif(CUDA_VERSION_STRING STREQUAL "3.2")
-  # using CUDA 3.2
-  message(STATUS "IU: using CUDA 3.2")
-  add_definitions(-DCUDA_VERSION_32)
-elseif(CUDA_VERSION_STRING STREQUAL "4.0")
-  # using CUDA 4.0
-  message(STATUS "IU: using CUDA 4.0")
-  add_definitions(-DCUDA_VERSION_40)
-elseif()
-  message(STATUS "unknown CUDA version. some things might not be tested.")
-endif()
-
-##-----------------------------------------------------------------------------
-# Selection of compute capability via environment variable
-if("$ENV{COMPUTE_CAPABILITY}" MATCHES "1.1")
-  message(STATUS "IU: using SM 11")
-  set(CUDA_NVCC_FLAGS -arch=sm_11)
-elseif("$ENV{COMPUTE_CAPABILITY}" MATCHES "1.2")
-  message(STATUS "IU: using SM 12")
-  set(CUDA_NVCC_FLAGS -arch=sm_12)
-elseif("$ENV{COMPUTE_CAPABILITY}" MATCHES "1.3")
-  message(STATUS "IU: using SM 13")
-  set(CUDA_NVCC_FLAGS -arch=sm_13)
-elseif("$ENV{COMPUTE_CAPABILITY}" MATCHES "2.0")
-  message(STATUS "IU: using SM 20")
-  set(CUDA_NVCC_FLAGS -arch=sm_20)
-elseif("$ENV{COMPUTE_CAPABILITY}" MATCHES "2.1")
-  message(STATUS "IU: using SM 21")
-  set(CUDA_NVCC_FLAGS -arch=sm_21)
-elseif("$ENV{COMPUTE_CAPABILITY}" MATCHES "3.0")
-  message(STATUS "IU: using SM 30")
-  set(CUDA_NVCC_FLAGS -arch=sm_30)
-else()
-  message(STATUS "IU: using SM 30")
-  set(CUDA_NVCC_FLAGS -arch=sm_30)
-endif()
+## Compiler Flags (to be added on demand)
+set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-Wall -std=c++11")
 
 
-##-----------------------------------------------------------------------------
-## CUDA SPARSE: Sparse Matrix operations using CUDA sparse library
-## (currently included in iucore lib)
-find_package(CUDASparse QUIET)
-if(VMLIBRARIES_IU_USE_SPARSE AND CUDASparse_FOUND)
-
-  message("[+] ImageUtilities include SPARSE module")
-
-  set( IU_SPARSE_SOURCES
-    ${CMAKE_CURRENT_SOURCE_DIR}/iusparse/sparsesum.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/iusparse/sparsesum.cu
-    ${CMAKE_CURRENT_SOURCE_DIR}/iusparse.cpp
-    )
-
-  SET( IU_SPARSE_HEADERS
-    ${CMAKE_CURRENT_SOURCE_DIR}/iusparse/sparsesum.cuh
-  )
-
-  set( IU_PUBLIC_HEADERS
-    ${IU_PUBLIC_HEADERS}
-    ${CMAKE_CURRENT_SOURCE_DIR}/iusparse.h
-    )
-
-  SET( IU_PUBLIC_SPARSE_HEADERS
-    ${CMAKE_CURRENT_SOURCE_DIR}/iusparse/sparsematrixdefs.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/iusparse/sparsematrix_cpu.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/iusparse/sparsematrix_gpu.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/iusparse/sparsesum.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/iusparse/sparsemultiplication.h
-  )
-
-  # install specialized headers
-  install(FILES ${IU_PUBLIC_SPARSE_HEADERS}
-    DESTINATION include/iu/iusparse
-    COMPONENT Headers
-    )
-
-else()
-  message("[-] ImageUtilities omitting SPARSE module")
-  set(VMLIBRARIES_IU_USE_SPARSE OFF CACHE PATH "IU: Omit SPARSE module." FORCE)
-  set(CUDA_SPARSE_LIBRARY "")
-  set(IU_SPARSE_SOURCES "")
-  set(IU_SPARSE_HEADERS "")
-endif()
-
-##-----------------------------------------------------------------------------
-## Ipp
-find_package(IPP QUIET)
-if(VMLIBRARIES_IU_USE_IPP AND IPP_INCLUDE_DIR)
-  message("[+] ImageUtilities include IPP module")
-
-  include_directories(${IPP_INCLUDE_DIR})
-
-  set( IU_IPP_INSTALL_HEADERS
-    ${CMAKE_CURRENT_SOURCE_DIR}/iuipp/image_allocator_ipp.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/iuipp/image_ipp.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/iuipp/memorydefs_ipp.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/iuipp/copy_ipp.h
-  )
-
-  set( IU_IPP_HEADERS
-    ${IU_IPP_INSTALL_HEADERS}
-    ${CMAKE_CURRENT_SOURCE_DIR}/iuipp/image_ipp_to_cpu_connector.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/iuipp/image_cpu_to_ipp_connector.h
-  )
-
-  set( IU_PUBLIC_HEADERS
-    ${IU_PUBLIC_HEADERS}
-    ${CMAKE_CURRENT_SOURCE_DIR}/iuippdefs.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/iuipp.h
-    )
-
-  set( IU_IPP_SOURCES
-    ${CMAKE_CURRENT_SOURCE_DIR}/iuipp.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/iuipp/image_ipp_to_cpu_connector.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/iuipp/image_cpu_to_ipp_connector.cpp
-  )
-
-else()
-  message("[-] ImageUtilities omitting Ipp module.")
-  set(VMLIBRARIES_IU_USE_IPP OFF CACHE PATH "IU: Omit IPP module." FORCE)
-
-  # empty libraries
-  set(IPP_LIBRARIES "")
-
-endif()
-
-##-----------------------------------------------------------------------------
-## MATLAB (CONNECTOR) MODULE(S): Matlab connector module(s)
-find_package(Matlab_ICG QUIET)
-
-if(VMLIBRARIES_IU_USE_MATLAB AND MATLAB_FOUND)
-
-  message("[+] ImageUtilities include MATLAB module")
-
-  include_directories(${MATLAB_INCLUDE_DIR})
-
-
-  set( IU_PUBLIC_HEADERS
-    ${IU_PUBLIC_HEADERS}
-    ${CMAKE_CURRENT_SOURCE_DIR}/iumatlabconnector.h
-    )
-
-  set( IU_PUBLIC_MATLAB_HEADERS
-    ${CMAKE_CURRENT_SOURCE_DIR}/iumatlab/matlabconnector.h
-    )
-
-  set( IU_MATLAB_SOURCES
-    ${CMAKE_CURRENT_SOURCE_DIR}/iumatlabconnector.cpp
-    )
-
-
-  # Matlab sparse connector (only if sparse module is included)
-  if(VMLIBRARIES_IU_USE_SPARSE)
-    set( IU_PUBLIC_HEADERS
-      ${IU_PUBLIC_HEADERS}
-      ${CMAKE_CURRENT_SOURCE_DIR}/iumatlabsparseconnector.h
-      )
-    set( IU_PUBLIC_MATLAB_HEADERS
-      ${IU_PUBLIC_MATLAB_HEADERS}
-      ${CMAKE_CURRENT_SOURCE_DIR}/iumatlab/matlabsparseconnector.h
-      )
-
-    set( IU_MATLAB_SOURCES
-      ${IU_MATLAB_SOURCES}
-      ${CMAKE_CURRENT_SOURCE_DIR}/iumatlabsparseconnector.cpp
-      )
-  endif(VMLIBRARIES_IU_USE_SPARSE)
-
-  # install specialized headers
-  install(FILES ${IU_PUBLIC_MATLAB_HEADERS}
-    DESTINATION include/iu/iumatlab
-    COMPONENT Headers
-    )
-
-  set( IU_MATLAB_HEADERS
-    ${IU_MATLAB_HEADERS}
-    ${IU_PUBLIC_MATLAB_HEADERS}
-    )
-
-
-else(VMLIBRARIES_IU_USE_MATLAB AND MATLAB_FOUND)
-  message("[-] ImageUtilities omitting MATLAB module.")
-  set(VMLIBRARIES_IU_USE_MATLAB OFF CACHE PATH "IU: Omit MATLAB module." FORCE)
-
-  # empty libraries
-  set(MATLAB_LIBRARIES "")
-
-endif(VMLIBRARIES_IU_USE_MATLAB AND MATLAB_FOUND)
-
-
-##-----------------------------------------------------------------------------
-## Qt
-find_package(Qt4 COMPONENTS QtCore QtGui QtOpenGL)
-# only include if GUI module is used and qt4 found.
-if(VMLIBRARIES_IU_USE_GUI AND QT4_FOUND)
-
-  message("[+] ImageUtilities include GUI module")
-  include(${QT_USE_FILE})
-
-  ## Qwt
-  find_package(Qwt QUIET)
-  if(QWT_FOUND)
-    message("  [+] Building GUI module with QWT support.")
-    include_directories(${QWT_INCLUDE_DIR})
-    add_definitions(-DUSE_QWT)
-    set( IU_QWT_SOURCES
-      ${CMAKE_CURRENT_SOURCE_DIR}/iugui/plotgapwidget.cpp
-      )
-    set( IU_QWT_MOC_HEADERS
-      ${CMAKE_CURRENT_SOURCE_DIR}/iugui/plotgapwidget.h
-      )
-  else(QWT_FOUND)
-    message("  [-] No QWT, disable QWT support in GUI module")
-  endif(QWT_FOUND)
-
-  ## GLEW
-  find_package( GLEW )
-  if(GLEW_INCLUDE_DIR)
-    include_directories(${GLEW_INCLUDE_DIR})
-  else(GLEW_INCLUDE_DIR)
-    message("[-] ImageUtilities omitting GUI module (due to missing GLEW module")
-    set(VMLIBRARIES_IU_USE_GUI OFF CACHE PATH "IU: GLEW module not found. Needed for GUI module to build." FORCE)
-  endif(GLEW_INCLUDE_DIR)
-
-  ## OpenGL
-  find_package( OpenGL )
-  if(OPENGL_gl_LIBRARY)
-    include_directories(${OPENGL_INCLUDE_DIR})
-  else(OPENGL_gl_LIBRARY)
-    message("[-] ImageUtilities omitting GUI module (due to missing OpenGL module")
-    set(VMLIBRARIES_IU_USE_GUI OFF CACHE PATH "IU: GLEW module not found. Needed for GUI module to build." FORCE)
-  endif(OPENGL_gl_LIBRARY)
-
-
-  set( IU_PUBLIC_HEADERS
-    ${IU_PUBLIC_HEADERS}
-    ${CMAKE_CURRENT_SOURCE_DIR}/iugui.h
-    )
-
-  set( IU_GUI_HEADERS
-    ${CMAKE_CURRENT_SOURCE_DIR}/iugui/qglimagegpuwidget.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/iugui/overlay.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/iugui/imagewindow.h
-    )
-
-  set( IU_GUI_SOURCES
-    #${CMAKE_CURRENT_SOURCE_DIR}/iugui/image_cpu_display.cpp
-    #${CMAKE_CURRENT_SOURCE_DIR}/iugui/qgl_image_gpu_widget.cpp
-    #${CMAKE_CURRENT_SOURCE_DIR}/iugui/qgl_image_gpu_widget.cu
-    ${CMAKE_CURRENT_SOURCE_DIR}/iugui/qglimagegpuwidget.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/iugui/qglimagegpuwidget.cu
-    ${CMAKE_CURRENT_SOURCE_DIR}/iugui/imagewindow.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/iugui/QScienceSpinBox.cpp
-    ${IU_QWT_SOURCES}
-    )
-
-  set( IU_GUI_MOC_HEADERS
-    #${CMAKE_CURRENT_SOURCE_DIR}/iugui/image_cpu_display.h
-    #${CMAKE_CURRENT_SOURCE_DIR}/iugui/image_cpu_display_p.h
-    #${CMAKE_CURRENT_SOURCE_DIR}/iugui/qgl_image_gpu_widget_p.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/iugui/qglimagegpuwidget.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/iugui/imagewindow.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/iugui/QScienceSpinBox.h
-    ${IU_QWT_MOC_HEADERS}
-    )
-
-  SET(IU_GUI_RC_SOURCES
-    ${CMAKE_CURRENT_SOURCE_DIR}/iugui/iu_gui_images.qrc
-    )
-
-  # install specialized headers
-  install(FILES ${IU_GUI_MOC_HEADERS} ${IU_GUI_HEADERS}
-    DESTINATION include/iu/iugui
-    COMPONENT Headers)
-
-  # compile moc headers
-  QT4_WRAP_CPP (IU_GUI_MOC_SOURCES ${IU_GUI_MOC_HEADERS})
-
-  # add resources
-  qt4_add_resources(QTRC_SOURCES ${IU_GUI_RC_SOURCES})
-
-  message(STATUS "QTRC_SOURCES = ${QTRC_SOURCES}")
-
-else()
-  message("[-] ImageUtilities omitting GUI module")
-  set(VMLIBRARIES_IU_USE_GUI OFF CACHE PATH "IU: Omit GUI module." FORCE)
-
-  # empty libraries
-  set(QT_LIBRARIES "")
-  set(OPENGL_LIBRARIES "")
-  set(GLEW_LIBRARIES "")
-
-endif()
+if(WITH_PYTHON)
+    find_package(Boost REQUIRED COMPONENTS python)
+    find_package(PythonLibs 2.7 REQUIRED)
+    find_package(NumPy REQUIRED)
+    FIND_PACKAGE(Eigen3 REQUIRED)
+endif(WITH_PYTHON)
 
 
 ##-----------------------------------------------------------------------------
 ## IO MODULE: OpenCV for Image I/O
-find_package( OpenCV )
+if(ANDROID)
+    set(OpenCV_DIR $ENV{NVPACK_CUDA_ROOT_DIR}/../OpenCV-2.4.8.2-Tegra-sdk/sdk/native/jni)
+endif(ANDROID)
+find_package( OpenCV QUIET COMPONENTS opencv_core opencv_highgui opencv_imgcodecs opencv_videostab)
 # only include if IO module is used and OpenCV found.
-if(VMLIBRARIES_IU_USE_IO AND OpenCV_LIBS)
+if(IU_USE_IO AND OpenCV_LIBS)
 
   message("[+] ImageUtilities include IO module")
   include_directories(${OpenCV_INCLUDE_DIRS})
@@ -429,224 +99,178 @@ if(VMLIBRARIES_IU_USE_IO AND OpenCV_LIBS)
   set( IU_PUBLIC_HEADERS
     ${IU_PUBLIC_HEADERS}
     ${CMAKE_CURRENT_SOURCE_DIR}/iuio.h
+
     )
 
   set( IU_IO_HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/iuio/imageio.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videocapture.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videocapture_private.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videosource.h
+    #${CMAKE_CURRENT_SOURCE_DIR}/iuio/videocapture_private.h
     )
+  set(IU_PUBLIC_IO_HEADERS
+      ${CMAKE_CURRENT_SOURCE_DIR}/iuio/iuvideosource.h
+      ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videosource.h
+      ${CMAKE_CURRENT_SOURCE_DIR}/iuio/opencvsource.h
+   )
 
   set( IU_IO_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/iuio.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/iuio/imageio.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videocapture.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/opencvsource.cpp
     )
+  message("Found OpenCV Version: " ${OpenCV_VERSION_MAJOR} "." ${OpenCV_VERSION_MINOR})
+  # check for OpenCV greaterequal 2.4
+  if(${OpenCV_VERSION_MAJOR} MATCHES "3")
+    message("Enabling fixes for OpenCV >= 3")
+    add_definitions(-DOPENCV_3)
+    find_package( OpenCV QUIET COMPONENTS opencv_videoio opencv_core opencv_highgui)
+  endif(${OpenCV_VERSION_MAJOR} MATCHES "3")
+
+
+  ######################
+  # Flycapture2 for pointgrey cameras
+  ######################
+  if(WITH_FLYCAPTURE2)
+    find_package(FlyCapture2 REQUIRED)
+    if(FLYCAPTURE2_FOUND)
+      message("  [+] build io module with Flycapture2/Pointgrey support")
+      add_definitions(-DIUIO_PGR)
+      include_directories(${FLYCAPTURE2_INCLUDE_DIR})
+
+      set( IU_IO_HEADERS ${IU_IO_HEADERS}
+        ${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrsource.h
+       )
+      set(IU_PUBLIC_IO_HEADERS ${IU_PUBLIC_IO_HEADERS}
+        ${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrsource.h
+        )
+      set( IU_IO_SOURCES ${IU_IO_SOURCES}
+        ${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrsource.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrcameradata.h
+       )
+      set(ADDITIONAL_IUIO_DEPENDENCIES
+         ${FLYCAPTURE2_LIBRARIES}
+        )
+    
+    endif(FLYCAPTURE2_FOUND)
+  else(WITH_FLYCAPTURE2)
+      message("  [-] build io module without Flycapture2/Pointgrey support")
+      set(ADDITIONAL_IUIO_DEPENDENCIES "")
+  endif(WITH_FLYCAPTURE2)
+
+  ######################
+  # OpenEXR
+  ######################
+  if(WITH_OPENEXR)
+    find_package(OpenEXR REQUIRED)
+    if(OPENEXR_FOUND)
+        message("  [+] build io module with OpenEXR support")
+        include_directories(${OPENEXR_INCLUDE_DIRS})
+        #cuda_include_directories(${OPENEXR_INCLUDE_DIRS})
+        message("include dirs: " ${OPENEXR_INCLUDE_DIRS})
+        add_definitions(-DIUIO_EXR)
+
+        find_package(Eigen3 QUIET)
+        if(EIGEN3_FOUND)
+            add_definitions(-DIUIO_EIGEN3)
+        endif(EIGEN3_FOUND)
+
+
+        set( IU_IO_HEADERS ${IU_IO_HEADERS}
+          ${CMAKE_CURRENT_SOURCE_DIR}/iuio/openexrio.h
+         )
+        set(IU_PUBLIC_IO_HEADERS ${IU_PUBLIC_IO_HEADERS}
+          ${CMAKE_CURRENT_SOURCE_DIR}/iuio/openexrio.h
+          )
+        set( IU_IO_SOURCES ${IU_IO_SOURCES}
+          ${CMAKE_CURRENT_SOURCE_DIR}/iuio/openexrio.cpp
+         )
+
+        set(ADDITIONAL_IUIO_DEPENDENCIES ${ADDITIONAL_IUIO_DEPENDENCIES}
+            ${OPENEXR_LIBRARIES}
+          )
+
+    
+    endif(OPENEXR_FOUND)
+  else(WITH_OPENEXR)
+        message("  [-] build io module without OpenEXR support")
+  endif(WITH_OPENEXR)
+
 
 else()
   message("[-] ImageUtilities omitting IO module")
-  set(VMLIBRARIES_IU_USE_IO OFF CACHE PATH "IU: Omit IO module." FORCE)
+  set(IU_USE_IO OFF CACHE PATH "IU: Omit IO module." FORCE)
 
   # empty libraries
   set(OpenCV_LIBS "")
 
 endif()
 
-##-----------------------------------------------------------------------------
-## IOPGM MODULE: Reads various kinds of pgm images. (no external dependencies)
-if(VMLIBRARIES_IU_USE_IOPGM)
 
-  message("[+] ImageUtilities include IOPGM module")
+
+##-----------------------------------------------------------------------------
+## GUI MODULE: Qt5 for ImagepuWidget
+find_package(Qt5Core 5.4)
+find_package(Qt5Widgets 5.4)
+find_package(Qt5OpenGL 5.4)
+find_package(OpenGL)
+if(IU_USE_GUI AND Qt5Widgets_FOUND AND Qt5OpenGL_FOUND)
+
+  message("[+] ImageUtilities include GUI module")
+  set(CMAKE_AUTOMOC ON)
 
   set( IU_PUBLIC_HEADERS
     ${IU_PUBLIC_HEADERS}
-    ${CMAKE_CURRENT_SOURCE_DIR}/iuiopgm.h
-    )
-
-  set( IU_IOPGM_HEADERS
-    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/imageiopgm.h
-    )
-
-  set( IU_IOPGM_SOURCES
-    ${CMAKE_CURRENT_SOURCE_DIR}/iuiopgm.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/imageiopgm.cpp
-    )
-
-else()
-  message("[-] ImageUtilities omitting IOPGM module")
-  set(VMLIBRARIES_IU_USE_IOPGM OFF CACHE PATH "IU: Omit IOPGM module." FORCE)
-
-endif()
-
-
-# ##-----------------------------------------------------------------------------
-# ## CAMERA/Video IO MODULE: OpenCV IO with Qt threading
-# # NOTE: we need qt4 for that (threading, ...)
-# # only include if all dependencies were found
-# if(VMLIBRARIES_IU_USE_VIDEOCAPTURE AND QT4_FOUND AND OpenCV_INCLUDE_DIRS)
-
-#   message("[+] ImageUtilities include video/camera module (OpenCV/Qt needed)")
-#   include(${QT_USE_FILE})
-
-#   set( IU_PUBLIC_HEADERS
-#     ${IU_PUBLIC_HEADERS}
-#     ${CMAKE_CURRENT_SOURCE_DIR}/iuvideocapture.h
-
-#     )
-
-#   set( IU_VIDEOCAPTURE_HEADERS
-#     ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videocapturethread.h
-#     ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videocapture.h
-#     )
-
-#   set( IU_VIDEOCAPTURE_SOURCES
-#     ${CMAKE_CURRENT_SOURCE_DIR}/iuvideocapture.cpp
-#     ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videocapturethread.cpp
-#     ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videocapture.cpp
-#     )
-
-#   set( IU_VIDEOCAPTURE_MOC_HEADERS
-#     ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videocapturethread.h
-# #    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videocapture.h
-#     )
-
-#   # compile moc headers
-#   QT4_WRAP_CPP (IU_VIDEOCAPTURE_MOC_SOURCES ${IU_VIDEOCAPTURE_MOC_HEADERS})
-
-# else()
-#   message("[-] ImageUtilities omitting VIDEOCAPTURE module")
-#   set(VMLIBRARIES_IU_USE_VIDEOCAPTURE OFF CACHE PATH "IU: Omit videocapture module." FORCE)
-
-#   # empty libraries
-#   set(FLYCAPTURE2_LIBRARIES "")
-
-# endif()
-
-##-----------------------------------------------------------------------------
-## IO MODULE: PointGray cameras (flycapture2);
-# NOTE: we need qt4 for that (threading, ...)
-#find_package( FlyCapture2 )
-# only include if PGR specific stuff was foun
-#if(VMLIBRARIES_IU_USE_PGRCAMERA AND QT4_FOUND AND FLYCAPTURE2_FOUND)
-#
-#  message("[+] ImageUtilities include PGRCAMERA module")
-#  include(${QT_USE_FILE})
-#  include_directories(${FLYCAPTURE2_INCLUDE_DIR})
-#  message("FLYCAPTURE_INCLUDE_DIR=${FLYCAPTURE2_INCLUDE_DIR}")
-#
-#  set( IU_PUBLIC_HEADERS
-#    ${IU_PUBLIC_HEADERS}
-#    #${CMAKE_CURRENT_SOURCE_DIR}/iupgrcamera.h
-#    ${CMAKE_CURRENT_SOURCE_DIR}/iuvideosource.h
-#    )
-#
-#  install(FILES #${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrcamera.h
-#	      ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videosource.h
-#	      ${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrsource.h
-#	      ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videofilesource.h
-#    DESTINATION include/iu/iuio
-#    COMPONENT Headers)
-#
-#  set( IU_PGRCAMERA_HEADERS
-#    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrcameradata.h
-#    #${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrcameraimagegrabber.h
-#    #${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrcamerathreaddata.h
-#    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videosource.h
-#    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrsource.h
-#    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videofilesource.h
-#    )
-#
-#  set( IU_PGRCAMERA_SOURCES
-#    #${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrcamera.cpp
-#    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrsource.cpp
-#    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videofilesource.cpp
-#    #${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrcameraimageconsumer.cpp
-#    )
-#
-#  set( IU_PGRCAMERA_MOC_HEADERS
-#    #${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrcamera.h
-#    #${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrcameraimageconsumer.h
-#    #${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrcameraimagegrabber.h
-#    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videosource.h
-#    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrsource.h
-#    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videofilesource.h
-#    )
-#
-#  # compile moc headers
-#  QT4_WRAP_CPP (IU_PGRCAMERA_MOC_SOURCES ${IU_PGRCAMERA_MOC_HEADERS})
-#
-#else()
-#  message("[-] ImageUtilities omitting PGRCAMERA module")
-#  set(VMLIBRARIES_IU_USE_PGRCAMERA OFF CACHE PATH "IU: Omit PGRCAMERA module." FORCE)
-#
-#  # empty libraries
-#  set(FLYCAPTURE2_LIBRARIES "")
-#
-#endif()
+    ${CMAKE_CURRENT_SOURCE_DIR}/iugui.h
+   )
+  set(IU_PUBLIC_GUI_HEADERS
+      ${CMAKE_CURRENT_SOURCE_DIR}/iugui/qt5imagegpuwidget.h
+      ${CMAKE_CURRENT_SOURCE_DIR}/iugui/qt5disparitymapgpuwidget.h
+   )
+  set( IU_GUI_HEADERS
+    ${CMAKE_CURRENT_SOURCE_DIR}/iugui.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/iugui/qt5imagegpuwidget.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/iugui/qt5disparitymapgpuwidget.h
+  )
+  set( IU_GUI_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/iugui/qt5imagegpuwidget.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/iugui/qt5disparitymapgpuwidget.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/iugui/qt5imagegpuwidget.cu
+    ${CMAKE_CURRENT_SOURCE_DIR}/iugui/qt5disparitymapgpuwidget.cu
+  )
 
 
-# include Videosource module
-# needs Flycapture2 lib for pointgrey and Qt for signals/slots
-find_package(FlyCapture2)
-if(VMLIBRARIES_IU_USE_VIDEOSOURCE AND QT4_FOUND AND FLYCAPTURE2_FOUND)
-  message("[+] ImageUtilities include Videosource module")
-  include(${QT_USE_FILE})
-  include_directories(${FLYCAPTURE2_INCLUDE_DIR})
+else(IU_USE_GUI AND Qt5Widgets_FOUND AND Qt5OpenGL_FOUND)
+  message("[-] ImageUtilities omitting GUI module")
+  set(IU_USE_GUI OFF CACHE PATH "IU: Omit GUI module." FORCE)
+
+endif(IU_USE_GUI AND Qt5Widgets_FOUND AND Qt5OpenGL_FOUND)
+
+if(IU_USE_MATH)
+  message("[+] ImageUtilities include Math module")
 
   set( IU_PUBLIC_HEADERS
     ${IU_PUBLIC_HEADERS}
-    ${CMAKE_CURRENT_SOURCE_DIR}/iuvideosource.h
-    )
+    ${CMAKE_CURRENT_SOURCE_DIR}/iumath.h
+   )
+  set(IU_PUBLIC_MATH_HEADERS
 
-  install(FILES
-        ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videosource.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrsource.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videofilesource.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/iuio/opencvsource.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/iuio/1394source.h
-    DESTINATION include/iu/iuio
-    COMPONENT Headers)
+   )
+  set( IU_MATH_HEADERS
+    ${CMAKE_CURRENT_SOURCE_DIR}/iumath/thrust_kernels.cuh
+    ${CMAKE_CURRENT_SOURCE_DIR}/iumath/arithmetics.cuh
+    ${CMAKE_CURRENT_SOURCE_DIR}/iumath/statistics.cuh
+    ${CMAKE_CURRENT_SOURCE_DIR}/iumath/complex.cuh
+  )
+  set( IU_MATH_SOURCES
 
-  set( IU_VIDEOSOURCE_HEADERS
-    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videosource.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrsource.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrcameradata.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videofilesource.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/opencvsource.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/1394source.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/1394camera.h
-    )
-
-  set( IU_VIDEOSOURCE_SOURCES
-    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrsource.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videofilesource.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/opencvsource.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/1394source.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/1394camera.cpp
-    )
-
-  set( IU_VIDEOSOURCE_MOC_HEADERS
-    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videosource.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/pgrsource.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videofilesource.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/opencvsource.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/1394source.h
-    )
-
-  # compile moc headers
-  QT4_WRAP_CPP (IU_VIDEOSOURCE_MOC_SOURCES ${IU_VIDEOSOURCE_MOC_HEADERS})
-
-else()
-  message("[-] ImageUtilities omitting Videosource module")
-  set(VMLIBRARIES_IU_USE_VIDEOSOURCE OFF CACHE PATH "IU: Omit Videosource module." FORCE)
-
-  # empty libraries
-  set(FLYCAPTURE2_LIBRARIES "")
-
-endif()
+    ${CMAKE_CURRENT_SOURCE_DIR}/iumath.cu
+  )
 
 
-
+else(IU_USE_MATH)
+  message("[-] ImageUtilities omitting Math module")
+  set(IU_USE_MATH OFF CACHE PATH "IU: Omit Math module." FORCE)
+endif(IU_USE_MATH)
 
 ##-----------------------------------------------------------------------------
 ## local settings, headers and sources
@@ -654,6 +278,7 @@ include_directories(
   ${CMAKE_SOURCE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}/..
+  ${CMAKE_CURRENT_LIST_DIR}
   )
 cuda_include_directories(
   ${CMAKE_SOURCE_DIR}
@@ -668,13 +293,16 @@ SET( IU_PUBLIC_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/iudefs.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucutil.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/iucontainers.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/iumath.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/iufilter.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/iutransform.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/iuinteraction.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iuhelpermath.h
   )
+if(WITH_PYTHON)
+  SET( IU_PUBLIC_HEADERS
+      ${IU_PUBLIC_HEADERS}
+      ${CMAKE_CURRENT_SOURCE_DIR}/iupython.h
+  )
+endif(WITH_PYTHON)
 
+# 
 SET( IU_PUBLIC_CORE_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/globaldefs.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/coredefs.h
@@ -682,6 +310,8 @@ SET( IU_PUBLIC_CORE_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/linearmemory.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/linearhostmemory.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/lineardevicememory.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/tensor_cpu.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/tensor_gpu.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/image.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/image_allocator_cpu.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/image_cpu.h
@@ -692,136 +322,113 @@ SET( IU_PUBLIC_CORE_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/volume_cpu.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/volume_allocator_gpu.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/volume_gpu.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/imagepyramid.h
-  )
-
-# all the additional headers follow here below (we split that two for better overview and the seperated libs)
-SET( IU_CORE_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/copy.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/setvalue.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/convert.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/clamp.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/iutextures.cuh
+#   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/imagepyramid.h
   )
 
 SET( IU_PUBLIC_COMMON_HEADERS
-  ${CMAKE_CURRENT_SOURCE_DIR}/common/vectormath_kernels.cuh
   ${CMAKE_CURRENT_SOURCE_DIR}/common/derivative_kernels.cuh
-  ${CMAKE_CURRENT_SOURCE_DIR}/common/bsplinetexture_kernels.cuh
   ${CMAKE_CURRENT_SOURCE_DIR}/common/bind_textures.cuh
+)
+
+# 
+# # all the additional headers follow here below (we split that two for better overview and the seperated libs)
+SET( IU_CORE_HEADERS
+#  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/setvalue.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/convert.h
   )
-
-
-SET( IU_MATH_HEADERS
-  ${CMAKE_CURRENT_SOURCE_DIR}/iumath/arithmetic.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/iumath/arithmetic.cuh
-  ${CMAKE_CURRENT_SOURCE_DIR}/iumath/statistics.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/iumath/statistics.cuh
-  )
-
-SET( IU_FILTER_HEADERS
-  ${CMAKE_CURRENT_SOURCE_DIR}/iufilter/filter.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/iufilter/filter.cuh
-  )
-
-SET( IU_TRANSFORM_HEADERS
-  ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/reduce.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/prolongate.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/remap.h
-  )
-
-SET( IU_INTERACTION_HEADERS
-  ${CMAKE_CURRENT_SOURCE_DIR}/iuinteraction/draw.h
-  )
-
 
 SET( IU_HEADERS
   ${IU_PUBLIC_HEADERS}
   ${IU_PUBLIC_CORE_HEADERS}
-  ${IU_PUBLIC_COMMON_HEADERS}
   ${IU_CORE_HEADERS}
-  ${IU_MATH_HEADERS}
-  ${IU_FILTER_HEADERS}
-  ${IU_TRANSFORM_HEADERS}
-  ${IU_INTERACTION_HEADERS}
-  ${IU_SPARSE_HEADERS}
-  ${IU_PUBLIC_SPARSE_HEADERS}
   )
-
+# 
 SET( IU_SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/imagepyramid.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/setvalue.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/setvalue.cu
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/convert.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/convert.cu
-  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/clamp.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/clamp.cu
-  ${CMAKE_CURRENT_SOURCE_DIR}/iumath.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/iumath/arithmetic.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/iumath/arithmetic.cu
-  ${CMAKE_CURRENT_SOURCE_DIR}/iumath/statistics.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/iumath/statistics.cu
-  ${CMAKE_CURRENT_SOURCE_DIR}/iufilter.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/iufilter/filter.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/iufilter/filter.cu
-  ${CMAKE_CURRENT_SOURCE_DIR}/iufilter/filterbspline_kernels.cu
-  ${CMAKE_CURRENT_SOURCE_DIR}/iutransform.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/transform.cu
-  ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/reduce.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/reduce.cu
-  ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/prolongate.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/prolongate.cu
-  ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/remap.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/remap.cu
-  ${CMAKE_CURRENT_SOURCE_DIR}/iuinteraction.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/iuinteraction/draw.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/iuinteraction/draw.cu
-  ${IU_SPARSE_SOURCES}
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/copy.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/copy.cu
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/filter.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/filter.cu
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/filterbspline_kernels.cu
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/transform.cu
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/reduce.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/reduce.cu
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/prolongate.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/prolongate.cu
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/remap.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/remap.cu
   )
+# 
+# # denote kernel files as header only to not confuse the compiler
+# set_source_files_properties(
+#   # ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/transform.cu
+#   # ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/remap.cu
+#   # ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/prolongate.cu
+#   # ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/reduce.cu
+#   ${CMAKE_CURRENT_SOURCE_DIR}/iufilter/filterbspline_kernels.cu
+#   PROPERTIES HEADER_FILE_ONLY yes
+#   )
+# 
+# ##-----------------------------------------------------------------------------
+# set( IU_ALL_FILES
+#   ${IU_HEADERS}
+#   ${IU_SOURCES}
+#   ${IU_SPARSE_SOURCES}
+#   ${IU_SPARSE_HEADERS}
+#   ${IU_MATLAB_HEADERS}
+#   ${IU_MATLAB_SOURCES}
+#   #${IU_GUI_MOC_HEADERS}
+#   ${IU_GUI_HEADERS}
+#   ${IU_GUI_SOURCES}
+#   ${IU_GUI_MOC_SOURCES}
+#   ${IU_IO_HEADERS}
+#   ${IU_IO_SOURCES}
+# )
 
 # denote kernel files as header only to not confuse the compiler
 set_source_files_properties(
-  # ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/transform.cu
-  # ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/remap.cu
-  # ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/prolongate.cu
-  # ${CMAKE_CURRENT_SOURCE_DIR}/iutransform/reduce.cu
-  ${CMAKE_CURRENT_SOURCE_DIR}/iufilter/filterbspline_kernels.cu
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/transform.cu
   PROPERTIES HEADER_FILE_ONLY yes
   )
 
+if(IU_BUILD_STATIC)
+  message("[+] building static library")
+else(IU_BUILD_STATIC)
+  message("[-] do not build static library")
+endif(IU_BUILD_STATIC)
+
+set(IU_LIBS "") # variable where all libs that are built are saved
+set(IU_LIBS_STATIC "") # variable where all libs that are built are saved
+
+set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} "-std=c++11")
+message("Compiler Flags NVCC: " ${CUDA_NVCC_FLAGS})
 ##-----------------------------------------------------------------------------
-set( IU_ALL_FILES
-  ${IU_HEADERS}
-  ${IU_SOURCES}
-  ${IU_IPP_HEADERS}
-  ${IU_SPARSE_SOURCES}
-  ${IU_SPARSE_HEADERS}
-  ${IU_MATLAB_HEADERS}
-  ${IU_MATLAB_SOURCES}
-  #${IU_GUI_MOC_HEADERS}
-  ${IU_GUI_HEADERS}
-  ${IU_GUI_SOURCES}
-  ${IU_GUI_MOC_SOURCES}
-  ${IU_IO_HEADERS}
-  ${IU_IO_SOURCES}
-  # ${IU_VIDEOCAPTURE_HEADERS}
-  # ${IU_VIDEOCAPTURE_SOURCES}
-  # ${IU_VIDEOCAPTURE_MOC_SOURCES}
-  #${IU_PGRCAMERA_HEADERS}
-  #${IU_PGRCAMERA_SOURCES}
-  #${IU_PGRCAMERA_MOC_SOURCES}
-  )
+## documentation
+SET(DOXYGEN_OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/../doc/html/index.html)
+SET(DOXYGEN_EXECUTABLE doxygen)
+SET(DOXYGEN_INPUT ${CMAKE_CURRENT_SOURCE_DIR}/../doc/doxconfig)
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/../doc/doxconfig.in
+                       ${DOXYGEN_INPUT})
 
-# IF(NOT WIN32)
-#   SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fPIC"  )
-#   SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_DEBUG} -fPIC"  )
-#   SET(CMAKE_C_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fPIC"  )
-#   SET(CMAKE_C_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_DEBUG} -fPIC"  )
-# endif()
+ADD_CUSTOM_TARGET( apidoc
+ COMMAND ${CMAKE_COMMAND} --build . --target install
+ COMMAND ${CMAKE_COMMAND} -E echo_append "Building API Documentation..."
+ COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_INPUT}
+ COMMAND ${CMAKE_COMMAND} -E echo "Done."
+ WORKING_DIRECTORY ${CMAKE_CACHEFILE_DIR}
+ DEPENDS ${DOXYGEN_INPUT}
+ )
 
-set( IU_LIBS "") # variable where all libs that are built are saved
 
+##-build ndarray---------------------------------------------------------------
+add_subdirectory(ndarray)
+message("NDARRAY_LIB" = ${NDARRAY_LIB})
+if(NOT NDARRAY_LIB)
+  set(IU_USE_NDARRAY OFF CACHE PATH "IU: Omit NDArray module." FORCE)
+endif()
 ##-----------------------------------------------------------------------------
 ## build core library
 set(IU_CORE_LIB iucore)
@@ -832,148 +439,94 @@ set_target_properties(${IU_CORE_LIB} PROPERTIES
   SOVERSION ${IMAGEUTILITIES_SOVERSION}
   PUBLIC_HEADER "${IU_PUBLIC_HEADERS}"
   )
-target_link_libraries( ${IU_CORE_LIB} ${CUDA_LIBRARIES} ${CUDA_SPARSE_LIBRARY})
+
+target_link_libraries( ${IU_CORE_LIB} ${CUDA_LIBRARIES} ${NDARRAY_LIB})
 set(IU_LIBS ${IU_LIBS} ${IU_CORE_LIB})
 
-##-----------------------------------------------------------------------------
-## build ipp-based part of library
-set(IU_IPP_LIB iuipp)
-if(VMLIBRARIES_IU_USE_IPP)
-  cuda_add_library( ${IU_IPP_LIB} SHARED ${IU_IPP_HEADERS} ${IU_IPP_SOURCES})
-  set_target_properties(${IU_IPP_LIB} PROPERTIES
-    DEFINE_SYMBOL IUIPP_DLL_EXPORTS
-    VERSION ${IMAGEUTILITIES_VERSION}
-    SOVERSION ${IMAGEUTILITIES_SOVERSION}
-    )
-  target_link_libraries( ${IU_IPP_LIB} ${IPP_LIBRARIES} )
-  set(IU_LIBS ${IU_LIBS} ${IU_IPP_LIB})
+if(IU_BUILD_STATIC)
+  cuda_add_library( ${IU_CORE_LIB}_static STATIC ${IU_HEADERS} ${IU_SOURCES})
+  target_link_libraries( ${IU_CORE_LIB}_static ${CUDA_LIBRARIES} ${NDARRAY_LIB})
+  set(IU_LIBS_STATIC ${IU_LIBS_STATIC} ${IU_CORE_LIB}_static)
+endif(IU_BUILD_STATIC)
 
-endif(VMLIBRARIES_IU_USE_IPP)
 
+
+message("additional iuio libs: ${ADDITIONAL_IUIO_DEPENDENCIES}")
 ##-----------------------------------------------------------------------------
 ## build io library
 set(IU_IO_LIB iuio)
-if(VMLIBRARIES_IU_USE_IO)
+if(IU_USE_IO)
   cuda_add_library( ${IU_IO_LIB} SHARED ${IU_IO_HEADERS} ${IU_IO_SOURCES} )
   set_target_properties(${IU_IO_LIB} PROPERTIES
     DEFINE_SYMBOL IUIO_DLL_EXPORTS
     VERSION ${IMAGEUTILITIES_VERSION}
     SOVERSION ${IMAGEUTILITIES_SOVERSION}
     )
-  target_link_libraries( ${IU_IO_LIB}
-    ${CUDA_LIBRARIES} ${OpenCV_LIBS}
+  target_link_libraries( ${IU_IO_LIB} iucore
+    ${CUDA_LIBRARIES} ${OpenCV_LIBS} ${ADDITIONAL_IUIO_DEPENDENCIES}
     )
   set(IU_LIBS ${IU_LIBS} ${IU_IO_LIB})
-endif(VMLIBRARIES_IU_USE_IO)
+  
 
-##-----------------------------------------------------------------------------
-## build iopgm library
-set(IU_IOPGM_LIB iuiopgm)
-if(VMLIBRARIES_IU_USE_IOPGM)
-  cuda_add_library( ${IU_IOPGM_LIB} SHARED ${IU_IOPGM_HEADERS} ${IU_IOPGM_SOURCES} )
-  set_target_properties(${IU_IOPGM_LIB} PROPERTIES
-    DEFINE_SYMBOL IUPGM_DLL_EXPORTS
-    VERSION ${IMAGEUTILITIES_VERSION}
-    SOVERSION ${IMAGEUTILITIES_SOVERSION}
+  if(IU_BUILD_STATIC)
+    cuda_add_library( ${IU_IO_LIB}_static STATIC ${IU_IO_HEADERS} ${IU_IO_SOURCES} )
+    target_link_libraries( ${IU_IO_LIB}_static
+    ${CUDA_LIBRARIES} ${OpenCV_LIBS} ${ADDITIONAL_IUIO_DEPENDENCIES}
     )
-  target_link_libraries( ${IU_IOPGM_LIB}
-    ${CUDA_LIBRARIES}
-    ${IU_CORE_LIB}
-    )
-  set(IU_LIBS ${IU_LIBS} ${IU_IOPGM_LIB})
-endif(VMLIBRARIES_IU_USE_IOPGM)
+    set(IU_LIBS_STATIC ${IU_LIBS_STATIC} ${IU_IO_LIB}_static)
+  endif(IU_BUILD_STATIC)
+endif(IU_USE_IO)
+
 
 ##-----------------------------------------------------------------------------
 ## build gui library
 set(IU_GUI_LIB iugui)
-if(VMLIBRARIES_IU_USE_GUI)
-  cuda_add_library( ${IU_GUI_LIB} SHARED ${IU_GUI_HEADERS} ${IU_GUI_SOURCES} ${IU_GUI_MOC_SOURCES} ${QTRC_SOURCES})
+if(IU_USE_GUI)
+  cuda_add_library( ${IU_GUI_LIB} SHARED ${IU_GUI_HEADERS} ${IU_GUI_SOURCES})
   set_target_properties(${IU_GUI_LIB} PROPERTIES
     DEFINE_SYMBOL IUGUI_DLL_EXPORTS
     VERSION ${IMAGEUTILITIES_VERSION}
     SOVERSION ${IMAGEUTILITIES_SOVERSION}
     )
   target_link_libraries( ${IU_GUI_LIB}
-    ${IU_CORE_LIB} ${IU_IO_LIB} ${CUDA_LIBRARIES}
-    ${QT_LIBRARIES} ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES} ${QWT_LIBRARIES}
+    Qt5::Widgets Qt5::OpenGL ${CUDA_LIBRARIES} ${OPENGL_LIBRARIES}
     )
   set(IU_LIBS ${IU_LIBS} ${IU_GUI_LIB})
+  
 
-endif(VMLIBRARIES_IU_USE_GUI)
+  if(IU_BUILD_STATIC)
+    cuda_add_library( ${IU_GUI_LIB}_static STATIC ${IU_GUI_HEADERS} ${IU_GUI_SOURCES})
+    target_link_libraries( ${IU_GUI_LIB}_static
+    Qt5::Widgets Qt5::OpenGL ${CUDA_LIBRARIES} ${OPENGL_LIBRARIES}
+    )
+    set(IU_LIBS_STATIC ${IU_LIBS_STATIC} ${IU_GUI_LIB}_static)
+  endif(IU_BUILD_STATIC)
+endif(IU_USE_GUI)
 
 ##-----------------------------------------------------------------------------
-## build matlab-based part of library
-set(IU_MATLAB_LIB iumatlab)
-if(VMLIBRARIES_IU_USE_MATLAB)
-  cuda_add_library( ${IU_MATLAB_LIB} SHARED ${IU_MATLAB_HEADERS} ${IU_MATLAB_SOURCES})
-  set_target_properties(${IU_MATLAB_LIB} PROPERTIES
-    DEFINE_SYMBOL IUMATLAB_DLL_EXPORTS
+## build math library
+set(IU_MATH_LIB iumath)
+if(IU_USE_MATH)
+  cuda_add_library( ${IU_MATH_LIB} SHARED ${IU_MATH_HEADERS} ${IU_MATH_SOURCES})
+  set_target_properties(${IU_MATH_LIB} PROPERTIES
+    DEFINE_SYMBOL IUMATH_DLL_EXPORTS
     VERSION ${IMAGEUTILITIES_VERSION}
     SOVERSION ${IMAGEUTILITIES_SOVERSION}
     )
-  target_link_libraries( ${IU_MATLAB_LIB} ${MATLAB_LIBRARIES} ${CUDA_SPARSE_LIBRARY})
-  set(IU_LIBS ${IU_LIBS} ${IU_MATLAB_LIB})
-
-endif(VMLIBRARIES_IU_USE_MATLAB)
-
-
-
-# ##-----------------------------------------------------------------------------
-# ## build VIDEOCAPTURE library
-# set(IU_VIDEOCAPTURE_LIB iuvideocapture)
-# if(VMLIBRARIES_IU_USE_VIDEOCAPTURE)
-#   cuda_add_library( ${IU_VIDEOCAPTURE_LIB} SHARED ${IU_VIDEOCAPTURE_HEADERS} ${IU_VIDEOCAPTURE_SOURCES} ${IU_VIDEOCAPTURE_MOC_SOURCES})
-#   set_target_properties(${IU_VIDEOCAPTURE_LIB} PROPERTIES
-#     DEFINE_SYMBOL IU_DLL_EXPORTS
-#     VERSION ${IMAGEUTILITIES_VERSION}
-#     SOVERSION ${IMAGEUTILITIES_SOVERSION}
-#     )
-#   target_link_libraries( ${IU_VIDEOCAPTURE_LIB}
-#     ${CUDA_LIBRARIES}
-#     ${QT_LIBRARIES}  ${OpenCV_LIBS}
-#     )
-#   set(IU_LIBS ${IU_LIBS} ${IU_VIDEOCAPTURE_LIB})
-# endif(VMLIBRARIES_IU_USE_VIDEOCAPTURE)
-
-
-##-----------------------------------------------------------------------------
-## build pgrcamera library
-set(IU_PGRCAMERA_LIB iupgrcamera)
-if(VMLIBRARIES_IU_USE_PGRCAMERA)
-  cuda_add_library( ${IU_PGRCAMERA_LIB} SHARED ${IU_PGRCAMERA_HEADERS} ${IU_PGRCAMERA_SOURCES} ${IU_PGRCAMERA_MOC_SOURCES})
-  set_target_properties(${IU_PGRCAMERA_LIB} PROPERTIES
-    DEFINE_SYMBOL IU_DLL_EXPORTS
-    VERSION ${IMAGEUTILITIES_VERSION}
-    SOVERSION ${IMAGEUTILITIES_SOVERSION}
-    )
-  target_link_libraries( ${IU_PGRCAMERA_LIB}
+  target_link_libraries( ${IU_MATH_LIB}
     ${CUDA_LIBRARIES}
-    ${QT_LIBRARIES}
-    ${FLYCAPTURE2_LIBRARIES}
     )
-  set(IU_LIBS ${IU_LIBS} ${IU_PGRCAMERA_LIB})
-
-endif(VMLIBRARIES_IU_USE_PGRCAMERA)
+  set(IU_LIBS ${IU_LIBS} ${IU_MATH_LIB})
 
 
-##-----------------------------------------------------------------------------
-## build videosource library
-set(IU_VIDEOSOURCE_LIB iuvideosource)
-if(VMLIBRARIES_IU_USE_VIDEOSOURCE)
-  cuda_add_library( ${IU_VIDEOSOURCE_LIB} SHARED ${IU_VIDEOSOURCE_HEADERS} ${IU_VIDEOSOURCE_SOURCES} ${IU_VIDEOSOURCE_MOC_SOURCES})
-  set_target_properties(${IU_VIDEOSOURCE_LIB} PROPERTIES
-    DEFINE_SYMBOL IU_DLL_EXPORTS
-    VERSION ${IMAGEUTILITIES_VERSION}
-    SOVERSION ${IMAGEUTILITIES_SOVERSION}
+  if(IU_BUILD_STATIC)
+    cuda_add_library( ${IU_MATH_LIB}_static STATIC ${IU_MATH_HEADERS} ${IU_MATH_SOURCES})
+    target_link_libraries( ${IU_MATH_LIB}_static
+     ${CUDA_LIBRARIES}
     )
-  target_link_libraries( ${IU_VIDEOSOURCE_LIB}
-    ${CUDA_LIBRARIES}
-    ${QT_LIBRARIES}
-    ${FLYCAPTURE2_LIBRARIES}
-    )
-  set(IU_LIBS ${IU_LIBS} ${IU_VIDEOSOURCE_LIB})
-
-endif(VMLIBRARIES_IU_USE_VIDEOSOURCE)
+    set(IU_LIBS_STATIC ${IU_LIBS_STATIC} ${IU_MATH_LIB}_static)
+  endif(IU_BUILD_STATIC)
+endif(IU_USE_MATH)
 
 ##-----------------------------------------------------------------------------
 ## Install target
@@ -982,43 +535,62 @@ endif(VMLIBRARIES_IU_USE_VIDEOSOURCE)
 ## *) local: for developement (e.g. svn checkout -- currently the default)
 ## *) global: for usage only (care about mixing up the two -> the global one will be preffered!)
 
-OPTION(VMLIBRARIES_IU_INSTALL_LOCAL "Installation of the ImageUtilities binaries in the local vmlibraries tree." ON)
+OPTION(IU_INSTALL_LOCAL "Installation of the ImageUtilities binaries in the local imageutilities tree." ON)
 
-if(VMLIBRARIES_IU_INSTALL_LOCAL )
+
+
+if(IU_INSTALL_LOCAL )
   if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-    set(CMAKE_INSTALL_PREFIX ${FL_VMLIBRARIES_ROOT} CACHE PATH "ImageUtilities install prefix" FORCE)
+    set(CMAKE_INSTALL_PREFIX $ENV{IMAGEUTILITIES_ROOT} CACHE PATH "ImageUtilities install prefix" FORCE)
   endif(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-endif(VMLIBRARIES_IU_INSTALL_LOCAL)
+endif(IU_INSTALL_LOCAL)
 
-if(NOT VMLIBRARIES_IU_INSTALL_LOCAL OR NOT CMAKE_INSTALL_PREFIX)
+if(NOT IU_INSTALL_LOCAL OR NOT CMAKE_INSTALL_PREFIX)
   if(NOT UNIX)
     set(CMAKE_INSTALL_PREFIX $ENV{ProgramFiles}/VMLibraries CACHE PATH "ImageUtilities install prefix" FORCE)
   else(NOT UNIX)
     set(CMAKE_INSTALL_PREFIX /usr/local CACHE PATH "ImageUtilities install prefix" FORCE)
   endif(NOT UNIX)
-endif(NOT VMLIBRARIES_IU_INSTALL_LOCAL OR NOT CMAKE_INSTALL_PREFIX)
+endif(NOT IU_INSTALL_LOCAL OR NOT CMAKE_INSTALL_PREFIX)
 
 # set the cmake-files that should be installed with the package
 set( IU_CMAKE_FILES
-  ${CMAKE_CURRENT_SOURCE_DIR}/../cmake/FindCUDASDK.cmake
-  ${CMAKE_CURRENT_SOURCE_DIR}/../cmake/FindCUDASparse.cmake
-  ${CMAKE_CURRENT_SOURCE_DIR}/../cmake/FindIPP.cmake
-  ${CMAKE_CURRENT_SOURCE_DIR}/../cmake/FindMatlab_ICG.cmake
-  ${CMAKE_CURRENT_SOURCE_DIR}/../cmake/FindGLEW.cmake
-  ${CMAKE_CURRENT_SOURCE_DIR}/../cmake/FindQwt.cmake
-  ${CMAKE_CURRENT_SOURCE_DIR}/../cmake/FindImageUtilities.cmake
-  ${CMAKE_CURRENT_SOURCE_DIR}/../cmake/UseImageUtilities.cmake
   ${CMAKE_CURRENT_SOURCE_DIR}/../cmake/FindFlyCapture2.cmake
   )
+if(ANDROID)
+set( IU_CMAKE_FILES
+  ${IU_CMAKE_FILES}
+  )
+endif(ANDROID)
+
+# set default install path
+#set(CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_SOURCE_DIR}/.. CACHE PATH "ImageUtilities install prefix" FORCE)
+
+message("install: ${CMAKE_INSTALL_PREFIX}")
 
 # install the libraries
-install( TARGETS ${IU_LIBS}
+if(ANDROID)
+install( TARGETS ${IU_LIBS} ${IU_LIBS_STATIC}
+  RUNTIME         DESTINATION   binARM
+  ARCHIVE         DESTINATION   libARM
+  LIBRARY         DESTINATION   libARM
+  PUBLIC_HEADER   DESTINATION   include/iu
+  )
+else(ANDROID)
+install( TARGETS ${IU_LIBS} ${IU_LIBS_STATIC}
   RUNTIME         DESTINATION   bin
   ARCHIVE         DESTINATION   lib
   LIBRARY         DESTINATION   lib
   PUBLIC_HEADER   DESTINATION   include/iu
   )
+endif(ANDROID)
 # install header files
+# set(IMAGE_HELPER ${CMAKE_CURRENT_SOURCE_DIR}/helper_math.h)
+# install(FILES ${IMAGE_HELPER}
+# 	DESTINATION include
+# 	COMPONENT Headers
+# 	)
+
 install(FILES ${IU_PUBLIC_CORE_HEADERS}
   DESTINATION include/iu/iucore
   COMPONENT Headers
@@ -1027,47 +599,30 @@ install(FILES ${IU_PUBLIC_COMMON_HEADERS}
   DESTINATION include/iu/common
   COMPONENT Headers
   )
-install(FILES ${IU_IPP_INSTALL_HEADERS}
-  DESTINATION include/iu/iuipp
-  COMPONENT Headers
-  )
-install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videocapture.h
+install(FILES ${IU_PUBLIC_IO_HEADERS}
   DESTINATION include/iu/iuio
   COMPONENT Headers
-)
+  )
+install(FILES ${IU_PUBLIC_GUI_HEADERS}
+  DESTINATION include/iu/iugui
+  COMPONENT Headers
+  )
+install(FILES ${IU_PUBLIC_MATH_HEADERS}
+  DESTINATION include/iu/iumath
+  COMPONENT Headers
+  )
+install(FILES ${IU_PUBLIC_HEADERS}
+  DESTINATION include/iu
+  COMPONENT Headers
+  )
+
 install(FILES ${IU_CMAKE_FILES}
   DESTINATION cmake
   )
 
+if(ANDROID)
+  message("Compiler Flags NVCC: " ${nvcc_flags})
+  message("Compiler Flags GCC:  " ${CMAKE_C_FLAGS})
 
-##-----------------------------------------------------------------------------
-## CPACK configuration
-#INCLUDE(InstallRequiredSystemLibraries)
+endif(ANDROID)
 
-SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "ImageUtilities - Connecting the world of CPU and GPU.")
-SET(CPACK_PACKAGE_VENDOR "Manuel Werlberger <werlberger@icg.tugraz.at>")
-SET(CPACK_PACKAGE_CONTACT "Manuel Werlberger <werlberger@icg.tugraz.at>")
-SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "Manuel Werlberger <werlberger@icg.tugraz.at>")
-# SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/ReadMe.txt")
-# SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/Copyright.txt")
-SET(CPACK_PACKAGE_VERSION_MAJOR "${IMAGEUTILITIES_VERSION_MAJOR}")
-SET(CPACK_PACKAGE_VERSION_MINOR "${IMAGEUTILITIES_VERSION_MINOR}")
-SET(CPACK_PACKAGE_VERSION_PATCH "${IMAGEUTILITIES_VERSION_PATH}")
-SET(CPACK_PACKAGE_INSTALL_DIRECTORY "ImageUtilities ${IMAGEUTILITIES_VERSION_MAJOR}.${IMAGEUTILITIES_VERSION_MINOR}")
-
-# IF(WIN32 AND NOT UNIX)
-#   # There is a bug in NSI that does not handle full unix paths properly. Make
-#   # sure there is at least one set of four (4) backlasshes.
-#   SET(CPACK_PACKAGE_ICON "${CMake_SOURCE_DIR}/Utilities/Release\\\\InstallIcon.bmp")
-#   SET(CPACK_NSIS_INSTALLED_ICON_NAME "bin\\\\MyExecutable.exe")
-#   SET(CPACK_NSIS_DISPLAY_NAME "${CPACK_PACKAGE_INSTALL_DIRECTORY} My Famous Project")
-#   SET(CPACK_NSIS_HELP_LINK "http:\\\\\\\\www.my-project-home-page.org")
-#   SET(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\www.my-personal-home-page.com")
-#   SET(CPACK_NSIS_CONTACT "me@my-personal-home-page.com")
-#   SET(CPACK_NSIS_MODIFY_PATH ON)
-# ELSE(WIN32 AND NOT UNIX)
-#   SET(CPACK_STRIP_FILES "bin/MyExecutable")
-#   SET(CPACK_SOURCE_STRIP_FILES "")
-# ENDIF(WIN32 AND NOT UNIX)
-# SET(CPACK_PACKAGE_EXECUTABLES "MyExecutable" "My Executable")
-INCLUDE(CPack)

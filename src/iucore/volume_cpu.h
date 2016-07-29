@@ -1,25 +1,3 @@
-/*
- * Copyright (c) ICG. All rights reserved.
- *
- * Institute for Computer Graphics and Vision
- * Graz University of Technology / Austria
- *
- *
- * This software is distributed WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- * PURPOSE.  See the above copyright notices for more information.
- *
- *
- * Project     : ImageUtilities
- * Module      : Core
- * Class       : VolumeCpu
- * Language    : C++
- * Description : Definition of volume class for Npp
- *
- * Author     : Manuel Werlberger
- * EMail      : werlberger@icg.tugraz.at
- *
- */
 
 #ifndef IUCORE_VOLUME_CPU_H
 #define IUCORE_VOLUME_CPU_H
@@ -27,18 +5,24 @@
 #include "volume.h"
 #include "volume_allocator_cpu.h"
 
-namespace iu {
+template<typename, int> class ndarray_ref;
 
-template<typename PixelType, class Allocator, IuPixelType _pixel_type>
+namespace iu {
+/** \brief Host 3D volume class (pitched memory).
+ *  \ingroup Volume
+ */
+template<typename PixelType, class Allocator>
 class VolumeCpu : public Volume
 {
 public:
+  /** Constructor. */
   VolumeCpu() :
-    Volume(_pixel_type),
+    Volume(),
     data_(0), pitch_(0), ext_data_pointer_(false)
   {
   }
 
+  /** Destructor. */
   virtual ~VolumeCpu()
   {
     if(!ext_data_pointer_)
@@ -50,33 +34,40 @@ public:
     pitch_ = 0;
   }
 
+  /** Special constructor.
+   *  @param _width Width of the Volume
+   *  @param _height Height of the Volume
+   *  @param _depth Depth of the Volume
+   */
   VolumeCpu(unsigned int _width, unsigned int _height, unsigned int _depth) :
-    Volume(_pixel_type, _width, _height, _depth),
+    Volume(_width, _height, _depth),
     data_(0), pitch_(0),
     ext_data_pointer_(false)
   {
     data_ = Allocator::alloc(_width, _height, _depth, &pitch_);
   }
 
+  /** Special constructor.
+   *  @param size Size of the Volume
+   */
   VolumeCpu(const IuSize& size) :
-    Volume(_pixel_type, size), data_(0), pitch_(0),
+    Volume(size), data_(0), pitch_(0),
     ext_data_pointer_(false)
   {
     data_ = Allocator::alloc(size.width, size.height, size.depth, &pitch_);
   }
 
-  VolumeCpu(const VolumeCpu<PixelType, Allocator, _pixel_type>& from) :
-    Volume(from),
-    data_(0), pitch_(0), ext_data_pointer_(false)
-  {
-    data_ = Allocator::alloc(from.width(), from.height(), from.depth(), &pitch_);
-    Allocator::copy(from.data(), from.pitch(), data_, pitch_, this->size());
-    this->setRoi(from.roi());
-  }
-
+  /** Special constructor.
+   *  @param _data Host data pointer
+   *  @param _width Width of the Volume
+   *  @param _height Height of the Volume
+   *  @param _depth Height of the Volume
+   *  @param _pitch Distance in bytes between starts of consecutive rows.
+   *  @param ext_data_pointer Use external data pointer as internal data pointer
+   */
   VolumeCpu(PixelType* _data, unsigned int _width, unsigned int _height, unsigned int _depth,
             size_t _pitch, bool ext_data_pointer = false) :
-    Volume(_pixel_type, _width, _height, _depth),
+    Volume(_width, _height, _depth),
     data_(0), pitch_(0), ext_data_pointer_(ext_data_pointer)
   {
     if(ext_data_pointer_)
@@ -96,9 +87,6 @@ public:
     }
   }
 
-  // :TODO:
-  //VolumeCpu& operator= (const VolumeCpu<PixelType, Allocator>& from);
-
   /** Returns the total amount of bytes saved in the data buffer. */
   size_t bytes() const
   {
@@ -117,7 +105,7 @@ public:
     return height()*pitch_;
   }
 
-  /** Returns the distnace in pixels between starts of consecutive rows. */
+  /** Returns the distance in pixels between starts of consecutive rows. */
   size_t stride() const
   {
     return pitch_/sizeof(PixelType);
@@ -138,20 +126,26 @@ public:
   /** Returns flag if the volume data resides on the device/GPU (TRUE) or host/GPU (FALSE) */
   virtual bool onDevice() const
   {
-    return true;
+    return false;
   }
-
 
   /** Returns a pointer to the pixel data.
    * The pointer can be offset to position \a (ox/oy).
-   * @param[in] ox Horizontal offset of the pointer array.
-   * @param[in] oy Vertical offset of the pointer array.
+   * @param ox Horizontal offset of the pointer array.
+   * @param oy Vertical offset of the pointer array.
    * @return Pointer to the pixel array.
    */
   PixelType* data(int ox = 0, int oy = 0, int oz = 0)
   {
     return &data_[oz*slice_stride() + oy*stride() + ox];
   }
+
+  /** Returns a const pointer to the pixel data.
+   * The pointer can be offset to position \a (ox/oy).
+   * @param ox Horizontal offset of the pointer array.
+   * @param oy Vertical offset of the pointer array.
+   * @return Const pointer to the pixel array.
+   */
   const PixelType* data(int ox = 0, int oy = 0, int oz = 0) const
   {
     return reinterpret_cast<const PixelType*>(
@@ -163,17 +157,54 @@ public:
     * @return volume slice at depth z as ImageCpu. Note, the ImageCpu merely holds a pointer to the volume data at depth z,
     * i.e. it does not manage its own data -> changes to the Image are transparent to the volume and vice versa.
     */
-  ImageCpu<PixelType, iuprivate::ImageAllocatorCpu<PixelType>, _pixel_type> getSlice(int oz)
+  ImageCpu<PixelType, iuprivate::ImageAllocatorCpu<PixelType> > getSlice(int oz)
   {
-    return ImageCpu<PixelType, iuprivate::ImageAllocatorCpu<PixelType>, _pixel_type>(&data_[oz*slice_stride()], width(), height(), pitch_, true);
+    return ImageCpu<PixelType, iuprivate::ImageAllocatorCpu<PixelType> >(&data_[oz*slice_stride()], width(), height(), pitch_, true);
   }
+  
+  /** Get Pixel value at position x,y,z. */
+  PixelType getPixel(unsigned int x, unsigned int y, unsigned int z)
+  {
+    return *data(x, y, z);
+  }
+
+  /** Returns a thrust pointer that can be used in custom operators
+    @return Thrust pointer of the begin of the host memory
+   */
+  thrust::pointer<PixelType, thrust::host_system_tag> begin(void)
+  {
+      return thrust::pointer<PixelType, thrust::host_system_tag>(data());
+  }
+
+  /** Returns a thrust pointer that can be used in custom operators
+    @return Thrust pointer of the end of the host memory
+   */
+  thrust::pointer<PixelType, thrust::host_system_tag> end(void)
+  {
+	  return thrust::pointer<PixelType, thrust::host_system_tag>(data()+slice_stride()*depth());
+  }
+
+  /** convert to ndarray_ref -- include ndarray/ndarray_iu.h*/
+  ndarray_ref<PixelType,3> ref() const;
+
+  /** construct from ndarray_ref  -- include ndarray/ndarray_iu.h*/
+  VolumeCpu(const ndarray_ref<PixelType,3> &x);
 
 protected:
 
 private:
+  /** Pointer to host buffer. */
   PixelType* data_;
+  /** Distance in bytes between starts of consecutive rows. */
   size_t pitch_;
-  bool ext_data_pointer_; /**< Flag if data pointer is handled outside the volume class. */
+  /** Flag if data pointer is handled outside the volume class. */
+  bool ext_data_pointer_;
+
+private:
+  /** Private copy constructor. */
+  VolumeCpu(const VolumeCpu&);
+  /** Private copy assignment operator. */
+  VolumeCpu& operator=(const VolumeCpu&);
 };
 
 } // namespace iuprivate
