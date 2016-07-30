@@ -12,12 +12,13 @@ set(SOURCES
 
 
 find_package(Boost REQUIRED COMPONENTS python)
-include_directories(${Boost_INCLUDE_DIRS})
 find_package(PythonLibs 2.7 REQUIRED)
-include_directories(${PYTHON_INCLUDE_DIRS})
-find_package(NumPy REQUIRED)
-include_directories(${NUMPY_INCLUDE_DIRS})
+Find_package(NumPy REQUIRED)
 FIND_PACKAGE(Eigen3 REQUIRED)
+
+include_directories(${NUMPY_INCLUDE_DIRS})
+include_directories(${PYTHON_INCLUDE_DIRS})
+include_directories(${Boost_INCLUDE_DIRS})
 INCLUDE_DIRECTORIES( ${EIGEN3_INCLUDE_DIR} )
 
 # compile lib, this can be imported in python
