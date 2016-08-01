@@ -36,11 +36,13 @@ typedef LinearHostMemory<unsigned char> LinearHostMemory_8u_C1;
 typedef LinearHostMemory<uchar2> LinearHostMemory_8u_C2;
 typedef LinearHostMemory<uchar3> LinearHostMemory_8u_C3;
 typedef LinearHostMemory<uchar4> LinearHostMemory_8u_C4;
+
 // 16-bit
 typedef LinearHostMemory<unsigned short> LinearHostMemory_16u_C1;
 typedef LinearHostMemory<ushort2> LinearHostMemory_16u_C2;
 typedef LinearHostMemory<ushort3> LinearHostMemory_16u_C3;
 typedef LinearHostMemory<ushort4> LinearHostMemory_16u_C4;
+
 // 32-bit
 typedef LinearHostMemory<float> LinearHostMemory_32f_C1;
 typedef LinearHostMemory<float2> LinearHostMemory_32f_C2;
@@ -56,6 +58,11 @@ typedef LinearHostMemory<unsigned int> LinearHostMemory_32u_C1;
 typedef LinearHostMemory<uint2> LinearHostMemory_32u_C2;
 typedef LinearHostMemory<uint4> LinearHostMemory_32u_C4;
 
+// 64-bit
+typedef LinearHostMemory<double> LinearHostMemory_64f_C1;
+typedef LinearHostMemory<double2> LinearHostMemory_64f_C2;
+typedef LinearHostMemory<double3> LinearHostMemory_64f_C3;
+typedef LinearHostMemory<double4> LinearHostMemory_64f_C4;
 
 /*
   Device
@@ -65,11 +72,13 @@ typedef LinearDeviceMemory<unsigned char> LinearDeviceMemory_8u_C1;
 typedef LinearDeviceMemory<uchar2> LinearDeviceMemory_8u_C2;
 typedef LinearDeviceMemory<uchar3> LinearDeviceMemory_8u_C3;
 typedef LinearDeviceMemory<uchar4> LinearDeviceMemory_8u_C4;
+
 // 16-bit
 typedef LinearDeviceMemory<unsigned short> LinearDeviceMemory_16u_C1;
 typedef LinearDeviceMemory<ushort2> LinearDeviceMemory_16u_C2;
 typedef LinearDeviceMemory<ushort3> LinearDeviceMemory_16u_C3;
 typedef LinearDeviceMemory<ushort4> LinearDeviceMemory_16u_C4;
+
 // 32-bit
 typedef LinearDeviceMemory<float> LinearDeviceMemory_32f_C1;
 typedef LinearDeviceMemory<float2> LinearDeviceMemory_32f_C2;
@@ -85,7 +94,11 @@ typedef LinearDeviceMemory<unsigned int> LinearDeviceMemory_32u_C1;
 typedef LinearDeviceMemory<uint2> LinearDeviceMemory_32u_C2;
 typedef LinearDeviceMemory<uint4> LinearDeviceMemory_32u_C4;
 
-
+// 64-bit
+typedef LinearDeviceMemory<double> LinearDeviceMemory_64f_C1;
+typedef LinearDeviceMemory<double2> LinearDeviceMemory_64f_C2;
+typedef LinearDeviceMemory<double3> LinearDeviceMemory_64f_C3;
+typedef LinearDeviceMemory<double4> LinearDeviceMemory_64f_C4;
 
 /* ****************************************************************************
  *  2d Image Memory
@@ -124,6 +137,12 @@ typedef ImageCpu<float2, iuprivate::ImageAllocatorCpu<float2> > ImageCpu_32f_C2;
 typedef ImageCpu<float3, iuprivate::ImageAllocatorCpu<float3> > ImageCpu_32f_C3;
 typedef ImageCpu<float4, iuprivate::ImageAllocatorCpu<float4> > ImageCpu_32f_C4;
 
+// Cpu Images; 64f
+typedef ImageCpu<double, iuprivate::ImageAllocatorCpu<double> > ImageCpu_64f_C1;
+typedef ImageCpu<double2, iuprivate::ImageAllocatorCpu<double2> > ImageCpu_64f_C2;
+typedef ImageCpu<double3, iuprivate::ImageAllocatorCpu<double3> > ImageCpu_64f_C3;
+typedef ImageCpu<double4, iuprivate::ImageAllocatorCpu<double4> > ImageCpu_64f_C4;
+
 /*
   Device
 */
@@ -150,12 +169,17 @@ typedef ImageGpu<unsigned int, iuprivate::ImageAllocatorGpu<unsigned int> > Imag
 typedef ImageGpu<uint2, iuprivate::ImageAllocatorGpu<uint2> > ImageGpu_32u_C2;
 typedef ImageGpu<uint4, iuprivate::ImageAllocatorGpu<uint4> > ImageGpu_32u_C4;
 
-
 // Gpu Images; 32f
 typedef ImageGpu<float, iuprivate::ImageAllocatorGpu<float> > ImageGpu_32f_C1;
 typedef ImageGpu<float2, iuprivate::ImageAllocatorGpu<float2> > ImageGpu_32f_C2;
 typedef ImageGpu<float3, iuprivate::ImageAllocatorGpu<float3> > ImageGpu_32f_C3;
 typedef ImageGpu<float4, iuprivate::ImageAllocatorGpu<float4> > ImageGpu_32f_C4;
+
+// Gpu Images; 64f
+typedef ImageGpu<double, iuprivate::ImageAllocatorGpu<double> > ImageGpu_64f_C1;
+typedef ImageGpu<double2, iuprivate::ImageAllocatorGpu<double2> > ImageGpu_64f_C2;
+typedef ImageGpu<double3, iuprivate::ImageAllocatorGpu<double3> > ImageGpu_64f_C3;
+typedef ImageGpu<double4, iuprivate::ImageAllocatorGpu<double4> > ImageGpu_64f_C4;
 
 
 /* ****************************************************************************
@@ -184,12 +208,18 @@ typedef VolumeCpu<int, iuprivate::VolumeAllocatorCpu<int> > VolumeCpu_32s_C1;
 typedef VolumeCpu<int2, iuprivate::VolumeAllocatorCpu<int2> > VolumeCpu_32s_C2;
 typedef VolumeCpu<int4, iuprivate::VolumeAllocatorCpu<int4> > VolumeCpu_32s_C4;
 
-
 // Cpu Volumes; 32f
 typedef VolumeCpu<float, iuprivate::VolumeAllocatorCpu<float> > VolumeCpu_32f_C1;
 typedef VolumeCpu<float2, iuprivate::VolumeAllocatorCpu<float2> > VolumeCpu_32f_C2;
 typedef VolumeCpu<float3, iuprivate::VolumeAllocatorCpu<float3> > VolumeCpu_32f_C3;
 typedef VolumeCpu<float4, iuprivate::VolumeAllocatorCpu<float4> > VolumeCpu_32f_C4;
+
+// Cpu Volumes; 64f
+typedef VolumeCpu<double, iuprivate::VolumeAllocatorCpu<double> > VolumeCpu_64f_C1;
+typedef VolumeCpu<double2, iuprivate::VolumeAllocatorCpu<double2> > VolumeCpu_64f_C2;
+typedef VolumeCpu<double3, iuprivate::VolumeAllocatorCpu<double3> > VolumeCpu_64f_C3;
+typedef VolumeCpu<double4, iuprivate::VolumeAllocatorCpu<double4> > VolumeCpu_64f_C4;
+
 
 /*
   Device
@@ -213,12 +243,17 @@ typedef VolumeGpu<int, iuprivate::VolumeAllocatorGpu<int> > VolumeGpu_32s_C1;
 typedef VolumeGpu<int2, iuprivate::VolumeAllocatorGpu<int2> > VolumeGpu_32s_C2;
 typedef VolumeGpu<int4, iuprivate::VolumeAllocatorGpu<int4> > VolumeGpu_32s_C4;
 
-
 // Gpu Volumes; 32f
 typedef VolumeGpu<float, iuprivate::VolumeAllocatorGpu<float> > VolumeGpu_32f_C1;
 typedef VolumeGpu<float2, iuprivate::VolumeAllocatorGpu<float2> > VolumeGpu_32f_C2;
 typedef VolumeGpu<float3, iuprivate::VolumeAllocatorGpu<float3> > VolumeGpu_32f_C3;
 typedef VolumeGpu<float4, iuprivate::VolumeAllocatorGpu<float4> > VolumeGpu_32f_C4;
+
+// Gpu Volumes; 64f
+typedef VolumeGpu<double, iuprivate::VolumeAllocatorGpu<double> > VolumeGpu_64f_C1;
+typedef VolumeGpu<double2, iuprivate::VolumeAllocatorGpu<double2> > VolumeGpu_64f_C2;
+typedef VolumeGpu<double3, iuprivate::VolumeAllocatorGpu<double3> > VolumeGpu_64f_C3;
+typedef VolumeGpu<double4, iuprivate::VolumeAllocatorGpu<double4> > VolumeGpu_64f_C4;
 
 
 /* ****************************************************************************
