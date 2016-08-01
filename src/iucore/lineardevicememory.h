@@ -128,8 +128,11 @@ public:
   PixelType* data(unsigned int offset = 0)
   {
     if (offset >= this->numel())
-      throw IuException("offset not in range", __FILE__, __FUNCTION__,
-                        __LINE__);
+    {
+      std::stringstream msg;
+      msg << "Offset (" << offset << ") out of range (" << this->numel() << ").";
+      throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
+    }
     return &(data_[offset]);
   }
 
@@ -141,8 +144,11 @@ public:
   const PixelType* data(unsigned int offset = 0) const
   {
     if (offset >= this->numel())
-      throw IuException("offset not in range", __FILE__, __FUNCTION__,
-                        __LINE__);
+    {
+      std::stringstream msg;
+      msg << "Offset (" << offset << ") out of range (" << this->numel() << ").";
+      throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
+    }
     return reinterpret_cast<const PixelType*>(&(data_[offset]));
   }
 
