@@ -487,6 +487,12 @@ public:
   {
   }
 
+  /** Public copy constructor. */
+  Size(const SizeBase<Ndim>& from) :
+      SizeBase<Ndim>(from)
+  {
+  }
+
   /** Public copy assignment operator. */
   Size& operator=(const Size& from)
   {
@@ -568,6 +574,13 @@ public:
 
   /** Public copy constructor. */
   Size(const Size& from) :
+      SizeBase<3>(from), width(this->data_[0]), height(this->data_[1]),
+      depth(this->data_[2])
+  {
+  }
+
+  /** Public copy constructor. */
+  Size(const SizeBase& from) :
       SizeBase<3>(from), width(this->data_[0]), height(this->data_[1]),
       depth(this->data_[2])
   {

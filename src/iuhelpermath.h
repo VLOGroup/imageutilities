@@ -671,17 +671,17 @@ inline __host__ __device__ double length(double4 v)
 
 inline __host__ __device__ double2 normalize(double2 v)
 {
-    double invLen = rsqrt(dot(v, v));
+    double invLen = 1.0f / sqrtf(dot(v, v));
     return v * invLen;
 }
 inline __host__ __device__ double3 normalize(double3 v)
 {
-    double invLen = rsqrt(dot(v, v));
+    double invLen = 1.0f / sqrtf(dot(v, v));
     return v * invLen;
 }
 inline __host__ __device__ double4 normalize(double4 v)
 {
-    double invLen = rsqrt(dot(v, v));
+    double invLen = 1.0f / sqrtf(dot(v, v));
     return v * invLen;
 }
 
