@@ -9,11 +9,11 @@ int main()
   typedef double PixelType;
 
   const unsigned int numel = 100;
-  iu::LinearDeviceMemory<PixelType> d_linmem(numel);
-  iu::LinearHostMemory<PixelType> h_linmem(numel);
+  iu::LinearDeviceMemory<PixelType,1> d_linmem(numel);
+  iu::LinearHostMemory<PixelType,1> h_linmem(numel);
   iu::math::fill(d_linmem, static_cast<PixelType>(10));
 
-  iu::LinearDeviceMemory<PixelType> d_linmem2(numel);
+  iu::LinearDeviceMemory<PixelType,1> d_linmem2(numel);
   iu::math::fill(d_linmem2, static_cast<PixelType>(2));
 
   iu::math::addC(d_linmem, static_cast<PixelType>(1.5), d_linmem);
