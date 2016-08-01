@@ -2,6 +2,7 @@
 #define VECTOR_H_
 
 #include <type_traits>
+#include <initializer_list>
 
 #include "coredefs.h"
 
@@ -29,6 +30,27 @@ public:
   VectorBase(const PixelType& value)
   {
     this->fill(value);
+  }
+
+  /** Special Constructor.
+   *  Init all elements of the vector with a initializer list.
+   *  @param list Initializer list, e.g. {1,2,3}.*/
+  VectorBase(std::initializer_list<PixelType> list)
+  {
+    if (list.size() != Ndim)
+    {
+      std::stringstream msg;
+      msg << "Length of initializer list (" << list.size();
+      msg << ") does not match number of size dimensions (" << Ndim << ").";
+      throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
+    }
+
+    unsigned int i = 0;
+    for (auto elem : list)
+    {
+      data_[i] = elem;
+      ++i;
+    }
   }
 
   /** Destructor. */
@@ -146,6 +168,16 @@ public:
       VectorBase<PixelType, Ndim>(value)
   {
   }
+
+  /** Special Constructor.
+   *  Init all elements of the vector with a initializer list.
+   *  @param list Initializer list, e.g. {1,2,3}.*/
+  Vector(std::initializer_list<PixelType> list) :
+      VectorBase<PixelType, Ndim>(list)
+  {
+
+  }
+
   /** Destructor. */
   ~Vector()
   {
@@ -316,6 +348,14 @@ public:
   {
   }
 
+  /** Special Constructor.
+   *  Init all elements of the vector with a initializer list.
+   *  @param list Initializer list, e.g. {1,2,3}.*/
+  SizeBase(std::initializer_list<unsigned int> list) :
+      VectorBase<unsigned int, Ndim>(list)
+  {
+  }
+
   /** Destructor. */
   ~SizeBase()
   {
@@ -428,6 +468,14 @@ public:
   {
   }
 
+  /** Special Constructor.
+   *  Init all elements of the vector with a initializer list.
+   *  @param list Initializer list, e.g. {1,2,3}.*/
+  Size(std::initializer_list<unsigned int> list) :
+      SizeBase<Ndim>(list)
+  {
+  }
+
   /** Destructor. */
   ~Size()
   {
@@ -485,6 +533,15 @@ public:
    *  @param value value to initialize size vector elements.*/
   Size(unsigned int value) :
       SizeBase<3>(value), width(this->data_[0]), height(this->data_[1]),
+      depth(this->data_[2])
+  {
+  }
+
+  /** Special Constructor.
+   *  Init all elements of the vector with a initializer list.
+   *  @param list Initializer list, e.g. {1,2,3}.*/
+  Size(std::initializer_list<unsigned int> list) :
+      SizeBase<3>(list), width(this->data_[0]), height(this->data_[1]),
       depth(this->data_[2])
   {
   }

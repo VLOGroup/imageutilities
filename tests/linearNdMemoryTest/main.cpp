@@ -12,7 +12,7 @@ void testSize3d()
 {
   std::cout << "testSize() started." << std::endl;
   const unsigned int Ndim = 3;
-  iu::Size<Ndim> size(2);
+  iu::Size<Ndim> size({2,1,3});
   std::cout << size << std::endl;
   size.fill(5);
   std::cout << size << std::endl;
@@ -29,7 +29,7 @@ void testVector()
 {
   std::cout << "testVector() started." << std::endl;
   const unsigned int Ndim = 3;
-  iu::Vector<float, Ndim> vector(2.1);
+  iu::Vector<float, Ndim> vector({1.1, 2.4, 0.2});
   std::cout << vector << std::endl;
   vector.fill(5.2);
   std::cout << vector << std::endl;
