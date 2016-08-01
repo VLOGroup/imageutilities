@@ -23,6 +23,40 @@ void copy(const LinearHostMemory_32f_C1* src, LinearHostMemory_32f_C1* dst)
 void copy(const LinearHostMemory_64f_C1* src, LinearHostMemory_64f_C1* dst)
 { iuprivate::copy(src,dst); }
 
+void copy(const LinearHostMemory<float, 2>* src, LinearHostMemory<float, 2>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<float, 3>* src, LinearHostMemory<float, 3>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<float, 4>* src, LinearHostMemory<float, 4>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<float, 5>* src, LinearHostMemory<float, 5>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<float2, 2>* src, LinearHostMemory<float2, 2>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<float2, 3>* src, LinearHostMemory<float2, 3>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<float2, 4>* src, LinearHostMemory<float2, 4>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<float2, 5>* src, LinearHostMemory<float2, 5>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<float3, 2>* src, LinearHostMemory<float3, 2>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<float3, 3>* src, LinearHostMemory<float3, 3>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<float3, 4>* src, LinearHostMemory<float3, 4>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<float3, 5>* src, LinearHostMemory<float3, 5>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<float4, 2>* src, LinearHostMemory<float4, 2>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<float4, 3>* src, LinearHostMemory<float4, 3>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<float4, 4>* src, LinearHostMemory<float4, 4>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<float4, 5>* src, LinearHostMemory<float4, 5>* dst){ iuprivate::copy(src,dst); }
+
+void copy(const LinearHostMemory<double, 2>* src, LinearHostMemory<double, 2>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<double, 3>* src, LinearHostMemory<double, 3>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<double, 4>* src, LinearHostMemory<double, 4>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<double, 5>* src, LinearHostMemory<double, 5>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<double2, 2>* src, LinearHostMemory<double2, 2>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<double2, 3>* src, LinearHostMemory<double2, 3>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<double2, 4>* src, LinearHostMemory<double2, 4>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<double2, 5>* src, LinearHostMemory<double2, 5>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<double3, 2>* src, LinearHostMemory<double3, 2>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<double3, 3>* src, LinearHostMemory<double3, 3>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<double3, 4>* src, LinearHostMemory<double3, 4>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<double3, 5>* src, LinearHostMemory<double3, 5>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<double4, 2>* src, LinearHostMemory<double4, 2>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<double4, 3>* src, LinearHostMemory<double4, 3>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<double4, 4>* src, LinearHostMemory<double4, 4>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<double4, 5>* src, LinearHostMemory<double4, 5>* dst){ iuprivate::copy(src,dst); }
+
 // 1D copy device -> device;
 void copy(const LinearDeviceMemory_8u_C1* src, LinearDeviceMemory_8u_C1* dst){ iuprivate::copy(src,dst); }
 void copy(const LinearDeviceMemory_8u_C2* src, LinearDeviceMemory_8u_C2* dst){ iuprivate::copy(src,dst); }
@@ -48,6 +82,40 @@ void copy(const LinearDeviceMemory_64f_C2* src, LinearDeviceMemory_64f_C2* dst){
 void copy(const LinearDeviceMemory_64f_C3* src, LinearDeviceMemory_64f_C3* dst){ iuprivate::copy(src,dst); }
 void copy(const LinearDeviceMemory_64f_C4* src, LinearDeviceMemory_64f_C4* dst){ iuprivate::copy(src,dst); }
 
+void copy(const LinearDeviceMemory<float, 2>* src, LinearDeviceMemory<float, 2>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearDeviceMemory<float, 3>* src, LinearDeviceMemory<float, 3>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearDeviceMemory<float, 4>* src, LinearDeviceMemory<float, 4>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearDeviceMemory<float, 5>* src, LinearDeviceMemory<float, 5>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearDeviceMemory<float2, 2>* src, LinearDeviceMemory<float2, 2>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearDeviceMemory<float2, 3>* src, LinearDeviceMemory<float2, 3>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearDeviceMemory<float2, 4>* src, LinearDeviceMemory<float2, 4>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearDeviceMemory<float2, 5>* src, LinearDeviceMemory<float2, 5>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearDeviceMemory<float3, 2>* src, LinearDeviceMemory<float3, 2>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearDeviceMemory<float3, 3>* src, LinearDeviceMemory<float3, 3>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearDeviceMemory<float3, 4>* src, LinearDeviceMemory<float3, 4>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearDeviceMemory<float3, 5>* src, LinearDeviceMemory<float3, 5>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearDeviceMemory<float4, 2>* src, LinearDeviceMemory<float4, 2>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearDeviceMemory<float4, 3>* src, LinearDeviceMemory<float4, 3>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearDeviceMemory<float4, 4>* src, LinearDeviceMemory<float4, 4>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearDeviceMemory<float4, 5>* src, LinearDeviceMemory<float4, 5>* dst){ iuprivate::copy(src,dst); }
+
+void copy(const LinearDeviceMemory<double, 2>* src, LinearDeviceMemory<double, 2>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearDeviceMemory<double, 3>* src, LinearDeviceMemory<double, 3>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearDeviceMemory<double, 4>* src, LinearDeviceMemory<double, 4>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearDeviceMemory<double, 5>* src, LinearDeviceMemory<double, 5>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearDeviceMemory<double2, 2>* src, LinearDeviceMemory<double2, 2>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearDeviceMemory<double2, 3>* src, LinearDeviceMemory<double2, 3>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearDeviceMemory<double2, 4>* src, LinearDeviceMemory<double2, 4>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearDeviceMemory<double2, 5>* src, LinearDeviceMemory<double2, 5>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearDeviceMemory<double3, 2>* src, LinearDeviceMemory<double3, 2>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearDeviceMemory<double3, 3>* src, LinearDeviceMemory<double3, 3>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearDeviceMemory<double3, 4>* src, LinearDeviceMemory<double3, 4>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearDeviceMemory<double3, 5>* src, LinearDeviceMemory<double3, 5>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearDeviceMemory<double4, 2>* src, LinearDeviceMemory<double4, 2>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearDeviceMemory<double4, 3>* src, LinearDeviceMemory<double4, 3>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearDeviceMemory<double4, 4>* src, LinearDeviceMemory<double4, 4>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearDeviceMemory<double4, 5>* src, LinearDeviceMemory<double4, 5>* dst){ iuprivate::copy(src,dst); }
+
 // 1D copy host -> device;
 void copy(const LinearHostMemory_8u_C1* src, LinearDeviceMemory_8u_C1* dst){ iuprivate::copy(src,dst); }
 void copy(const LinearHostMemory_8u_C2* src, LinearDeviceMemory_8u_C2* dst){ iuprivate::copy(src,dst); }
@@ -72,6 +140,40 @@ void copy(const LinearHostMemory_64f_C1* src, LinearDeviceMemory_64f_C1* dst){ i
 void copy(const LinearHostMemory_64f_C2* src, LinearDeviceMemory_64f_C2* dst){ iuprivate::copy(src,dst); }
 void copy(const LinearHostMemory_64f_C3* src, LinearDeviceMemory_64f_C3* dst){ iuprivate::copy(src,dst); }
 void copy(const LinearHostMemory_64f_C4* src, LinearDeviceMemory_64f_C4* dst){ iuprivate::copy(src,dst); }
+
+void copy(const LinearHostMemory<float, 2>* src, LinearDeviceMemory<float, 2>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<float, 3>* src, LinearDeviceMemory<float, 3>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<float, 4>* src, LinearDeviceMemory<float, 4>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<float, 5>* src, LinearDeviceMemory<float, 5>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<float2, 2>* src, LinearDeviceMemory<float2, 2>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<float2, 3>* src, LinearDeviceMemory<float2, 3>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<float2, 4>* src, LinearDeviceMemory<float2, 4>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<float2, 5>* src, LinearDeviceMemory<float2, 5>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<float3, 2>* src, LinearDeviceMemory<float3, 2>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<float3, 3>* src, LinearDeviceMemory<float3, 3>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<float3, 4>* src, LinearDeviceMemory<float3, 4>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<float3, 5>* src, LinearDeviceMemory<float3, 5>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<float4, 2>* src, LinearDeviceMemory<float4, 2>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<float4, 3>* src, LinearDeviceMemory<float4, 3>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<float4, 4>* src, LinearDeviceMemory<float4, 4>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<float4, 5>* src, LinearDeviceMemory<float4, 5>* dst){ iuprivate::copy(src,dst); }
+
+void copy(const LinearHostMemory<double, 2>* src, LinearDeviceMemory<double, 2>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<double, 3>* src, LinearDeviceMemory<double, 3>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<double, 4>* src, LinearDeviceMemory<double, 4>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<double, 5>* src, LinearDeviceMemory<double, 5>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<double2, 2>* src, LinearDeviceMemory<double2, 2>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<double2, 3>* src, LinearDeviceMemory<double2, 3>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<double2, 4>* src, LinearDeviceMemory<double2, 4>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<double2, 5>* src, LinearDeviceMemory<double2, 5>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<double3, 2>* src, LinearDeviceMemory<double3, 2>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<double3, 3>* src, LinearDeviceMemory<double3, 3>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<double3, 4>* src, LinearDeviceMemory<double3, 4>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<double3, 5>* src, LinearDeviceMemory<double3, 5>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<double4, 2>* src, LinearDeviceMemory<double4, 2>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<double4, 3>* src, LinearDeviceMemory<double4, 3>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<double4, 4>* src, LinearDeviceMemory<double4, 4>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<double4, 5>* src, LinearDeviceMemory<double4, 5>* dst){ iuprivate::copy(src,dst); }
 
 // 1D copy device -> host;
 void copy(const LinearDeviceMemory_8u_C1* src, LinearHostMemory_8u_C1* dst){ iuprivate::copy(src,dst); }
@@ -99,43 +201,38 @@ void copy(const LinearDeviceMemory_64f_C3* src, LinearHostMemory_64f_C3* dst){ i
 void copy(const LinearDeviceMemory_64f_C4* src, LinearHostMemory_64f_C4* dst){ iuprivate::copy(src,dst); }
 
 void copy(const LinearDeviceMemory<float, 2>* src, LinearHostMemory<float, 2>* dst){ iuprivate::copy(src,dst); }
-void copy(const LinearHostMemory<float, 2>* src, LinearDeviceMemory<float, 2>* dst){ iuprivate::copy(src,dst); }
-void copy(const LinearDeviceMemory<float, 2>* src, LinearDeviceMemory<float, 2>* dst){ iuprivate::copy(src,dst); }
 void copy(const LinearDeviceMemory<float, 3>* src, LinearHostMemory<float, 3>* dst){ iuprivate::copy(src,dst); }
-void copy(const LinearHostMemory<float, 3>* src, LinearDeviceMemory<float, 3>* dst){ iuprivate::copy(src,dst); }
-void copy(const LinearDeviceMemory<float, 3>* src, LinearDeviceMemory<float, 3>* dst){ iuprivate::copy(src,dst); }
 void copy(const LinearDeviceMemory<float, 4>* src, LinearHostMemory<float, 4>* dst){ iuprivate::copy(src,dst); }
-void copy(const LinearHostMemory<float, 4>* src, LinearDeviceMemory<float, 4>* dst){ iuprivate::copy(src,dst); }
-void copy(const LinearDeviceMemory<float, 4>* src, LinearDeviceMemory<float, 4>* dst){ iuprivate::copy(src,dst); }
 void copy(const LinearDeviceMemory<float, 5>* src, LinearHostMemory<float, 5>* dst){ iuprivate::copy(src,dst); }
-void copy(const LinearHostMemory<float, 5>* src, LinearDeviceMemory<float, 5>* dst){ iuprivate::copy(src,dst); }
-void copy(const LinearDeviceMemory<float, 5>* src, LinearDeviceMemory<float, 5>* dst){ iuprivate::copy(src,dst); }
-
 void copy(const LinearDeviceMemory<float2, 2>* src, LinearHostMemory<float2, 2>* dst){ iuprivate::copy(src,dst); }
-void copy(const LinearHostMemory<float2, 2>* src, LinearDeviceMemory<float2, 2>* dst){ iuprivate::copy(src,dst); }
-void copy(const LinearDeviceMemory<float2, 2>* src, LinearDeviceMemory<float2, 2>* dst){ iuprivate::copy(src,dst); }
 void copy(const LinearDeviceMemory<float2, 3>* src, LinearHostMemory<float2, 3>* dst){ iuprivate::copy(src,dst); }
-void copy(const LinearHostMemory<float2, 3>* src, LinearDeviceMemory<float2, 3>* dst){ iuprivate::copy(src,dst); }
-void copy(const LinearDeviceMemory<float2, 3>* src, LinearDeviceMemory<float2, 3>* dst){ iuprivate::copy(src,dst); }
 void copy(const LinearDeviceMemory<float2, 4>* src, LinearHostMemory<float2, 4>* dst){ iuprivate::copy(src,dst); }
-void copy(const LinearHostMemory<float2, 4>* src, LinearDeviceMemory<float2, 4>* dst){ iuprivate::copy(src,dst); }
-void copy(const LinearDeviceMemory<float2, 4>* src, LinearDeviceMemory<float2, 4>* dst){ iuprivate::copy(src,dst); }
 void copy(const LinearDeviceMemory<float2, 5>* src, LinearHostMemory<float2, 5>* dst){ iuprivate::copy(src,dst); }
-void copy(const LinearHostMemory<float2, 5>* src, LinearDeviceMemory<float2, 5>* dst){ iuprivate::copy(src,dst); }
-void copy(const LinearDeviceMemory<float2, 5>* src, LinearDeviceMemory<float2, 5>* dst){ iuprivate::copy(src,dst); }
-
 void copy(const LinearDeviceMemory<float3, 2>* src, LinearHostMemory<float3, 2>* dst){ iuprivate::copy(src,dst); }
-void copy(const LinearHostMemory<float3, 2>* src, LinearDeviceMemory<float3, 2>* dst){ iuprivate::copy(src,dst); }
-void copy(const LinearDeviceMemory<float3, 2>* src, LinearDeviceMemory<float3, 2>* dst){ iuprivate::copy(src,dst); }
 void copy(const LinearDeviceMemory<float3, 3>* src, LinearHostMemory<float3, 3>* dst){ iuprivate::copy(src,dst); }
-void copy(const LinearHostMemory<float3, 3>* src, LinearDeviceMemory<float3, 3>* dst){ iuprivate::copy(src,dst); }
-void copy(const LinearDeviceMemory<float3, 3>* src, LinearDeviceMemory<float3, 3>* dst){ iuprivate::copy(src,dst); }
 void copy(const LinearDeviceMemory<float3, 4>* src, LinearHostMemory<float3, 4>* dst){ iuprivate::copy(src,dst); }
-void copy(const LinearHostMemory<float3, 4>* src, LinearDeviceMemory<float3, 4>* dst){ iuprivate::copy(src,dst); }
-void copy(const LinearDeviceMemory<float3, 4>* src, LinearDeviceMemory<float3, 4>* dst){ iuprivate::copy(src,dst); }
 void copy(const LinearDeviceMemory<float3, 5>* src, LinearHostMemory<float3, 5>* dst){ iuprivate::copy(src,dst); }
-void copy(const LinearHostMemory<float3, 5>* src, LinearDeviceMemory<float3, 5>* dst){ iuprivate::copy(src,dst); }
-void copy(const LinearDeviceMemory<float3, 5>* src, LinearDeviceMemory<float3, 5>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearDeviceMemory<float4, 2>* src, LinearHostMemory<float4, 2>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearDeviceMemory<float4, 3>* src, LinearHostMemory<float4, 3>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearDeviceMemory<float4, 4>* src, LinearHostMemory<float4, 4>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearDeviceMemory<float4, 5>* src, LinearHostMemory<float4, 5>* dst){ iuprivate::copy(src,dst); }
+
+void copy(const LinearDeviceMemory<double, 2>* src, LinearHostMemory<double, 2>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearDeviceMemory<double, 3>* src, LinearHostMemory<double, 3>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearDeviceMemory<double, 4>* src, LinearHostMemory<double, 4>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearDeviceMemory<double, 5>* src, LinearHostMemory<double, 5>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearDeviceMemory<double2, 2>* src, LinearHostMemory<double2, 2>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearDeviceMemory<double2, 3>* src, LinearHostMemory<double2, 3>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearDeviceMemory<double2, 4>* src, LinearHostMemory<double2, 4>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearDeviceMemory<double2, 5>* src, LinearHostMemory<double2, 5>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearDeviceMemory<double3, 2>* src, LinearHostMemory<double3, 2>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearDeviceMemory<double3, 3>* src, LinearHostMemory<double3, 3>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearDeviceMemory<double3, 4>* src, LinearHostMemory<double3, 4>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearDeviceMemory<double3, 5>* src, LinearHostMemory<double3, 5>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearDeviceMemory<double4, 2>* src, LinearHostMemory<double4, 2>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearDeviceMemory<double4, 3>* src, LinearHostMemory<double4, 3>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearDeviceMemory<double4, 4>* src, LinearHostMemory<double4, 4>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearDeviceMemory<double4, 5>* src, LinearHostMemory<double4, 5>* dst){ iuprivate::copy(src,dst); }
 
 /* ***************************************************************************
  * 2D COPY
