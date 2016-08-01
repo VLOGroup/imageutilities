@@ -256,9 +256,13 @@ public:
     return data_[getLinearIndex(idx0, idx1, idx2, idx3, idx4)];
   }
 
-protected:
+  /** convert to ndarray_ref -- include ndarray/ndarray_iu.h*/
+  ndarray_ref<PixelType, Ndim> ref() const;
 
-protected:
+  /** construct from ndarray_ref  -- include ndarray/ndarray_iu.h*/
+  LinearHostMemory(const ndarray_ref<PixelType, Ndim> &x);
+
+private:
   /** Pointer to host buffer. */
   PixelType* data_;
   /** Flag if data pointer is handled outside the LinearHostMemory class. */
@@ -380,18 +384,8 @@ private:
   }
 };
 
-template<typename PixelType>
-class LinearHostMemory1d : public LinearHostMemory<PixelType, 1>
-{
-public:
-  LinearHostMemory1d(const unsigned int& numel) : LinearHostMemory<PixelType, 1>(numel) {}
-
-  /** convert to ndarray_ref -- include ndarray/ndarray_iu.h*/
-  ndarray_ref<PixelType, 1> ref() const;
-
-  /** construct from ndarray_ref  -- include ndarray/ndarray_iu.h*/
-  LinearHostMemory1d(const ndarray_ref<PixelType, 1> &x);
-};
+/** Template specialization. Construct from ndarray_ref. */
+template<> LinearHostMemory<float, 1>::LinearHostMemory(const ndarray_ref<float, 1> &x);
 
 }  // namespace iu
 
