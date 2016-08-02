@@ -1,3 +1,5 @@
+#ifndef NDARRAY_IU_H
+#define NDARRAY_IU_H
 //#include "ndarray_ref.h"
 #include "ndarray_ref.host.h"
 //
@@ -115,9 +117,9 @@ ndarray_ref<type,dims>::ndarray_ref(const iu::LinearDeviceMemory<type, 1> * x, c
 namespace iu{
 
 	//1D
-	template<>
-	ndarray_ref<float,1> LinearHostMemory<float, 1>::ref() const{
-		return ndarray_ref<float, 1>(*this);
+    template<typename type, unsigned int dims>
+    ndarray_ref<type,dims> LinearHostMemory<type,dims>::ref() const{
+        return ndarray_ref<type,dims>(*this);
 	}
 
 	/** construct from ndarray_ref*/
@@ -130,10 +132,10 @@ namespace iu{
 		this->data_ = x.ptr();
 	}
 
-	template<>
-	ndarray_ref<float,1> LinearDeviceMemory<float, 1>::ref() const{
-		return ndarray_ref<float,1>(*this);
-	}
+    template<typename type, unsigned int dims>
+    ndarray_ref<type,dims> LinearDeviceMemory<type,dims>::ref() const{
+        return ndarray_ref<type,dims>(*this);
+    }
 
 	/** construct from ndarray_ref*/
 	template<typename type, unsigned int dims>
@@ -254,3 +256,4 @@ namespace iu{
 	}
 }
 
+#endif
