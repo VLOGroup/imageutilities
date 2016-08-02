@@ -1,5 +1,3 @@
-#ifndef IUCORE_CONVERT_CU
-#define IUCORE_CONVERT_CU
 
 //#include <helper_math.h>
 #include "coredefs.h"
@@ -708,4 +706,4 @@ void cuConvert_lab_to_rgb(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* d
 
 } // namespace iuprivate
 
-#endif // IUCORE_CONVERT_CU
+

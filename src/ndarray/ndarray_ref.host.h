@@ -1,4 +1,5 @@
 #pragma once
+
 #include "ndarray_ref.kernel.h"
 #include "error.h"
 

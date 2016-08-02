@@ -1,5 +1,4 @@
-#ifndef ndarray_op_h
-#define ndarray_op_h
+#pragma once
 
 #include "ndarray_ref.host.h"
 #include "error.h"
@@ -405,4 +404,3 @@ void for_each(const ndarray_ref<type, dims> & r, Func func){
 
 
 
-#endif

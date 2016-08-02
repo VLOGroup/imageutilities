@@ -1,31 +1,8 @@
-/*
- * Copyright (c) ICG. All rights reserved.
- *
- * Institute for Computer Graphics and Vision
- * Graz University of Technology / Austria
- *
- *
- * This software is distributed WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- * PURPOSE.  See the above copyright notices for more information.
- *
- *
- * Project     : VMLibraries
- * Module      : ImageUtilities
- * Class       : none
- * Language    : C/CUDA
- * Description : Helper functions to bind textures correctly
- *
- * Author     : Manuel Werlberger
- * EMail      : werlberger@icg.tugraz.at
- *
- */
 
+#pragma once
 #include <cuda_runtime.h>
 #include "iudefs.h"
 
-#ifndef IU_BIND_TEXTURES_CUH
-#define IU_BIND_TEXTURES_CUH
 
 namespace iu {
 #ifdef __CUDACC__ // only include this in cuda files (seen by nvcc)
@@ -139,4 +116,3 @@ inline void bindTexture(texture<float4, cudaTextureType2D>& tex, const iu::Volum
 } // namespace iu
 
 
-#endif // IU_BIND_TEXTURES_CUH

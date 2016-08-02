@@ -5,9 +5,6 @@
 #include <iucore/iutextures.cuh>
 #include "transform.cu"
 
-#ifndef IUTRANSFORM_PROLONGATE_CU
-#define IUTRANSFORM_PROLONGATE_CU
-
 namespace iuprivate {
 
 /* ***************************************************************************
@@ -205,4 +202,3 @@ void cuProlongate(iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst,
 
 } // namespace iuprivate
 
-#endif // IUTRANSFORM_PROLONGATE_CU

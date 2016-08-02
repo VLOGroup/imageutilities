@@ -1,6 +1,4 @@
-
-#ifndef IUIO_MODULE_H
-#define IUIO_MODULE_H
+#pragma once
 
 #include <string>
 #include "iudefs.h"
@@ -153,4 +151,3 @@ IUIO_DLLAPI void imshow(iu::ImageGpu_32f_C4* image, const std::string& winname, 
 
 
 
-#endif // IUIO_MODULE_H

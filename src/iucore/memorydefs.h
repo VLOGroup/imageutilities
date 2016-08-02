@@ -1,6 +1,4 @@
-
-#ifndef IUCORE_MEMORYDEFS_H
-#define IUCORE_MEMORYDEFS_H
+#pragma once
 
 // template includes
 #include "coredefs.h"
@@ -339,4 +337,4 @@ static inline void checkSize(const iu::Image *image, const iu::LinearMemory<1> *
 #define IU_SIZE_CHECK(variable1, variable2)  checkSize(variable1, variable2, __FILE__, __FUNCTION__, __LINE__)
 } // namespace iu
 
-#endif // IUCORE_MEMORYDEFS_H
+

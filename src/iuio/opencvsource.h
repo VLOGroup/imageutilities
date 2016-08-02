@@ -1,5 +1,4 @@
-#ifndef OPENCV_SOURCE_H
-#define OPENCV_SOURCE_H
+#pragma once
 
 #include "videosource.h"
 #include <string>
@@ -74,4 +73,4 @@ private:
 } // namespace iu
 
 
-#endif
+

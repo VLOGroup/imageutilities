@@ -1,5 +1,4 @@
-#ifndef IUCORE_TEXTURES_CUH
-#define IUCORE_TEXTURES_CUH
+#pragma once
 
 namespace iuprivate {
 
@@ -17,4 +16,4 @@ texture<float, 2, cudaReadModeElementType> tex2_32f_C1__;
 
 }
 
-#endif // IUCORE_TEXTURES_CUH
+

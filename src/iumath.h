@@ -1,5 +1,4 @@
-#ifndef IUMATH_H
-#define IUMATH_H
+#pragma once
 
 #include "iudefs.h"
 
@@ -1220,4 +1219,3 @@ IUCORE_DLLAPI void multiplyConjugate(iu::LinearDeviceMemory_64f_C2& complex_src1
 } // namespace math
 } // namespace iu
 
-#endif

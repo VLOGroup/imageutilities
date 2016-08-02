@@ -1,6 +1,4 @@
-
-#ifndef IUCORE_LINEARHOSTMEMORY_H
-#define IUCORE_LINEARHOSTMEMORY_H
+#pragma once
 
 #include <stdio.h>
 #include <assert.h>
@@ -389,4 +387,4 @@ template<> LinearHostMemory<float, 1>::LinearHostMemory(const ndarray_ref<float,
 
 }  // namespace iu
 
-#endif // IU_LINEARHOSTMEMORY_H
+

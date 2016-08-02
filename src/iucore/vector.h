@@ -1,5 +1,4 @@
-#ifndef VECTOR_H_
-#define VECTOR_H_
+#pragma once
 
 #include <type_traits>
 #include <initializer_list>
@@ -606,4 +605,3 @@ public:
 /** Typedef to be compatible with previously written code. */
 typedef iu::Size<3> IuSize;
 
-#endif /* VECTOR_H_ */

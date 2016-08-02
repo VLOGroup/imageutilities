@@ -1,6 +1,4 @@
-
-#ifndef IUCORE_LINEARDEVICEMEMORY_H
-#define IUCORE_LINEARDEVICEMEMORY_H
+#pragma once
 
 #include <cuda_runtime_api.h>
 #include <thrust/device_ptr.h>
@@ -472,4 +470,3 @@ template<> LinearDeviceMemory<float, 1>::LinearDeviceMemory(const ndarray_ref<fl
 
 }  // namespace iu
 
-#endif // LINEARDEVICEMEMORY_H

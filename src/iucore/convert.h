@@ -1,6 +1,4 @@
-
-#ifndef IUPRIVATE_IUCORE_CONVERT_H
-#define IUPRIVATE_IUCORE_CONVERT_H
+#pragma once
 
 //
 //  W A R N I N G
@@ -73,4 +71,3 @@ void convertLabRgb(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst);
 
 } // namespace iuprivate
 
-#endif // IUPRIVATE_IUCORE_CONVERT_H

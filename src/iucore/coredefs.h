@@ -1,6 +1,4 @@
-
-#ifndef IU_COREDEFS_H
-#define IU_COREDEFS_H
+#pragma once
 
 #include <stdio.h>
 #include <assert.h>
@@ -84,5 +82,5 @@ static inline /*__device__ __host__*/ unsigned int divUp(unsigned int a, unsigne
 
 } // namespace iu
 
-#endif // IU_COREDEFS_H
+
 

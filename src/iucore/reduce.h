@@ -1,6 +1,4 @@
-
-#ifndef IUPRIVATE_REDUCE_H
-#define IUPRIVATE_REDUCE_H
+#pragma once
 
 #include <iucore/coredefs.h>
 #include <iucore/memorydefs.h>
@@ -19,4 +17,3 @@ void reduce(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
 
 } // namespace iuprivate
 
-#endif // IUPRIVATE_REDUCE_H

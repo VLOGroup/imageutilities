@@ -1,11 +1,10 @@
 
+
 #include <iudefs.h>
 #include <iucutil.h>
 #include <iucore/iutextures.cuh>
 #include <common/bsplinetexture_kernels.cuh>
 
-#ifndef IUTRANSFORM_TRANSFORM_CU
-#define IUTRANSFORM_TRANSFORM_CU
 
 namespace iuprivate {
 
@@ -209,4 +208,3 @@ static __global__ void cuTransformKernel_32f_C4(float4* dst,
 
 } // namespace iuprivate
 
-#endif // IUTRANSFORM_TRANSFORM_CU

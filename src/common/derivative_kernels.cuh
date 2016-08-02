@@ -1,30 +1,6 @@
-/*
- * Copyright (c) ICG. All rights reserved.
- *
- * Institute for Computer Graphics and Vision
- * Graz University of Technology / Austria
- *
- *
- * This software is distributed WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- * PURPOSE.  See the above copyright notices for more information.
- *
- *
- * Project     : VMLibraries
- * Module      : common
- * Class       : none
- * Language    : CUDA
- * Description : Device functions for calculating derivatives and divergence.
- *
- * Author     : Manuel Werlberger
- * EMail      : werlberger@icg.tugraz.at
- *
- */
+#pragma once
 
-#ifndef IU_DERIVATIVE_KERNELS_CUH
-#define IU_DERIVATIVE_KERNELS_CUH
-
-#include "../helper_math.h"
+#include "../iuhelpermath.h"
 
 
 #ifdef __CUDACC__ // only include this in cuda files (seen by nvcc)
@@ -1084,4 +1060,3 @@ __global__ void KMagnitude(cudaTextureObject_t texX, cudaTextureObject_t texY, f
 
 
 
-#endif // IU_DERIVATIVE_KERNELS_CUH

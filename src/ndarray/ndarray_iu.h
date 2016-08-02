@@ -1,5 +1,5 @@
-#ifndef NDARRAY_IU_H
-#define NDARRAY_IU_H
+#pragma once
+
 //#include "ndarray_ref.h"
 #include "ndarray_ref.host.h"
 //
@@ -256,4 +256,3 @@ namespace iu{
 	}
 }
 
-#endif

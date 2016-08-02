@@ -1,6 +1,4 @@
-
-#ifndef IUIO_IMAGEIO_H
-#define IUIO_IMAGEIO_H
+#pragma once
 
 #include <iucore/coredefs.h>
 #include <iucore/memorydefs.h>
@@ -47,4 +45,4 @@ void imshow(iu::ImageGpu_32f_C4* image, const std::string& winname, const bool& 
 } // namespace iuprivate
 
 
-#endif // IUIO_IMAGEIO_H
+

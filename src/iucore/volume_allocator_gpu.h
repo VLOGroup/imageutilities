@@ -1,6 +1,4 @@
-
-#ifndef IUCORE_VOLUME_ALLOCATOR_GPU_H
-#define IUCORE_VOLUME_ALLOCATOR_GPU_H
+#pragma once
 
 #include <assert.h>
 #include <cuda_runtime.h>
@@ -42,4 +40,4 @@ public:
 
 } // namespace iuprivate
 
-#endif // IUCORE_VOLUME_ALLOCATOR_GPU_H
+

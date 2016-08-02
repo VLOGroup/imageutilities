@@ -1,6 +1,4 @@
-
-#ifndef IU_CUTIL_H
-#define IU_CUTIL_H
+#pragma once
 
 #include <driver_types.h>
 #include "iucore/coredefs.h"
@@ -129,4 +127,3 @@ static inline double getTime()
 #define IU_CUDA_CHECK         iu::checkCudaErrorState(__FILE__, __FUNCTION__, __LINE__)
 #define IU_CUDA_SAFE_CALL(fun)       iu::checkCudaErrorState(fun, __FILE__, __FUNCTION__, __LINE__)
 
-#endif // IUCUTIL_H

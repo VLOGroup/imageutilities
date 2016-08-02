@@ -1,7 +1,4 @@
 
-#ifndef IUPRIVATE_FILTER_CU
-#define IUPRIVATE_FILTER_CU
-
 #include <float.h>
 #include <iucutil.h>
 #include <iucore/iutextures.cuh>
@@ -1154,5 +1151,5 @@ void cuCubicBSplinePrefilter_32f_C1I(iu::ImageGpu_32f_C1 *input)
 
 } // namespace iuprivate
 
-#endif // IUPRIVATE_FILTER_CU
+
 

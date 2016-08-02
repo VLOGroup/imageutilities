@@ -1,11 +1,7 @@
-
 #include <iudefs.h>
 #include <iucutil.h>
 #include <iucore/iutextures.cuh>
 #include "transform.cu"
-
-#ifndef IUTRANSFORM_REDUCE_CU
-#define IUTRANSFORM_REDUCE_CU
 
 
 namespace iuprivate {
@@ -80,4 +76,3 @@ void cuReduce(iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
 
 } // namespace iuprivate
 
-#endif // IUTRANSFORM_REDUCE_CU

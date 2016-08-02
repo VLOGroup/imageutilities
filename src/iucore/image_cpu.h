@@ -1,7 +1,4 @@
-
-#ifndef IMAGE_CPU_H
-#define IMAGE_CPU_H
-
+#pragma once
 #include <thrust/memory.h>
 #include "image.h"
 #include "image_allocator_cpu.h"
@@ -214,4 +211,3 @@ private:
 } // namespace iu
 
 
-#endif // IMAGE_CPU_H

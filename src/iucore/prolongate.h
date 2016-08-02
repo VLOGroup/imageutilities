@@ -1,5 +1,4 @@
-#ifndef IUPRIVATE_PROLONGATE_H
-#define IUPRIVATE_PROLONGATE_H
+#pragma once
 
 #include <iucore/coredefs.h>
 #include <iucore/memorydefs.h>
@@ -17,4 +16,4 @@ void prolongate(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst,
 
 }  // namespace iuprivate
 
-#endif // IUPRIVATE_PROLONGATE_H
+

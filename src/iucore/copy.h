@@ -1,6 +1,4 @@
-
-#ifndef IUCORE_COPY_H
-#define IUCORE_COPY_H
+#pragma once
 
 //
 //  W A R N I N G
@@ -171,4 +169,3 @@ void copy(const iu::ImageGpu_32f_C1* src, iu::LinearDeviceMemory_32f_C1* dst);
 
 } // namespace iuprivate
 
-#endif // IUCORE_COPY_H

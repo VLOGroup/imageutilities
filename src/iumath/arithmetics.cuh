@@ -1,5 +1,4 @@
-#ifndef ARITHMETICS_CUH
-#define ARITHMETICS_CUH
+#pragma once
 
 #include <thrust/transform.h>
 #include <thrust/reduce.h>
@@ -283,4 +282,3 @@ void combinePlanes(
 }//namespace math
 }//namespace iuprivate
 
-#endif // ARITHMETICS_CUH
