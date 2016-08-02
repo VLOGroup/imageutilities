@@ -1,6 +1,4 @@
-#ifndef IUGUI_MODULE_H
-#define IUGUI_MODULE_H
-
+#pragma once
 /** \defgroup GUI iugui
  * \brief Show images on screen.
 
@@ -11,5 +9,5 @@
 #include "iugui/qt5disparitymapgpuwidget.h"
 
 /** \} */
-#endif // IUGUI_MODULE_H
+
 

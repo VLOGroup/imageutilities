@@ -2,8 +2,7 @@
 ///@brief statistics functions for CUDA code
 ///@author Christian Reinbacher <reinbacher@icg.tugraz.at>
 
-#ifndef STATISTICS_CUH
-#define STATISTICS_CUH
+#pragma once
 
 #include "iucore.h"
 #include "thrust_kernels.cuh"
@@ -228,4 +227,3 @@ void mse(PitchedMemoryType<PixelType, Allocator<PixelType> >& src,
 }  //namespace math
 }  // namespace iuprivate
 
-#endif //STATISTICS_CUH

@@ -1,5 +1,4 @@
-#ifndef ndarray_print_h
-#define ndarray_print_h
+#pragma once
 
 #include "ndarray_ref.kernel.h"
 
@@ -196,4 +195,3 @@ __host__ tstream & operator << (tstream & ss, const intn<n> & x){
 }
 */
 
-#endif

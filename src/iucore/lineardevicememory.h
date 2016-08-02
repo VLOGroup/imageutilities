@@ -1,6 +1,4 @@
-
-#ifndef IUCORE_LINEARDEVICEMEMORY_H
-#define IUCORE_LINEARDEVICEMEMORY_H
+#pragma once
 
 #include <cuda_runtime_api.h>
 #include <thrust/device_ptr.h>
@@ -448,9 +446,13 @@ public:
     }
   };
 
-protected:
+  /** convert to ndarray_ref -- include ndarray/ndarray_iu.h*/
+  ndarray_ref<PixelType, Ndim> ref() const;
 
-protected:
+  /** construct from ndarray_ref  -- include ndarray/ndarray_iu.h*/
+  LinearDeviceMemory(const ndarray_ref<PixelType, Ndim> &x);
+
+private:
   /** Pointer to device buffer. */
   PixelType* data_;
   /** Flag if data pointer is handled outside the LinearDeviceMemory class. */
@@ -463,19 +465,8 @@ private:
   LinearDeviceMemory& operator=(const LinearDeviceMemory&);
 };
 
-template<typename PixelType>
-class LinearDeviceMemory1d : public LinearDeviceMemory<PixelType, 1>
-{
-public:
-  LinearDeviceMemory1d(const unsigned int& numel) : LinearDeviceMemory<PixelType, 1>(numel) {}
-
-  /** convert to ndarray_ref -- include ndarray/ndarray_iu.h*/
-  ndarray_ref<PixelType, 1> ref() const;
-
-  /** construct from ndarray_ref  -- include ndarray/ndarray_iu.h*/
-  LinearDeviceMemory1d(const ndarray_ref<PixelType, 1> &x);
-};
+/** Template specialization. Construct from ndarray_ref. */
+template<> LinearDeviceMemory<float, 1>::LinearDeviceMemory(const ndarray_ref<float, 1> &x);
 
 }  // namespace iu
 
-#endif // LINEARDEVICEMEMORY_H

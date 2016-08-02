@@ -1,6 +1,4 @@
-
-#ifndef IU_CORE_MODULE_H
-#define IU_CORE_MODULE_H
+#pragma once
 
 #include "iudefs.h"
 /// The main namespace
@@ -822,4 +820,3 @@ IUCORE_DLLAPI void remapAffine(iu::ImageGpu_32f_C1* src,
 /** \} */ // end of Core module
 } // namespace iu
 
-#endif // IU_CORE_MODULE_H

@@ -1,6 +1,4 @@
-
-#ifndef IUPRIVATE_FILTER_H
-#define IUPRIVATE_FILTER_H
+#pragma once
 
 #include <iucore/coredefs.h>
 #include <iucore/memorydefs.h>
@@ -54,4 +52,3 @@ void cubicBSplinePrefilter(iu::ImageGpu_32f_C1* srcdst);
 
 } // namespace iuprivate
 
-#endif // IUPRIVATE_FILTER_H

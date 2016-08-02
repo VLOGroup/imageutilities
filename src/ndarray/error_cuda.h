@@ -1,5 +1,4 @@
-#ifndef error_cuda_h
-#define error_cuda_h
+#pragma once
 
 #include "error.h"
 #include <cuda_runtime.h>
@@ -64,4 +63,3 @@ inline void cuda_check_error_function(const char * __file, int __line){
 #define cuda_check_error() cuda_check_error_function(__FILE__,__LINE__);
 
 
-#endif

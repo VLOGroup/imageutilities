@@ -1,5 +1,4 @@
-#ifndef LINEARMEMORY_H
-#define LINEARMEMORY_H
+#pragma once
 
 #include <typeinfo>
 
@@ -190,4 +189,4 @@ private:
 /** \} */// end of Linear Memory
 }// namespace iu
 
-#endif // LINEARMEMORY_H
+

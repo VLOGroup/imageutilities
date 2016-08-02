@@ -1,6 +1,4 @@
-
-#ifndef IUCORE_VOLUME_H
-#define IUCORE_VOLUME_H
+#pragma once
 
 #include "globaldefs.h"
 #include "coredefs.h"
@@ -151,4 +149,3 @@ private:
 
 } // namespace iuprivate
 
-#endif // IUCORE_Volume_H

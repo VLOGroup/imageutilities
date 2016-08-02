@@ -1,31 +1,7 @@
-/*
- * Copyright (c) ICG. All rights reserved.
- *
- * Institute for Computer Graphics and Vision
- * Graz University of Technology / Austria
- *
- *
- * This software is distributed WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- * PURPOSE.  See the above copyright notices for more information.
- *
- *
- * Project     : ImageUtilities
- * Module      : global
- * Class       : none
- * Language    : C/CUDA
- * Description : Cuda kernels for accessing textures with bspline interpolation.
- *
- * Author     : Manuel Werlberger
- * EMail      : werlberger@icg.tugraz.at
- *
- */
-
+#pragma once
 #include <cuda_runtime.h>
 #include "vectormath_kernels.cuh"
 
-#ifndef IU_BSPLINETEXTURE_KERNELS_CUH
-#define IU_BSPLINETEXTURE_KERNELS_CUH
 
 namespace iu {
 
@@ -302,4 +278,3 @@ template<enum cudaTextureReadMode mode> __device__ float cubicTex2D1stDerivative
 
 } // namespace iu
 
-#endif // IUBSPLINETEXTURE_KERNELS_CU

@@ -1,5 +1,4 @@
-#ifndef PGRSOURCE_H
-#define PGRSOURCE_H
+#pragma once
 
 #include "videosource.h"
 
@@ -77,4 +76,4 @@ private:
 
 }  // namespace
 
-#endif // PGRSOURCE_H
+

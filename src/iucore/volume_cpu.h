@@ -1,6 +1,4 @@
-
-#ifndef IUCORE_VOLUME_CPU_H
-#define IUCORE_VOLUME_CPU_H
+#pragma once
 
 #include "volume.h"
 #include "volume_allocator_cpu.h"
@@ -209,4 +207,4 @@ private:
 
 } // namespace iuprivate
 
-#endif // IUCORE_VOLUME_CPU_H
+

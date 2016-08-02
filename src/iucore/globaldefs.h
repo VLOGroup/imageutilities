@@ -1,6 +1,4 @@
-
-#ifndef IU_GLOBALDEFS_H
-#define IU_GLOBALDEFS_H
+#pragma once
 
 //-----------------------------------------------------------------------------
 /* Shared lib macros for windows dlls
@@ -85,4 +83,3 @@
   #define IUMATLAB_DLLAPI
 #endif
 
-#endif // IU_GLOBALDEFS_H

@@ -1,6 +1,4 @@
-
-#ifndef IUCORE_IMAGE_H
-#define IUCORE_IMAGE_H
+#pragma once
 
 #include "globaldefs.h"
 #include "coredefs.h"
@@ -139,4 +137,3 @@ private:
 
 } // namespace iu
 
-#endif // IUCORE_IMAGE_H

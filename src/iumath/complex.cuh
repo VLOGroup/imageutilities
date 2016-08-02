@@ -2,8 +2,7 @@
 ///@brief Functions for complex numbers.
 ///@author Kerstin Hammernik <hammernik@icg.tugraz.at>
 
-#ifndef COMPLEX_CUH
-#define COMPLEX_CUH
+#pragma once
 
 #include "iucore.h"
 #include <thrust/transform.h>
@@ -274,4 +273,3 @@ void multiplyConjugate(
 }  //namespace math
 }  // namespace iuprivate
 
-#endif //COMPLEX_CUH

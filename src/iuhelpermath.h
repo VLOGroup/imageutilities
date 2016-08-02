@@ -1,5 +1,4 @@
-#ifndef IUHELPERMATH_H
-#define IUHELPERMATH_H
+#pragma once
 
 #include <helper_math.h>
 
@@ -805,4 +804,4 @@ inline __device__ __host__ double4 smoothstep(double4 a, double4 b, double4 x)
     double4 y = clamp((x - a) / (b - a), 0.0, 1.0);
     return (y*y*(make_double4(3.0) - (make_double4(2.0)*y)));
 }
-#endif
+

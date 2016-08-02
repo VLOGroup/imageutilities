@@ -1,5 +1,4 @@
-#ifndef intn_h
-#define intn_h
+#pragma once
 
 #include "defines.h"
 
@@ -360,4 +359,3 @@ __host__ __device__ __forceinline__ tstream & operator << (tstream & ss, intn<n>
 }
 
 
-#endif

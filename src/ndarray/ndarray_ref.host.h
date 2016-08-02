@@ -1,4 +1,5 @@
 #pragma once
+
 #include "ndarray_ref.kernel.h"
 #include "error.h"
 
@@ -28,8 +29,8 @@ extern "C" DLL_PUBLIC int ptr_access_flags(void * ptr);
 // forward declaration of classes in iu from which conversion is provided, include "ndarray_iu.h"
 namespace iu
 {
-	template<typename type> class LinearHostMemory1d;
-	template<typename type> class LinearDeviceMemory1d;
+	template<typename type, unsigned int> class LinearHostMemory;
+	template<typename type, unsigned int> class LinearDeviceMemory;
 	template<typename type, class Allocator> class ImageGpu;
 	template<typename type, class Allocator> class ImageCpu;
 	template<typename type, class Allocator> class VolumeGpu;
@@ -429,18 +430,18 @@ namespace special2{
 		using parent::set_ref;
 		ndarray_ref() = default;
 		// special constructors
-		ndarray_ref & set_ref(const iu::LinearHostMemory1d<type> & x);
-		ndarray_ref & set_ref(const iu::LinearDeviceMemory1d<type> & x);
-		ndarray_ref(const iu::LinearHostMemory1d<type> & x){
+		ndarray_ref & set_ref(const iu::LinearHostMemory<type, 1> & x);
+		ndarray_ref & set_ref(const iu::LinearDeviceMemory<type, 1> & x);
+		ndarray_ref(const iu::LinearHostMemory<type, 1> & x){
 			set_ref(x);
 		}
-		ndarray_ref(const iu::LinearDeviceMemory1d<type> & x){
+		ndarray_ref(const iu::LinearDeviceMemory<type, 1> & x){
 			set_ref(x);
 		}
-		ndarray_ref(const iu::LinearHostMemory1d<type> * x){
+		ndarray_ref(const iu::LinearHostMemory<type, 1> * x){
 			set_ref(x);
 		}
-		ndarray_ref(const iu::LinearDeviceMemory1d<type> * x){
+		ndarray_ref(const iu::LinearDeviceMemory<type, 1> * x){
 			set_ref(x);
 		}
 		//reverse conversions
@@ -592,11 +593,11 @@ public:
 	using parent::size;
 public:
 	//! from LinearHostMemory1d and size
-	ndarray_ref(const iu::LinearHostMemory1d<type> & x, const intn<dims> & size);
+	ndarray_ref(const iu::LinearHostMemory<type, 1> & x, const intn<dims> & size);
 	//! from LinearDeviceMemory1d and size
-	ndarray_ref(const iu::LinearDeviceMemory1d<type> & x, const intn<dims> & size);
-	ndarray_ref(const iu::LinearHostMemory1d<type> * x, const intn<dims> & size);
-	ndarray_ref(const iu::LinearDeviceMemory1d<type> * x, const intn<dims> & size);
+	ndarray_ref(const iu::LinearDeviceMemory<type, 1> & x, const intn<dims> & size);
+	ndarray_ref(const iu::LinearHostMemory<type, 1> * x, const intn<dims> & size);
+	ndarray_ref(const iu::LinearDeviceMemory<type, 1> * x, const intn<dims> & size);
 public: // operations
 	//! reshape to get descending order of strides - last index fastest
 	ndarray_ref<type, dims> reshape_descending() const;

@@ -1,6 +1,4 @@
-
-#ifndef IUCORE_VOLUME_GPU_H
-#define IUCORE_VOLUME_GPU_H
+#pragma once
 
 #include "volume.h"
 #include "volume_allocator_gpu.h"
@@ -269,4 +267,4 @@ private:
 
 } // namespace iu
 
-#endif // IUCORE_VOLUME_GPU_H
+

@@ -1,7 +1,4 @@
-
-
-#ifndef PGRCAMERADATA_H
-#define PGRCAMERADATA_H
+#pragma once
 
 #include "FlyCapture2.h"
 
@@ -33,4 +30,4 @@ public:
 
 } // namespace iu
 
-#endif // PGRCAMERA_H
+

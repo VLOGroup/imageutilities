@@ -1,3 +1,5 @@
+#pragma once
+
 //#include "ndarray_ref.h"
 #include "ndarray_ref.host.h"
 //
@@ -18,13 +20,13 @@
 namespace special2{
 	//_______1D_____________
 	template<typename type>
-	ndarray_ref<type, 1> & ndarray_ref<type, 1>::set_ref(const iu::LinearDeviceMemory1d<type> & x){
+	ndarray_ref<type, 1> & ndarray_ref<type, 1>::set_ref(const iu::LinearDeviceMemory<type, 1> & x){
 		this->set_linear_ref(const_cast<type*>(x.data()), x.length(), ndarray_flags::device_only);
 		return *this;
 	}
 
 	template<typename type>
-	ndarray_ref<type, 1> & ndarray_ref<type, 1>::set_ref(const iu::LinearHostMemory1d<type> & x){
+	ndarray_ref<type, 1> & ndarray_ref<type, 1>::set_ref(const iu::LinearHostMemory<type, 1> & x){
 		this->set_linear_ref(const_cast<type*>(x.data()), x.length(), ndarray_flags::host_only);
 		return *this;
 	}
@@ -93,36 +95,36 @@ namespace special2{
 }
 
 template<typename type, int dims>
-ndarray_ref<type,dims>::ndarray_ref(const iu::LinearHostMemory1d<type> & x, const intn<dims> & size){
+ndarray_ref<type,dims>::ndarray_ref(const iu::LinearHostMemory<type, 1> & x, const intn<dims> & size){
 	this->set_linear_ref(const_cast<type*>(x.data()), size, ndarray_flags::host_only);
 }
 
 template<typename type, int dims>
-ndarray_ref<type,dims>::ndarray_ref(const iu::LinearDeviceMemory1d <type>& x, const intn<dims> & size){
+ndarray_ref<type,dims>::ndarray_ref(const iu::LinearDeviceMemory<type, 1>& x, const intn<dims> & size){
 	this->set_linear_ref(const_cast<type*>(x.data()), size, ndarray_flags::device_only);
 }
 
 template<typename type, int dims>
-ndarray_ref<type,dims>::ndarray_ref(const iu::LinearHostMemory1d<type> * x, const intn<dims> & size){
+ndarray_ref<type,dims>::ndarray_ref(const iu::LinearHostMemory<type, 1> * x, const intn<dims> & size){
 	this->set_linear_ref(const_cast<type*>(x.data()), size, ndarray_flags::host_only);
 }
 
 template<typename type, int dims>
-ndarray_ref<type,dims>::ndarray_ref(const iu::LinearDeviceMemory1d<type> * x, const intn<dims> & size){
+ndarray_ref<type,dims>::ndarray_ref(const iu::LinearDeviceMemory<type, 1> * x, const intn<dims> & size){
 	this->set_linear_ref(const_cast<type*>(x.data()), size, ndarray_flags::device_only);
 }
 
 namespace iu{
 
 	//1D
-	template<typename type>
-	ndarray_ref<type,1> LinearHostMemory1d<type>::ref() const{
-		return ndarray_ref<type,1>(*this);
+    template<typename type, unsigned int dims>
+    ndarray_ref<type,dims> LinearHostMemory<type,dims>::ref() const{
+        return ndarray_ref<type,dims>(*this);
 	}
 
 	/** construct from ndarray_ref*/
-	template<typename type>
-	LinearHostMemory1d<type>::LinearHostMemory1d(const ndarray_ref<type,1> &x)
+	template<typename type, unsigned int dims>
+	LinearHostMemory<type, dims>::LinearHostMemory(const ndarray_ref<type, dims> &x)
 	:LinearMemory<1>(x.numel()){
 		runtime_check(x.host_allowed());
 		runtime_check(x.stride_bytes(0)==sizeof(type)); //contiguous in width
@@ -130,15 +132,15 @@ namespace iu{
 		this->data_ = x.ptr();
 	}
 
-	template<typename type>
-	ndarray_ref<type,1> LinearDeviceMemory1d<type>::ref() const{
-		return ndarray_ref<type,1>(*this);
-	}
+    template<typename type, unsigned int dims>
+    ndarray_ref<type,dims> LinearDeviceMemory<type,dims>::ref() const{
+        return ndarray_ref<type,dims>(*this);
+    }
 
 	/** construct from ndarray_ref*/
-	template<typename type>
-	LinearDeviceMemory1d<type>::LinearDeviceMemory1d(const ndarray_ref<type,1> &x)
-	:LinearMemory<1>(x.numel()){
+	template<typename type, unsigned int dims>
+	LinearDeviceMemory<type, dims>::LinearDeviceMemory(const ndarray_ref<type, dims> &x)
+	:LinearMemory<dims>(x.numel()){
 		runtime_check(x.device_allowed());
 		runtime_check(x.stride_bytes(0)==sizeof(type)); //contiguous in width
 		this->ext_data_pointer_ = true;
@@ -212,7 +214,7 @@ namespace iu{
 	/** construct from ndarray_ref shapre: [N x C x H x W]*/
 	template<typename type>
 	TensorCpu<type>::TensorCpu(const ndarray_ref<type,4> &x):
-	LinearHostMemory1d<type>(x.ptr(), x.numel(), true) {
+	LinearHostMemory<type, 1>(x.ptr(), x.numel(), true) {
 		runtime_check(x.host_allowed());
 		runtime_check(x.stride_bytes(0)==sizeof(type)); //contiguous in width
 		runtime_check(x.strides_descending());
@@ -230,7 +232,7 @@ namespace iu{
 	/** construct from ndarray_ref shapre: [N x C x H x W]*/
 	template<typename type>
 	TensorGpu<type>::TensorGpu(const ndarray_ref<type,4> &x):
-	LinearHostMemory1d<type>(x.ptr(), x.numel(), true) {
+	LinearDeviceMemory<type,1>(x.ptr(), x.numel(), true) {
 		runtime_check(x.host_allowed());
 		runtime_check(x.strides_descending());
 		//use [N x C x H x W] layout

@@ -1,6 +1,4 @@
-
-#ifndef IUCORE_IMAGE_GPU_H
-#define IUCORE_IMAGE_GPU_H
+#pragma once
 
 #include "image.h"
 #include "image_allocator_gpu.h"
@@ -309,5 +307,4 @@ private:
 
 } // namespace iu
 
-#endif // IUCORE_IMAGE_GPU_H
 

@@ -1,6 +1,4 @@
-
-#ifndef IMAGE_ALLOCATOR_CPU_H
-#define IMAGE_ALLOCATOR_CPU_H
+#pragma once
 
 #include <cstring>
 #include <math.h>
@@ -57,4 +55,3 @@ public:
 
 } // namespace iuprivate
 
-#endif // IMAGE_ALLOCATOR_CPU_H

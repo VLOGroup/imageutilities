@@ -1,6 +1,4 @@
-#ifndef IUVIDEOSOURCE_MODULE_H
-#define IUVIDEOSOURCE_MODULE_H
-
+#pragma once
 #include "opencvsource.h"
 
 #ifdef IUIO_PGR
@@ -9,4 +7,4 @@
 
 
 
-#endif // IUVIDEOSOURCE_H
+
