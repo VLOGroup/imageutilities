@@ -108,15 +108,15 @@ public:
     return size_.numel();
   }
 
-  /** Returns the number of elements saved in the buffer. (numel of buffer) */
-  unsigned int length() const
-  {
-#pragma message("LinearMemory::length() is deprecated and will be removed in the future. Use numel() instead.")
-//    std::cout
-//        << "Warning: LinearMemory::length() is deprecated and will be removed in the future. Use numel() instead."
-//        << std::endl;
-    return size_.numel();
-  }
+//  /** Returns the number of elements saved in the buffer. (numel of buffer) */
+//  unsigned int length() const
+//  {
+//#pragma message("LinearMemory::length() is deprecated and will be removed in the future. Use numel() instead.")
+////    std::cout
+////        << "Warning: LinearMemory::length() is deprecated and will be removed in the future. Use numel() instead."
+////        << std::endl;
+//    return size_.numel();
+//  }
 
   /** Returns size of the linear memory */
   Size<Ndim> size() const

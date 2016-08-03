@@ -254,10 +254,11 @@ if(IU_USE_MATH)
   set( IU_PUBLIC_HEADERS
     ${IU_PUBLIC_HEADERS}
     ${CMAKE_CURRENT_SOURCE_DIR}/iumath.h
+
    )
 
   set(IU_PUBLIC_MATH_HEADERS
-
+    ${CMAKE_CURRENT_SOURCE_DIR}/iumath/iumathapi.h
    )
 
   set( IU_MATH_HEADERS
