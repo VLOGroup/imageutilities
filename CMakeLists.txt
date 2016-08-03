@@ -16,7 +16,10 @@ include_directories(${CUDA_INCLUDE_DIRS})
 
 if(WIN32)
   string(REPLACE "\\" "/" CUDA_SDK_ROOT_DIR $ENV{CUDA_SDK_ROOT_DIR})
+else(WIN32)
+  set(CUDA_SDK_ROOT_DIR $ENV{CUDA_SDK_ROOT_DIR})
 endif(WIN32)
+
 cuda_include_directories(${CUDA_SDK_ROOT_DIR}/common/inc)
 include_directories(${CUDA_SDK_ROOT_DIR}/common/inc)
 
