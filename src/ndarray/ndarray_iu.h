@@ -21,13 +21,13 @@ namespace special2{
 	//_______1D_____________
 	template<typename type>
 	ndarray_ref<type, 1> & ndarray_ref<type, 1>::set_ref(const iu::LinearDeviceMemory<type, 1> & x){
-		this->set_linear_ref(const_cast<type*>(x.data()), x.length(), ndarray_flags::device_only);
+        this->set_linear_ref(const_cast<type*>(x.data()), x.numel(), ndarray_flags::device_only);
 		return *this;
 	}
 
 	template<typename type>
 	ndarray_ref<type, 1> & ndarray_ref<type, 1>::set_ref(const iu::LinearHostMemory<type, 1> & x){
-		this->set_linear_ref(const_cast<type*>(x.data()), x.length(), ndarray_flags::host_only);
+        this->set_linear_ref(const_cast<type*>(x.data()), x.numel(), ndarray_flags::host_only);
 		return *this;
 	}
 
