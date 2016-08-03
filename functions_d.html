@@ -84,6 +84,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="functions_c.html#index_c"><span>c</span></a></li>
       <li class="current"><a href="functions_d.html#index_d"><span>d</span></a></li>
       <li><a href="functions_e.html#index_e"><span>e</span></a></li>
+      <li><a href="functions_f.html#index_f"><span>f</span></a></li>
       <li><a href="functions_g.html#index_g"><span>g</span></a></li>
       <li><a href="functions_h.html#index_h"><span>h</span></a></li>
       <li><a href="functions_i.html#index_i"><span>i</span></a></li>
@@ -125,8 +126,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <li>data()
 : <a class="el" href="classiu_1_1ImageCpu.html#a478547c34a3a87a59b3ecf4ea9229680">iu::ImageCpu&lt; PixelType, Allocator &gt;</a>
 , <a class="el" href="classiu_1_1ImageGpu.html#ae6360e406503ebb651ed3c99659e837f">iu::ImageGpu&lt; PixelType, Allocator &gt;</a>
-, <a class="el" href="classiu_1_1LinearDeviceMemory.html#a6fbdfb8ab03198cee2308563097ac041">iu::LinearDeviceMemory&lt; PixelType &gt;</a>
-, <a class="el" href="classiu_1_1LinearHostMemory.html#ab9c83bd77921b14f3a5b5263aa56c5e8">iu::LinearHostMemory&lt; PixelType &gt;</a>
+, <a class="el" href="classiu_1_1LinearDeviceMemory.html#ab4dbc3433cb02e43891bcdf49069d5d6">iu::LinearDeviceMemory&lt; PixelType, Ndim &gt;</a>
+, <a class="el" href="classiu_1_1LinearHostMemory.html#a782c275c3968bd2a6e52e34e1bce3cb9">iu::LinearHostMemory&lt; PixelType, Ndim &gt;</a>
 , <a class="el" href="classiu_1_1VolumeCpu.html#ac211e66d5de0bad749338488a8ace376">iu::VolumeCpu&lt; PixelType, Allocator &gt;</a>
 , <a class="el" href="classiu_1_1VolumeGpu.html#a7dd58b9df5577065b687643a80b013cc">iu::VolumeGpu&lt; PixelType, Allocator &gt;</a>
 </li>
@@ -134,12 +135,14 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 : <a class="el" href="classiu_1_1ImageCpu.html#ab378453e5d2eb925c7937bb5517faa79">iu::ImageCpu&lt; PixelType, Allocator &gt;</a>
 , <a class="el" href="classiu_1_1ImageGpu.html#a1810c1972108a267457484eb71174f5c">iu::ImageGpu&lt; PixelType, Allocator &gt;</a>
 , <a class="el" href="structiu_1_1ImageGpu_1_1KernelData.html#a206d7ab47df804a1480dde5869003bbf">iu::ImageGpu&lt; PixelType, Allocator &gt;::KernelData</a>
-, <a class="el" href="structiu_1_1LinearDeviceMemory_1_1KernelData.html#ace72c2c880ff395890ca6c548adbd72f">iu::LinearDeviceMemory&lt; PixelType &gt;::KernelData</a>
+, <a class="el" href="structiu_1_1LinearDeviceMemory_1_1KernelData.html#a4c5728c2f481e2c965a60585da56aef5">iu::LinearDeviceMemory&lt; PixelType, Ndim &gt;::KernelData</a>
 , <a class="el" href="structiu_1_1TensorGpu_1_1TensorKernelData.html#ae749f028a3d0c47aa764d5175ee0a357">iu::TensorGpu&lt; PixelType &gt;::TensorKernelData</a>
+, <a class="el" href="classiu_1_1VectorBase.html#a8a95dc45dedde5b78e650284cb01b30c">iu::VectorBase&lt; PixelType, Ndim &gt;</a>
 , <a class="el" href="structiu_1_1VolumeGpu_1_1KernelData.html#adc5a363cd1de9f38309ed7d0ab3c167b">iu::VolumeGpu&lt; PixelType, Allocator &gt;::KernelData</a>
 </li>
-<li>depth()
-: <a class="el" href="classiu_1_1Volume.html#afdc6ace35e8ca199e9730f5735f5af9d">iu::Volume</a>
+<li>depth
+: <a class="el" href="classiu_1_1Size_3_013_01_4.html#a708d13df255a82753e578f0e0b6557d6">iu::Size&lt; 3 &gt;</a>
+, <a class="el" href="classiu_1_1Volume.html#afdc6ace35e8ca199e9730f5735f5af9d">iu::Volume</a>
 </li>
 <li>depth_
 : <a class="el" href="structiu_1_1VolumeGpu_1_1KernelData.html#ae471c89333deac38ac01636736fcffbe">iu::VolumeGpu&lt; PixelType, Allocator &gt;::KernelData</a>
@@ -148,7 +151,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Jul 28 2016 09:08:20 for Image Utilities (IU) by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Aug 3 2016 08:57:43 for Image Utilities (IU) by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

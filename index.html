@@ -80,7 +80,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="title">Image Utilities (IU) Documentation</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><h2>Installation: </h2>
+<div class="textblock"><h2>Installation </h2>
 <ul>
 <li>Set up environment variable <code>COMPUTE_CAPABILITY</code> with the CC of your CUDA-enabled GPU</li>
 <li>Set up environment variable <code>CUDA_SDK_ROOT_DIR</code> to point to the NVidia CUDA examples</li>
@@ -91,9 +91,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line">$ cmake ..</div>
 <div class="line">$ make</div>
 <div class="line">$ make install</div>
-</div><!-- fragment --><p>To build the documentation (requires doxygen), additionally </p>
+</div><!-- fragment --><h2>Documentation </h2>
+<p>A pre-built documentation is available <a href="https://vlogroup.github.io/imageutilities/">here</a>. To build the documentation on your own (requires doxygen), additionally do </p>
 <div class="fragment"><div class="line">$ make apidoc</div>
-</div><!-- fragment --><h2>Usage: </h2>
+</div><!-- fragment --><h2>Usage </h2>
 <p>In your cmake-based project include the following lines </p>
 <div class="fragment"><div class="line">set(ImageUtilities_DIR $ENV{IMAGEUTILITIES_ROOT})</div>
 <div class="line">find_package(ImageUtilities REQUIRED COMPONENTS iucore)</div>
@@ -103,7 +104,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line">  your_libraries</div>
 <div class="line">  ${IMAGEUTILITIES_LIBRARIES}</div>
 <div class="line">)</div>
-</div><!-- fragment --><h2>Example: </h2>
+</div><!-- fragment --><h2>Example </h2>
 <p>Image Utilities take away the hassle of memory management when dealing with CUDA code. The follwing code snippet shows a simple example of image manipulation using CUDA:</p>
 <div class="fragment"><div class="line"><span class="comment">// read two images from files</span></div>
 <div class="line"><a class="code" href="classiu_1_1ImageGpu.html">iu::ImageGpu_32f_C1</a> *I1 = iu::imread_cu32f_C1(DATA_PATH(<span class="stringliteral">&quot;army_1.png&quot;</span>));</div>
@@ -139,7 +140,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- fragment --> </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Jul 28 2016 09:08:20 for Image Utilities (IU) by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Aug 3 2016 08:57:43 for Image Utilities (IU) by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

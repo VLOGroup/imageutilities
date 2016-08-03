@@ -1,6 +1,7 @@
 var searchData=
 [
-  ['tensorcpu',['TensorCpu',['../classiu_1_1TensorCpu.html',1,'iu']]],
-  ['tensorgpu',['TensorGpu',['../classiu_1_1TensorGpu.html',1,'iu']]],
-  ['tensorkerneldata',['TensorKernelData',['../structiu_1_1TensorGpu_1_1TensorKernelData.html',1,'iu::TensorGpu']]]
+  ['size',['Size',['../classiu_1_1Size.html',1,'iu']]],
+  ['size_3c_203_20_3e',['Size&lt; 3 &gt;',['../classiu_1_1Size_3_013_01_4.html',1,'iu']]],
+  ['sizebase',['SizeBase',['../classiu_1_1SizeBase.html',1,'iu']]],
+  ['sizebase_3c_203_20_3e',['SizeBase&lt; 3 &gt;',['../classiu_1_1SizeBase.html',1,'iu']]]
 ];

@@ -8,5 +8,6 @@ var searchData=
   ['pitch_5f',['pitch_',['../classiu_1_1ImageCpu.html#a14fb81f5696091fed6958535033e18c6',1,'iu::ImageCpu::pitch_()'],['../classiu_1_1ImageGpu.html#a0525f9b98d5590298b1020bde7a4750e',1,'iu::ImageGpu::pitch_()']]],
   ['preparetexture',['prepareTexture',['../classiu_1_1ImageGpu.html#a762a50f6225be7629af3adfa6fd61fff',1,'iu::ImageGpu']]],
   ['prolongate',['prolongate',['../group__Geometric.html#ga21b7a739d6aa17e3fbf1e0705646c39a',1,'iu']]],
+  ['ptr',['ptr',['../classiu_1_1SizeBase.html#a64f185a1a149541ec6fd7be88f043728',1,'iu::SizeBase::ptr()'],['../classiu_1_1SizeBase.html#a78207bc26e97d94bf335605ca3162622',1,'iu::SizeBase::ptr() const ']]],
   ['pitched_20memory_3a_20volume',['Pitched Memory: Volume',['../group__Volume.html',1,'']]]
 ];

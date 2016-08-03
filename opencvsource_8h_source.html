@@ -89,58 +89,57 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="title">opencvsource.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef OPENCV_SOURCE_H</span></div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define OPENCV_SOURCE_H</span></div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &quot;videosource.h&quot;</span></div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;</div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="keyword">namespace </span>iu {</div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;</div>
-<div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="classiu_1_1OpenCVSource.html">   18</a></span>&#160;<span class="keyword">class </span><a class="code" href="classiu_1_1OpenCVSource.html">OpenCVSource</a> : <span class="keyword">public</span> <a class="code" href="classiu_1_1VideoSource.html">VideoSource</a></div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;{</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    <a class="code" href="classiu_1_1OpenCVSource.html#a29899af9d4accadb06d4211402aaf474">OpenCVSource</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> camId=0, <span class="keywordtype">bool</span> gray=<span class="keyword">true</span>);</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <a class="code" href="classiu_1_1OpenCVSource.html#a29899af9d4accadb06d4211402aaf474">OpenCVSource</a>(<span class="keyword">const</span> std::string&amp; filename, <span class="keywordtype">bool</span> gray=<span class="keyword">true</span>);</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <span class="keyword">virtual</span> ~<a class="code" href="classiu_1_1OpenCVSource.html">OpenCVSource</a>();</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    cv::Mat <a class="code" href="classiu_1_1OpenCVSource.html#ae66512055eb131ef88d6f2ece2976f43">getImage</a>();</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;</div>
-<div class="line"><a name="l00047"></a><span class="lineno"><a class="line" href="classiu_1_1OpenCVSource.html#a8d5b93fbfe03f09df7c435c455991d59">   47</a></span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="classiu_1_1OpenCVSource.html#a8d5b93fbfe03f09df7c435c455991d59">getWidth</a>() { <span class="keywordflow">return</span> width_; }</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;</div>
-<div class="line"><a name="l00053"></a><span class="lineno"><a class="line" href="classiu_1_1OpenCVSource.html#a1b5e09e6779f82325bb10d0d7a98e9fe">   53</a></span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="classiu_1_1OpenCVSource.html#a1b5e09e6779f82325bb10d0d7a98e9fe">getHeight</a>() { <span class="keywordflow">return</span> height_; }</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;</div>
-<div class="line"><a name="l00059"></a><span class="lineno"><a class="line" href="classiu_1_1OpenCVSource.html#ad618c85a8bd782ca107a2f483000633a">   59</a></span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="classiu_1_1OpenCVSource.html#ad618c85a8bd782ca107a2f483000633a">getCurrentFrameNr</a>() { <span class="keywordflow">return</span> frameNr_; }</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    cv::VideoCapture* videocapture_;</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    <span class="keywordtype">int</span> numFrames_;</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    cv::Mat frame_;</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    <span class="keywordtype">bool</span> gray_;</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;};</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160; <span class="comment">// end of videoIO</span></div>
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#pragma once</span></div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &quot;videosource.h&quot;</span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;</div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="keyword">namespace </span>iu {</div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;</div>
+<div class="line"><a name="l00017"></a><span class="lineno"><a class="line" href="classiu_1_1OpenCVSource.html">   17</a></span>&#160;<span class="keyword">class </span><a class="code" href="classiu_1_1OpenCVSource.html">OpenCVSource</a> : <span class="keyword">public</span> <a class="code" href="classiu_1_1VideoSource.html">VideoSource</a></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;{</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    <a class="code" href="classiu_1_1OpenCVSource.html#a29899af9d4accadb06d4211402aaf474">OpenCVSource</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> camId=0, <span class="keywordtype">bool</span> gray=<span class="keyword">true</span>);</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <a class="code" href="classiu_1_1OpenCVSource.html#a29899af9d4accadb06d4211402aaf474">OpenCVSource</a>(<span class="keyword">const</span> std::string&amp; filename, <span class="keywordtype">bool</span> gray=<span class="keyword">true</span>);</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <span class="keyword">virtual</span> ~<a class="code" href="classiu_1_1OpenCVSource.html">OpenCVSource</a>();</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    cv::Mat <a class="code" href="classiu_1_1OpenCVSource.html#ae66512055eb131ef88d6f2ece2976f43">getImage</a>();</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;</div>
+<div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="classiu_1_1OpenCVSource.html#a8d5b93fbfe03f09df7c435c455991d59">   46</a></span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="classiu_1_1OpenCVSource.html#a8d5b93fbfe03f09df7c435c455991d59">getWidth</a>() { <span class="keywordflow">return</span> width_; }</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;</div>
+<div class="line"><a name="l00052"></a><span class="lineno"><a class="line" href="classiu_1_1OpenCVSource.html#a1b5e09e6779f82325bb10d0d7a98e9fe">   52</a></span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="classiu_1_1OpenCVSource.html#a1b5e09e6779f82325bb10d0d7a98e9fe">getHeight</a>() { <span class="keywordflow">return</span> height_; }</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;</div>
+<div class="line"><a name="l00058"></a><span class="lineno"><a class="line" href="classiu_1_1OpenCVSource.html#ad618c85a8bd782ca107a2f483000633a">   58</a></span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="classiu_1_1OpenCVSource.html#ad618c85a8bd782ca107a2f483000633a">getCurrentFrameNr</a>() { <span class="keywordflow">return</span> frameNr_; }</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    cv::VideoCapture* videocapture_;</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    <span class="keywordtype">int</span> numFrames_;</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    cv::Mat frame_;</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    <span class="keywordtype">bool</span> gray_;</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;};</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160; <span class="comment">// end of videoIO</span></div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;</div>
 <div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;</div>
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;} <span class="comment">// namespace iu</span></div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;} <span class="comment">// namespace iu</span></div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;</div>
 <div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;</div>
 <div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="ttc" id="classiu_1_1VideoSource_html"><div class="ttname"><a href="classiu_1_1VideoSource.html">iu::VideoSource</a></div><div class="ttdoc">The VideoSource class is the abstract base class for video input. </div><div class="ttdef"><b>Definition:</b> videosource.h:18</div></div>
+<div class="ttc" id="classiu_1_1VideoSource_html"><div class="ttname"><a href="classiu_1_1VideoSource.html">iu::VideoSource</a></div><div class="ttdoc">The VideoSource class is the abstract base class for video input. </div><div class="ttdef"><b>Definition:</b> videosource.h:17</div></div>
 <div class="ttc" id="classiu_1_1OpenCVSource_html_ae66512055eb131ef88d6f2ece2976f43"><div class="ttname"><a href="classiu_1_1OpenCVSource.html#ae66512055eb131ef88d6f2ece2976f43">iu::OpenCVSource::getImage</a></div><div class="ttdeci">cv::Mat getImage()</div><div class="ttdoc">get new image </div></div>
-<div class="ttc" id="classiu_1_1OpenCVSource_html"><div class="ttname"><a href="classiu_1_1OpenCVSource.html">iu::OpenCVSource</a></div><div class="ttdoc">The OpenCVSource class uses OpenCV to read images from cameras or files. </div><div class="ttdef"><b>Definition:</b> opencvsource.h:18</div></div>
-<div class="ttc" id="classiu_1_1OpenCVSource_html_a1b5e09e6779f82325bb10d0d7a98e9fe"><div class="ttname"><a href="classiu_1_1OpenCVSource.html#a1b5e09e6779f82325bb10d0d7a98e9fe">iu::OpenCVSource::getHeight</a></div><div class="ttdeci">unsigned int getHeight()</div><div class="ttdoc">get image height </div><div class="ttdef"><b>Definition:</b> opencvsource.h:53</div></div>
+<div class="ttc" id="classiu_1_1OpenCVSource_html"><div class="ttname"><a href="classiu_1_1OpenCVSource.html">iu::OpenCVSource</a></div><div class="ttdoc">The OpenCVSource class uses OpenCV to read images from cameras or files. </div><div class="ttdef"><b>Definition:</b> opencvsource.h:17</div></div>
+<div class="ttc" id="classiu_1_1OpenCVSource_html_a1b5e09e6779f82325bb10d0d7a98e9fe"><div class="ttname"><a href="classiu_1_1OpenCVSource.html#a1b5e09e6779f82325bb10d0d7a98e9fe">iu::OpenCVSource::getHeight</a></div><div class="ttdeci">unsigned int getHeight()</div><div class="ttdoc">get image height </div><div class="ttdef"><b>Definition:</b> opencvsource.h:52</div></div>
 <div class="ttc" id="classiu_1_1OpenCVSource_html_a29899af9d4accadb06d4211402aaf474"><div class="ttname"><a href="classiu_1_1OpenCVSource.html#a29899af9d4accadb06d4211402aaf474">iu::OpenCVSource::OpenCVSource</a></div><div class="ttdeci">OpenCVSource(unsigned int camId=0, bool gray=true)</div><div class="ttdoc">OpenCVSource constructor. Initialize the camera camId. </div></div>
-<div class="ttc" id="classiu_1_1OpenCVSource_html_ad618c85a8bd782ca107a2f483000633a"><div class="ttname"><a href="classiu_1_1OpenCVSource.html#ad618c85a8bd782ca107a2f483000633a">iu::OpenCVSource::getCurrentFrameNr</a></div><div class="ttdeci">unsigned int getCurrentFrameNr()</div><div class="ttdoc">get frame index. Upon camera initilaization, the counter is set to 0 </div><div class="ttdef"><b>Definition:</b> opencvsource.h:59</div></div>
-<div class="ttc" id="classiu_1_1OpenCVSource_html_a8d5b93fbfe03f09df7c435c455991d59"><div class="ttname"><a href="classiu_1_1OpenCVSource.html#a8d5b93fbfe03f09df7c435c455991d59">iu::OpenCVSource::getWidth</a></div><div class="ttdeci">unsigned int getWidth()</div><div class="ttdoc">get image width </div><div class="ttdef"><b>Definition:</b> opencvsource.h:47</div></div>
+<div class="ttc" id="classiu_1_1OpenCVSource_html_ad618c85a8bd782ca107a2f483000633a"><div class="ttname"><a href="classiu_1_1OpenCVSource.html#ad618c85a8bd782ca107a2f483000633a">iu::OpenCVSource::getCurrentFrameNr</a></div><div class="ttdeci">unsigned int getCurrentFrameNr()</div><div class="ttdoc">get frame index. Upon camera initilaization, the counter is set to 0 </div><div class="ttdef"><b>Definition:</b> opencvsource.h:58</div></div>
+<div class="ttc" id="classiu_1_1OpenCVSource_html_a8d5b93fbfe03f09df7c435c455991d59"><div class="ttname"><a href="classiu_1_1OpenCVSource.html#a8d5b93fbfe03f09df7c435c455991d59">iu::OpenCVSource::getWidth</a></div><div class="ttdeci">unsigned int getWidth()</div><div class="ttdoc">get image width </div><div class="ttdef"><b>Definition:</b> opencvsource.h:46</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Jul 28 2016 09:08:17 for Image Utilities (IU) by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Aug 3 2016 08:57:39 for Image Utilities (IU) by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

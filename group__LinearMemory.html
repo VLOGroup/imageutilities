@@ -88,13 +88,13 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Data Structures</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classiu_1_1LinearDeviceMemory.html">iu::LinearDeviceMemory&lt; PixelType &gt;</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classiu_1_1LinearDeviceMemory.html">iu::LinearDeviceMemory&lt; PixelType, Ndim &gt;</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Linear device memory class.  <a href="classiu_1_1LinearDeviceMemory.html#details">More...</a><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classiu_1_1LinearHostMemory.html">iu::LinearHostMemory&lt; PixelType &gt;</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classiu_1_1LinearHostMemory.html">iu::LinearHostMemory&lt; PixelType, Ndim &gt;</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Linear host memory class.  <a href="classiu_1_1LinearHostMemory.html#details">More...</a><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classiu_1_1LinearMemory.html">iu::LinearMemory</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classiu_1_1LinearMemory.html">iu::LinearMemory&lt; Ndim &gt;</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Base class for linear memory classes.  <a href="classiu_1_1LinearMemory.html#details">More...</a><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classiu_1_1TensorCpu.html">iu::TensorCpu&lt; PixelType &gt;</a></td></tr>
@@ -108,12 +108,12 @@ Data Structures</h2></td></tr>
 <p>Memory management for <a class="el" href="classiu_1_1LinearMemory.html" title="Base class for linear memory classes. ">LinearMemory</a> classes. </p>
 <p>This handles the memory management for following linear memory classes:</p>
 <ul>
-<li><a class="el" href="classiu_1_1LinearHostMemory.html" title="Linear host memory class. ">LinearHostMemory</a></li>
-<li><a class="el" href="classiu_1_1LinearDeviceMemory.html" title="Linear device memory class. ">LinearDeviceMemory</a></li>
-<li><a class="el" href="classiu_1_1TensorCpu.html" title="Host 4D tensor class. ">TensorCpu</a></li>
-<li><a class="el" href="classiu_1_1TensorGpu.html" title="Device 4D tensor class. ">TensorGpu</a></li>
+<li><a class="el" href="classiu_1_1LinearHostMemory.html" title="Linear host memory class. ">LinearHostMemory</a>: linear memory with ND size layout</li>
+<li><a class="el" href="classiu_1_1LinearDeviceMemory.html" title="Linear device memory class. ">LinearDeviceMemory</a>: linear memory with ND size layout</li>
+<li><a class="el" href="classiu_1_1TensorCpu.html" title="Host 4D tensor class. ">TensorCpu</a>: Specialization with 1D size layout. Wrapper for special 4D tensor. Same access convention as python.</li>
+<li><a class="el" href="classiu_1_1TensorGpu.html" title="Device 4D tensor class. ">TensorGpu</a>: Specialization with 1D size layout. Wrapper for special 4D tensor. Same access convention as python.</li>
 </ul>
-<p>The device memory classes can be easily passed to CUDA kernels using a special struct. This struct gives the possibility to not only access the data pointer of the image but also other useful information such as length of the object.</p>
+<p>The device memory classes can be easily passed to CUDA kernels using a special struct. This struct gives the possibility to not only access the data pointer of the image but also other useful information such as numel of the object.</p>
 <ul>
 <li><a class="el" href="structiu_1_1LinearDeviceMemory_1_1KernelData.html" title="Struct pointer KernelData that can be used in CUDA kernels. ">LinearDeviceMemory::KernelData</a></li>
 <li><a class="el" href="structiu_1_1TensorGpu_1_1TensorKernelData.html" title="Struct pointer TensorKernelData that can be used in CUDA kernels. ">TensorGpu::TensorKernelData</a> </li>
@@ -121,7 +121,7 @@ Data Structures</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Jul 28 2016 09:08:17 for Image Utilities (IU) by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Aug 3 2016 08:57:39 for Image Utilities (IU) by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

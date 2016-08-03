@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>Image Utilities (IU): iu::LinearMemory Class Reference</title>
+<title>Image Utilities (IU): iu::LinearMemory&lt; Ndim &gt; Class Template Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -92,7 +92,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#friends">Friends</a>  </div>
   <div class="headertitle">
-<div class="title">iu::LinearMemory Class Reference<div class="ingroups"><a class="el" href="group__LinearMemory.html">Linear memory</a></div></div>  </div>
+<div class="title">iu::LinearMemory&lt; Ndim &gt; Class Template Reference<div class="ingroups"><a class="el" href="group__LinearMemory.html">Linear memory</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
 
@@ -101,36 +101,46 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <p><code>#include &lt;<a class="el" href="linearmemory_8h_source.html">linearmemory.h</a>&gt;</code></p>
 <div class="dynheader">
-Inheritance diagram for iu::LinearMemory:</div>
+Inheritance diagram for iu::LinearMemory&lt; Ndim &gt;:</div>
 <div class="dyncontent">
  <div class="center">
-  <img src="classiu_1_1LinearMemory.png" usemap="#iu::LinearMemory_map" alt=""/>
-  <map id="iu::LinearMemory_map" name="iu::LinearMemory_map">
-<area href="classiu_1_1LinearDeviceMemory.html" title="Linear device memory class. " alt="iu::LinearDeviceMemory&lt; PixelType &gt;" shape="rect" coords="0,56,229,80"/>
-<area href="classiu_1_1LinearHostMemory.html" title="Linear host memory class. " alt="iu::LinearHostMemory&lt; PixelType &gt;" shape="rect" coords="239,56,468,80"/>
-<area href="classiu_1_1TensorGpu.html" title="Device 4D tensor class. " alt="iu::TensorGpu&lt; PixelType &gt;" shape="rect" coords="0,112,229,136"/>
-<area href="classiu_1_1TensorCpu.html" title="Host 4D tensor class. " alt="iu::TensorCpu&lt; PixelType &gt;" shape="rect" coords="239,112,468,136"/>
+  <img src="classiu_1_1LinearMemory.png" usemap="#iu::LinearMemory&lt; Ndim &gt;_map" alt=""/>
+  <map id="iu::LinearMemory&lt; Ndim &gt;_map" name="iu::LinearMemory&lt; Ndim &gt;_map">
+<area href="classiu_1_1LinearDeviceMemory.html" title="Linear device memory class. " alt="iu::LinearDeviceMemory&lt; PixelType, Ndim &gt;" shape="rect" coords="0,56,266,80"/>
+<area href="classiu_1_1LinearHostMemory.html" title="Linear host memory class. " alt="iu::LinearHostMemory&lt; PixelType, Ndim &gt;" shape="rect" coords="276,56,542,80"/>
+<area href="classiu_1_1LinearDeviceMemory.html" alt="iu::LinearDeviceMemory&lt; PixelType, 1 &gt;" shape="rect" coords="552,56,818,80"/>
+<area href="classiu_1_1LinearHostMemory.html" alt="iu::LinearHostMemory&lt; PixelType, 1 &gt;" shape="rect" coords="828,56,1094,80"/>
+<area href="classiu_1_1TensorGpu.html" title="Device 4D tensor class. " alt="iu::TensorGpu&lt; PixelType &gt;" shape="rect" coords="552,112,818,136"/>
+<area href="classiu_1_1TensorCpu.html" title="Host 4D tensor class. " alt="iu::TensorCpu&lt; PixelType &gt;" shape="rect" coords="828,112,1094,136"/>
 </map>
  </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:aab836328ee220bd1d7fd6e02160b108d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classiu_1_1LinearMemory.html#aab836328ee220bd1d7fd6e02160b108d">LinearMemory</a> ()</td></tr>
-<tr class="separator:aab836328ee220bd1d7fd6e02160b108d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae827b8a60a540efcee4eaa0b624fe2a3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classiu_1_1LinearMemory.html#ae827b8a60a540efcee4eaa0b624fe2a3">LinearMemory</a> (const unsigned int &amp;<a class="el" href="classiu_1_1LinearMemory.html#af96c44a88197d248944ef935f2d6a3fd">length</a>)</td></tr>
-<tr class="separator:ae827b8a60a540efcee4eaa0b624fe2a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acd1087107e02ecb6cf6558680c50b2fb"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classiu_1_1LinearMemory.html#acd1087107e02ecb6cf6558680c50b2fb">sameType</a> (const <a class="el" href="classiu_1_1LinearMemory.html">LinearMemory</a> &amp;from)</td></tr>
-<tr class="separator:acd1087107e02ecb6cf6558680c50b2fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7fc22a873bb378bc6ad872023ff44397"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classiu_1_1LinearMemory.html#a7fc22a873bb378bc6ad872023ff44397">~LinearMemory</a> ()</td></tr>
-<tr class="separator:a7fc22a873bb378bc6ad872023ff44397"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af96c44a88197d248944ef935f2d6a3fd"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classiu_1_1LinearMemory.html#af96c44a88197d248944ef935f2d6a3fd">length</a> () const </td></tr>
-<tr class="separator:af96c44a88197d248944ef935f2d6a3fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a52553546da6e71d936664d0d0d459b07"><td class="memItemLeft" align="right" valign="top">virtual size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classiu_1_1LinearMemory.html#a52553546da6e71d936664d0d0d459b07">bytes</a> () const </td></tr>
-<tr class="separator:a52553546da6e71d936664d0d0d459b07"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a73f9f05a06d01679b8191cf95b5f5f28"><td class="memItemLeft" align="right" valign="top">virtual unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classiu_1_1LinearMemory.html#a73f9f05a06d01679b8191cf95b5f5f28">bitDepth</a> () const </td></tr>
-<tr class="separator:a73f9f05a06d01679b8191cf95b5f5f28"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af9b4b9e01ae014e2c8380ebf4cc7b81e"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classiu_1_1LinearMemory.html#af9b4b9e01ae014e2c8380ebf4cc7b81e">onDevice</a> () const </td></tr>
-<tr class="separator:af9b4b9e01ae014e2c8380ebf4cc7b81e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac7a2b35b29d912d40b1eaf4644dae96f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classiu_1_1LinearMemory.html#ac7a2b35b29d912d40b1eaf4644dae96f">LinearMemory</a> ()</td></tr>
+<tr class="separator:ac7a2b35b29d912d40b1eaf4644dae96f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a22c880478fb19387ffad5163e2e0a8ba"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classiu_1_1LinearMemory.html#a22c880478fb19387ffad5163e2e0a8ba">LinearMemory</a> (const <a class="el" href="classiu_1_1Size.html">Size</a>&lt; Ndim &gt; &amp;<a class="el" href="classiu_1_1LinearMemory.html#af54fa0ef78b54a98d8725e9d1e16b2ae">size</a>)</td></tr>
+<tr class="separator:a22c880478fb19387ffad5163e2e0a8ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab1b0564fe2555543e1d5fb813daf9fcb"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classiu_1_1LinearMemory.html#ab1b0564fe2555543e1d5fb813daf9fcb">LinearMemory</a> (const unsigned int &amp;<a class="el" href="classiu_1_1LinearMemory.html#a6482e7304d6250a9fec0ec0f790c2ca8">numel</a>)</td></tr>
+<tr class="separator:ab1b0564fe2555543e1d5fb813daf9fcb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aff76504245f6d95e2f9bc2df17d687c7"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classiu_1_1LinearMemory.html#aff76504245f6d95e2f9bc2df17d687c7">sameType</a> (const <a class="el" href="classiu_1_1LinearMemory.html">LinearMemory</a> &amp;from)</td></tr>
+<tr class="separator:aff76504245f6d95e2f9bc2df17d687c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a081240a28fdfbaddd74f94bbca83739d"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classiu_1_1LinearMemory.html#a081240a28fdfbaddd74f94bbca83739d">~LinearMemory</a> ()</td></tr>
+<tr class="separator:a081240a28fdfbaddd74f94bbca83739d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6482e7304d6250a9fec0ec0f790c2ca8"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classiu_1_1LinearMemory.html#a6482e7304d6250a9fec0ec0f790c2ca8">numel</a> () const </td></tr>
+<tr class="separator:a6482e7304d6250a9fec0ec0f790c2ca8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afe5920aa14f99a2901192c1d32f22b68"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classiu_1_1LinearMemory.html#afe5920aa14f99a2901192c1d32f22b68">length</a> () const </td></tr>
+<tr class="separator:afe5920aa14f99a2901192c1d32f22b68"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af54fa0ef78b54a98d8725e9d1e16b2ae"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classiu_1_1Size.html">Size</a>&lt; Ndim &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classiu_1_1LinearMemory.html#af54fa0ef78b54a98d8725e9d1e16b2ae">size</a> () const </td></tr>
+<tr class="separator:af54fa0ef78b54a98d8725e9d1e16b2ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a35e67d0d80007e8bdb314134ba40a529"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classiu_1_1Size.html">Size</a>&lt; Ndim &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classiu_1_1LinearMemory.html#a35e67d0d80007e8bdb314134ba40a529">stride</a> () const </td></tr>
+<tr class="separator:a35e67d0d80007e8bdb314134ba40a529"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae78ba7eb0baebb0d66d6dd7053b7fa51"><td class="memItemLeft" align="right" valign="top">virtual size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classiu_1_1LinearMemory.html#ae78ba7eb0baebb0d66d6dd7053b7fa51">bytes</a> () const </td></tr>
+<tr class="separator:ae78ba7eb0baebb0d66d6dd7053b7fa51"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2f7fc44c1ed6ec5e59fd342b05ca54b7"><td class="memItemLeft" align="right" valign="top">virtual unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classiu_1_1LinearMemory.html#a2f7fc44c1ed6ec5e59fd342b05ca54b7">bitDepth</a> () const </td></tr>
+<tr class="separator:a2f7fc44c1ed6ec5e59fd342b05ca54b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac9eb549f36ea7a0c22e01a8ede9c585b"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classiu_1_1LinearMemory.html#ac9eb549f36ea7a0c22e01a8ede9c585b">onDevice</a> () const </td></tr>
+<tr class="separator:ac9eb549f36ea7a0c22e01a8ede9c585b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
 Friends</h2></td></tr>
@@ -138,17 +148,22 @@ Friends</h2></td></tr>
 <tr class="separator:a8fdbb92dbba8125814137517f94e7033"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Base class for linear memory classes. </p>
+<div class="textblock"><h3>template&lt;unsigned int Ndim = 1&gt;<br/>
+class iu::LinearMemory&lt; Ndim &gt;</h3>
+
+<p>Base class for linear memory classes. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a class="anchor" id="aab836328ee220bd1d7fd6e02160b108d"></a>
+<a class="anchor" id="ac7a2b35b29d912d40b1eaf4644dae96f"></a>
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;unsigned int Ndim = 1&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">iu::LinearMemory::LinearMemory </td>
+          <td class="memname"><a class="el" href="classiu_1_1LinearMemory.html">iu::LinearMemory</a>&lt; Ndim &gt;::<a class="el" href="classiu_1_1LinearMemory.html">LinearMemory</a> </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -164,18 +179,20 @@ Friends</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ae827b8a60a540efcee4eaa0b624fe2a3"></a>
+<a class="anchor" id="a22c880478fb19387ffad5163e2e0a8ba"></a>
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;unsigned int Ndim = 1&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">iu::LinearMemory::LinearMemory </td>
+          <td class="memname"><a class="el" href="classiu_1_1LinearMemory.html">iu::LinearMemory</a>&lt; Ndim &gt;::<a class="el" href="classiu_1_1LinearMemory.html">LinearMemory</a> </td>
           <td>(</td>
-          <td class="paramtype">const unsigned int &amp;&#160;</td>
-          <td class="paramname"><em>length</em></td><td>)</td>
+          <td class="paramtype">const <a class="el" href="classiu_1_1Size.html">Size</a>&lt; Ndim &gt; &amp;&#160;</td>
+          <td class="paramname"><em>size</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -188,22 +205,57 @@ Friends</h2></td></tr>
 <p>Special constructor. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">length</td><td>Length of linear memory </td></tr>
+    <tr><td class="paramname">size</td><td>size of the linear memory </td></tr>
   </table>
   </dd>
 </dl>
 
 </div>
 </div>
-<a class="anchor" id="a7fc22a873bb378bc6ad872023ff44397"></a>
+<a class="anchor" id="ab1b0564fe2555543e1d5fb813daf9fcb"></a>
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;unsigned int Ndim = 1&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual iu::LinearMemory::~LinearMemory </td>
+          <td class="memname"><a class="el" href="classiu_1_1LinearMemory.html">iu::LinearMemory</a>&lt; Ndim &gt;::<a class="el" href="classiu_1_1LinearMemory.html">LinearMemory</a> </td>
+          <td>(</td>
+          <td class="paramtype">const unsigned int &amp;&#160;</td>
+          <td class="paramname"><em>numel</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Special constructor. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">numel</td><td>number of elements of linear memory. <a class="el" href="classiu_1_1Size.html" title="Main class for N-dimensional unsigned int vectors (size vectors). ">Size</a>[0] equals the number of elements, the other dimensions are 1. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a081240a28fdfbaddd74f94bbca83739d"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;unsigned int Ndim = 1&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual <a class="el" href="classiu_1_1LinearMemory.html">iu::LinearMemory</a>&lt; Ndim &gt;::~<a class="el" href="classiu_1_1LinearMemory.html">LinearMemory</a> </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -220,15 +272,17 @@ Friends</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="a73f9f05a06d01679b8191cf95b5f5f28"></a>
+<a class="anchor" id="a2f7fc44c1ed6ec5e59fd342b05ca54b7"></a>
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;unsigned int Ndim = 1&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual unsigned int iu::LinearMemory::bitDepth </td>
+          <td class="memname">virtual unsigned int <a class="el" href="classiu_1_1LinearMemory.html">iu::LinearMemory</a>&lt; Ndim &gt;::bitDepth </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -242,19 +296,21 @@ Friends</h2></td></tr>
 </div><div class="memdoc">
 <p>Returns the bit depth of the data pointer. </p>
 
-<p>Reimplemented in <a class="el" href="classiu_1_1LinearDeviceMemory.html#a131d1ce33395cf1eb83d275348937703">iu::LinearDeviceMemory&lt; PixelType &gt;</a>, and <a class="el" href="classiu_1_1LinearHostMemory.html#a125afb8fa639f0108de9abf48be8a5b1">iu::LinearHostMemory&lt; PixelType &gt;</a>.</p>
+<p>Reimplemented in <a class="el" href="classiu_1_1LinearDeviceMemory.html#a4a9d9ae224b9aec94f28e1b20d580bbc">iu::LinearDeviceMemory&lt; PixelType, Ndim &gt;</a>, <a class="el" href="classiu_1_1LinearDeviceMemory.html#a4a9d9ae224b9aec94f28e1b20d580bbc">iu::LinearDeviceMemory&lt; PixelType, 1 &gt;</a>, <a class="el" href="classiu_1_1LinearHostMemory.html#a7ba8555486e5112b748678bbaf8d831e">iu::LinearHostMemory&lt; PixelType, Ndim &gt;</a>, and <a class="el" href="classiu_1_1LinearHostMemory.html#a7ba8555486e5112b748678bbaf8d831e">iu::LinearHostMemory&lt; PixelType, 1 &gt;</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a52553546da6e71d936664d0d0d459b07"></a>
+<a class="anchor" id="ae78ba7eb0baebb0d66d6dd7053b7fa51"></a>
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;unsigned int Ndim = 1&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual size_t iu::LinearMemory::bytes </td>
+          <td class="memname">virtual size_t <a class="el" href="classiu_1_1LinearMemory.html">iu::LinearMemory</a>&lt; Ndim &gt;::bytes </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -268,19 +324,21 @@ Friends</h2></td></tr>
 </div><div class="memdoc">
 <p>Returns the total amount of bytes saved in the data buffer. </p>
 
-<p>Reimplemented in <a class="el" href="classiu_1_1LinearDeviceMemory.html#a4ba75cb24e358c271eda3e5a357c1e1a">iu::LinearDeviceMemory&lt; PixelType &gt;</a>, and <a class="el" href="classiu_1_1LinearHostMemory.html#ade2bada809aba62c1c465706d8b12adf">iu::LinearHostMemory&lt; PixelType &gt;</a>.</p>
+<p>Reimplemented in <a class="el" href="classiu_1_1LinearDeviceMemory.html#a433252eb8cb133621f13d583ccbda928">iu::LinearDeviceMemory&lt; PixelType, Ndim &gt;</a>, <a class="el" href="classiu_1_1LinearDeviceMemory.html#a433252eb8cb133621f13d583ccbda928">iu::LinearDeviceMemory&lt; PixelType, 1 &gt;</a>, <a class="el" href="classiu_1_1LinearHostMemory.html#a27b1de769f6fe71d6fed8c013165e005">iu::LinearHostMemory&lt; PixelType, Ndim &gt;</a>, and <a class="el" href="classiu_1_1LinearHostMemory.html#a27b1de769f6fe71d6fed8c013165e005">iu::LinearHostMemory&lt; PixelType, 1 &gt;</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="af96c44a88197d248944ef935f2d6a3fd"></a>
+<a class="anchor" id="afe5920aa14f99a2901192c1d32f22b68"></a>
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;unsigned int Ndim = 1&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">unsigned int iu::LinearMemory::length </td>
+          <td class="memname">unsigned int <a class="el" href="classiu_1_1LinearMemory.html">iu::LinearMemory</a>&lt; Ndim &gt;::length </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -292,19 +350,47 @@ Friends</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns the number of elements saved in the device buffer. (length of device buffer) </p>
+<p>Returns the number of elements saved in the buffer. (numel of buffer) </p>
 
 </div>
 </div>
-<a class="anchor" id="af9b4b9e01ae014e2c8380ebf4cc7b81e"></a>
+<a class="anchor" id="a6482e7304d6250a9fec0ec0f790c2ca8"></a>
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;unsigned int Ndim = 1&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual bool iu::LinearMemory::onDevice </td>
+          <td class="memname">unsigned int <a class="el" href="classiu_1_1LinearMemory.html">iu::LinearMemory</a>&lt; Ndim &gt;::numel </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Returns the number of elements saved in the buffer. (numel of buffer) </p>
+
+</div>
+</div>
+<a class="anchor" id="ac9eb549f36ea7a0c22e01a8ede9c585b"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;unsigned int Ndim = 1&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual bool <a class="el" href="classiu_1_1LinearMemory.html">iu::LinearMemory</a>&lt; Ndim &gt;::onDevice </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -318,21 +404,23 @@ Friends</h2></td></tr>
 </div><div class="memdoc">
 <p>Returns flag if the image data resides on the device/GPU (TRUE) or host/GPU (FALSE) </p>
 
-<p>Reimplemented in <a class="el" href="classiu_1_1LinearHostMemory.html#a94cff27cb073f3d06b3ab2a81f36c846">iu::LinearHostMemory&lt; PixelType &gt;</a>, and <a class="el" href="classiu_1_1LinearDeviceMemory.html#ad979c72c32847ea2bd43f9d0b29377e6">iu::LinearDeviceMemory&lt; PixelType &gt;</a>.</p>
+<p>Reimplemented in <a class="el" href="classiu_1_1LinearDeviceMemory.html#a1a49dd52c255d2dad5496c76b11a0a27">iu::LinearDeviceMemory&lt; PixelType, Ndim &gt;</a>, <a class="el" href="classiu_1_1LinearDeviceMemory.html#a1a49dd52c255d2dad5496c76b11a0a27">iu::LinearDeviceMemory&lt; PixelType, 1 &gt;</a>, <a class="el" href="classiu_1_1LinearHostMemory.html#a76c30a9ab80db02969643262893c7f12">iu::LinearHostMemory&lt; PixelType, Ndim &gt;</a>, and <a class="el" href="classiu_1_1LinearHostMemory.html#a76c30a9ab80db02969643262893c7f12">iu::LinearHostMemory&lt; PixelType, 1 &gt;</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="acd1087107e02ecb6cf6558680c50b2fb"></a>
+<a class="anchor" id="aff76504245f6d95e2f9bc2df17d687c7"></a>
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;unsigned int Ndim = 1&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool iu::LinearMemory::sameType </td>
+          <td class="memname">bool <a class="el" href="classiu_1_1LinearMemory.html">iu::LinearMemory</a>&lt; Ndim &gt;::sameType </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classiu_1_1LinearMemory.html">LinearMemory</a> &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classiu_1_1LinearMemory.html">LinearMemory</a>&lt; Ndim &gt; &amp;&#160;</td>
           <td class="paramname"><em>from</em></td><td>)</td>
           <td></td>
         </tr>
@@ -354,10 +442,64 @@ Friends</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="af54fa0ef78b54a98d8725e9d1e16b2ae"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;unsigned int Ndim = 1&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classiu_1_1Size.html">Size</a>&lt;Ndim&gt; <a class="el" href="classiu_1_1LinearMemory.html">iu::LinearMemory</a>&lt; Ndim &gt;::size </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Returns size of the linear memory </p>
+
+</div>
+</div>
+<a class="anchor" id="a35e67d0d80007e8bdb314134ba40a529"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;unsigned int Ndim = 1&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classiu_1_1Size.html">Size</a>&lt;Ndim&gt; <a class="el" href="classiu_1_1LinearMemory.html">iu::LinearMemory</a>&lt; Ndim &gt;::stride </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Returns size of the linear memory </p>
+
+</div>
+</div>
 <h2 class="groupheader">Friends And Related Function Documentation</h2>
 <a class="anchor" id="a8fdbb92dbba8125814137517f94e7033"></a>
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;unsigned int Ndim = 1&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -371,7 +513,7 @@ Friends</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="classiu_1_1LinearMemory.html">LinearMemory</a> const &amp;&#160;</td>
+          <td class="paramtype"><a class="el" href="classiu_1_1LinearMemory.html">LinearMemory</a>&lt; Ndim &gt; const &amp;&#160;</td>
           <td class="paramname"><em>linmem</em>&#160;</td>
         </tr>
         <tr>
@@ -396,7 +538,7 @@ Friends</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Jul 28 2016 09:08:18 for Image Utilities (IU) by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Aug 3 2016 08:57:40 for Image Utilities (IU) by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

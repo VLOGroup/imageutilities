@@ -101,11 +101,11 @@ Modules</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <p>Handles memory management of different types of host and device classes. </p>
 <ul>
-<li><a class="el" href="classiu_1_1LinearMemory.html" title="Base class for linear memory classes. ">LinearMemory</a> and specialized 4D tensor<ul>
-<li><a class="el" href="classiu_1_1LinearHostMemory.html" title="Linear host memory class. ">LinearHostMemory</a></li>
-<li><a class="el" href="classiu_1_1LinearDeviceMemory.html" title="Linear device memory class. ">LinearDeviceMemory</a></li>
-<li><a class="el" href="classiu_1_1TensorCpu.html" title="Host 4D tensor class. ">TensorCpu</a></li>
-<li><a class="el" href="classiu_1_1TensorGpu.html" title="Device 4D tensor class. ">TensorGpu</a></li>
+<li><a class="el" href="classiu_1_1LinearMemory.html" title="Base class for linear memory classes. ">LinearMemory</a><ul>
+<li><a class="el" href="classiu_1_1LinearHostMemory.html" title="Linear host memory class. ">LinearHostMemory</a>: linear memory with ND size layout</li>
+<li><a class="el" href="classiu_1_1LinearDeviceMemory.html" title="Linear device memory class. ">LinearDeviceMemory</a>: linear memory with ND size layout</li>
+<li><a class="el" href="classiu_1_1TensorCpu.html" title="Host 4D tensor class. ">TensorCpu</a>: Specialization with 1D size layout. Wrapper for special 4D tensor. Same access convention as python.</li>
+<li><a class="el" href="classiu_1_1TensorGpu.html" title="Device 4D tensor class. ">TensorGpu</a>: Specialization with 1D size layout. Wrapper for special 4D tensor. Same access convention as python.</li>
 </ul>
 </li>
 <li>Pitched memory: <a class="el" href="classiu_1_1Image.html" title="Base class for 2D images (pitched memory). ">Image</a><ul>
@@ -119,7 +119,7 @@ Modules</h2></td></tr>
 </ul>
 </li>
 </ul>
-<p>The device memory classes can be easily passed to CUDA kernels using a special struct. This struct gives the possibility to not only access the data pointer of the image but also other useful information such as length/size of the object.</p>
+<p>The device memory classes can be easily passed to CUDA kernels using a special struct. This struct gives the possibility to not only access the data pointer of the image but also other useful information such as numel/size of the object.</p>
 <ul>
 <li><a class="el" href="structiu_1_1LinearDeviceMemory_1_1KernelData.html" title="Struct pointer KernelData that can be used in CUDA kernels. ">LinearDeviceMemory::KernelData</a></li>
 <li><a class="el" href="structiu_1_1TensorGpu_1_1TensorKernelData.html" title="Struct pointer TensorKernelData that can be used in CUDA kernels. ">TensorGpu::TensorKernelData</a></li>
@@ -129,7 +129,7 @@ Modules</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Jul 28 2016 09:08:17 for Image Utilities (IU) by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Aug 3 2016 08:57:39 for Image Utilities (IU) by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

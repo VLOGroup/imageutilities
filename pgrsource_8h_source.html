@@ -89,64 +89,63 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="title">pgrsource.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef PGRSOURCE_H</span></div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define PGRSOURCE_H</span></div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &quot;videosource.h&quot;</span></div>
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#pragma once</span></div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &quot;videosource.h&quot;</span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;</div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;</div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;</div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="keyword">namespace </span>iuprivate {</div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;    <span class="keyword">class </span>PGRCameraData;</div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;}</div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="keyword">namespace </span>FlyCapture2 {</div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;  <span class="keyword">class </span>Error;</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;}</div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="keyword">namespace </span>iuprivate {</div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;    <span class="keyword">class </span>PGRCameraData;</div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;}</div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="keyword">namespace </span>FlyCapture2 {</div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;  <span class="keyword">class </span>Error;</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;}</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;</div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="keyword">namespace </span>iu {</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;</div>
-<div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="classiu_1_1PGRSource.html">   26</a></span>&#160;<span class="keyword">class </span><a class="code" href="classiu_1_1PGRSource.html">PGRSource</a> : <span class="keyword">public</span> <a class="code" href="classiu_1_1VideoSource.html">VideoSource</a></div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;{</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;  <a class="code" href="classiu_1_1PGRSource.html#a6e59eeb5f939dd26eea204fd3146ab07">PGRSource</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> camId=0, <span class="keywordtype">bool</span> gray=<span class="keyword">true</span>);</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;  <span class="keyword">virtual</span> ~<a class="code" href="classiu_1_1PGRSource.html">PGRSource</a>();</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;  cv::Mat <a class="code" href="classiu_1_1PGRSource.html#acdc3d1be00f394b61431dc07e636678b">getImage</a>();</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;</div>
-<div class="line"><a name="l00049"></a><span class="lineno"><a class="line" href="classiu_1_1PGRSource.html#ad0786c1d55b1706edba9e348313c67c5">   49</a></span>&#160;  <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="classiu_1_1PGRSource.html#ad0786c1d55b1706edba9e348313c67c5">getWidth</a>() { <span class="keywordflow">return</span> width_; }</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;</div>
-<div class="line"><a name="l00055"></a><span class="lineno"><a class="line" href="classiu_1_1PGRSource.html#a90f2064d15ff8d5c158241289b0e88a7">   55</a></span>&#160;  <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="classiu_1_1PGRSource.html#a90f2064d15ff8d5c158241289b0e88a7">getHeight</a>() { <span class="keywordflow">return</span> height_; }</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;</div>
-<div class="line"><a name="l00061"></a><span class="lineno"><a class="line" href="classiu_1_1PGRSource.html#af92c9d85267ea99330f16f3ddae7c4de">   61</a></span>&#160;  <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="classiu_1_1PGRSource.html#af92c9d85267ea99330f16f3ddae7c4de">getCurrentFrameNr</a>() { <span class="keywordflow">return</span> frameNr_; }</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="keyword">namespace </span>iu {</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;</div>
+<div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="classiu_1_1PGRSource.html">   25</a></span>&#160;<span class="keyword">class </span><a class="code" href="classiu_1_1PGRSource.html">PGRSource</a> : <span class="keyword">public</span> <a class="code" href="classiu_1_1VideoSource.html">VideoSource</a></div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;{</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;  <a class="code" href="classiu_1_1PGRSource.html#a6e59eeb5f939dd26eea204fd3146ab07">PGRSource</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> camId=0, <span class="keywordtype">bool</span> gray=<span class="keyword">true</span>);</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;  <span class="keyword">virtual</span> ~<a class="code" href="classiu_1_1PGRSource.html">PGRSource</a>();</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;  cv::Mat <a class="code" href="classiu_1_1PGRSource.html#acdc3d1be00f394b61431dc07e636678b">getImage</a>();</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;</div>
+<div class="line"><a name="l00048"></a><span class="lineno"><a class="line" href="classiu_1_1PGRSource.html#ad0786c1d55b1706edba9e348313c67c5">   48</a></span>&#160;  <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="classiu_1_1PGRSource.html#ad0786c1d55b1706edba9e348313c67c5">getWidth</a>() { <span class="keywordflow">return</span> width_; }</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;</div>
+<div class="line"><a name="l00054"></a><span class="lineno"><a class="line" href="classiu_1_1PGRSource.html#a90f2064d15ff8d5c158241289b0e88a7">   54</a></span>&#160;  <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="classiu_1_1PGRSource.html#a90f2064d15ff8d5c158241289b0e88a7">getHeight</a>() { <span class="keywordflow">return</span> height_; }</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;</div>
+<div class="line"><a name="l00060"></a><span class="lineno"><a class="line" href="classiu_1_1PGRSource.html#af92c9d85267ea99330f16f3ddae7c4de">   60</a></span>&#160;  <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="classiu_1_1PGRSource.html#af92c9d85267ea99330f16f3ddae7c4de">getCurrentFrameNr</a>() { <span class="keywordflow">return</span> frameNr_; }</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;</div>
 <div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;  <span class="keywordtype">bool</span> init(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> camId);</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;  <span class="keywordtype">bool</span> connectToCamera(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> camId);</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;  <span class="keywordtype">bool</span> startCapture();</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;  <span class="keywordtype">void</span> grab();</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;  <span class="keywordtype">void</span> printError(FlyCapture2::Error* error);</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;  iuprivate::PGRCameraData* data_;</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;  <span class="keywordtype">bool</span> gray_;</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;};</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160; <span class="comment">// end of videoIO</span></div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;  <span class="keywordtype">bool</span> init(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> camId);</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;  <span class="keywordtype">bool</span> connectToCamera(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> camId);</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;  <span class="keywordtype">bool</span> startCapture();</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;  <span class="keywordtype">void</span> grab();</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;  <span class="keywordtype">void</span> printError(FlyCapture2::Error* error);</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;  iuprivate::PGRCameraData* data_;</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;  <span class="keywordtype">bool</span> gray_;</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;};</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160; <span class="comment">// end of videoIO</span></div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;</div>
 <div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;}  <span class="comment">// namespace</span></div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;}  <span class="comment">// namespace</span></div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;</div>
 <div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;<span class="preprocessor">#endif // PGRSOURCE_H</span></div>
-<div class="ttc" id="classiu_1_1VideoSource_html"><div class="ttname"><a href="classiu_1_1VideoSource.html">iu::VideoSource</a></div><div class="ttdoc">The VideoSource class is the abstract base class for video input. </div><div class="ttdef"><b>Definition:</b> videosource.h:18</div></div>
-<div class="ttc" id="classiu_1_1PGRSource_html_af92c9d85267ea99330f16f3ddae7c4de"><div class="ttname"><a href="classiu_1_1PGRSource.html#af92c9d85267ea99330f16f3ddae7c4de">iu::PGRSource::getCurrentFrameNr</a></div><div class="ttdeci">unsigned int getCurrentFrameNr()</div><div class="ttdoc">get frame index. Upon camera initilaization, the counter is set to 0 </div><div class="ttdef"><b>Definition:</b> pgrsource.h:61</div></div>
-<div class="ttc" id="classiu_1_1PGRSource_html_a90f2064d15ff8d5c158241289b0e88a7"><div class="ttname"><a href="classiu_1_1PGRSource.html#a90f2064d15ff8d5c158241289b0e88a7">iu::PGRSource::getHeight</a></div><div class="ttdeci">unsigned int getHeight()</div><div class="ttdoc">get image height </div><div class="ttdef"><b>Definition:</b> pgrsource.h:55</div></div>
+<div class="ttc" id="classiu_1_1VideoSource_html"><div class="ttname"><a href="classiu_1_1VideoSource.html">iu::VideoSource</a></div><div class="ttdoc">The VideoSource class is the abstract base class for video input. </div><div class="ttdef"><b>Definition:</b> videosource.h:17</div></div>
+<div class="ttc" id="classiu_1_1PGRSource_html_af92c9d85267ea99330f16f3ddae7c4de"><div class="ttname"><a href="classiu_1_1PGRSource.html#af92c9d85267ea99330f16f3ddae7c4de">iu::PGRSource::getCurrentFrameNr</a></div><div class="ttdeci">unsigned int getCurrentFrameNr()</div><div class="ttdoc">get frame index. Upon camera initilaization, the counter is set to 0 </div><div class="ttdef"><b>Definition:</b> pgrsource.h:60</div></div>
+<div class="ttc" id="classiu_1_1PGRSource_html_a90f2064d15ff8d5c158241289b0e88a7"><div class="ttname"><a href="classiu_1_1PGRSource.html#a90f2064d15ff8d5c158241289b0e88a7">iu::PGRSource::getHeight</a></div><div class="ttdeci">unsigned int getHeight()</div><div class="ttdoc">get image height </div><div class="ttdef"><b>Definition:</b> pgrsource.h:54</div></div>
 <div class="ttc" id="classiu_1_1PGRSource_html_a6e59eeb5f939dd26eea204fd3146ab07"><div class="ttname"><a href="classiu_1_1PGRSource.html#a6e59eeb5f939dd26eea204fd3146ab07">iu::PGRSource::PGRSource</a></div><div class="ttdeci">PGRSource(unsigned int camId=0, bool gray=true)</div><div class="ttdoc">PGRSource constructor. Initialize the camera camId. </div></div>
-<div class="ttc" id="classiu_1_1PGRSource_html_ad0786c1d55b1706edba9e348313c67c5"><div class="ttname"><a href="classiu_1_1PGRSource.html#ad0786c1d55b1706edba9e348313c67c5">iu::PGRSource::getWidth</a></div><div class="ttdeci">unsigned int getWidth()</div><div class="ttdoc">get image width </div><div class="ttdef"><b>Definition:</b> pgrsource.h:49</div></div>
+<div class="ttc" id="classiu_1_1PGRSource_html_ad0786c1d55b1706edba9e348313c67c5"><div class="ttname"><a href="classiu_1_1PGRSource.html#ad0786c1d55b1706edba9e348313c67c5">iu::PGRSource::getWidth</a></div><div class="ttdeci">unsigned int getWidth()</div><div class="ttdoc">get image width </div><div class="ttdef"><b>Definition:</b> pgrsource.h:48</div></div>
 <div class="ttc" id="classiu_1_1PGRSource_html_acdc3d1be00f394b61431dc07e636678b"><div class="ttname"><a href="classiu_1_1PGRSource.html#acdc3d1be00f394b61431dc07e636678b">iu::PGRSource::getImage</a></div><div class="ttdeci">cv::Mat getImage()</div><div class="ttdoc">grab a new image from the camera. If a new image is not available, block until there is one...</div></div>
-<div class="ttc" id="classiu_1_1PGRSource_html"><div class="ttname"><a href="classiu_1_1PGRSource.html">iu::PGRSource</a></div><div class="ttdoc">The PGRSource class reads from PointGrey Firewire cameras. </div><div class="ttdef"><b>Definition:</b> pgrsource.h:26</div></div>
+<div class="ttc" id="classiu_1_1PGRSource_html"><div class="ttname"><a href="classiu_1_1PGRSource.html">iu::PGRSource</a></div><div class="ttdoc">The PGRSource class reads from PointGrey Firewire cameras. </div><div class="ttdef"><b>Definition:</b> pgrsource.h:25</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Jul 28 2016 09:08:17 for Image Utilities (IU) by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Aug 3 2016 08:57:39 for Image Utilities (IU) by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

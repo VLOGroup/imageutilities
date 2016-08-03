@@ -7,6 +7,5 @@ var searchData=
   ['imagegpu',['ImageGpu',['../classiu_1_1ImageGpu.html',1,'iu']]],
   ['iucudaexception',['IuCudaException',['../classIuCudaException.html',1,'']]],
   ['iucudatimer',['IuCudaTimer',['../classiu_1_1IuCudaTimer.html',1,'iu']]],
-  ['iuexception',['IuException',['../classIuException.html',1,'']]],
-  ['iusize',['IuSize',['../structIuSize.html',1,'']]]
+  ['iuexception',['IuException',['../classIuException.html',1,'']]]
 ];
