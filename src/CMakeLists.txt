@@ -113,6 +113,7 @@ if(IU_USE_IO AND OpenCV_LIBS)
       ${CMAKE_CURRENT_SOURCE_DIR}/iuio/iuvideosource.h
       ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videosource.h
       ${CMAKE_CURRENT_SOURCE_DIR}/iuio/opencvsource.h
+      ${CMAKE_CURRENT_SOURCE_DIR}/iuio/iuioapi.h
    )
 
   set( IU_IO_SOURCES
@@ -227,6 +228,7 @@ if(IU_USE_GUI AND Qt5Widgets_FOUND AND Qt5OpenGL_FOUND)
   set(IU_PUBLIC_GUI_HEADERS
       ${CMAKE_CURRENT_SOURCE_DIR}/iugui/qt5imagegpuwidget.h
       ${CMAKE_CURRENT_SOURCE_DIR}/iugui/qt5disparitymapgpuwidget.h
+      ${CMAKE_CURRENT_SOURCE_DIR}/iugui/iuguiapi.h
    )
   set( IU_GUI_HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/iugui.h

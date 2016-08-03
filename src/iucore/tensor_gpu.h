@@ -170,7 +170,7 @@ public:
 		/** Constructor */
 		__host__ TensorKernelData(const TensorGpu<PixelType> &tensor) :
 		//__host__ KernelData(const TensorGpu<PixelType> &tensor) :
-				data_(const_cast<PixelType*>(tensor.data())), length_(tensor.length()), N(tensor.samples()), C(tensor.channels()),
+                data_(const_cast<PixelType*>(tensor.data())), length_(tensor.numel()), N(tensor.samples()), C(tensor.channels()),
 				H(tensor.height()), W(tensor.width())
 		{
 			if (tensor.memoryLayout() == NCHW)
