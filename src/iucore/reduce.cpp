@@ -50,7 +50,7 @@ void reduce(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
 
     float sigma = 1/(3*factor) ;  // empirical!
 //    unsigned int kernel_size = 5;
-    unsigned int kernel_size = ceil(6*sigma);
+	unsigned int kernel_size = static_cast<unsigned int>(ceil(6 * sigma));
     if (kernel_size % 2 == 0)
       kernel_size++;
 
@@ -100,7 +100,7 @@ void reduce(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
 
     float sigma = 1/(3*factor) ;  // empirical!
 //    unsigned int kernel_size = 5;
-    unsigned int kernel_size = ceil(6*sigma);
+	unsigned int kernel_size = static_cast<unsigned int>(ceil(6 * sigma));
     if (kernel_size % 2 == 0)
       kernel_size++;
 

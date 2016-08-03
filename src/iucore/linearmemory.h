@@ -2,7 +2,6 @@
 
 #include <typeinfo>
 
-#include "globaldefs.h"
 #include "coredefs.h"
 #include "vector.h"
 

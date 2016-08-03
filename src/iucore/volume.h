@@ -1,6 +1,5 @@
 #pragma once
 
-#include "globaldefs.h"
 #include "coredefs.h"
 
 #include <ostream>

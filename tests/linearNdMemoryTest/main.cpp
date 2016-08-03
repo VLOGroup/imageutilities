@@ -3,7 +3,6 @@
 #include "../config.h"
 
 #include "../../src/iucore.h"
-#include "../../src/iuio.h"
 #include "../../src/iumath.h"
 
 #include "test.cuh"
@@ -29,13 +28,13 @@ void testVector()
 {
   std::cout << "testVector() started." << std::endl;
   const unsigned int Ndim = 3;
-  iu::Vector<float, Ndim> vector({1.1, 2.4, 0.2});
+  iu::Vector<float, Ndim> vector({1.1f, 2.4f, 0.2f});
   std::cout << vector << std::endl;
-  vector.fill(5.2);
+  vector.fill(5.2f);
   std::cout << vector << std::endl;
-  vector = vector * 0.1;
+  vector = vector * 0.1f;
   std::cout << vector << std::endl;
-  iu::Vector<float, Ndim> vector2 = vector / 0.5;
+  iu::Vector<float, Ndim> vector2 = vector / 0.5f;
   vector2[1] *= 0.5;
   vector2[2] *= 2;
   std::cout << "v2 " << vector2 << std::endl;
@@ -47,9 +46,9 @@ void testVector()
   std::cout << "v1!=v1 "<< (vector != vector) << std::endl;
   std::cout << "v1+v2 " << vector+vector2 << std::endl;
   std::cout << "v1-v2 " << vector-vector2 << std::endl;
-  vector2 += 0.5;
+  vector2 += 0.5f;
   std::cout << vector2 << std::endl;
-  vector2 -= 0.5;
+  vector2 -= 0.5f;
   std::cout << vector2 << std::endl;
   vector2 += vector;
   std::cout << vector2 << std::endl;

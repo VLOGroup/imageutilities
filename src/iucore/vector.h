@@ -19,7 +19,7 @@ public:
   {
     for (unsigned int i = 0; i < Ndim; i++)
     {
-      data_[i] = 0.0;
+      data_[i] = static_cast<PixelType>(0.0);
     }
   }
 

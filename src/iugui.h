@@ -5,6 +5,7 @@
  * Allows to display images and depthmaps using OpenGL and QT5
  * \{
  */
+#include "iugui/iuguiapi.h"
 #include "iugui/qt5imagegpuwidget.h"
 #include "iugui/qt5disparitymapgpuwidget.h"
 

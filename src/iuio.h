@@ -2,6 +2,7 @@
 
 #include <string>
 #include "iudefs.h"
+#include "iuio/iuioapi.h"
 #include <opencv2/core/core.hpp>
 
 namespace iu {

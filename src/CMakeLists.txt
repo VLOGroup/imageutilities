@@ -73,8 +73,9 @@ endif(ANDROID)
 
 ##-----------------------------------------------------------------------------
 ## Compiler Flags (to be added on demand)
-set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-Wall -std=c++11")
-
+IF(NOT WIN32)
+  set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-Wall -std=c++11")
+ENDIF(NOT WIN32)
 
 if(WITH_PYTHON)
     find_package(Boost REQUIRED COMPONENTS python)
@@ -105,6 +106,7 @@ if(IU_USE_IO AND OpenCV_LIBS)
   set( IU_IO_HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/iuio/imageio.h
     ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videosource.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/iuioapi.h
     #${CMAKE_CURRENT_SOURCE_DIR}/iuio/videocapture_private.h
     )
   set(IU_PUBLIC_IO_HEADERS
@@ -209,10 +211,10 @@ endif()
 
 ##-----------------------------------------------------------------------------
 ## GUI MODULE: Qt5 for ImagepuWidget
-find_package(Qt5Core 5.4)
-find_package(Qt5Widgets 5.4)
-find_package(Qt5OpenGL 5.4)
-find_package(OpenGL)
+find_package(Qt5Core 5.4 QUIET)
+find_package(Qt5Widgets 5.4 QUIET)
+find_package(Qt5OpenGL 5.4 QUIET)
+find_package(OpenGL QUIET)
 if(IU_USE_GUI AND Qt5Widgets_FOUND AND Qt5OpenGL_FOUND)
 
   message("[+] ImageUtilities include GUI module")
@@ -228,6 +230,7 @@ if(IU_USE_GUI AND Qt5Widgets_FOUND AND Qt5OpenGL_FOUND)
    )
   set( IU_GUI_HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/iugui.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/iugui/iuguiapi.h
     ${CMAKE_CURRENT_SOURCE_DIR}/iugui/qt5imagegpuwidget.h
     ${CMAKE_CURRENT_SOURCE_DIR}/iugui/qt5disparitymapgpuwidget.h
   )
@@ -252,17 +255,20 @@ if(IU_USE_MATH)
     ${IU_PUBLIC_HEADERS}
     ${CMAKE_CURRENT_SOURCE_DIR}/iumath.h
    )
+
   set(IU_PUBLIC_MATH_HEADERS
 
    )
+
   set( IU_MATH_HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/iumath/thrust_kernels.cuh
     ${CMAKE_CURRENT_SOURCE_DIR}/iumath/arithmetics.cuh
     ${CMAKE_CURRENT_SOURCE_DIR}/iumath/statistics.cuh
     ${CMAKE_CURRENT_SOURCE_DIR}/iumath/complex.cuh
+    ${CMAKE_CURRENT_SOURCE_DIR}/iumath.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/iumath/iumathapi.h
   )
   set( IU_MATH_SOURCES
-
     ${CMAKE_CURRENT_SOURCE_DIR}/iumath.cu
   )
 
@@ -304,7 +310,7 @@ endif(WITH_PYTHON)
 
 # 
 SET( IU_PUBLIC_CORE_HEADERS
-  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/globaldefs.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/iucoreapi.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/coredefs.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/memorydefs.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/linearmemory.h
@@ -404,7 +410,9 @@ endif(IU_BUILD_STATIC)
 set(IU_LIBS "") # variable where all libs that are built are saved
 set(IU_LIBS_STATIC "") # variable where all libs that are built are saved
 
+IF(NOT WIN32)
 set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} "-std=c++11")
+ENDIF(NOT WIN32)
 message("Compiler Flags NVCC: " ${CUDA_NVCC_FLAGS})
 
 ##-----------------------------------------------------------------------------
@@ -434,6 +442,7 @@ endif()
 ##-----------------------------------------------------------------------------
 ## build core library
 set(IU_CORE_LIB iucore)
+
 cuda_add_library( ${IU_CORE_LIB} SHARED ${IU_HEADERS} ${IU_SOURCES})
 set_target_properties(${IU_CORE_LIB} PROPERTIES
   DEFINE_SYMBOL IUCORE_DLL_EXPORTS
@@ -509,7 +518,10 @@ endif(IU_USE_GUI)
 ## build math library
 set(IU_MATH_LIB iumath)
 if(IU_USE_MATH)
-  cuda_add_library( ${IU_MATH_LIB} SHARED ${IU_MATH_HEADERS} ${IU_MATH_SOURCES})
+  # The OPTIONS "-DIUMATH_DLL_EXPORTS" is used to manually propagate symbol to nvcc compiler
+  # because CUDA_SET_PROPAGATE_HOST_FLAGS is turend off.
+  cuda_add_library( ${IU_MATH_LIB} SHARED ${IU_MATH_HEADERS} ${IU_MATH_SOURCES}
+	  OPTIONS "-DIUMATH_DLL_EXPORTS")
   set_target_properties(${IU_MATH_LIB} PROPERTIES
     DEFINE_SYMBOL IUMATH_DLL_EXPORTS
     VERSION ${IMAGEUTILITIES_VERSION}

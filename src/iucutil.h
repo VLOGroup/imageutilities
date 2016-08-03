@@ -4,7 +4,7 @@
 #include "iucore/coredefs.h"
 
 // includes for time measurements
-#ifdef WIN32
+#ifdef _WIN32
   #include <time.h>
   #include <windows.h>
 #else

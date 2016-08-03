@@ -1,6 +1,8 @@
 #pragma once
 
 #include "iudefs.h"
+#include "iucore/iucoreapi.h"
+
 /// The main namespace
 namespace iu {
 
