@@ -48,7 +48,7 @@ public:
   /** Special constructor.
    *  @param size Size of the Volume
    */
-  VolumeCpu(const IuSize& size) :
+  VolumeCpu(const iu::Size<3>& size) :
     Volume(size), data_(0), pitch_(0),
     ext_data_pointer_(false)
   {

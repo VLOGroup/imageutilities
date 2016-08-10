@@ -25,7 +25,7 @@ public:
       @param sz Output image size
       @param parent Parent widget
       */
-    explicit Qt5ImageGpuWidget(const IuSize sz, QWidget* parent = NULL);
+    explicit Qt5ImageGpuWidget(const iu::Size<2> sz, QWidget* parent = NULL);
     virtual ~Qt5ImageGpuWidget();
 
 public slots:
@@ -66,7 +66,7 @@ protected:
     GLuint texture_;
     cudaGraphicsResource_t cuda_img_;
     QOpenGLBuffer pbo_;
-    IuSize image_size_;
+    iu::Size<2> image_size_;
 
     QOpenGLShaderProgram* shader_program_;
     QOpenGLVertexArrayObject* vao_;

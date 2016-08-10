@@ -53,7 +53,7 @@ public:
   /** Special constructor.
    *  @param size Size of the Image
    */
-  Image( const IuSize &size) :
+  Image( const iu::Size<2> &size) :
       size_(size)
   {
   }
@@ -61,7 +61,7 @@ public:
   /** Get the size of the Image
    *  @return Size of the Image
    */
-  IuSize size() const
+  iu::Size<2> size() const
   {
     return size_;
   }
@@ -123,7 +123,7 @@ public:
 
 protected:
   /** Size of the Image. */
-  IuSize size_;
+  iu::Size<2> size_;
 
 private:
   /** Private copy constructor. */

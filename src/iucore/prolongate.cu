@@ -15,8 +15,8 @@ namespace iuprivate {
 void cuProlongate(iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
                       IuInterpolationType interpolation)
 {
-  IuSize src_roi = src->size();
-  IuSize dst_roi = dst->size();
+  iu::Size<2> src_roi = src->size();
+  iu::Size<2> dst_roi = dst->size();
 
   // x_/y_factor < 0 (for multiplication with dst coords in the kernel!)
   float x_factor = static_cast<float>(src_roi.width) /
@@ -76,8 +76,8 @@ void cuProlongate(iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
 void cuProlongate(iu::ImageGpu_32f_C2* src, iu::ImageGpu_32f_C2* dst,
                       IuInterpolationType interpolation)
 {
-  IuSize src_roi = src->size();
-  IuSize dst_roi = dst->size();
+  iu::Size<2> src_roi = src->size();
+  iu::Size<2> dst_roi = dst->size();
 
   // x_/y_factor < 0 (for multiplication with dst coords in the kernel!)
   float x_factor = static_cast<float>(src_roi.width) /
@@ -139,8 +139,8 @@ void cuProlongate(iu::ImageGpu_32f_C2* src, iu::ImageGpu_32f_C2* dst,
 void cuProlongate(iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst,
                       IuInterpolationType interpolation)
 {
-  IuSize src_roi = src->size();
-  IuSize dst_roi = dst->size();
+  iu::Size<2> src_roi = src->size();
+  iu::Size<2> dst_roi = dst->size();
 
   // x_/y_factor < 0 (for multiplication with dst coords in the kernel!)
   float x_factor = static_cast<float>(src_roi.width) /

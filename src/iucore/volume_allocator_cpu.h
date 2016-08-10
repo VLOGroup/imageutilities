@@ -26,7 +26,7 @@ public:
   }
 
   static void copy(const PixelType *src, size_t src_pitch,
-                   PixelType *dst, size_t dst_pitch, IuSize size)
+                   PixelType *dst, size_t dst_pitch, iu::Size<3> size)
   {
     size_t src_stride = src_pitch/sizeof(PixelType);
     size_t dst_stride = dst_pitch/sizeof(PixelType);

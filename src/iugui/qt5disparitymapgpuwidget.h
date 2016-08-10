@@ -32,7 +32,7 @@ public:
       @param B Baseline in the case of disparity maps. If 0, then the input is expected to be a depth map
       @param parent Parent widget
       */
-    explicit Qt5DisparitymapGpuWidget(const IuSize sz, float translation_z,
+    explicit Qt5DisparitymapGpuWidget(const iu::Size<2> sz, float translation_z,
                                   float f, float cx, float cy, float B=0.f, QWidget* parent = NULL);
     virtual ~Qt5DisparitymapGpuWidget();
 
@@ -61,7 +61,7 @@ protected:
     //GLuint positions_;
     cudaGraphicsResource_t cuda_positions_;
     QOpenGLBuffer vbo_;
-    IuSize image_size_;
+    iu::Size<2> image_size_;
 
     QOpenGLShaderProgram* shader_program_;
     QOpenGLVertexArrayObject* vao_;
