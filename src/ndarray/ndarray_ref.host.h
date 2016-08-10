@@ -650,7 +650,7 @@ public: //iterators
 template<typename type, int dims>
 template<typename type2> ndarray_ref<type2, dims> ndarray_ref<type, dims>::recast()const{
 	// check: first dimension must be contiguous
-	runtime_check_this(this->template stride<char>(0) == intsizeof(type));
+	runtime_check_this(sizeof(type) == sizeof(type2) || this->template stride<char>(0) == intsizeof(type));
 	return ndarray_ref<type2, dims>(parent::template recast<type2>(), access());
 }
 
