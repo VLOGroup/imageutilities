@@ -17,7 +17,7 @@ OpenEXRInputFile::OpenEXRInputFile(const std::string &filename)
 
     int width = dw.max.x - dw.min.x + 1;
     int height = dw.max.y - dw.min.y + 1;
-    sz_ = IuSize(width, height);
+    sz_ = iu::Size<2>(width, height);
 
     channels_.clear();
     Imf::ChannelList cl = file.header().channels();
@@ -226,7 +226,7 @@ void OpenEXRInputFile::read_attribute(const std::string &name, Eigen::Ref<Eigen:
 }
 #endif
 
-OpenEXROutputFile::OpenEXROutputFile(const std::string &filename, IuSize size)
+OpenEXROutputFile::OpenEXROutputFile(const std::string &filename, iu::Size<2> size)
 {
     filename_ = filename;
     sz_ = size;

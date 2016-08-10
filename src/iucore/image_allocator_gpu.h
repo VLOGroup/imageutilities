@@ -13,7 +13,7 @@ template <typename PixelType>
 class ImageAllocatorGpu
 {
 public:
-  static PixelType* alloc(IuSize size, size_t *pitch)
+  static PixelType* alloc(iu::Size<2> size, size_t *pitch)
   {
     if ((size.width == 0) || (size.height == 0)) throw IuException("width or height is 0", __FILE__, __FUNCTION__, __LINE__);
     PixelType* buffer = 0;
@@ -27,7 +27,7 @@ public:
     IU_CUDA_SAFE_CALL(cudaFree((void *)buffer));
   }
 
-  static void copy(const PixelType *src, size_t src_pitch, PixelType *dst, size_t dst_pitch, IuSize size)
+  static void copy(const PixelType *src, size_t src_pitch, PixelType *dst, size_t dst_pitch, iu::Size<2> size)
   {
     IU_CUDA_SAFE_CALL(cudaMemcpy2D(dst, dst_pitch, src, src_pitch,
                           size.width * sizeof(PixelType), size.height,
