@@ -2,6 +2,50 @@
 
 #include <helper_math.h>
 
+namespace iu {
+/** Wrapper class for vector types like float2, double2 to allow
+ * more efficient templating especially for fft/ifft methods.
+ */
+template<typename PixelType, unsigned int Ndim>
+struct VectorType
+{
+};
+
+/** Wrapper class for float2 to allow more efficient templating. */
+template<> struct VectorType<float, 2> : public float2
+{
+  /** Make float2 from a single float value. */
+  static inline __host__ __device__ float2 make(float x)
+  {
+    return make_float2(x, x);
+  }
+  /** Make float2 from two float values. */
+  static inline __host__ __device__ float2 make(float x, float y)
+  {
+    return make_float2(x, y);
+  }
+  /** Define basic type (float) */
+  typedef float2 type;
+};
+
+/** Wrapper class for double2 to allow more efficient templating. */
+template<> struct VectorType<double, 2> : public double2
+{
+  /** Make double2 from a single double value. */
+  static inline __host__ __device__ double2 make(double x)
+  {
+    return make_double2(x, x);
+  }
+  /** Make double2 from two double values. */
+  static inline __host__ __device__ double2 make(double x, double y)
+  {
+    return make_double2(x, y);
+  }
+  /** Define basic type (double) */
+  typedef double2 type;
+};
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // other host / device math functions
 ////////////////////////////////////////////////////////////////////////////////

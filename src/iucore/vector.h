@@ -366,7 +366,8 @@ public:
     unsigned int num_elements = this->data_[0];
     for (unsigned int i = 1; i < Ndim; i++)
     {
-      num_elements *= this->data_[i];
+      if (this->data_[i]!=0)
+        num_elements *= this->data_[i];
     }
     return num_elements;
   }
@@ -546,9 +547,26 @@ public:
    *  Init all elements of the vector with a initializer list.
    *  @param list Initializer list, e.g. {1,2,3}.*/
   Size(std::initializer_list<unsigned int> list) :
-      SizeBase<3>(list), width(this->data_[0]), height(this->data_[1]),
+      width(this->data_[0]), height(this->data_[1]),
       depth(this->data_[2])
   {
+    if (!(list.size() == 3 || list.size() == 2))
+    {
+      std::stringstream msg;
+      msg << "Length of initializer list (" << list.size();
+      msg << ") does not match number of size dimensions (3 or 2).";
+      throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
+    }
+
+    unsigned int i = 0;
+    for (auto elem : list)
+    {
+      data_[i] = elem;
+      ++i;
+    }
+    if (i==2)
+      data_[i] = 0;
+
   }
 
   /** Special Constructor. Init size with width, height, depth. Depth equals
