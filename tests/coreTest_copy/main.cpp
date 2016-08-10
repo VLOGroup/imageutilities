@@ -18,7 +18,7 @@ int main()
     {
         for (unsigned int x = 0; x < h_I.width(); x++)
         {
-            *h_I.data(x,y) = x+y;
+			*h_I.data(x, y) = static_cast<float>(x + y);
         }
     }
 

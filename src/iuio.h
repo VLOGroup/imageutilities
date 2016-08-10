@@ -1,31 +1,8 @@
-/*
- * Copyright (c) ICG. All rights reserved.
- *
- * Institute for Computer Graphics and Vision
- * Graz University of Technology / Austria
- *
- *
- * This software is distributed WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- * PURPOSE.  See the above copyright notices for more information.
- *
- *
- * Project     : ImageUtilities
- * Module      : IO Module
- * Class       : Wrapper
- * Language    : C
- * Description : Public interfaces to IO module
- *
- * Author     : Manuel Werlberger
- * EMail      : werlberger@icg.tugraz.at
- *
- */
-
-#ifndef IUIO_MODULE_H
-#define IUIO_MODULE_H
+#pragma once
 
 #include <string>
 #include "iudefs.h"
+#include "iuio/iuioapi.h"
 #include <opencv2/core/core.hpp>
 
 namespace iu {
@@ -175,4 +152,3 @@ IUIO_DLLAPI void imshow(iu::ImageGpu_32f_C4* image, const std::string& winname, 
 
 
 
-#endif // IUIO_MODULE_H

@@ -1,12 +1,11 @@
-#ifndef THRUST_KERNELS_CUH
-#define THRUST_KERNELS_CUH
+#pragma once
 
 #include <thrust/transform.h>
 #include <thrust/reduce.h>
 #include <thrust/transform_reduce.h>
 #include <thrust/iterator/constant_iterator.h>
 
-#include "helper_math.h"
+#include "iuhelpermath.h"
 
 namespace iuprivate {
 namespace math {
@@ -208,4 +207,3 @@ struct combine_planes3_functor: public thrust::unary_function<
 } // namespace math
 } // namespace iuprivate
 
-#endif // THRUST_KERNELS_CUH

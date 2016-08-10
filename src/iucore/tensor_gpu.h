@@ -10,7 +10,7 @@ namespace iu
  *   \ingroup LinearMemory
  */
 template<typename PixelType>
-class TensorGpu: public LinearDeviceMemory<PixelType>
+class TensorGpu: public LinearDeviceMemory<PixelType, 1>
 {
 public:
   /** \brief Memory layout to access the data elements.
@@ -28,7 +28,7 @@ public:
    *  @param memoryLayout MemoryLayout
    * */
 	TensorGpu(MemoryLayout memoryLayout=NCHW) :
-			LinearDeviceMemory<PixelType>(), samples_(0), channels_(0), height_(0), width_(0), memoryLayout_(
+			LinearDeviceMemory<PixelType, 1>(), samples_(0), channels_(0), height_(0), width_(0), memoryLayout_(
 					memoryLayout)
 	{
 	}
@@ -46,7 +46,7 @@ public:
    *  @param memoryLayout MemoryLayout
    */
 	TensorGpu(const unsigned int N, const unsigned int C, const unsigned int H, const unsigned int W, MemoryLayout memoryLayout = NCHW) :
-			LinearDeviceMemory<PixelType>(N * C * H * W), samples_(N), channels_(C), height_(H), width_(W), memoryLayout_(
+			LinearDeviceMemory<PixelType, 1>(N * C * H * W), samples_(N), channels_(C), height_(H), width_(W), memoryLayout_(
 					memoryLayout)
 	{
 	}
@@ -62,7 +62,7 @@ public:
    */
 	TensorGpu(PixelType* device_data, const unsigned int N, const unsigned int C, const unsigned int H,
 			const unsigned int W, bool ext_data_pointer = false, MemoryLayout memoryLayout = NCHW) :
-			LinearDeviceMemory<PixelType>(device_data, N * C * H * W, ext_data_pointer), samples_(N), channels_(C), height_(
+			LinearDeviceMemory<PixelType, 1>(device_data, N * C * H * W, ext_data_pointer), samples_(N), channels_(C), height_(
 					H), width_(W), memoryLayout_(memoryLayout)
 	{
 	}
@@ -170,7 +170,7 @@ public:
 		/** Constructor */
 		__host__ TensorKernelData(const TensorGpu<PixelType> &tensor) :
 		//__host__ KernelData(const TensorGpu<PixelType> &tensor) :
-				data_(const_cast<PixelType*>(tensor.data())), length_(tensor.length()), N(tensor.samples()), C(tensor.channels()),
+                data_(const_cast<PixelType*>(tensor.data())), length_(tensor.numel()), N(tensor.samples()), C(tensor.channels()),
 				H(tensor.height()), W(tensor.width())
 		{
 			if (tensor.memoryLayout() == NCHW)

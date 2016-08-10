@@ -13,6 +13,16 @@ endif(ANDROID)
 
 cuda_include_directories(${CUDA_INCLUDE_DIRS})
 include_directories(${CUDA_INCLUDE_DIRS})
+
+if(WIN32)
+  string(REPLACE "\\" "/" CUDA_SDK_ROOT_DIR $ENV{CUDA_SDK_ROOT_DIR})
+else(WIN32)
+  set(CUDA_SDK_ROOT_DIR $ENV{CUDA_SDK_ROOT_DIR})
+endif(WIN32)
+
+cuda_include_directories(${CUDA_SDK_ROOT_DIR}/common/inc)
+include_directories(${CUDA_SDK_ROOT_DIR}/common/inc)
+
 set(IU_IUCORE_LIB_DEPENDENCIES ${IU_IUCORE_LIB_DEPENDENCIES} ${CUDA_LIBRARIES})
 
 # set compute capability from environment variable (directly useable as nvcc flag)
@@ -46,6 +56,9 @@ else(NOT ANDROID)
   set(CUDA_NVCC_FLAGS -arch=sm_30 -target-cpu-arch=ARM -target-os-variant=Android)
 endif(NOT ANDROID)
 
+if(WIN32)
+  add_definitions("/MT")
+endif(WIN32)
 
 add_subdirectory(src)
 add_subdirectory(tests)

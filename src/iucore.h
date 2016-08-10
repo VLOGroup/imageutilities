@@ -1,30 +1,7 @@
-/*
- * Copyright (c) ICG. All rights reserved.
- *
- * Institute for Computer Graphics and Vision
- * Graz University of Technology / Austria
- *
- *
- * This software is distributed WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- * PURPOSE.  See the above copyright notices for more information.
- *
- *
- * Project     : ImageUtilities
- * Module      : Core Module
- * Class       : Wrapper
- * Language    : C
- * Description : Public interfaces to core module
- *
- * Author     : Manuel Werlberger
- * EMail      : werlberger\icg.tugraz.at
- *
- */
-
-#ifndef IU_CORE_MODULE_H
-#define IU_CORE_MODULE_H
+#pragma once
 
 #include "iudefs.h"
+#include "iucore/iucoreapi.h"
 
 /// The main namespace
 namespace iu {
@@ -104,6 +81,41 @@ private:
 IUCORE_DLLAPI void copy(const LinearHostMemory_8u_C1* src, LinearHostMemory_8u_C1* dst);
 IUCORE_DLLAPI void copy(const LinearHostMemory_16u_C1* src, LinearHostMemory_16u_C1* dst);
 IUCORE_DLLAPI void copy(const LinearHostMemory_32f_C1* src, LinearHostMemory_32f_C1* dst);
+IUCORE_DLLAPI void copy(const LinearHostMemory_64f_C1* src, LinearHostMemory_64f_C1* dst);
+
+IUCORE_DLLAPI void copy(const LinearHostMemory<float, 2>* src, LinearHostMemory<float, 2>* dst);
+IUCORE_DLLAPI void copy(const LinearHostMemory<float, 3>* src, LinearHostMemory<float, 3>* dst);
+IUCORE_DLLAPI void copy(const LinearHostMemory<float, 4>* src, LinearHostMemory<float, 4>* dst);
+IUCORE_DLLAPI void copy(const LinearHostMemory<float, 5>* src, LinearHostMemory<float, 5>* dst);
+IUCORE_DLLAPI void copy(const LinearHostMemory<float2, 2>* src, LinearHostMemory<float2, 2>* dst);
+IUCORE_DLLAPI void copy(const LinearHostMemory<float2, 3>* src, LinearHostMemory<float2, 3>* dst);
+IUCORE_DLLAPI void copy(const LinearHostMemory<float2, 4>* src, LinearHostMemory<float2, 4>* dst);
+IUCORE_DLLAPI void copy(const LinearHostMemory<float2, 5>* src, LinearHostMemory<float2, 5>* dst);
+IUCORE_DLLAPI void copy(const LinearHostMemory<float3, 2>* src, LinearHostMemory<float3, 2>* dst);
+IUCORE_DLLAPI void copy(const LinearHostMemory<float3, 3>* src, LinearHostMemory<float3, 3>* dst);
+IUCORE_DLLAPI void copy(const LinearHostMemory<float3, 4>* src, LinearHostMemory<float3, 4>* dst);
+IUCORE_DLLAPI void copy(const LinearHostMemory<float3, 5>* src, LinearHostMemory<float3, 5>* dst);
+IUCORE_DLLAPI void copy(const LinearHostMemory<float4, 2>* src, LinearHostMemory<float4, 2>* dst);
+IUCORE_DLLAPI void copy(const LinearHostMemory<float4, 3>* src, LinearHostMemory<float4, 3>* dst);
+IUCORE_DLLAPI void copy(const LinearHostMemory<float4, 4>* src, LinearHostMemory<float4, 4>* dst);
+IUCORE_DLLAPI void copy(const LinearHostMemory<float4, 5>* src, LinearHostMemory<float4, 5>* dst);
+
+IUCORE_DLLAPI void copy(const LinearHostMemory<double, 2>* src, LinearHostMemory<double, 2>* dst);
+IUCORE_DLLAPI void copy(const LinearHostMemory<double, 3>* src, LinearHostMemory<double, 3>* dst);
+IUCORE_DLLAPI void copy(const LinearHostMemory<double, 4>* src, LinearHostMemory<double, 4>* dst);
+IUCORE_DLLAPI void copy(const LinearHostMemory<double, 5>* src, LinearHostMemory<double, 5>* dst);
+IUCORE_DLLAPI void copy(const LinearHostMemory<double2, 2>* src, LinearHostMemory<double2, 2>* dst);
+IUCORE_DLLAPI void copy(const LinearHostMemory<double2, 3>* src, LinearHostMemory<double2, 3>* dst);
+IUCORE_DLLAPI void copy(const LinearHostMemory<double2, 4>* src, LinearHostMemory<double2, 4>* dst);
+IUCORE_DLLAPI void copy(const LinearHostMemory<double2, 5>* src, LinearHostMemory<double2, 5>* dst);
+IUCORE_DLLAPI void copy(const LinearHostMemory<double3, 2>* src, LinearHostMemory<double3, 2>* dst);
+IUCORE_DLLAPI void copy(const LinearHostMemory<double3, 3>* src, LinearHostMemory<double3, 3>* dst);
+IUCORE_DLLAPI void copy(const LinearHostMemory<double3, 4>* src, LinearHostMemory<double3, 4>* dst);
+IUCORE_DLLAPI void copy(const LinearHostMemory<double3, 5>* src, LinearHostMemory<double3, 5>* dst);
+IUCORE_DLLAPI void copy(const LinearHostMemory<double4, 2>* src, LinearHostMemory<double4, 2>* dst);
+IUCORE_DLLAPI void copy(const LinearHostMemory<double4, 3>* src, LinearHostMemory<double4, 3>* dst);
+IUCORE_DLLAPI void copy(const LinearHostMemory<double4, 4>* src, LinearHostMemory<double4, 4>* dst);
+IUCORE_DLLAPI void copy(const LinearHostMemory<double4, 5>* src, LinearHostMemory<double4, 5>* dst);
 
 // copy device -> device;
 /** Copy methods for host to host 1D copy methods for 8bit buffers.
@@ -129,6 +141,44 @@ IUCORE_DLLAPI void copy(const LinearDeviceMemory_32f_C1* src, LinearDeviceMemory
 IUCORE_DLLAPI void copy(const LinearDeviceMemory_32f_C2* src, LinearDeviceMemory_32f_C2* dst);
 IUCORE_DLLAPI void copy(const LinearDeviceMemory_32f_C3* src, LinearDeviceMemory_32f_C3* dst);
 IUCORE_DLLAPI void copy(const LinearDeviceMemory_32f_C4* src, LinearDeviceMemory_32f_C4* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory_64f_C1* src, LinearDeviceMemory_64f_C1* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory_64f_C2* src, LinearDeviceMemory_64f_C2* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory_64f_C3* src, LinearDeviceMemory_64f_C3* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory_64f_C4* src, LinearDeviceMemory_64f_C4* dst);
+
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float, 2>* src, LinearDeviceMemory<float, 2>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float, 3>* src, LinearDeviceMemory<float, 3>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float, 4>* src, LinearDeviceMemory<float, 4>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float, 5>* src, LinearDeviceMemory<float, 5>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float2, 2>* src, LinearDeviceMemory<float2, 2>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float2, 3>* src, LinearDeviceMemory<float2, 3>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float2, 4>* src, LinearDeviceMemory<float2, 4>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float2, 5>* src, LinearDeviceMemory<float2, 5>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float3, 2>* src, LinearDeviceMemory<float3, 2>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float3, 3>* src, LinearDeviceMemory<float3, 3>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float3, 4>* src, LinearDeviceMemory<float3, 4>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float3, 5>* src, LinearDeviceMemory<float3, 5>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float4, 2>* src, LinearDeviceMemory<float4, 2>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float4, 3>* src, LinearDeviceMemory<float4, 3>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float4, 4>* src, LinearDeviceMemory<float4, 4>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float4, 5>* src, LinearDeviceMemory<float4, 5>* dst);
+
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<double, 2>* src, LinearDeviceMemory<double, 2>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<double, 3>* src, LinearDeviceMemory<double, 3>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<double, 4>* src, LinearDeviceMemory<double, 4>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<double, 5>* src, LinearDeviceMemory<double, 5>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<double2, 2>* src, LinearDeviceMemory<double2, 2>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<double2, 3>* src, LinearDeviceMemory<double2, 3>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<double2, 4>* src, LinearDeviceMemory<double2, 4>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<double2, 5>* src, LinearDeviceMemory<double2, 5>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<double3, 2>* src, LinearDeviceMemory<double3, 2>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<double3, 3>* src, LinearDeviceMemory<double3, 3>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<double3, 4>* src, LinearDeviceMemory<double3, 4>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<double3, 5>* src, LinearDeviceMemory<double3, 5>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<double4, 2>* src, LinearDeviceMemory<double4, 2>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<double4, 3>* src, LinearDeviceMemory<double4, 3>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<double4, 4>* src, LinearDeviceMemory<double4, 4>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<double4, 5>* src, LinearDeviceMemory<double4, 5>* dst);
 
 // copy host -> device;
 /** Copy methods for host to host 1D copy methods for 8bit buffers.
@@ -154,6 +204,45 @@ IUCORE_DLLAPI void copy(const LinearHostMemory_32f_C1* src, LinearDeviceMemory_3
 IUCORE_DLLAPI void copy(const LinearHostMemory_32f_C2* src, LinearDeviceMemory_32f_C2* dst);
 IUCORE_DLLAPI void copy(const LinearHostMemory_32f_C3* src, LinearDeviceMemory_32f_C3* dst);
 IUCORE_DLLAPI void copy(const LinearHostMemory_32f_C4* src, LinearDeviceMemory_32f_C4* dst);
+IUCORE_DLLAPI void copy(const LinearHostMemory_64f_C1* src, LinearDeviceMemory_64f_C1* dst);
+IUCORE_DLLAPI void copy(const LinearHostMemory_64f_C2* src, LinearDeviceMemory_64f_C2* dst);
+IUCORE_DLLAPI void copy(const LinearHostMemory_64f_C3* src, LinearDeviceMemory_64f_C3* dst);
+IUCORE_DLLAPI void copy(const LinearHostMemory_64f_C4* src, LinearDeviceMemory_64f_C4* dst);
+
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float, 2>* src, LinearHostMemory<float, 2>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float, 3>* src, LinearHostMemory<float, 3>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float, 4>* src, LinearHostMemory<float, 4>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float, 5>* src, LinearHostMemory<float, 5>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float2, 2>* src, LinearHostMemory<float2, 2>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float2, 3>* src, LinearHostMemory<float2, 3>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float2, 4>* src, LinearHostMemory<float2, 4>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float2, 5>* src, LinearHostMemory<float2, 5>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float3, 2>* src, LinearHostMemory<float3, 2>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float3, 3>* src, LinearHostMemory<float3, 3>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float3, 4>* src, LinearHostMemory<float3, 4>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float3, 5>* src, LinearHostMemory<float3, 5>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float4, 2>* src, LinearHostMemory<float4, 2>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float4, 3>* src, LinearHostMemory<float4, 3>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float4, 4>* src, LinearHostMemory<float4, 4>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float4, 5>* src, LinearHostMemory<float4, 5>* dst);
+
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<double, 2>* src, LinearHostMemory<double, 2>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<double, 3>* src, LinearHostMemory<double, 3>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<double, 4>* src, LinearHostMemory<double, 4>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<double, 5>* src, LinearHostMemory<double, 5>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<double2, 2>* src, LinearHostMemory<double2, 2>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<double2, 3>* src, LinearHostMemory<double2, 3>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<double2, 4>* src, LinearHostMemory<double2, 4>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<double2, 5>* src, LinearHostMemory<double2, 5>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<double3, 2>* src, LinearHostMemory<double3, 2>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<double3, 3>* src, LinearHostMemory<double3, 3>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<double3, 4>* src, LinearHostMemory<double3, 4>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<double3, 5>* src, LinearHostMemory<double3, 5>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<double4, 2>* src, LinearHostMemory<double4, 2>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<double4, 3>* src, LinearHostMemory<double4, 3>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<double4, 4>* src, LinearHostMemory<double4, 4>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<double4, 5>* src, LinearHostMemory<double4, 5>* dst);
+
 
 // copy device -> host;
 /** Copy methods for host to host 1D copy methods for 8bit buffers.
@@ -179,6 +268,44 @@ IUCORE_DLLAPI void copy(const LinearDeviceMemory_32f_C1* src, LinearHostMemory_3
 IUCORE_DLLAPI void copy(const LinearDeviceMemory_32f_C2* src, LinearHostMemory_32f_C2* dst);
 IUCORE_DLLAPI void copy(const LinearDeviceMemory_32f_C3* src, LinearHostMemory_32f_C3* dst);
 IUCORE_DLLAPI void copy(const LinearDeviceMemory_32f_C4* src, LinearHostMemory_32f_C4* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory_64f_C1* src, LinearHostMemory_64f_C1* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory_64f_C2* src, LinearHostMemory_64f_C2* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory_64f_C3* src, LinearHostMemory_64f_C3* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory_64f_C4* src, LinearHostMemory_64f_C4* dst);
+
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float, 2>* src, LinearHostMemory<float, 2>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float, 3>* src, LinearHostMemory<float, 3>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float, 4>* src, LinearHostMemory<float, 4>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float, 5>* src, LinearHostMemory<float, 5>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float2, 2>* src, LinearHostMemory<float2, 2>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float2, 3>* src, LinearHostMemory<float2, 3>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float2, 4>* src, LinearHostMemory<float2, 4>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float2, 5>* src, LinearHostMemory<float2, 5>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float3, 2>* src, LinearHostMemory<float3, 2>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float3, 3>* src, LinearHostMemory<float3, 3>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float3, 4>* src, LinearHostMemory<float3, 4>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float3, 5>* src, LinearHostMemory<float3, 5>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float4, 2>* src, LinearHostMemory<float4, 2>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float4, 3>* src, LinearHostMemory<float4, 3>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float4, 4>* src, LinearHostMemory<float4, 4>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<float4, 5>* src, LinearHostMemory<float4, 5>* dst);
+
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<double, 2>* src, LinearHostMemory<double, 2>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<double, 3>* src, LinearHostMemory<double, 3>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<double, 4>* src, LinearHostMemory<double, 4>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<double, 5>* src, LinearHostMemory<double, 5>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<double2, 2>* src, LinearHostMemory<double2, 2>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<double2, 3>* src, LinearHostMemory<double2, 3>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<double2, 4>* src, LinearHostMemory<double2, 4>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<double2, 5>* src, LinearHostMemory<double2, 5>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<double3, 2>* src, LinearHostMemory<double3, 2>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<double3, 3>* src, LinearHostMemory<double3, 3>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<double3, 4>* src, LinearHostMemory<double3, 4>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<double3, 5>* src, LinearHostMemory<double3, 5>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<double4, 2>* src, LinearHostMemory<double4, 2>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<double4, 3>* src, LinearHostMemory<double4, 3>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<double4, 4>* src, LinearHostMemory<double4, 4>* dst);
+IUCORE_DLLAPI void copy(const LinearDeviceMemory<double4, 5>* src, LinearHostMemory<double4, 5>* dst);
 
 /** \} */ // end of Copy1D
 
@@ -203,6 +330,10 @@ IUCORE_DLLAPI void copy(const ImageCpu_32f_C1* src, ImageCpu_32f_C1* dst);
 IUCORE_DLLAPI void copy(const ImageCpu_32f_C2* src, ImageCpu_32f_C2* dst);
 IUCORE_DLLAPI void copy(const ImageCpu_32f_C3* src, ImageCpu_32f_C3* dst);
 IUCORE_DLLAPI void copy(const ImageCpu_32f_C4* src, ImageCpu_32f_C4* dst);
+IUCORE_DLLAPI void copy(const ImageCpu_64f_C1* src, ImageCpu_64f_C1* dst);
+IUCORE_DLLAPI void copy(const ImageCpu_64f_C2* src, ImageCpu_64f_C2* dst);
+IUCORE_DLLAPI void copy(const ImageCpu_64f_C3* src, ImageCpu_64f_C3* dst);
+IUCORE_DLLAPI void copy(const ImageCpu_64f_C4* src, ImageCpu_64f_C4* dst);
 
 // 2D; copy device -> device;
 /** Copy methods for device to device 2D copy
@@ -218,6 +349,10 @@ IUCORE_DLLAPI void copy(const ImageGpu_32f_C1* src, ImageGpu_32f_C1* dst);
 IUCORE_DLLAPI void copy(const ImageGpu_32f_C2* src, ImageGpu_32f_C2* dst);
 IUCORE_DLLAPI void copy(const ImageGpu_32f_C3* src, ImageGpu_32f_C3* dst);
 IUCORE_DLLAPI void copy(const ImageGpu_32f_C4* src, ImageGpu_32f_C4* dst);
+IUCORE_DLLAPI void copy(const ImageGpu_64f_C1* src, ImageGpu_64f_C1* dst);
+IUCORE_DLLAPI void copy(const ImageGpu_64f_C2* src, ImageGpu_64f_C2* dst);
+IUCORE_DLLAPI void copy(const ImageGpu_64f_C3* src, ImageGpu_64f_C3* dst);
+IUCORE_DLLAPI void copy(const ImageGpu_64f_C4* src, ImageGpu_64f_C4* dst);
 
 // 2D; copy host -> device;
 /** Copy methods for host to device 2D copy
@@ -238,6 +373,10 @@ IUCORE_DLLAPI void copy(const ImageCpu_32f_C1* src, ImageGpu_32f_C1* dst);
 IUCORE_DLLAPI void copy(const ImageCpu_32f_C2* src, ImageGpu_32f_C2* dst);
 IUCORE_DLLAPI void copy(const ImageCpu_32f_C3* src, ImageGpu_32f_C3* dst);
 IUCORE_DLLAPI void copy(const ImageCpu_32f_C4* src, ImageGpu_32f_C4* dst);
+IUCORE_DLLAPI void copy(const ImageCpu_64f_C1* src, ImageGpu_64f_C1* dst);
+IUCORE_DLLAPI void copy(const ImageCpu_64f_C2* src, ImageGpu_64f_C2* dst);
+IUCORE_DLLAPI void copy(const ImageCpu_64f_C3* src, ImageGpu_64f_C3* dst);
+IUCORE_DLLAPI void copy(const ImageCpu_64f_C4* src, ImageGpu_64f_C4* dst);
 
 // 2D; copy device -> host;
 /** Copy methods for device to host 2D copy
@@ -258,6 +397,10 @@ IUCORE_DLLAPI void copy(const ImageGpu_32f_C1* src, ImageCpu_32f_C1* dst);
 IUCORE_DLLAPI void copy(const ImageGpu_32f_C2* src, ImageCpu_32f_C2* dst);
 IUCORE_DLLAPI void copy(const ImageGpu_32f_C3* src, ImageCpu_32f_C3* dst);
 IUCORE_DLLAPI void copy(const ImageGpu_32f_C4* src, ImageCpu_32f_C4* dst);
+IUCORE_DLLAPI void copy(const ImageGpu_64f_C1* src, ImageCpu_64f_C1* dst);
+IUCORE_DLLAPI void copy(const ImageGpu_64f_C2* src, ImageCpu_64f_C2* dst);
+IUCORE_DLLAPI void copy(const ImageGpu_64f_C3* src, ImageCpu_64f_C3* dst);
+IUCORE_DLLAPI void copy(const ImageGpu_64f_C4* src, ImageCpu_64f_C4* dst);
 
 /** \} */ // end of Copy2D
 
@@ -281,6 +424,10 @@ IUCORE_DLLAPI void copy(const VolumeCpu_32f_C1* src, VolumeCpu_32f_C1* dst);
 IUCORE_DLLAPI void copy(const VolumeCpu_32f_C2* src, VolumeCpu_32f_C2* dst);
 IUCORE_DLLAPI void copy(const VolumeCpu_32f_C3* src, VolumeCpu_32f_C3* dst);
 IUCORE_DLLAPI void copy(const VolumeCpu_32f_C4* src, VolumeCpu_32f_C4* dst);
+IUCORE_DLLAPI void copy(const VolumeCpu_64f_C1* src, VolumeCpu_64f_C1* dst);
+IUCORE_DLLAPI void copy(const VolumeCpu_64f_C2* src, VolumeCpu_64f_C2* dst);
+IUCORE_DLLAPI void copy(const VolumeCpu_64f_C3* src, VolumeCpu_64f_C3* dst);
+IUCORE_DLLAPI void copy(const VolumeCpu_64f_C4* src, VolumeCpu_64f_C4* dst);
 IUCORE_DLLAPI void copy(const VolumeCpu_32u_C1* src, VolumeCpu_32u_C1* dst);
 IUCORE_DLLAPI void copy(const VolumeCpu_32u_C2* src, VolumeCpu_32u_C2* dst);
 IUCORE_DLLAPI void copy(const VolumeCpu_32u_C4* src, VolumeCpu_32u_C4* dst);
@@ -301,7 +448,12 @@ IUCORE_DLLAPI void copy(const VolumeGpu_8u_C4* src, VolumeGpu_8u_C4* dst);
 IUCORE_DLLAPI void copy(const VolumeGpu_16u_C1* src, VolumeGpu_16u_C1* dst);
 IUCORE_DLLAPI void copy(const VolumeGpu_32f_C1* src, VolumeGpu_32f_C1* dst);
 IUCORE_DLLAPI void copy(const VolumeGpu_32f_C2* src, VolumeGpu_32f_C2* dst);
+IUCORE_DLLAPI void copy(const VolumeGpu_32f_C3* src, VolumeGpu_32f_C3* dst);
 IUCORE_DLLAPI void copy(const VolumeGpu_32f_C4* src, VolumeGpu_32f_C4* dst);
+IUCORE_DLLAPI void copy(const VolumeGpu_64f_C1* src, VolumeGpu_64f_C1* dst);
+IUCORE_DLLAPI void copy(const VolumeGpu_64f_C2* src, VolumeGpu_64f_C2* dst);
+IUCORE_DLLAPI void copy(const VolumeGpu_64f_C3* src, VolumeGpu_64f_C3* dst);
+IUCORE_DLLAPI void copy(const VolumeGpu_64f_C4* src, VolumeGpu_64f_C4* dst);
 IUCORE_DLLAPI void copy(const VolumeGpu_32u_C1* src, VolumeGpu_32u_C1* dst);
 IUCORE_DLLAPI void copy(const VolumeGpu_32u_C2* src, VolumeGpu_32u_C2* dst);
 IUCORE_DLLAPI void copy(const VolumeGpu_32u_C4* src, VolumeGpu_32u_C4* dst);
@@ -324,6 +476,10 @@ IUCORE_DLLAPI void copy(const VolumeCpu_32f_C1* src, VolumeGpu_32f_C1* dst);
 IUCORE_DLLAPI void copy(const VolumeCpu_32f_C2* src, VolumeGpu_32f_C2* dst);
 IUCORE_DLLAPI void copy(const VolumeCpu_32f_C3* src, VolumeGpu_32f_C3* dst);
 IUCORE_DLLAPI void copy(const VolumeCpu_32f_C4* src, VolumeGpu_32f_C4* dst);
+IUCORE_DLLAPI void copy(const VolumeCpu_64f_C1* src, VolumeGpu_64f_C1* dst);
+IUCORE_DLLAPI void copy(const VolumeCpu_64f_C2* src, VolumeGpu_64f_C2* dst);
+IUCORE_DLLAPI void copy(const VolumeCpu_64f_C3* src, VolumeGpu_64f_C3* dst);
+IUCORE_DLLAPI void copy(const VolumeCpu_64f_C4* src, VolumeGpu_64f_C4* dst);
 IUCORE_DLLAPI void copy(const VolumeCpu_32u_C1* src, VolumeGpu_32u_C1* dst);
 IUCORE_DLLAPI void copy(const VolumeCpu_32u_C2* src, VolumeGpu_32u_C2* dst);
 IUCORE_DLLAPI void copy(const VolumeCpu_32u_C4* src, VolumeGpu_32u_C4* dst);
@@ -345,6 +501,10 @@ IUCORE_DLLAPI void copy(const VolumeGpu_32f_C1* src, VolumeCpu_32f_C1* dst);
 IUCORE_DLLAPI void copy(const VolumeGpu_32f_C2* src, VolumeCpu_32f_C2* dst);
 IUCORE_DLLAPI void copy(const VolumeGpu_32f_C3* src, VolumeCpu_32f_C3* dst);
 IUCORE_DLLAPI void copy(const VolumeGpu_32f_C4* src, VolumeCpu_32f_C4* dst);
+IUCORE_DLLAPI void copy(const VolumeGpu_64f_C1* src, VolumeCpu_64f_C1* dst);
+IUCORE_DLLAPI void copy(const VolumeGpu_64f_C2* src, VolumeCpu_64f_C2* dst);
+IUCORE_DLLAPI void copy(const VolumeGpu_64f_C3* src, VolumeCpu_64f_C3* dst);
+IUCORE_DLLAPI void copy(const VolumeGpu_64f_C4* src, VolumeCpu_64f_C4* dst);
 IUCORE_DLLAPI void copy(const VolumeGpu_32u_C1* src, VolumeCpu_32u_C1* dst);
 IUCORE_DLLAPI void copy(const VolumeGpu_32u_C2* src, VolumeCpu_32u_C2* dst);
 IUCORE_DLLAPI void copy(const VolumeGpu_32u_C4* src, VolumeCpu_32u_C4* dst);
@@ -662,4 +822,3 @@ IUCORE_DLLAPI void remapAffine(iu::ImageGpu_32f_C1* src,
 /** \} */ // end of Core module
 } // namespace iu
 
-#endif // IU_CORE_MODULE_H

@@ -1,5 +1,4 @@
-#ifndef GLWINDOW_H
-#define GLWINDOW_H
+#pragma once
 
 #include <QOpenGLWidget>
 #include <QOpenGLBuffer>
@@ -76,4 +75,4 @@ protected:
 
 } // namespace iu
 
-#endif // GLWINDOW_H
+

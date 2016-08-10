@@ -1,28 +1,4 @@
-/*
- * Copyright (c) ICG. All rights reserved.
- *
- * Institute for Computer Graphics and Vision
- * Graz University of Technology / Austria
- *
- *
- * This software is distributed WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- * PURPOSE.  See the above copyright notices for more information.
- *
- *
- * Project     : ImageUtilities
- * Module      : Core
- * Class       : ImageAllocatorGpu
- * Language    : C++
- * Description : Image allocation functions for Gpu images.
- *
- * Author     : Manuel Werlberger
- * EMail      : werlberger@icg.tugraz.at
- *
- */
-
-#ifndef IUCORE_IMAGE_ALLOCATOR_GPU_H
-#define IUCORE_IMAGE_ALLOCATOR_GPU_H
+#pragma once
 
 #include <assert.h>
 #include <cuda_runtime.h>
@@ -61,4 +37,3 @@ public:
 
 } // namespace iuprivate
 
-#endif // IUCORE_IMAGE_ALLOCATOR_GPU_H

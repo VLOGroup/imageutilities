@@ -1,28 +1,3 @@
-/*
- * Copyright (c) ICG. All rights reserved.
- *
- * Institute for Computer Graphics and Vision
- * Graz University of Technology / Austria
- *
- *
- * This software is distributed WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- * PURPOSE.  See the above copyright notices for more information.
- *
- *
- * Project     : ImageUtilities
- * Module      : Filter
- * Class       : none
- * Language    : CUDA
- * Description : Definition of CUDA wrappers for filter functions on Npp images
- *
- * Author     : Manuel Werlberger
- * EMail      : werlberger@icg.tugraz.at
- *
- */
-
-#ifndef IUPRIVATE_FILTER_CU
-#define IUPRIVATE_FILTER_CU
 
 #include <float.h>
 #include <iucutil.h>
@@ -36,7 +11,7 @@
 
 #include "filterbspline_kernels.cu"
 #include "filter.cuh"
-#include "../helper_math.h"
+#include "../iuhelpermath.h"
 
 namespace iuprivate {
 
@@ -1176,5 +1151,5 @@ void cuCubicBSplinePrefilter_32f_C1I(iu::ImageGpu_32f_C1 *input)
 
 } // namespace iuprivate
 
-#endif // IUPRIVATE_FILTER_CU
+
 

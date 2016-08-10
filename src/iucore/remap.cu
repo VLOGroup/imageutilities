@@ -1,26 +1,3 @@
-/*
- * Copyright (c) ICG. All rights reserved.
- *
- * Institute for Computer Graphics and Vision
- * Graz University of Technology / Austria
- *
- *
- * This software is distributed WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- * PURPOSE.  See the above copyright notices for more information.
- *
- *
- * Project     : ImageUtilities
- * Module      : Geometric Transformation
- * Class       : none
- * Language    : CUDA
- * Description : Implementation of CUDA wrappers for remap operations
- *
- * Author     : Manuel Werlberger
- * EMail      : werlberger@icg.tugraz.at
- *
- */
-
 #include <iostream>
 #include <iudefs.h>
 #include <iucutil.h>
@@ -28,9 +5,6 @@
 #include <common/bind_textures.cuh>
 #include <common/bsplinetexture_kernels.cuh>
 
-
-#ifndef IUTRANSFORM_REMAP_CU
-#define IUTRANSFORM_REMAP_CU
 
 namespace iuprivate {
 
@@ -391,4 +365,4 @@ void cuRemapAffine(iu::ImageGpu_32f_C1* src,
 
 } // namespace iuprivate
 
-#endif // IUTRANSFORM_REMAP_CU
+

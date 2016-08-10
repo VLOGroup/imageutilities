@@ -1,5 +1,4 @@
-#ifndef ndarray_op_h
-#define ndarray_op_h
+#pragma once
 
 #include "ndarray_ref.host.h"
 #include "error.h"
@@ -502,4 +501,3 @@ ndarray_ref<type, dims> void add(const ndarray_ref<type, dims> & a, const ndarra
 }
  */
 
-#endif

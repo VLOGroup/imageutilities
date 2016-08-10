@@ -1,3 +1,5 @@
+#pragma once
+
 #include "error_cuda.h"
 #include "ndarray_ref.host.h"
 #include "ndarray_op.h"

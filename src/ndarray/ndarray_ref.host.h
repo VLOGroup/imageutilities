@@ -1,4 +1,5 @@
 #pragma once
+
 #include "ndarray_ref.kernel.h"
 #include "error.h"
 #include "error.kernel.h"
@@ -6,6 +7,7 @@
 
 #ifndef  __CUDA_ARCH__
 //#include <typeinfo>
+
 #include <iostream>
 #endif
 
@@ -26,9 +28,10 @@ int ptr_access_flags(void * ptr);
 
 
 // forward declaration of classes in iu from which conversion is provided, include "ndarray_iu.h"
-namespace iu{
-	template<typename type> class LinearHostMemory;
-	template<typename type> class LinearDeviceMemory;
+namespace iu
+{
+	template<typename type, unsigned int> class LinearHostMemory;
+	template<typename type, unsigned int> class LinearDeviceMemory;
 	template<typename type, class Allocator> class ImageGpu;
 	template<typename type, class Allocator> class ImageCpu;
 	template<typename type, class Allocator> class VolumeGpu;
@@ -154,10 +157,10 @@ namespace base2{
 		}
 		/*
 	public: // constructors, from image utilities classes
-		//! from LinearDeviceMemory and size
-		ndarray_ref(const iu::LinearDeviceMemory<type> & x, const intn<dims> size);
-		//! from LinearHostMemory and size
-		ndarray_ref(const iu::LinearHostMemory<type> & x, const intn<dims> size);
+		//! from LinearDeviceMemory1d and size
+		ndarray_ref(const iu::LinearDeviceMemory1d<type> & x, const intn<dims> size);
+		//! from LinearHostMemory1d and size
+		ndarray_ref(const iu::LinearHostMemory1d<type> & x, const intn<dims> size);
 		//! from ImageGPU, ImageCPU, VolumeCPU, VolumeGPU
 		template <class Allocator, template<typename, class> class ImageorVolume> ndarray_ref(const ImageorVolume<type, Allocator> & x){
 		 *this = x;
@@ -421,23 +424,23 @@ namespace special2{
 		using parent::set_ref;
 		ndarray_ref() = default;
 		// special constructors
-		ndarray_ref & set_ref(const iu::LinearHostMemory<type> & x);
-		ndarray_ref & set_ref(const iu::LinearDeviceMemory<type> & x);
-		ndarray_ref(const iu::LinearHostMemory<type> & x){
+		ndarray_ref & set_ref(const iu::LinearHostMemory<type, 1> & x);
+		ndarray_ref & set_ref(const iu::LinearDeviceMemory<type, 1> & x);
+		ndarray_ref(const iu::LinearHostMemory<type, 1> & x){
 			set_ref(x);
 		}
-		ndarray_ref(const iu::LinearDeviceMemory<type> & x){
+		ndarray_ref(const iu::LinearDeviceMemory<type, 1> & x){
 			set_ref(x);
 		}
-		ndarray_ref(const iu::LinearHostMemory<type> * x){
+		ndarray_ref(const iu::LinearHostMemory<type, 1> * x){
 			set_ref(x);
 		}
-		ndarray_ref(const iu::LinearDeviceMemory<type> * x){
+		ndarray_ref(const iu::LinearDeviceMemory<type, 1> * x){
 			set_ref(x);
 		}
 		//reverse conversions
-		//operator iu::LinearHostMemory<type>();
-		//operator iu::LinearDeviceMemory<type>();
+		//operator iu::LinearHostMemory1d<type>();
+		//operator iu::LinearDeviceMemory1d<type>();
 	};
 	// 2D array
 	template<typename type> class ndarray_ref<type, 2> : public base2::ndarray_ref < type, 2>{
@@ -584,12 +587,12 @@ public:
 	using parent::ptr;
 	using parent::size;
 public:
-	//! from LinearHostMemory and size
-	ndarray_ref(const iu::LinearHostMemory<type> & x, const intn<dims> & size);
-	//! from LinearDeviceMemory and size
-	ndarray_ref(const iu::LinearDeviceMemory<type> & x, const intn<dims> & size);
-	ndarray_ref(const iu::LinearHostMemory<type> * x, const intn<dims> & size);
-	ndarray_ref(const iu::LinearDeviceMemory<type> * x, const intn<dims> & size);
+	//! from LinearHostMemory1d and size
+	ndarray_ref(const iu::LinearHostMemory<type, 1> & x, const intn<dims> & size);
+	//! from LinearDeviceMemory1d and size
+	ndarray_ref(const iu::LinearDeviceMemory<type, 1> & x, const intn<dims> & size);
+	ndarray_ref(const iu::LinearHostMemory<type, 1> * x, const intn<dims> & size);
+	ndarray_ref(const iu::LinearDeviceMemory<type, 1> * x, const intn<dims> & size);
 public: // operations
 	//! reshape to get descending order of strides - last index fastest
 	ndarray_ref<type, dims> reshape_descending() const;

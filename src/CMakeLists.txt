@@ -1,21 +1,3 @@
-# Copyright (c) ICG. All rights reserved.
-#
-# Institute for Computer Graphics and Vision
-# Graz University of Technology / Austria
-#
-#
-# This software is distributed WITHOUT ANY WARRANTY; without even
-# the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-# PURPOSE.  See the above copyright notices for more information.
-#
-#
-# Project     : ImageUtilities
-# Module      : CMakeFile
-# Language    : CMake
-# Description : CMakeFile
-#
-# Author     : Gottfried Graber
-# EMail      : graber@icg.tugraz.at
 
 project(imageutilities_lib)
 cmake_minimum_required(VERSION 2.8)
@@ -27,6 +9,7 @@ option(IU_BUILD_STATIC "Build static libs too." OFF)
 # general settings
 #set(CMAKE_DEBUG_POSTFIX "d")
 set(CMAKE_BUILD_TYPE Release)
+set(CUDA_PROPAGATE_HOST_FLAGS OFF)
 
 file(TO_CMAKE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../cmake" OT_IU_CMAKE_MODULE_PATH)
 set(CMAKE_MODULE_PATH ${OT_IU_CMAKE_MODULE_PATH})
@@ -71,9 +54,11 @@ SET(CMAKE_INSTALL_RPATH "$ORIGIN")
 if(ANDROID)
 option(IU_USE_IO "Including IO module." ON)
 option(IU_USE_GUI "Including GUI module." OFF)
-option(WITH_FLYCAPTURE2 "Use FlyCapture2." OFF)
 option(IU_USE_MATH "Including Math module." OFF)
-option(WITH_OPENEXR "Use OpenEXR." OFF)
+option(IU_USE_NDARRAY "Include NDArray module" OFF)
+option(WITH_FLYCAPTURE2 "Use FlyCapture2 - build pgrvideosource class." OFF)
+option(WITH_OPENEXR "Use OpenEXR - build OpenEXRIO classes." OFF)
+option(WITH_PYTHON "Use Python - include imageutilities <-> python interface. Requires boost.python and Eigen" OFF)
 set(ANDROID_TOOLCHAIN_NAME arm-linux-androideabi-4.6)
 set(CUDA_PROPAGATE_HOST_FLAGS OFF)
 else(ANDROID)
@@ -81,15 +66,23 @@ option(IU_USE_IO "Including IO module." ON)
 option(IU_USE_GUI "Including GUI module." ON)
 option(IU_USE_MATH "Including Math module." ON)
 option(IU_USE_NDARRAY "Include NDArray module" ON)
-option(WITH_FLYCAPTURE2 "Use FlyCapture2." ON)
-option(WITH_OPENEXR "Use OpenEXR." ON)
+option(WITH_FLYCAPTURE2 "Use FlyCapture2 - build pgrvideosource class." ON)
+option(WITH_OPENEXR "Use OpenEXR - build OpenEXRIO classes." ON)
+option(WITH_PYTHON "Use Python - include imageutilities <-> python interface. Requires numpy, boost.python and Eigen" OFF)
 endif(ANDROID)
 
 ##-----------------------------------------------------------------------------
 ## Compiler Flags (to be added on demand)
-set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-Wall -std=c++11")
+IF(NOT WIN32)
+  set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-Wall -std=c++11")
+ENDIF(NOT WIN32)
 
-
+if(WITH_PYTHON)
+    find_package(Boost REQUIRED COMPONENTS python)
+    find_package(PythonLibs 2.7 REQUIRED)
+    find_package(NumPy REQUIRED)
+    FIND_PACKAGE(Eigen3 REQUIRED)
+endif(WITH_PYTHON)
 
 
 ##-----------------------------------------------------------------------------
@@ -113,12 +106,14 @@ if(IU_USE_IO AND OpenCV_LIBS)
   set( IU_IO_HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/iuio/imageio.h
     ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videosource.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/iuio/iuioapi.h
     #${CMAKE_CURRENT_SOURCE_DIR}/iuio/videocapture_private.h
     )
   set(IU_PUBLIC_IO_HEADERS
       ${CMAKE_CURRENT_SOURCE_DIR}/iuio/iuvideosource.h
       ${CMAKE_CURRENT_SOURCE_DIR}/iuio/videosource.h
       ${CMAKE_CURRENT_SOURCE_DIR}/iuio/opencvsource.h
+      ${CMAKE_CURRENT_SOURCE_DIR}/iuio/iuioapi.h
    )
 
   set( IU_IO_SOURCES
@@ -217,10 +212,10 @@ endif()
 
 ##-----------------------------------------------------------------------------
 ## GUI MODULE: Qt5 for ImagepuWidget
-find_package(Qt5Core 5.4)
-find_package(Qt5Widgets 5.4)
-find_package(Qt5OpenGL 5.4)
-find_package(OpenGL)
+find_package(Qt5Core 5.4 QUIET)
+find_package(Qt5Widgets 5.4 QUIET)
+find_package(Qt5OpenGL 5.4 QUIET)
+find_package(OpenGL QUIET)
 if(IU_USE_GUI AND Qt5Widgets_FOUND AND Qt5OpenGL_FOUND)
 
   message("[+] ImageUtilities include GUI module")
@@ -233,9 +228,11 @@ if(IU_USE_GUI AND Qt5Widgets_FOUND AND Qt5OpenGL_FOUND)
   set(IU_PUBLIC_GUI_HEADERS
       ${CMAKE_CURRENT_SOURCE_DIR}/iugui/qt5imagegpuwidget.h
       ${CMAKE_CURRENT_SOURCE_DIR}/iugui/qt5disparitymapgpuwidget.h
+      ${CMAKE_CURRENT_SOURCE_DIR}/iugui/iuguiapi.h
    )
   set( IU_GUI_HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/iugui.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/iugui/iuguiapi.h
     ${CMAKE_CURRENT_SOURCE_DIR}/iugui/qt5imagegpuwidget.h
     ${CMAKE_CURRENT_SOURCE_DIR}/iugui/qt5disparitymapgpuwidget.h
   )
@@ -259,18 +256,22 @@ if(IU_USE_MATH)
   set( IU_PUBLIC_HEADERS
     ${IU_PUBLIC_HEADERS}
     ${CMAKE_CURRENT_SOURCE_DIR}/iumath.h
-   )
-  set(IU_PUBLIC_MATH_HEADERS
 
    )
+
+  set(IU_PUBLIC_MATH_HEADERS
+    ${CMAKE_CURRENT_SOURCE_DIR}/iumath/iumathapi.h
+   )
+
   set( IU_MATH_HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/iumath/thrust_kernels.cuh
     ${CMAKE_CURRENT_SOURCE_DIR}/iumath/arithmetics.cuh
     ${CMAKE_CURRENT_SOURCE_DIR}/iumath/statistics.cuh
     ${CMAKE_CURRENT_SOURCE_DIR}/iumath/complex.cuh
+    ${CMAKE_CURRENT_SOURCE_DIR}/iumath.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/iumath/iumathapi.h
   )
   set( IU_MATH_SOURCES
-
     ${CMAKE_CURRENT_SOURCE_DIR}/iumath.cu
   )
 
@@ -301,12 +302,18 @@ SET( IU_PUBLIC_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/iudefs.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucutil.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/helper_math.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/iupython.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iuhelpermath.h
   )
+if(WITH_PYTHON)
+  SET( IU_PUBLIC_HEADERS
+      ${IU_PUBLIC_HEADERS}
+      ${CMAKE_CURRENT_SOURCE_DIR}/iupython.h
+  )
+endif(WITH_PYTHON)
+
 # 
 SET( IU_PUBLIC_CORE_HEADERS
-  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/globaldefs.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/iucoreapi.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/coredefs.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/memorydefs.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/linearmemory.h
@@ -325,6 +332,7 @@ SET( IU_PUBLIC_CORE_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/volume_allocator_gpu.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/volume_gpu.h
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/copy.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/iucore/vector.h
 #   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/imagepyramid.h
   )
 
@@ -405,8 +413,11 @@ endif(IU_BUILD_STATIC)
 set(IU_LIBS "") # variable where all libs that are built are saved
 set(IU_LIBS_STATIC "") # variable where all libs that are built are saved
 
+IF(NOT WIN32)
 set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} "-std=c++11")
+ENDIF(NOT WIN32)
 message("Compiler Flags NVCC: " ${CUDA_NVCC_FLAGS})
+
 ##-----------------------------------------------------------------------------
 ## documentation
 SET(DOXYGEN_OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/../doc/html/index.html)
@@ -434,6 +445,7 @@ endif()
 ##-----------------------------------------------------------------------------
 ## build core library
 set(IU_CORE_LIB iucore)
+
 cuda_add_library( ${IU_CORE_LIB} SHARED ${IU_HEADERS} ${IU_SOURCES})
 set_target_properties(${IU_CORE_LIB} PROPERTIES
   DEFINE_SYMBOL IUCORE_DLL_EXPORTS
@@ -509,7 +521,10 @@ endif(IU_USE_GUI)
 ## build math library
 set(IU_MATH_LIB iumath)
 if(IU_USE_MATH)
-  cuda_add_library( ${IU_MATH_LIB} SHARED ${IU_MATH_HEADERS} ${IU_MATH_SOURCES})
+  # The OPTIONS "-DIUMATH_DLL_EXPORTS" is used to manually propagate symbol to nvcc compiler
+  # because CUDA_SET_PROPAGATE_HOST_FLAGS is turend off.
+  cuda_add_library( ${IU_MATH_LIB} SHARED ${IU_MATH_HEADERS} ${IU_MATH_SOURCES}
+	  OPTIONS "-DIUMATH_DLL_EXPORTS")
   set_target_properties(${IU_MATH_LIB} PROPERTIES
     DEFINE_SYMBOL IUMATH_DLL_EXPORTS
     VERSION ${IMAGEUTILITIES_VERSION}

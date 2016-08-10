@@ -1,28 +1,4 @@
-/*
- * Copyright (c) ICG. All rights reserved.
- *
- * Institute for Computer Graphics and Vision
- * Graz University of Technology / Austria
- *
- *
- * This software is distributed WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- * PURPOSE.  See the above copyright notices for more information.
- *
- *
- * Project     : ImageUtilities
- * Module      : Core
- * Class       : none
- * Language    : C
- * Description : Definition of copy functions
- *
- * Author     : Manuel Werlberger
- * EMail      : werlberger@icg.tugraz.at
- *
- */
-
-#ifndef IUCORE_COPY_H
-#define IUCORE_COPY_H
+#pragma once
 
 //
 //  W A R N I N G
@@ -46,35 +22,35 @@ namespace iuprivate {
  **************************************************************************** */
 
 // 1D; copy host -> host
-template <typename PixelType>
-void copy(const iu::LinearHostMemory<PixelType> *src, iu::LinearHostMemory<PixelType> *dst)
+template <typename PixelType, unsigned int Ndim>
+void copy(const iu::LinearHostMemory<PixelType, Ndim> *src, iu::LinearHostMemory<PixelType, Ndim> *dst)
 {
   IU_SIZE_CHECK(src, dst);
-  memcpy(dst->data(), src->data(), dst->length() * sizeof(PixelType));
+  memcpy(dst->data(), src->data(), dst->numel() * sizeof(PixelType));
 }
 
 // 1D; copy device -> device
-template <typename PixelType>
-void copy(const iu::LinearDeviceMemory<PixelType> *src, iu::LinearDeviceMemory<PixelType> *dst)
+template <typename PixelType, unsigned int Ndim>
+void copy(const iu::LinearDeviceMemory<PixelType, Ndim> *src, iu::LinearDeviceMemory<PixelType, Ndim> *dst)
 {
   IU_SIZE_CHECK(src, dst);
-  IU_CUDA_SAFE_CALL(cudaMemcpy(dst->data(), src->data(), dst->length() * sizeof(PixelType), cudaMemcpyDeviceToDevice));
+  IU_CUDA_SAFE_CALL(cudaMemcpy(dst->data(), src->data(), dst->numel() * sizeof(PixelType), cudaMemcpyDeviceToDevice));
 }
 
 // 1D; copy host -> device
-template <typename PixelType>
-void copy(const iu::LinearHostMemory<PixelType> *src, iu::LinearDeviceMemory<PixelType> *dst)
+template <typename PixelType, unsigned int Ndim>
+void copy(const iu::LinearHostMemory<PixelType, Ndim> *src, iu::LinearDeviceMemory<PixelType, Ndim> *dst)
 {
   IU_SIZE_CHECK(src, dst);
-  IU_CUDA_SAFE_CALL(cudaMemcpy(dst->data(), src->data(), dst->length() * sizeof(PixelType), cudaMemcpyHostToDevice));
+  IU_CUDA_SAFE_CALL(cudaMemcpy(dst->data(), src->data(), dst->numel() * sizeof(PixelType), cudaMemcpyHostToDevice));
 }
 
 // 1D; copy device -> host
-template <typename PixelType>
-void copy(const iu::LinearDeviceMemory<PixelType> *src, iu::LinearHostMemory<PixelType> *dst)
+template <typename PixelType, unsigned int Ndim>
+void copy(const iu::LinearDeviceMemory<PixelType, Ndim> *src, iu::LinearHostMemory<PixelType, Ndim> *dst)
 {
   IU_SIZE_CHECK(src, dst);
-  IU_CUDA_SAFE_CALL(cudaMemcpy(dst->data(), src->data(), dst->length() * sizeof(PixelType), cudaMemcpyDeviceToHost));
+  IU_CUDA_SAFE_CALL(cudaMemcpy(dst->data(), src->data(), dst->numel() * sizeof(PixelType), cudaMemcpyDeviceToHost));
 }
 
 /* ****************************************************************************
@@ -174,7 +150,7 @@ void copy(const iu::VolumeGpu<PixelType, AllocatorGpu  > *src,
 }
 
 template<typename PixelType, class AllocatorCpu >
-void copy(const iu::ImageCpu<PixelType, AllocatorCpu  > *src, iu::LinearHostMemory<PixelType> *dst)
+void copy(const iu::ImageCpu<PixelType, AllocatorCpu  > *src, iu::LinearHostMemory<PixelType, 1> *dst)
 {
   IU_SIZE_CHECK(src, dst);
 	PixelType *dstData = dst->data();
@@ -193,4 +169,3 @@ void copy(const iu::ImageGpu_32f_C1* src, iu::LinearDeviceMemory_32f_C1* dst);
 
 } // namespace iuprivate
 
-#endif // IUCORE_COPY_H

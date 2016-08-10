@@ -1,5 +1,4 @@
-#ifndef OPENEXRIO_H
-#define OPENEXRIO_H
+#pragma once
 
 #include <string>
 #include <vector>
@@ -275,4 +274,3 @@ private:
 
 } // namespace iu
 
-#endif // OPENEXRIO_H

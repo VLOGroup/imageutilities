@@ -1,29 +1,4 @@
-/*
- * Copyright (c) ICG. All rights reserved.
- *
- * Institute for Computer Graphics and Vision
- * Graz University of Technology / Austria
- *
- *
- * This software is distributed WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- * PURPOSE.  See the above copyright notices for more information.
- *
- *
- * Project     : ImageUtilities
- * Module      : Core
- * Class       : none
- * Language    : C
- * Description : Definition of convert operations on host and device memory
- *
- * Author     : Manuel Werlberger
- * EMail      : werlberger@icg.tugraz.at
- *
- */
-
-
-#ifndef IUPRIVATE_IUCORE_CONVERT_H
-#define IUPRIVATE_IUCORE_CONVERT_H
+#pragma once
 
 //
 //  W A R N I N G
@@ -96,4 +71,3 @@ void convertLabRgb(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst);
 
 } // namespace iuprivate
 
-#endif // IUPRIVATE_IUCORE_CONVERT_H

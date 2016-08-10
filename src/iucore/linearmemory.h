@@ -1,34 +1,9 @@
-/*
- * Copyright (c) ICG. All rights reserved.
- *
- * Institute for Computer Graphics and Vision
- * Graz University of Technology / Austria
- *
- *
- * This software is distributed WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- * PURPOSE.  See the above copyright notices for more information.
- *
- *
- * Project     : Utilities for IPP and NPP images
- * Module      : Memory (linear) base class
- * Class       : LinearMemory
- * Language    : C++
- * Description : Implementation of linear memory base class
- *
- * Author     : Manuel Werlberger
- * EMail      : werlberger@icg.tugraz.at
+#pragma once
 
- *
- */
-
-#ifndef LINEARMEMORY_H
-#define LINEARMEMORY_H
-
-
-#include "globaldefs.h"
-#include "coredefs.h"
 #include <typeinfo>
+
+#include "coredefs.h"
+#include "vector.h"
 
 namespace iu {
 
@@ -36,11 +11,13 @@ namespace iu {
  *  \ingroup Core
  *  \brief Handles memory management of different types of host and device classes.
  *
- * - LinearMemory and specialized 4D tensor
- *    - LinearHostMemory
- *    - LinearDeviceMemory
- *    - TensorCpu
- *    - TensorGpu
+ * - LinearMemory
+ *    - LinearHostMemory: linear memory with ND size layout
+ *    - LinearDeviceMemory: linear memory with ND size layout
+ *    - TensorCpu: Specialization with 1D size layout. Wrapper for special 4D tensor.
+ *                 Same access convention as python.
+ *    - TensorGpu: Specialization with 1D size layout. Wrapper for special 4D tensor.
+ *                 Same access convention as python.
  * - Pitched memory: Image
  *    - ImageCpu
  *    - ImageGpu
@@ -50,7 +27,7 @@ namespace iu {
  *
  * The device memory classes can be easily passed to CUDA kernels using a special
  * struct. This struct gives the possibility to not only access the data pointer
- * of the image but also other useful information such as length/size of the
+ * of the image but also other useful information such as numel/size of the
  * object.
  * - LinearDeviceMemory::KernelData
  * - TensorGpu::TensorKernelData
@@ -64,14 +41,16 @@ namespace iu {
  *  \brief Memory management for LinearMemory classes.
  *
  *  This handles the memory management for following linear memory classes:
- *  - LinearHostMemory
- *  - LinearDeviceMemory
- *  - TensorCpu
- *  - TensorGpu
+ *    - LinearHostMemory: linear memory with ND size layout
+ *    - LinearDeviceMemory: linear memory with ND size layout
+ *    - TensorCpu: Specialization with 1D size layout. Wrapper for special 4D tensor.
+ *                 Same access convention as python.
+ *    - TensorGpu: Specialization with 1D size layout. Wrapper for special 4D tensor.
+ *                 Same access convention as python.
  *
  * The device memory classes can be easily passed to CUDA kernels using a special
  * struct. This struct gives the possibility to not only access the data pointer
- * of the image but also other useful information such as length of the
+ * of the image but also other useful information such as numel of the
  * object.
  * - LinearDeviceMemory::KernelData
  * - TensorGpu::TensorKernelData
@@ -79,60 +58,124 @@ namespace iu {
  */
 
 /** \brief Base class for linear memory classes. */
+template<unsigned int Ndim = 1>
 class LinearMemory
 {
+IU_ASSERT(Ndim > 0)
 public:
   /** Constructor. */
   LinearMemory() :
-    length_(0)
-  { }
+      size_(), stride_()
+  {
+  }
 
   /** Special constructor.
-   *  @param length Length of linear memory
+   *  @param size size of the linear memory
    */
-  LinearMemory(const unsigned int& length) :
-    length_(length)
-  { }
+  LinearMemory(const Size<Ndim>& size) :
+      size_(size)
+  {
+    computeStride();
+  }
 
+  /** Special constructor.
+   *  @param numel number of elements of linear memory. Size[0] equals the number of elements,
+   *  the other dimensions are 1.
+   */
+  LinearMemory(const unsigned int& numel) :
+      size_()
+  {
+    size_[0] = numel;
+    computeStride();
+  }
   /** Compares the LinearMemory type to a target LinearMemory.
    *  @param from Target LinearMemory.
    *  @return Returns true if target class is of the same type (using RTTI).
    */
   bool sameType(const LinearMemory &from)
   {
-      return typeid(from)==typeid(*this);
+    return typeid(from) == typeid(*this);
   }
 
   /** Destructor. */
   virtual ~LinearMemory()
-  { }
-
-  /** Returns the number of elements saved in the device buffer. (length of device buffer) */
-  unsigned int length() const
   {
-    return length_;
+  }
+
+  /** Returns the number of elements saved in the buffer. (numel of buffer) */
+  unsigned int numel() const
+  {
+    return size_.numel();
+  }
+
+//  /** Returns the number of elements saved in the buffer. (numel of buffer) */
+//  unsigned int length() const
+//  {
+//#pragma message("LinearMemory::length() is deprecated and will be removed in the future. Use numel() instead.")
+////    std::cout
+////        << "Warning: LinearMemory::length() is deprecated and will be removed in the future. Use numel() instead."
+////        << std::endl;
+//    return size_.numel();
+//  }
+
+  /** Returns size of the linear memory */
+  Size<Ndim> size() const
+  {
+    return size_;
+  }
+
+  /** Returns size of the linear memory */
+  Size<Ndim> stride() const
+  {
+    return stride_;
   }
 
   /** Returns the total amount of bytes saved in the data buffer. */
-  virtual size_t bytes() const {return 0;}
+  virtual size_t bytes() const
+  {
+    return 0;
+  }
 
   /** Returns the bit depth of the data pointer. */
-  virtual unsigned int bitDepth() const {return 0;}
+  virtual unsigned int bitDepth() const
+  {
+    return 0;
+  }
 
   /** Returns flag if the image data resides on the device/GPU (TRUE) or host/GPU (FALSE) */
-  virtual bool onDevice() const {return false;}
+  virtual bool onDevice() const
+  {
+    return false;
+  }
 
   /** Operator<< overloading. Output of LinearMemory class. */
   friend std::ostream& operator<<(std::ostream & out,
                                   LinearMemory const& linmem)
   {
-    out << "LinearMemory: length=" << linmem.length() << " onDevice=" << linmem.onDevice();
+    out << "LinearMemory: size=" << linmem.size() << " strides="
+        << linmem.stride() << " numel=" << linmem.numel() << " onDevice="
+        << linmem.onDevice();
     return out;
   }
 
 private:
-  /** Length of the memory.*/
-  unsigned int length_;
+  /** size of the memory.*/
+  Size<Ndim> size_;
+
+  /** Stride of the memory. First dimension is always one.*/
+  Size<Ndim> stride_;
+
+  /** Compute the strides of the memory*/
+  void computeStride()
+  {
+    for (unsigned int i = 0; i < Ndim; i++)
+    {
+      if (i == 0)
+        stride_[i] = 1;
+      else
+        stride_[i] = stride_[i - 1] * size_[i - 1];
+    }
+  }
 
 private:
   /** Private copy constructor. */
@@ -141,9 +184,8 @@ private:
   LinearMemory& operator=(const LinearMemory&);
 };
 
-/** \} */ // end of Memory Management
-/** \} */ // end of Linear Memory
+/** \} */  // end of Memory Management
+/** \} */// end of Linear Memory
+}// namespace iu
 
-} // namespace iu
 
-#endif // LINEARMEMORY_H

@@ -1,28 +1,4 @@
-/*
- * Copyright (c) ICG. All rights reserved.
- *
- * Institute for Computer Graphics and Vision
- * Graz University of Technology / Austria
- *
- *
- * This software is distributed WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- * PURPOSE.  See the above copyright notices for more information.
- *
- *
- * Project     : ImageUtilities
- * Module      : Core
- * Class       : VolumeCpu
- * Language    : C++
- * Description : Definition of volume class for Npp
- *
- * Author     : Manuel Werlberger
- * EMail      : werlberger@icg.tugraz.at
- *
- */
-
-#ifndef IUCORE_VOLUME_CPU_H
-#define IUCORE_VOLUME_CPU_H
+#pragma once
 
 #include "volume.h"
 #include "volume_allocator_cpu.h"
@@ -231,4 +207,4 @@ private:
 
 } // namespace iuprivate
 
-#endif // IUCORE_VOLUME_CPU_H
+

@@ -1,28 +1,4 @@
-/*
- * Copyright (c) ICG. All rights reserved.
- *
- * Institute for Computer Graphics and Vision
- * Graz University of Technology / Austria
- *
- *
- * This software is distributed WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- * PURPOSE.  See the above copyright notices for more information.
- *
- *
- * Project     : ImageUtilities
- * Module      : global
- * Class       : none
- * Language    : C/CUDA
- * Description : Common cuda functionality that might also be interesting for other applications.
- *
- * Author     : Manuel Werlberger
- * EMail      : werlberger@icg.tugraz.at
- *
- */
-
-#ifndef IU_VECTORMATH_KERNELS_CUH
-#define IU_VECTORMATH_KERNELS_CUH
+#pragma once
 
 #include <helper_math.h>
 
@@ -230,4 +206,3 @@ static inline __host__ __device__ float4 operator*(float4 a, float4 b)
 //  return a*a;
 //}
 
-#endif // IU_VECTORMATH_KERNELS_CUH

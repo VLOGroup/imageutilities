@@ -1,5 +1,4 @@
-#ifndef intn_h
-#define intn_h
+#pragma once
 
 #include "defines.h"
 #include "error.h"
@@ -13,6 +12,7 @@
 #include <algorithm>
 #include <error.h>
 #include <cstddef>
+
 #endif
 
 #define HOSTDEVICE __host__ __device__ __forceinline__
@@ -479,4 +479,3 @@ HOSTDEVICE intn<n> min(const intn<n> & a, const intn<n> & b){
 	return r;
 }
 
-#endif

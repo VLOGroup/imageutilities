@@ -1,34 +1,10 @@
-/*
- * Copyright (c) ICG. All rights reserved.
- *
- * Institute for Computer Graphics and Vision
- * Graz University of Technology / Austria
- *
- *
- * This software is distributed WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- * PURPOSE.  See the above copyright notices for more information.
- *
- *
- * Project     : ImageUtilities
- * Module      : global
- * Class       : none
- * Language    : C/CUDA
- * Description : Common cuda functionality that might also be interesting for other applications.
- *
- * Author     : Manuel Werlberger
- * EMail      : werlberger@icg.tugraz.at
- *
- */
-
-#ifndef IU_CUTIL_H
-#define IU_CUTIL_H
+#pragma once
 
 #include <driver_types.h>
 #include "iucore/coredefs.h"
 
 // includes for time measurements
-#ifdef WIN32
+#ifdef _WIN32
   #include <time.h>
   #include <windows.h>
 #else
@@ -151,4 +127,3 @@ static inline double getTime()
 #define IU_CUDA_CHECK         iu::checkCudaErrorState(__FILE__, __FUNCTION__, __LINE__)
 #define IU_CUDA_SAFE_CALL(fun)       iu::checkCudaErrorState(fun, __FILE__, __FUNCTION__, __LINE__)
 
-#endif // IUCUTIL_H

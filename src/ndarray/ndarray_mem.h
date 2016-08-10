@@ -1,5 +1,4 @@
-#ifndef ndarray_h
-#define ndarray_h
+#pragma once
 
 #include "ndarray_ref.host.h"
 
@@ -246,4 +245,3 @@ private: //________ forbidden, it could be ambiguous what these operators should
 	}
 };
 
-#endif

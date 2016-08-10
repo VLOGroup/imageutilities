@@ -1,28 +1,4 @@
-/*
- * Copyright (c) ICG. All rights reserved.
- *
- * Institute for Computer Graphics and Vision
- * Graz University of Technology / Austria
- *
- *
- * This software is distributed WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- * PURPOSE.  See the above copyright notices for more information.
- *
- *
- * Project     : ImageUtilities
- * Module      : Geometric Transform
- * Class       : none
- * Language    : C++
- * Description : Declaration of remap transformations (with dense disparities)
- *
- * Author     : Manuel Werlberger
- * EMail      : werlberger@icg.tugraz.at
- *
- */
-
-#ifndef IUPRIVATE_REMAP_H
-#define IUPRIVATE_REMAP_H
+#pragma once
 
 #include <iucore/coredefs.h>
 #include <iucore/memorydefs.h>
@@ -49,4 +25,4 @@ void remapAffine(iu::ImageGpu_32f_C1* src,
 
 }  // namespace iuprivate
 
-#endif // IUPRIVATE_REMAP_H
+

@@ -1,5 +1,4 @@
-#ifndef VIDEOSOURCE_H
-#define VIDEOSOURCE_H
+#pragma once
 
 #include <opencv2/opencv.hpp>
 
@@ -54,4 +53,4 @@ protected:
 
 } // namespace iu
 
-#endif // VIDEOSOURCE_H
+

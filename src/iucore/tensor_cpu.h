@@ -9,12 +9,12 @@ namespace iu
  *   \ingroup LinearMemory
  */
 template<typename PixelType>
-class TensorCpu : public LinearHostMemory<PixelType>
+class TensorCpu : public LinearHostMemory<PixelType, 1>
 {
 public:
   /** Constructor. */
 	TensorCpu() :
-			LinearHostMemory<PixelType>(), samples_(0), channels_(0), height_(0), width_(0)
+			LinearHostMemory<PixelType, 1>(), samples_(0), channels_(0), height_(0), width_(0)
 	{
 	}
 
@@ -30,7 +30,7 @@ public:
    *  @param W Width
    */
 	TensorCpu(const unsigned int N, const unsigned int C, const unsigned int H, const unsigned int W) :
-			LinearHostMemory<PixelType>(N * C * H * W), samples_(N), channels_(C), height_(H), width_(W)
+			LinearHostMemory<PixelType, 1>(N * C * H * W), samples_(N), channels_(C), height_(H), width_(W)
 	{
 	}
 
@@ -44,7 +44,7 @@ public:
    */
 	TensorCpu(PixelType* host_data, const unsigned int N, const unsigned int C, const unsigned int H,
 			const unsigned int W, bool ext_data_pointer = false) :
-			LinearHostMemory<PixelType>(host_data, N * C * H * W, ext_data_pointer), samples_(N), channels_(C), height_(H), width_(
+			LinearHostMemory<PixelType, 1>(host_data, N * C * H * W, ext_data_pointer), samples_(N), channels_(C), height_(H), width_(
 					W)
 	{
 		/** \todo Check RGB inputs */

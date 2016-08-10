@@ -2,6 +2,7 @@ project (tests)
 
 cmake_minimum_required(VERSION 2.8)
 
+set(CUDA_PROPAGATE_HOST_FLAGS OFF)
 
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/tests)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/tests)
@@ -43,9 +44,16 @@ endmacro(iu_add_test)
 
 
 add_subdirectory(coreTest_copy)
+if(WITH_PYTHON)
+  add_subdirectory(pythonTest)
+endif(WITH_PYTHON)
 if(IU_USE_NDARRAY)
-add_subdirectory(ndarrayTest)
+  add_subdirectory(ndarrayTest)
 endif(IU_USE_NDARRAY)
+if(IU_USE_MATH)
+  add_subdirectory(linearNdMemoryTest)
+  add_subdirectory(precisionTest)
+endif(IU_USE_MATH)
 #add_subdirectory(pythonTest)
 if(IU_USE_IO)
   add_subdirectory(ioTest)

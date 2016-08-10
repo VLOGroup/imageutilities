@@ -288,8 +288,8 @@ template<typename type, int dims> void template_foo(ndarray_ref<float, 3> && x){
 
 //! Image utilities interfaces
 void test_1D(){
-	iu::LinearDeviceMemory<float> L1(100);
-	iu::LinearHostMemory<float> L2(100);
+	iu::LinearDeviceMemory_32f_C1 L1(100);
+	iu::LinearHostMemory_32f_C1 L2(100);
 
 	ndarray_ref<float, 1> x1 =  L1;
 	x1 << 0.5f;

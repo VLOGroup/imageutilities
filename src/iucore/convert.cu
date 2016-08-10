@@ -1,28 +1,3 @@
-/*
- * Copyright (c) ICG. All rights reserved.
- *
- * Institute for Computer Graphics and Vision
- * Graz University of Technology / Austria
- *
- *
- * This software is distributed WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- * PURPOSE.  See the above copyright notices for more information.
- *
- *
- * Project     : ImageUtilities
- * Module      : Core
- * Class       : none
- * Language    : C/CUDA
- * Description : CUDA kernels for core functions
- *
- * Author     : Manuel Werlberger
- * EMail      : werlberger@icg.tugraz.at
- *
- */
-
-#ifndef IUCORE_CONVERT_CU
-#define IUCORE_CONVERT_CU
 
 //#include <helper_math.h>
 #include "coredefs.h"
@@ -731,4 +706,4 @@ void cuConvert_lab_to_rgb(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* d
 
 } // namespace iuprivate
 
-#endif // IUCORE_CONVERT_CU
+

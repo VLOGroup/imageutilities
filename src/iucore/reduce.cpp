@@ -1,25 +1,3 @@
-/*
- * Copyright (c) ICG. All rights reserved.
- *
- * Institute for Computer Graphics and Vision
- * Graz University of Technology / Austria
- *
- *
- * This software is distributed WITHOUT ANY WARRANTY; without even
- * the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- * PURPOSE.  See the above copyright notices for more information.
- *
- *
- * Project     : ImageUtilities
- * Module      : Geometric Transform
- * Class       : none
- * Language    : C++
- * Description : Implementation of reduction transformations
- *
- * Author     : Manuel Werlberger
- * EMail      : werlberger@icg.tugraz.at
- *
- */
 
 #include "copy.h"
 #include "filter.h"
@@ -72,7 +50,7 @@ void reduce(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
 
     float sigma = 1/(3*factor) ;  // empirical!
 //    unsigned int kernel_size = 5;
-    unsigned int kernel_size = ceil(6*sigma);
+	unsigned int kernel_size = static_cast<unsigned int>(ceil(6 * sigma));
     if (kernel_size % 2 == 0)
       kernel_size++;
 
@@ -122,7 +100,7 @@ void reduce(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
 
     float sigma = 1/(3*factor) ;  // empirical!
 //    unsigned int kernel_size = 5;
-    unsigned int kernel_size = ceil(6*sigma);
+	unsigned int kernel_size = static_cast<unsigned int>(ceil(6 * sigma));
     if (kernel_size % 2 == 0)
       kernel_size++;
 

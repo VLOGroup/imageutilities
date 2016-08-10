@@ -4,6 +4,7 @@ stages:
 before_script:
   - export COMPUTE_CAPABILITY="5.2"
   - export IMAGEUTILITIES_ROOT=`pwd`
+  - export CUDA_SDK_ROOT_DIR="/usr/local/cuda/samples/"
   - export ImageUtilitiesLight_DIR=$IMAGEUTILITIES_ROOT
 
 #cuda_samples:
