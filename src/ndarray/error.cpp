@@ -8,7 +8,7 @@ error_stream::error_stream(){
 }
 
 error_stream::~error_stream() throw (){
-	std::cout << "~ERROR\n"<<std::flush;
+	//std::cout << "~ERROR\n"<<std::flush;
 	//std::cout << what();
 	//__asm__ volatile("int3");
 	try{
@@ -38,13 +38,13 @@ error_stream::~error_stream() throw (){
 
 error_stream & error_stream::set_file_line(const char * __file, int __line){
 	file_line = std::string("In ") + __file + " : " + std::to_string(__line);
-	std::cout << file_line << "\n";
+	//std::cout << file_line << "\n";
 	//std::cout << stack.str().c_str() <<" \n" << file_line << "\n" << std::flush;
 	return *this;
 }
 
 error_stream::error_stream(const error_stream & b){
-	std::cout << "error_stream(const error_stream & b)\n";
+	//std::cout << "error_stream(const error_stream & b)\n";
 	ss << b.ss.str();
 	stack << b.stack.str();
 	file_line = b.file_line;
@@ -52,7 +52,7 @@ error_stream::error_stream(const error_stream & b){
 }
 
 error_stream & error_stream::operator = (const error_stream & b){
-	std::cout << "error_stream operator =(const error_stream & b)\n";
+	//std::cout << "error_stream operator =(const error_stream & b)\n";
 	ss << b.ss.str();
 	return *this;
 }

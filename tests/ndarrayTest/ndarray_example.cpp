@@ -1,7 +1,18 @@
 #include <cuda_runtime_api.h>
-#include "../../src/ndarray/ndarray.h"
-#include "../../src/ndarray/ndarray_iu.h"
+#include "ndarray/ndarray.h"
+#include "ndarray/ndarray_iu.h"
 #include "ndarray_example.h"
+
+//#include "ndarray/bit_index.h"
+//#include "ndarray/transform.h"
+
+#include "ndarray/common_transforms.h"
+
+//void test_iterator(){
+//	thrust::device_vector<int> v(4);
+//	thrust::fill(thrust::device, v.begin(), v.end(), 137);
+//};
+
 
 void foo(const ndarray_ref<float,2> & x){
 	x(1,1) = 0;
@@ -49,6 +60,18 @@ void test_IuSize(){
 	//	s.erase<1>() = (2,4,5,)
 	std::cout << "s.erase<1>().height = " << s.erase<1>().height << "\n";
 	//	s.erase<1>().height = 4
+	intn<4> S(2*5,2*3*7,5*2*3,7);
+	for(int i=0; i< S[0];++i){
+		for(int j=0; j< S[1];++j){
+			for(int k=0; k< S[2];++k){
+				for(int l=0; l< S[3];++l){
+					intn<4> ii(i,j,k,l);
+					runtime_check( S.integer_to_index(S.index_to_integer(ii)) == ii );
+				};
+			};
+		};
+	};
+	std::cout<<"integer_to_index checked for the range" << S <<"\n";
 };
 
 void intro_test(){
@@ -178,11 +201,11 @@ void intro_test(){
 	int * p1 = new int[1000];
 	// interpret as 3D array:
 	//                                               vv  need to specify size, assumes linear memory layout
-	std::cout <<"linear 1:" << ndarray_ref<int,3>(p1,{10,10,10}) <<"\n";
+	std::cout <<"linear 1:" << ndarray_ref<int,3>(p1,{10,10,10},ndarray_flags::host_only) <<"\n";
 	//ndarray_ref<i,3>:ptr=0x166e6a0, size=(10,10,10,), strides_b=(4,40,400,), access: host; linear_dim: 0
 
 	ndarray_ref<int,3> t1;
-	t1.set_linear_ref<false>(p1,{10,10,10});
+	t1.set_linear_ref<false>(p1,{10,10,10},ndarray_flags::host_only);
 	//                ^ use descending strides layout (default is ascending strides)
 	std::cout  <<"linear 2:" << t1 << "\n";
 	//ndarray_ref<i,3>:ptr=0x166e6a0, size=(10,10,10,), strides_b=(400,40,4,), access: host; linear_dim: 2
@@ -221,7 +244,7 @@ void intro_test(){
 void test_1(){
 	ndarray_ref<float,3> a;
 	float * x = new float[1000];
-	a.set_linear_ref(x, {10, 10, 10}); //,ndarray_flags::host_only);
+	a.set_linear_ref(x, {10, 10, 10}, ndarray_flags::host_only);
 	for (int i = 0; i < a.size().prod(); ++i){
 		x[i] = i;
 	};
@@ -242,7 +265,7 @@ void test_1(){
 	int r = (int)c(9, 9);
 	std::cout << r << "\n"; // accessing managed memory from host
 	if(r != 100) slperror("test failed");
-	int fl = ptr_access_flags(x);
+	//int fl = ptr_access_flags(x);
 	delete x;
 
 }
@@ -260,7 +283,7 @@ template<typename type, int dims> void template_foo(ndarray_ref<type, dims> & x)
 template<typename type, int dims> void template_foo(ndarray_ref<float, 3> && x){
 	//template_foo(x);
 }
-*/
+ */
 
 
 //! Image utilities interfaces
@@ -352,10 +375,14 @@ float test_warn(long long x){
 	z = int(bla[z]);
 	return z;
 }
-*/
+ */
 
 int main(){
-	test_IuSize();
+	test_transform();
+	//test_bit_index();
+	return 0;
+	test_cuda_constructors();
+
 	intro_test();
 	try{
 		test_1();
@@ -367,6 +394,11 @@ int main(){
 	test_2D();
 	test_3D();
 	test_4D();
+	//
+	test_IuSize();
+	//
+	test_thrust_iterator_1();
+	test_thrust_iterator_2();
 	//std::cout << test_warn(13);
 	return EXIT_SUCCESS;
 }

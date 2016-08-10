@@ -224,6 +224,9 @@ public:
 		al = 0; // indecate, arrays is a reference
 		parent::operator = (x); // copy reference
 	}
+public:
+	const ndarray_ref<type,dims> & ref()const{return *this;};
+	ndarray_ref<type,dims> & ref(){return *this;};
 private: //________ forbidden, it could be ambiguous what these operators should do. Use create + copy_data
 	//! deep copy
 	void operator = (const ndarray<type, dims> & x){

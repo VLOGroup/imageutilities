@@ -12,6 +12,7 @@
 #include "intn.h"
 #include "defines.h"
 
+
 #define intsizeof(type) int(sizeof(type))
 
 
@@ -84,9 +85,19 @@ public: //arithmetics
 		type_stride += b.value();
 		return *this;
 	}
+	//
+	__host__ __device__ __forceinline__ tstride<type> & operator -= (const tstride<type> & b){
+		type_stride -= b.value();
+		return *this;
+	}
 	__host__ __device__ __forceinline__ tstride<type> operator + (const tstride<type> & b) const {
 		return tstride<type>(value()+b.value());
 	}
+
+	__host__ __device__ __forceinline__ bool operator == (const tstride<type> & b) const{
+		return type_stride == b.type_stride;
+	}
+
 	__host__ __device__ __forceinline__ bool operator == (int v) const{
 		return type_stride == v;
 	}
@@ -152,8 +163,16 @@ public: // strides access
 	__host__ __device__ __forceinline__ const intn<dims> & stride_bytes() const {
 		return _stride_bytes;
 	}
+	//! whole vector of strides, in bytes
+	__host__ __device__ __forceinline__ intn<dims> & stride_bytes(){
+		return _stride_bytes;
+	}
 	//! single stride in bytes
 	__host__ __device__ __forceinline__ const int & stride_bytes(int d) const {
+		return _stride_bytes[d];
+	}
+	//! single stride in bytes
+	__host__ __device__ __forceinline__ int & stride_bytes(int d){
 		return _stride_bytes[d];
 	}
 public: // stride access
@@ -217,29 +236,6 @@ public: //____________ element access
 	__host__ __device__ __forceinline__ type & operator ()(const intn<dims> & ii) const {
 		return *ptr(ii);
 	}
-	/*
-	 //! invert the representation linear_index  = i0*stride(0) + i1*stride(1) + i2*stride(2) + ...
-	 // reqires strides in descending order
-	__host__ __device__ __forceinline__ intn<dim> coords(unsigned int linearIdx)
-	{
-		for(d = 0; d < dims; ++d){
-			ii[d] = linearIdx / stride(d);
-			linearIdx = linearIdx % stride(d);
-		};
-		assert(linearIdx == 0); // has divided without residual
-		*dim0 = linearIdx / stride(0);
-		*dim1 = (linearIdx % stride(0)) / stride(1);
-		*dim2 = ((linearIdx % stride(0)) % stride(1)) / stride(2);
-		*dim3 = ((linearIdx % stride(0)) % stride(1)) % stride(2);
-	}
-	__host__ __device__ __forceinline__ void coords(unsigned int linearIdx, short *dim0, short *dim1, short *dim2, short *dim3)
-	{
-		*dim0 = linearIdx / stride(0);
-		*dim1 = (linearIdx % stride(0)) / stride(1);
-		*dim2 = ((linearIdx % stride(0)) % stride(1)) / stride(2);
-		*dim3 = ((linearIdx % stride(0)) % stride(1)) % stride(2);
-	}
-	*/
 
 public: //___________offset and slice
 	//! offset to a position
@@ -334,6 +330,10 @@ namespace kernel{
 	private:
 		typedef dslice<type, dims> parent;
 	public:
+		static constexpr int my_dims = dims;
+		typedef type my_type;
+		typedef intn<dims> my_index;
+	public:
 		intn<dims> sz; //!< size in elements
 	public: // inherited stuff
 		using parent::begin;
@@ -373,9 +373,24 @@ namespace kernel{
 		__host__ __device__ __forceinline__ const intn<dims> & size()const{
 			return sz;
 		}
+		//! full size
+		__host__ __device__ __forceinline__ intn<dims> & size(){
+			return sz;
+		}
 		//! size along a dimension
 		__host__ __device__ __forceinline__ int size(int dim)const{
 			return sz[dim];
+		}
+		//! size along a dimension
+		__host__ __device__ __forceinline__ int & size(int dim){
+			return sz[dim];
+		}
+		//! count the number of dimensions until the first zero size
+		int nz_dims()const{
+			for(int d = 0; d < dims; ++d){
+				if(size(d)==0) return d; // hit first zero dimension
+			};
+			return dims;
 		}
 	public:
 		//! element type conversion
@@ -396,6 +411,9 @@ namespace kernel{
 			return *ptr(i0, i1, i2, i3);
 		}
 		__host__ __device__ __forceinline__ type & operator ()(const intn<dims> & ii) const {
+			return *ptr(ii);
+		}
+		__host__ __device__ __forceinline__ type & operator [](const intn<dims> & ii) const {
 			return *ptr(ii);
 		}
 	public: //____________ slicing

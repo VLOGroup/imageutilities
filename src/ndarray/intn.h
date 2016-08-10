@@ -2,11 +2,21 @@
 #define intn_h
 
 #include "defines.h"
+#include "error.h"
+#include <type_traits>
+
+#ifdef  __CUDA_ARCH__
+#include "error.kernel.h"
+#endif
 
 #ifndef  __CUDA_ARCH__
 #include <algorithm>
 #include <error.h>
+#include <cstddef>
 #endif
+
+#define HOSTDEVICE __host__ __device__ __forceinline__
+
 
 template<typename T, typename U> constexpr size_t offsetOf(U T::*member){
 	return (char*)&((T*)nullptr->*member) - (char*)nullptr;
@@ -21,10 +31,19 @@ namespace special{
 		typedef int array_type[n];
 		array_type v;
 	protected://__________
-		__host__ __device__ __forceinline__ array_type & as_array(){ return v; }
-		__host__ __device__ __forceinline__ const array_type & as_array()const{ return v; }
-		__host__ __device__ __forceinline__ int & V(int i){return v[i];};
-		__host__ __device__ __forceinline__ const int & V(int i)const{return v[i];};
+		HOSTDEVICE array_type & as_array(){ return v; }
+		HOSTDEVICE const array_type & as_array()const{ return v; }
+		HOSTDEVICE int & V(int i){
+			// instead of return v[i] make explicit loop: when i is known at compile time - optimized out, when i is dynamic should optimize as a switch
+			for(int j = 0; j<n; ++j ){
+				if(j==i) return v[j];
+			};
+			//runtime_check(false) << "index failed";
+			return v[0];
+		};
+		HOSTDEVICE const int & V(int i)const{
+			return const_cast<intn<n>&>(*this).V(i);
+		};
 	};
 	//------------------
 	//! 1D specialization
@@ -35,20 +54,20 @@ namespace special{
 		int width;
 		static const int height = 1;
 		static const int depth = 1;
-		__host__ __device__ __forceinline__ intn() = default;
-		__host__ __device__ __forceinline__ intn(int a0){V(0) = a0;};
+		HOSTDEVICE intn() = default;
+		HOSTDEVICE intn(int a0){V(0) = a0;};
 		// intn<1> is convertible to int
-		__host__ __device__ __forceinline__ operator int & (){return V(0);}
-		__host__ __device__ __forceinline__ operator const int & ()const {return V(0);}
+		HOSTDEVICE operator int & (){return V(0);}
+		HOSTDEVICE operator const int & ()const {return V(0);}
 	protected://__________
-		__host__ __device__ __forceinline__ array_type & as_array(){
+		HOSTDEVICE array_type & as_array(){
 			return *(array_type*)&width;
 		}
-		__host__ __device__ __forceinline__ const array_type & as_array()const{
-			return const_cast<intn<1> *>(this)->as_array();
+		HOSTDEVICE const array_type & as_array()const{
+			return *(const array_type *)&width;
 		}
-		__host__ __device__ __forceinline__ int & V(int i){return as_array()[i];};
-		__host__ __device__ __forceinline__ const int & V(int i)const{return as_array()[i];};
+		HOSTDEVICE int & V(int i){return width;};
+		HOSTDEVICE const int & V(int i)const{return width;};
 	};
 	//------------------
 	//! 2D specialization
@@ -60,15 +79,25 @@ namespace special{
 		int height;
 		static const int depth = 1;
 	protected://__________
-		__host__ __device__ __forceinline__ array_type & as_array(){
+		HOSTDEVICE array_type & as_array(){
 			static_assert(offsetof(intn<2>,height)==sizeof(int), "struct linear layout assumption failed");
 			return *(array_type*)&width;
 		}
-		__host__ __device__ __forceinline__ const array_type & as_array()const{
+		HOSTDEVICE const array_type & as_array()const{
 			return const_cast<intn<2> *>(this)->as_array();
 		}
-		__host__ __device__ __forceinline__ int & V(int i){return as_array()[i];};
-		__host__ __device__ __forceinline__ const int & V(int i)const{return as_array()[i];};
+
+		HOSTDEVICE int & V(int i){
+			switch(i){
+				case 1: return height;
+				default: return width;
+			};
+			//return as_array()[i];
+		}
+		//HOSTDEVICE const int & V(int i)const{return as_array()[i];};
+		HOSTDEVICE const int & V(int i)const{
+			return const_cast<intn<2>&>(*this).V(i);
+		}
 	};
 	//------------------
 	//! 3D specialization
@@ -80,79 +109,125 @@ namespace special{
 		int height;
 		int depth;
 	protected://__________
-		__host__ __device__ __forceinline__ array_type & as_array(){
+		HOSTDEVICE array_type & as_array(){
 			static_assert(offsetof(intn<3>,height)==sizeof(int), "struct linear layout assumption failed");
 			static_assert(offsetof(intn<3>,depth)==2*sizeof(int), "struct linear layout assumption failed");
 			return *(array_type*)&width;
 		}
-		__host__ __device__ __forceinline__ const array_type & as_array()const{
+		HOSTDEVICE const array_type & as_array()const{
 			return const_cast<intn<3> *>(this)->as_array();
 		}
-		__host__ __device__ __forceinline__ int & V(int i){return as_array()[i];};
-		__host__ __device__ __forceinline__ const int & V(int i)const{return as_array()[i];};
+		//HOSTDEVICE int & V(int i){return as_array()[i];};
+		HOSTDEVICE int & V(int i){
+			switch(i){
+				case 2: return depth;
+				case 1: return height;
+				default: return width;
+			};
+			//return as_array()[i];
+		}
+		//HOSTDEVICE const int & V(int i)const{return as_array()[i];};
+		HOSTDEVICE const int & V(int i)const{
+			return const_cast<intn<3>&>(*this).V(i);
+		};
 	};
 }
 
+template<int n> struct intn;
 // final
 template<int n> struct intn : public special::intn<n>{
 	typedef special::intn<n> parent;
 	typedef typename parent::array_type array_type;
+	typedef ::intn<(n>1)? n-1: 1> decrement_n_type;
 public:
 	using parent::parent;
 	using parent::V;
 	using parent::as_array;
 #ifdef __CUDA_ARCH__
-	__host__ __device__ __forceinline__ intn() = default; //uninitialized
+	HOSTDEVICE intn() = default; //uninitialized
 #else
 	__host__ __forceinline__ intn(){ //0-initialized
 		for (int i = 0; i < n; ++i)V(i) = 0;
 	};
 #endif
 	//! default copy ctr
-	__host__ __device__ __forceinline__ intn(const intn<n> & b) = default;
+	HOSTDEVICE intn(const intn<n> & b) = default;
 	//! construct from a list -> improve to a variadic template
-	__host__ __device__ __forceinline__ intn(int a0, int a1, int a2 = 0, int a3 = 0){
+	HOSTDEVICE intn(int a0, int a1, int a2 = 0, int a3 = 0, int a4 = 0, int a5 = 0){
 		V(0) = a0;
 		if (n > 1)V(1) = a1;
 		if (n > 2)V(n > 2? 2 : 0) = a2;
 		if (n > 3)V(n > 3? 3 : 0) = a3;
+		if (n > 4)V(n > 4? 4 : 0) = a4;
+		if (n > 5)V(n > 5? 5 : 0) = a5;
 	}
 public://__________initializers
-	__host__ __device__ __forceinline__ intn<n> & operator = (const array_type & x){
+	HOSTDEVICE intn<n> & operator = (const array_type & x){
 		for (int i = 0; i < n; ++i)V(i) = x[i];
 		return *this;
 	}
 	//! default operator =
-	__host__ __device__ __forceinline__ intn<n> & operator = (const intn<n> & x){
-		for (int i = 0; i < n; ++i)V(i) = x[i];
-		return *this;
-	}
-	__host__ __device__ __forceinline__ intn(const array_type & x){
+	HOSTDEVICE intn<n> & operator = (const intn<n> & x) = default;
+	//{
+//		for (int i = 0; i < n; ++i)V(i) = x[i];
+//		return *this;
+//	}
+	HOSTDEVICE intn(const array_type & x){
 		(*this) = x;
 	}
-	__host__ __device__ __forceinline__ intn<n> & operator = (const int val){
+	HOSTDEVICE intn<n> & operator = (const int val){
 		for (int i = 0; i < n; ++i)V(i) = val;
 		return *this;
 	}
 	//! convert to C++ array
-	explicit __host__ __device__ __forceinline__ operator array_type &(){ return as_array(); };
+	explicit HOSTDEVICE operator array_type &(){ return as_array(); };
 public: //________________ element access
-	__host__ __device__ __forceinline__ int * begin(){ return &V(0); };
-	__host__ __device__ __forceinline__ const int * begin()const { return &V(0); };
-	__host__ __device__ __forceinline__ int * end(){ return begin() + n; };
-	__host__ __device__ __forceinline__ int const * end()const { return begin() + n; };
-	__host__ __device__ __forceinline__ int & operator[](const int i){ return V(i); };
-	__host__ __device__ __forceinline__ const int & operator[](const int i) const { return V(i); };
+	HOSTDEVICE int * begin(){ return &V(0); };
+	HOSTDEVICE const int * begin()const { return &V(0); };
+	HOSTDEVICE int * end(){ return begin() + n; };
+	HOSTDEVICE int const * end()const { return begin() + n; };
+	HOSTDEVICE int & operator[](const int i){ return V(i); };
+	HOSTDEVICE const int & operator[](const int i) const { return V(i); };
 
 public:
-	__host__ __device__ __forceinline__ long long prod() const {
+	HOSTDEVICE long long prod() const {
 		long long r = 1;
 		for (int i = 0; i < n; ++i) r *= V(i);
 		return r;
 	}
-public:
+public: // mapping between multiindex and linear index
+	//! index_to_integer is a 1-to-1 mapping of a multiindex in the octant [0 *this] to an integer in the interval [0 prod()-1]
+	/*!
+	 * The function integer_to_index defined on the range [0 prod()-1] is the inverse map
+	 * The purpose of these functions is to allow to compress some dimensions into e.g. a single GridDim
+	 * index_to_integer matches the linear memory arrangement with ascending strides irrespective of the ndarray_ref strides
+	 * dim1 is a threshold if the index / size is interpreted as shorter that n
+	 */
+	HOSTDEVICE int index_to_integer(const intn<n> & ii, int dim1 = n) const{
+		int r = ii[dim1-1];
+		for(int d = n-2; d >= 0; --d){
+			if(d > dim1-2) continue;
+			r = r * (*this)[d] + ii[d];
+		};
+		return r;
+	}
+	//! integer_to_index is a 1-to-1 mapping of a multiindex in the octant [0 *this] to an integer in the interval [0 prod()-1]
+	HOSTDEVICE intn<n> integer_to_index(int i, int dim1 = n) const{
+		intn<n> ii;
+		for(int d = 0; d < n-1; ++d){
+			if(d < dim1){
+				int a = i / (*this)[d]; // quotient
+				int b = i % (*this)[d]; // reminder
+				ii[d] = b;
+				i = a;
+			};
+		};
+		ii[n-1] = i;
+		return ii;
+	}
+public: // min max and sorting
 	//! max element
-	__host__ __device__ __forceinline__ int max() const {
+	HOSTDEVICE int max() const {
 		static_assert(n>0,"bad");
 		int val = V(0);
 		for(int i = 1; i<n; ++i){
@@ -161,7 +236,7 @@ public:
 		return val;
 	}
 	//! max element index
-	__host__ __device__ __forceinline__ int max_idx() const {
+	HOSTDEVICE int max_idx() const {
 		static_assert(n>0,"bad");
 		int val = V(0);
 		int idx = 0;
@@ -174,7 +249,7 @@ public:
 		return idx;
 	}
 	//! min element index
-	__host__ __device__ __forceinline__ int min_idx() const {
+	HOSTDEVICE int min_idx() const {
 		static_assert(n>0,"bad");
 		int val = V(0);
 		int idx = 0;
@@ -186,22 +261,30 @@ public:
 		};
 		return idx;
 	}
+
 	//! sort in ascending order
 	__host__ intn<n> sort() const {
 		intn<n> x = *this;
-		std::sort(x.begin(), x.end());
+#ifndef  __CUDA_ARCH__
+		std::stable_sort(x.begin(), x.end());
+#endif
 		return x;
 	};
 	//! sorting indicies
 	__host__ intn<n> sort_idx()const{
 		intn<n> idx;
+#ifndef  __CUDA_ARCH__
 		for (int d = 0; d < n; ++d){idx[d] = d;};
-		std::sort(idx.begin(), idx.end(), [&](const int & i, const int & j){return (*this)[i] < (*this)[j]; });
+		std::stable_sort(idx.begin(), idx.end(), [&](const int & i, const int & j){return (*this)[i] < (*this)[j]; });
+#else
+		idx = 0; //shut up the warning
+#endif
 		return idx;
 	}
+
 public: //__________cut and permute
 	//! reverse the order of elements
-	__host__ __device__ __forceinline__  intn<n> rev() const{
+	HOSTDEVICE  intn<n> rev() const{
 		intn<n> r;
 		for (int i = 0; i < n; ++i){
 			r[i] = (*this)[n - i - 1];
@@ -209,7 +292,7 @@ public: //__________cut and permute
 		return r;
 	}
 	//! append element in the end
-	__host__ __device__ __forceinline__ intn<n+1> cat(int a) const{
+	HOSTDEVICE intn<n+1> cat(int a) const{
 		intn<n+1> r;
 		for (int i = 0; i < n; ++i){
 			r[i] = (*this)[i];
@@ -219,7 +302,7 @@ public: //__________cut and permute
 	}
 	//! insert element at j
 	template<int j>
-	__host__ __device__ __forceinline__ intn<n+1> insert(int a) const{
+	HOSTDEVICE intn<n+1> insert(int a) const{
 		intn<n+1> r;
 		for (int i = 0; i < n; ++i){
 			int i1 = (i<j)? i : i+1;
@@ -228,46 +311,74 @@ public: //__________cut and permute
 		r[j] = a;
 		return r;
 	}
+
 	//! remove element at j
 	template<int j>
-	__host__ __device__ __forceinline__ intn<n - 1> erase() const{
-		static_assert(n > 1,"bad");
-		static_assert(j >=0 && j< n,"bad");
-		intn<n - 1> r;
+	HOSTDEVICE decrement_n_type erase() const{
+		decrement_n_type r;
 		for (int i = 0; i < n; ++i){
-			if (i!=j) r[i - (i>j) ] = (*this)[i];
+			if(i<j || n==1){
+				r[i] = (*this)[i];
+			}else if(i>j){
+				r[i-1] = (*this)[i];
+			};
+		};
+		return r;
+	}
+
+	//! remove element at j
+	HOSTDEVICE decrement_n_type erase(int j) const{
+		//static_assert(n > 1,"bad");
+		runtime_check(j >=0 && j< n);
+		decrement_n_type r;
+		for (int i = 0; i < n; ++i){
+			if(i<j || n==1){
+				r[i] = (*this)[i];
+			}else if(i>j){
+				r[i-1] = (*this)[i];
+			};
 		};
 		return r;
 	}
 public: // _________l-value math operators
-	__host__ __device__ __forceinline__ intn<n> & operator += (const intn<n> & x){
+	HOSTDEVICE intn<n> & operator += (const intn<n> & x){
 		for (int i = 0; i < n; ++i){
 			(*this)[i] += x[i];
 		};
 		return *this;
 	}
-	__host__ __device__ __forceinline__ intn<n> & operator *= (const int val){
+	HOSTDEVICE intn<n> & operator -= (const intn<n> & x){
+		for (int i = 0; i < n; ++i){
+			(*this)[i] -= x[i];
+		};
+		return *this;
+	}
+	HOSTDEVICE intn<n> & operator *= (const int val){
 		for (int i = 0; i < n; ++i){
 			(*this)[i] *= val;
 		};
 		return *this;
 	}
-	__host__ __device__ __forceinline__ intn<n> & operator /= (const int val){
+	HOSTDEVICE intn<n> & operator /= (const int val){
 		for (int i = 0; i < n; ++i){
 			(*this)[i] /= val;
 		};
 		return *this;
 	}
 public:// const math operators
-	__host__ __device__ __forceinline__ intn<n> operator * (const int val) const {
+	HOSTDEVICE intn<n> operator * (const int val) const {
 		return (intn<n>(*this)) *= val;
 	}
 
-	__host__ __device__ __forceinline__ intn<n> operator / (const int val)const {
+	HOSTDEVICE intn<n> operator / (const int val)const {
 		return (intn<n>(*this)) /= val;
 	}
 
-	__host__ __device__ __forceinline__ intn<n> & operator + (const intn<n> & x) const{
+	HOSTDEVICE intn<n> & operator + (const intn<n> & x) const{
+		return (intn<n>(*this)) += x;
+	}
+
+	HOSTDEVICE intn<n> & operator - (const intn<n> & x) const{
 		return (intn<n>(*this)) += x;
 	}
 
@@ -289,7 +400,7 @@ public:// const math operators
 	/*! For example: (2,2,3,2) -> (1,2,4,12) in prefix, and -> (12,6,2,1) in postfix
 	 */
 	template<bool prefix = true>
-	__host__ __device__ __forceinline__ intn<n> prefix_prod_ex() const {
+	HOSTDEVICE intn<n> prefix_prod_ex() const {
 		intn<n> r;
 		int a = 1;
 		if(prefix){
@@ -306,36 +417,36 @@ public:// const math operators
 		return r;
 	}
 
-	__host__ __device__ __forceinline__ bool operator == (const intn<n> & x) const {
+	HOSTDEVICE bool operator == (const intn<n> & x) const {
 		for (int i = 0; i < n; ++i){
 			if((*this)[i] != x[i]) return false;
 		};
 		return true;
 	}
 
-	__host__ __device__ __forceinline__ bool operator != (const intn<n> & x) const {
+	HOSTDEVICE bool operator != (const intn<n> & x) const {
 		return !(*this == x);
 	}
 
-	__host__ __device__ __forceinline__ bool operator < (const intn<n> & x) const {
+	HOSTDEVICE bool operator < (const intn<n> & x) const {
 		for (int i = 0; i < n; ++i){
 			if(!((*this)[i] < x[i])) return false;
 		};
 		return true;
 	}
-	__host__ __device__ __forceinline__ bool operator >= (const intn<n> & x) const {
+	HOSTDEVICE bool operator >= (const intn<n> & x) const {
 		for (int i = 0; i < n; ++i){
 			if(!((*this)[i] >= x[i])) return false;
 		};
 		return true;
 	}
-	__host__ __device__ __forceinline__ bool operator >= (const int val) const {
+	HOSTDEVICE bool operator >= (const int val) const {
 		for (int i = 0; i < n; ++i){
 			if(!((*this)[i] >= val)) return false;
 		};
 		return true;
 	}
-	__host__ __device__ __forceinline__ bool operator < (const int val) const {
+	HOSTDEVICE bool operator < (const int val) const {
 		for (int i = 0; i < n; ++i){
 			if(!((*this)[i] < val)) return false;
 		};
@@ -343,12 +454,13 @@ public:// const math operators
 	}
 };
 
-//__host__ __device__ __forceinline__ bool operator < (int i, const intn<1> & x){
+//HOSTDEVICE bool operator < (int i, const intn<1> & x){
 //	return i < int(x);
 //}
 
+//#pragma hd_warning_disable
 template<int n, typename tstream>
-__host__ __device__ __forceinline__ tstream & operator << (tstream & ss, intn<n> a){
+HOSTDEVICE tstream & operator << (tstream & ss, intn<n> a){
 	ss << "(";
 	for(int i=0; i<n; ++i){
 		ss << a[i];
@@ -358,5 +470,13 @@ __host__ __device__ __forceinline__ tstream & operator << (tstream & ss, intn<n>
 	return ss;
 }
 
+template<int n>
+HOSTDEVICE intn<n> min(const intn<n> & a, const intn<n> & b){
+	intn<n> r;
+	for(int i=0;i<n;++i){
+		r[i] = a[i]<b[i]? a[i] : b[i];
+	};
+	return r;
+}
 
 #endif

@@ -162,7 +162,7 @@ bool operations_allowed(const ndarray_ref<type, dims> & a){
 		struct_dims<dims>::for_each(a.shape(), func);
 		return a;
 	}
-}
+};
 
 //________________________________device operations______________________________________________
 namespace device_op{
@@ -187,6 +187,9 @@ bool operations_allowed(const ndarray_ref<type, dims> & a){
 	public:
 		template<typename Func>
 		static inline void for_each(const shapen<dims> & r, Func func); // implementation through a kernel launch in tarry_op.cu
+		//
+		//		template<typename pack, int N, typename Func>
+		//		static inline void transform(Func func, const ndarray_ref<pack,dims> & inputs[N], ndarray_ref<pack,dims> & dest); // implementation through a kernel launch in tarry_op.cu
 	};
 
 
@@ -225,7 +228,7 @@ bool operations_allowed(const ndarray_ref<type, dims> & a){
 		return true;
 	}
 
-}
+};
 
 //__________________________auto host/device___________________________________________________
 
@@ -403,6 +406,100 @@ void for_each(const ndarray_ref<type, dims> & r, Func func){
 	};
 }*/
 
+/*
 
+template <int i, int n, typename F> void for_unroll(F & f){
+	bool brk = false;
+	if(i<n){
+		brk = f(i);
+	};
+	if(!brk){
+		for_unroll< (i<n ? i+1: n), n, F>(f);
+	};
+};
+
+namespace device_op{
+	template<typename type, int dims, typename OP,
+	typename std::enable_if< sizeof(type) < 16 && 16 % sizeof(type) == 0,int>::type = 0 >
+	void binary_op(ndarray_ref<type,dims> a, ndarray_ref<type,dims> b, ndarray_ref<type,dims> d, OP op){
+		// vectorize
+		//todo: do not vectorize if the base address or one of the strides is not divisible -- will result in missaligned access
+		typedef small_array<type, 16 % sizeof(type)> pack;
+		binary_op(a.recast<pack>(), b.recast<pack>(), d.recast.type(), op);
+	}
+
+	template<typename type, int dims, typename OP,
+	typename std::enable_if< !(sizeof(type) < 16 && 16 % sizeof(type) == 0), int>::type = 0 > void binary_op(ndarray_ref<type,dims> a, ndarray_ref<type,dims> b, ndarray_ref<type,dims> d, OP op){
+		// already vectorized
+		struct_dims<dims>::for_each_v<Func>(a.shape(), op);
+	}
+};
+
+//
+template<typename type, int dims, typename OP> void binary_op(const ndarray_ref<type,dims> & a, const ndarray_ref<type,dims> & b, const ndarray_ref<type,dims> & d, OP op){
+	runtime_check(a.size() == b.size());
+	runtime_check(a.size() == d.size());
+	// reorder
+	int i = a.stride_bytes().min_idx();// fastest dim according to input 1 <- output array
+	if(i!=0){
+		a = a.swap_dims(0,i);
+		b = b.swap_dims(0,i);
+		d = d.swap_dims(0,i);
+	};
+	i = b.stride_bytes().min_idx();// fastest dim according to input 2
+	bool dim1_used = false;
+	if(i > 1 && b.stride_bytes(i) == sizeof(type)){ // contiguous
+		a = a.swap_dims(1,i);
+		b = b.swap_dims(1,i);
+		d = d.swap_dims(1,i);
+		dim1_used = true;
+	}else{// input2 is ok, chose dim1 for output
+		i = d.stride_bytes().min_idx();// fastest dim according to output
+		if(i>1){
+			a = a.swap_dims(1,i);
+			b = b.swap_dims(1,i);
+			d = d.swap_dims(1,i);
+			dim1_used = true;
+		};
+	};
+	// fix dim0 and dim1 if dim1_used, sort the reminder
+	intn<dims> st = a.stride_bytes();
+	st[0] = 0; if(dim1_used) st[1] = 0;
+	intn<dims> o = st.sort_idx(); // ascending order sorting (stable)
+	a = a.permute_dims(o);
+	b = b.permute_dims(o);
+	d = d.permute_dims(o);
+	//
+	// flatten dimensions continuous for the whole tuple
+	for_unroll<>([&]-> bool (constexpr int i){
+		if(a.dims_continuous(i) && b.dims_continuous(i) && d.dims_continuous(i)){
+			binary_op<type,dims-1,OP>(a.compress_dim<i>(), b.compress_dim<i>(), c.compress_dim<i>(), op);
+			return true;
+		};
+		return false;
+	});
+	// dispatch host / device
+	if(a.device_allowed() && b.device_allowed()){
+		runtime_check(d.device_allowed());
+		device_op::binary_op(a,b,dest,op);
+	}else{
+		runtime_check(a.host_allowed());
+		runtime_check(b.host_allowed());
+		runtime_check(d.host_allowed());
+		host_op::binary_op(a,b,dest,op);
+	};
+}
+
+// add(a,b, dest)
+template<typename type, int dims>
+ndarray_ref<type, dims> void add(const ndarray_ref<type, dims> & a, const ndarray_ref<type, dims> & b, ndarray_ref<type, dims> & dest){
+	struct op{
+		__host__ __device__ type operator()(type a, type b){
+			return a+b;
+		}
+	};
+	binary_op(a,b,dest,op);
+}
+ */
 
 #endif

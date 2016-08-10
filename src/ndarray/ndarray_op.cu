@@ -102,42 +102,44 @@ template ndarray_ref<float, 3> & copy_data (ndarray_ref<float, 3> & a, const nda
 
 };
 
-template<typename type, int dims>
-void ttest(){
-	ndarray_ref<type, dims> a, b;
-	a *= type(1);
-	a += type(1);
-	a << type(1);
-	a += a;
-	a *= a;
-	copy_data(a,b);
-};
+namespace{
+	template<typename type, int dims>
+	void ttest(){
+		ndarray_ref<type, dims> a, b;
+		a *= type(1);
+		a += type(1);
+		a << type(1);
+		a += a;
+		a *= a;
+		copy_data(a,b);
+	};
 
-template<typename type>
-void tdtest(){
-	ttest<type,1>();
-	ttest<type,2>();
-	ttest<type,3>();
-	ttest<type,4>();
-};
+	template<typename type>
+	void tdtest(){
+		ttest<type,1>();
+		ttest<type,2>();
+		ttest<type,3>();
+		ttest<type,4>();
+	};
 
-template<int dims>
-void dtest(){
-	// conversions
-	ndarray_ref<float, dims> a;
-	ndarray_ref<int, dims> b;
-	a << b;
-	b << a;
-	a << a;
-	b << b;
-};
+	template<int dims>
+	void dtest(){
+		// conversions
+		ndarray_ref<float, dims> a;
+		ndarray_ref<int, dims> b;
+		a << b;
+		b << a;
+		a << a;
+		b << b;
+	};
 
-void test(){
-	tdtest<float>();
-	tdtest<int>();
-	// conversions
-	dtest<1>();
-	dtest<2>();
-	dtest<3>();
-	dtest<4>();
+	void test(){
+		tdtest<float>();
+		tdtest<int>();
+		// conversions
+		dtest<1>();
+		dtest<2>();
+		dtest<3>();
+		dtest<4>();
+	};
 };

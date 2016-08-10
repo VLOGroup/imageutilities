@@ -1,12 +1,12 @@
 #pragma once
 #include "ndarray_ref.kernel.h"
 #include "error.h"
+#include "error.kernel.h"
+#include "type_name.h"
 
 #ifndef  __CUDA_ARCH__
-#include <typeinfo>
-#include "error.h"
+//#include <typeinfo>
 #include <iostream>
-#include "ndarray_print.h"
 #endif
 
 template<typename compound_type> struct type_expand{
@@ -20,9 +20,9 @@ template<typename compound_type> struct type_expand{
 #define runtime_check_this(expression) stream_eater()
 #endif
 
-extern "C" DLL_PUBLIC bool is_ptr_device_accessible(void * ptr);
-extern "C" DLL_PUBLIC bool is_ptr_host_accessible(void * ptr);
-extern "C" DLL_PUBLIC int ptr_access_flags(void * ptr);
+bool is_ptr_device_accessible(void * ptr);
+bool is_ptr_host_accessible(void * ptr);
+int ptr_access_flags(void * ptr);
 
 
 // forward declaration of classes in iu from which conversion is provided, include "ndarray_iu.h"
@@ -37,16 +37,6 @@ namespace iu{
 	template<typename type> class TensorCpu;
 	template<class iu_class> class proxy;
 }
-
-struct stream_eater{
-	__host__ __device__ __forceinline__ stream_eater & operator << (int a){return *this;}
-	__host__ __device__ __forceinline__ stream_eater & operator << (long long a){return *this;}
-	__host__ __device__ __forceinline__ stream_eater & operator << (float a){return *this;}
-	__host__ __device__ __forceinline__ stream_eater & operator << (double a){return *this;}
-	__host__ __device__ __forceinline__ stream_eater & operator << (void * a){return *this;}
-	__host__ __device__ __forceinline__ stream_eater & operator << (const char * a){return *this;}
-	__host__ __device__ __forceinline__ stream_eater & operator << (const std::string & a){return *this;}
-};
 
 /*
 template<typename T, typename U> struct member_ptr_t{
@@ -63,7 +53,7 @@ template<typename U> struct member_ptr_t<float,U>{
 template<typename U> struct member_ptr_t<int,U>{
 	typedef void type;
 };
-*/
+ */
 //____________________________flags______________________________________________________
 
 struct ndarray_flags{
@@ -123,6 +113,8 @@ public:
 };
 
 template<typename type, int dims> class ndarray_ref;
+template<typename type, int dims, typename System> struct ndarray_iterator;
+template<typename type, int dims, typename System> struct ndarray_iterator_over;
 
 namespace base2{
 	//_________________________ndarray_ref___________________________________________________
@@ -207,7 +199,7 @@ namespace base2{
 		//! shape
 		shapen<dims> shape() const;
 		//! The number of elements
-		size_t numel() const;
+		int numel() const;
 		//! size of the memory support in bytes
 		size_t size_bytes()const;
 		//! check has the same shape as another ndarray_ref
@@ -246,7 +238,7 @@ namespace base2{
 		}
 	};
 
-	//_________________________ndarray_ref_____________________________________________________
+	//_________________________base::ndarray_ref_____________________________________________________
 	//! from a pointer and shape
 	template<typename type, int dims>
 	ndarray_ref<type, dims> & ndarray_ref<type, dims>::set_ref(type * const __beg, const intn<dims> & size, const intn<dims> & stride_bytes, int access_policy){
@@ -279,8 +271,8 @@ namespace base2{
 
 	//! The number of elements
 	template<typename type, int dims>
-	size_t ndarray_ref<type, dims>::numel() const {
-		return (size_t)size().prod();
+	int ndarray_ref<type, dims>::numel() const {
+		return size().prod();
 	}
 
 	//! size of the memory support in bytes
@@ -331,7 +323,8 @@ namespace base2{
 	//! end = pointer to element after the last
 	template<typename type, int dims>
 	type * ndarray_ref<type, dims>::end() const{
-		return last() + 1;
+		//return last() + this->stride(0);
+		return ptr() + size(dims-1)*this->stride(dims-1);
 	}
 
 	template<typename type, int dims>
@@ -549,21 +542,21 @@ namespace special2{
 }
 
 namespace special3{
-	template<typename type, int dims, bool is_type_fundamental> class ndarray_ref : public special2::ndarray_ref < type, dims > {
+	template<typename type, int dims, bool is_not_class> class ndarray_ref : public special2::ndarray_ref < type, dims > {
 	public:
 		// inherit constructors
 		using special2::ndarray_ref < type, dims >::ndarray_ref;
 		ndarray_ref() = default;
 	};
 	//elementary type
-	template<typename type, int dims> class ndarray_ref<type,dims,true> : public special2::ndarray_ref < type, dims > {
+	template<typename type, int dims> class ndarray_ref<type,dims,false> : public special2::ndarray_ref < type, dims > {
 	public:
 		// inherit constructors
 		using special2::ndarray_ref < type, dims >::ndarray_ref;
 		ndarray_ref() = default;
 	};
 	//non-elementary type
-	template<typename type, int dims> class ndarray_ref<type,dims,false> : public special2::ndarray_ref < type, dims > {
+	template<typename type, int dims> class ndarray_ref<type,dims,true> : public special2::ndarray_ref < type, dims > {
 	public:
 		// inherit constructors
 		using special2::ndarray_ref < type, dims >::ndarray_ref;
@@ -578,8 +571,9 @@ namespace special3{
 
 //_______________________________________________________________________________________________
 //____________________final______________________________________________________________________
-template<typename type, int dims> class ndarray_ref : public special3::ndarray_ref < type, dims, std::is_fundamental<type>::value > {
-	typedef special3::ndarray_ref < type, dims, std::is_fundamental<type>::value > parent;
+template<typename type, int dims> class ndarray_ref : public special3::ndarray_ref < type, dims, std::is_class<type>::value > {
+	typedef special3::ndarray_ref < type, dims, std::is_class<type>::value > parent;
+	typedef ::ndarray_ref<type, (dims>1)? dims-1 : 1> decrement_dim_type;
 public:
 	// inherit constructors
 	using parent::parent;
@@ -606,8 +600,8 @@ public: // operations
 public: // recast and slicing
 	//! reinterpret same data as a different type (no type conversion)
 	template<typename type2> ndarray_ref<type2, dims> recast()const;
-//	//! reinterpret fixed-size vector data as a new dimension
-//	//template<typename type2, int length> ndarray_ref<type2, dims+1> recast()const;
+	//	//! reinterpret fixed-size vector data as a new dimension
+	//	//template<typename type2, int length> ndarray_ref<type2, dims+1> recast()const;
 	//! slice a member from the type structure. Result has the same size and stride_bytes
 	//template<typename tmember> ndarray_ref<tmember, dims> subtype(tmember type::*member)const;
 	//template<typename tmember, typename tmemberptr> ndarray_ref<tmember, dims> subtype(tmemberptr a)const; //tmember type::*member)const;
@@ -617,15 +611,35 @@ public: // recast and slicing
 	//! slice by fixing 2 dimensions
 	template<int dim1, int dim2> ndarray_ref <type, dims - 2> subdim(int i_dim1, int i_dim2) const;
 	// ! transpose (only the shape, for transposing data see ndarray_op.h)
+	ndarray_ref<type, dims> transpose()const{return transp(); };
+	// ! alias to transpose
 	ndarray_ref<type, dims> transp()const;
 	//! permute other two dimensions
-	template<int dim1, int dim2>  ndarray_ref<type, dims> permute_dims()const;
+	//template<int dim1, int dim2>  ndarray_ref<type, dims> permute_dims()const;
+	ndarray_ref<type, dims> swap_dims(int dim1, int dim2) const;
 	//! add a new virtual dimension (assocoated stride is zero)
 	template<int ndim> ndarray_ref<type, dims+1> new_dim(int ndim_size) const;
 	//! virtually crop to a smaller region
 	ndarray_ref<type, dims> subrange(intn<dims> origin, intn<dims> new_size) const;
 	//! permute dimensions according to substitution p
 	ndarray_ref<type, dims> permute_dims(intn<dims> p) const;
+	//! compress dimensions which can address the same data with fewer strides, e.g. linea memory with ascending strides compressed down to 1D
+	ndarray_ref<type,dims> compress_dims()const;
+	//! whether dimension is linearly addressable
+	bool dim_linear(int d) const;
+	//! check whether dimension d can be compressed with dimension d+1 (no gap in padding)
+	bool dim_continuous(int d) const;
+	//! compress dimensions (d1,d1+1), provided that dim_continuous(d1) is true
+	decrement_dim_type compress_dim(int d1)const;
+public: // convinience functions
+	__host__ __device__ __forceinline__ kernel::ndarray_ref<type,dims> & kernel(){return *this;};
+	__host__ __device__ __forceinline__ const kernel::ndarray_ref<type,dims> & kernel()const{return *this;};
+public: //iterators
+	template<typename System> ndarray_iterator<type, dims, System> begin_it() const;
+	template<typename System> ndarray_iterator<type, dims, System> end_it() const;
+	template<typename System> ndarray_iterator_over<type, dims, System> begin_it1() const;
+	template<typename System> ndarray_iterator_over<type, dims, System> end_it1() const;
+
 };
 //_________________
 
@@ -645,7 +659,7 @@ template<typename type2, int length> ndarray_ref<type2, dims+1> ndarray_ref<type
 	intn<dims+1> sz2;
 	intn<dims+1> st2;
 }
-*/
+ */
 
 /*
 template<typename type, int dims>
@@ -655,18 +669,20 @@ template<typename tmember> ndarray_ref<tmember, dims> ndarray_ref<type, dims>::s
 	tmember * p2 = &(ptr()->*member);
 	return ndarray_ref<tmember, dims>(p2 , size(), stride_bytes() , access());
 }
-*/
+ */
 
 namespace special3{
 	template<typename type, int dims>
 	template<typename U>
-	::ndarray_ref<U,dims> ndarray_ref<type,dims,false>::subtype(U type::*member)const{
+	::ndarray_ref<U,dims>
+	ndarray_ref<type,dims,true>::subtype(U type::*member)const{
 		U * p2 = &(this->ptr()->*member);
 		return ::ndarray_ref<U, dims>(p2 , this->size(), this->stride_bytes() , this->access());
 	};
 
 	template<typename type, int dims>
-	::ndarray_ref<typename type_expand<type>::type, dims+1> ndarray_ref<type,dims,false>::unpack()const{
+	::ndarray_ref<typename type_expand<type>::type, dims+1>
+	ndarray_ref<type,dims,true>::unpack()const{
 		typedef typename type_expand<type>::type type2;
 		intn<dims+1> sz2 = this->size().template insert<0>(type_expand<type>::n);
 		intn<dims+1> st2 = this->stride_bytes().template insert<0>(sizeof(type2));
@@ -725,9 +741,10 @@ ndarray_ref<type, dims> ndarray_ref<type, dims>::reshape(const intn<dims> & sz){
 // ! transpose (only the shape, for transposing data see ndarray_op.h)
 template<typename type, int dims>
 ndarray_ref<type, dims> ndarray_ref<type, dims>::transp()const{
-	return permute_dims<0, 1>();
+	return swap_dims(0, 1);
 }
 
+/*
 //! permute other two dimensions
 template<typename type, int dims>
 template<int dim1, int dim2>
@@ -739,10 +756,24 @@ ndarray_ref<type, dims> ndarray_ref<type, dims>::permute_dims() const{
 	r.find_linear_dim();
 	return r;
 }
+ */
+
+//! permute other two dimensions
+template<typename type, int dims>
+ndarray_ref<type, dims> ndarray_ref<type, dims>::swap_dims(int dim1, int dim2) const{
+	//static_assert(dims >= 2, "can only transpose >= 2D");
+	runtime_check(dim1 >=0 && dim1 < dims);
+	runtime_check(dim2 >=0 && dim2 < dims);
+	ndarray_ref<type, dims> r(*this);
+	hd::swap(r.sz[dim1], r.sz[dim2]);
+	hd::swap(r._stride_bytes[dim1], r._stride_bytes[dim2]);
+	r.find_linear_dim();
+	return r;
+}
 
 //! add a new virtual dimension (assocoated stride is zero)
 template<typename type, int dims>
-	template<int ndim> ndarray_ref<type, dims+1> ndarray_ref<type, dims>::new_dim(int ndim_size) const{
+template<int ndim> ndarray_ref<type, dims+1> ndarray_ref<type, dims>::new_dim(int ndim_size) const{
 	static_assert(ndim>=0 && ndim <= dims, "bad ndim");
 	intn<dims+1> sz2;
 	intn<dims+1> st2;
@@ -758,7 +789,7 @@ template<typename type, int dims>
 
 //! virtually crop to a smaller region
 template<typename type, int dims>
-	ndarray_ref<type, dims> ndarray_ref<type, dims>::subrange(intn<dims> origin, intn<dims> new_size) const{
+ndarray_ref<type, dims> ndarray_ref<type, dims>::subrange(intn<dims> origin, intn<dims> new_size) const{
 	type *p = ptr(origin);
 	return ndarray_ref<type, dims>(p,new_size,stride_bytes(),access());
 };
@@ -770,6 +801,7 @@ ndarray_ref<type, dims> ndarray_ref<type, dims>::permute_dims(intn<dims> p) cons
 	sz2 = -1;
 	intn<dims> st2;
 	for(int d=0; d<dims; ++d){
+		runtime_check(p[d] >= 0 && p[d] < dims) << "dimensions not in range\n";
 		sz2[d] = size(p[d]);
 		st2[d] = stride_bytes(p[d]);
 	};
@@ -777,7 +809,63 @@ ndarray_ref<type, dims> ndarray_ref<type, dims>::permute_dims(intn<dims> p) cons
 	return ndarray_ref<type, dims>(ptr(),sz2,st2,access());
 };
 
+//! compress_dims
+template<typename type, int dims>
+ndarray_ref<type, dims> ndarray_ref<type, dims>::compress_dims()const{
+	const ndarray_ref<type, dims> & x = *this;
+	ndarray_ref<type, dims> r = x;
+	r.size() = 0;
+	r.stride_bytes() = 0;
+	int dims1 = 0;
+	int s = x.size(0);
+	int st = x.stride_bytes(0);
+	for(int d = 1; d< dims; ++d){
+		if(x.size(d)==1 || x.stride_bytes(d) == st*s){// no padding from d-1 to d -- can compress
+			s *= x.size(d); // multiply out and treat linearly
+			continue;
+		}else{// index is discontinuous - cannot compress
+			r.size()[dims1] = s;
+			r.stride_bytes()[dims1] = st;
+			st = x.stride_bytes(d);
+			s = x.size(d);
+			++dims1;
+		};
+	};
+	r.size()[dims1] = s;
+	r.stride_bytes()[dims1] = st;
+	++dims1; // compressed dimensions
+	//std::cout << "compressed to dims1=" <<dims1 <<": " << r << "\n";
+	return r;
+}
 
+//! whether dimension is linearly addressable
+template<typename type, int dims>
+bool ndarray_ref<type, dims>::dim_linear(int d) const{
+	return stride_bytes(d) == sizeof(type);
+};
+
+//! test whether dimension d is continuous
+/* true if can go continuously from d to d+1 and thus compress d
+ * in case size(d)== 1 || size(d+1)==1, the respective stride does not matter, condition is true
+ * it is also true if both strides are zero
+ */
+template<typename type, int dims>
+bool ndarray_ref<type, dims>::dim_continuous(int d) const {
+	if(d == dims-1) return false;
+	runtime_check(d>=0 && d < dims-1);
+	return size(d)==1 || size(d+1)==1 || stride_bytes(d+1) == stride_bytes(d)*size(d);// can go continuously from d to d+1
+}
+
+//! compress dimensions (d1,d1+1), provided that dim_continuous(d1) is true
+template<typename type, int dims>
+typename ndarray_ref<type, dims>::decrement_dim_type ndarray_ref<type, dims>::compress_dim(int d1)const{
+	runtime_check(dim_continuous(d1));
+	const ndarray_ref<type, dims> & x = *this;
+	auto sz = x.size().erase(d1+1);
+	auto st = x.stride_bytes().erase(d1+1);
+	sz[d1] = sz[d1] * x.size(d1+1);
+	return decrement_dim_type(x.ptr(), sz, st, x.access());
+}
 /*
 //__CRTP_definitions_______________________
 namespace base2{
@@ -855,7 +943,7 @@ template <typename tstream> tstream & operator << (tstream & ss, const ndarray_f
 	ss << "; linear_dim: " << ff.linear_dim();
 	return ss;
 }
-*/
+ */
 
 //___________________________external________
 
@@ -879,11 +967,12 @@ namespace special{
 //		stream_catcher(const pf_stream & x): pf_stream(x){};
 //	};
 }
-*/
+ */
 
 template <typename type, int dims, typename tstream> void print_array(tstream & ss, const ndarray_ref<type,dims> & a){
 #ifndef  __CUDA_ARCH__
-	ss << "\n ndarray_ref<" << typeid(type).name() << "," << dims << ">:" << "ptr="<<a.ptr() << ", size=" << a.size() << ", strides_b=" << a.stride_bytes();
+	//ss << "\n ndarray_ref<" << typeid(type).name() << "," << dims << ">:" << "ptr="<<a.ptr() << ", size=" << a.size() << ", strides_b=" << a.stride_bytes();
+	ss << "\n ndarray_ref<" << type_name<type>() << "," << dims << ">:" << "ptr="<<a.ptr() << ", size=" << a.size() << ", strides_b=" << a.stride_bytes();
 	const ndarray_flags & ff = a;
 	ss << ", " << ff;
 #endif
