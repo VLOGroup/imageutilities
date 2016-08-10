@@ -9,7 +9,10 @@ set(SOURCES
     test.cu
 )
 
-
+if(NOT WIN32)
+  set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++11")
+  set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} "-std=c++11")
+endif(NOT WIN32)
 
 find_package(Boost REQUIRED COMPONENTS python)
 find_package(PythonLibs 2.7 REQUIRED)
