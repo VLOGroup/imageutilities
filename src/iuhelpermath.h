@@ -1,6 +1,7 @@
 #pragma once
 
 #include <helper_math.h>
+#include <cmath>
 
 ////////////////////////////////////////////////////////////////////////////////
 // other host / device math functions
@@ -745,15 +746,15 @@ inline __host__ __device__ double4 fmod(double4 a, double4 b)
 
 inline __host__ __device__ double2 abs(double2 v)
 {
-    return make_double2(abs(v.x), abs(v.y));
+    return make_double2(fabs(v.x), fabs(v.y));
 }
 inline __host__ __device__ double3 abs(double3 v)
 {
-    return make_double3(abs(v.x), abs(v.y), abs(v.z));
+    return make_double3(fabs(v.x), fabs(v.y), fabs(v.z));
 }
 inline __host__ __device__ double4 abs(double4 v)
 {
-    return make_double4(abs(v.x), abs(v.y), abs(v.z), abs(v.w));
+    return make_double4(fabs(v.x), fabs(v.y), fabs(v.z), fabs(v.w));
 }
 
 
