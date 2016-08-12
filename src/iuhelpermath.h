@@ -2,6 +2,7 @@
 
 #include <helper_math.h>
 #include <cmath>
+#include <iostream>
 
 ////////////////////////////////////////////////////////////////////////////////
 // other host / device math functions
