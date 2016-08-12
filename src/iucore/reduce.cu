@@ -14,8 +14,8 @@ namespace iuprivate {
 void cuReduce(iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
                   IuInterpolationType interpolation, cudaStream_t stream)
 {
-  IuSize src_roi = src->size();
-  IuSize dst_roi = dst->size();
+  iu::Size<2> src_roi = src->size();
+  iu::Size<2> dst_roi = dst->size();
 
   // x_/y_factor > 0 (for multiplication with dst coords in the kernel!)
   float x_factor = static_cast<float>(src_roi.width) /

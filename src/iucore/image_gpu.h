@@ -51,7 +51,7 @@ public:
   /** Special constructor.
    *  @param size Size of the Image
    */
-  ImageGpu(const IuSize& size) :
+  ImageGpu(const iu::Size<2>& size) :
       Image(size), data_(0), pitch_(0),
       ext_data_pointer_(false), texture_(0)
   {

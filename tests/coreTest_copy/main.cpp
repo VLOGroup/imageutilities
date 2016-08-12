@@ -6,8 +6,8 @@
 int main()
 {
 
-    IuSize sz1(397, 211);
-    IuSize sz2;
+    iu::Size<2> sz1(397, 211);
+    iu::Size<2> sz2;
     sz2.width=397; sz2.height=211;
     iu::ImageGpu_32f_C1 d_I(sz1);
     cudaMemset2D(d_I.data(), d_I.pitch(), 0, d_I.pitch(), d_I.height());
