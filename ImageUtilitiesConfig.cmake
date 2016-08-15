@@ -46,8 +46,10 @@ else(NOT ANDROID)
     set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -arch=sm_30 -target-cpu-arch=ARM -target-os-variant=Android")
 endif(NOT ANDROID)
 
-# add the C++11 flag, since we are now using this also
-set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -std=c++11")
+# add the C++11 flag if not already set, since we are now using this also
+if(NOT "${CUDA_NVCC_FLAGS}" MATCHES "c\\+\\+11")
+    set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -std=c++11")
+endif(NOT "${CUDA_NVCC_FLAGS}" MATCHES "c\\+\\+11")
 
 ### trouble if FindPackage(ImageutilitiesLight) is called multiple times with different IU_MODULES
 ### do the full check every times
