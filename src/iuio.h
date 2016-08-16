@@ -93,7 +93,7 @@ IUIO_DLLAPI void imshow(iu::ImageGpu_32f_C4* image, const std::string& winname, 
 //template<typename PixelType, class Allocator >
 //IUIO_DLLAPI void imageCpu_from_Mat(cv::Mat& mat, iu::ImageCpu<PixelType, Allocator> &img)
 //{
-//    IuSize mat_sz(mat.cols, mat.rows);
+//    iu::Size<2> mat_sz(mat.cols, mat.rows);
 
 //    if (img.data())
 //        throw IuException("Conversion from cv::Mat to iu::ImageCpu: expected empty ImageCpu", __FILE__, __FUNCTION__, __LINE__);

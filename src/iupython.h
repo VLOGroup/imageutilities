@@ -317,7 +317,7 @@ ImageCpu<PixelType, Allocator>::ImageCpu(boost::python::object &py_arr) : data_(
     if (ndim != 2)
         throw python::Exc("imageCpu_from_PyArray(): Image must be a 2d numpy array");
     npy_intp* dims = PyArray_DIMS(py_img);
-    size_ = IuSize(dims[1], dims[0]);
+    size_ = iu::Size<2>(dims[1], dims[0]);
 
     npy_intp* strides = PyArray_STRIDES(py_img);
 //    printf("strides %ld %ld\n", strides[0], strides[1]);

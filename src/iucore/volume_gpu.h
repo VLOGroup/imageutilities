@@ -49,7 +49,7 @@ public:
   /** Special constructor.
    *  @param size Size of the Volume
    */
-  VolumeGpu(const IuSize& size) :
+  VolumeGpu(const iu::Size<3>& size) :
     Volume(size), data_(0), pitch_(0),
     ext_data_pointer_(false)
   {
