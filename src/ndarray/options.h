@@ -31,7 +31,7 @@ public:
 
 std::ostream & operator << (std::ostream & ss, options & O){
 	ss << "Options:\n";
-	for (O::iterator it = begin(); it != end(); ++it){
+	for (options::iterator it = O.begin(); it != O.end(); ++it){
 		ss << it->first << ": " << it->second << "\n";
 	};
 	return ss;

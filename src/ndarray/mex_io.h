@@ -7,21 +7,28 @@
 #include "options.h"
 
 
-class mx_exception{
+class mx_exception : public std::exception{
 public:
-	mx_exception(const char * s){
-		mexErrMsgTxt(s);
-	};
+	std::string s;
+public:
+	mx_exception(const char * pc){
+		mexErrMsgTxt(pc);
+		s = std::string("mex_io error") + pc;
+	}
 	mx_exception(const std::string & s){
 		mexErrMsgTxt(s.c_str());
-	};
+		this->s = std::string("mex_io error") + s;
+	}
+	const char* what() const throw() override{
+		return s.c_str();
+	}
 };
 
 
 //! match c++ types to matlab type identifiers
 template<typename type> mxClassID mexClassId();
 template<typename type> mxClassID mexClassId(){
-	throw debug_exception(String("Type is not recognized: ")+typeid(type).name());
+	throw mx_exception(std::string("Type is not recognized: ")+typeid(type).name());
 };
 
 template<> mxClassID mexClassId<char>(){
@@ -72,6 +79,7 @@ template<> mxClassID mexClassId<char*>(){
 	return mxCHAR_CLASS;
 };
 
+class mx_struct;
 template<> mxClassID mexClassId<mx_struct>(){
 	return mxSTRUCT_CLASS;
 };
@@ -85,7 +93,7 @@ template<typename type> bool is_type(const mxArray *A){
 //! check mxArray has the desired type
 template<typename type> void check_type(const mxArray *A){
 	if(A==0)throw mx_exception("Bad mxArray");
-	if(!is_type<type>(A))throw mx_exception((txt::String("Type ")+typeid(type).name()+" expected instead of type "+mxGetClassName(A)+" provided.").c_str());
+	if(!is_type<type>(A))throw mx_exception(std::string("Type ")+typeid(type).name()+" expected instead of type "+mxGetClassName(A)+" provided.");
 };
 
 //! class to read from mxArray into string
@@ -106,7 +114,7 @@ public:
 };
 
 //! attach to matlab's mxArray (inputs of mexFunction)
-template<typename typem int dims> ndarray_ref<type,dims>::ndarray_ref(const mxArray * A){
+template<typename type, int dims> ndarray_ref<type,dims>::ndarray_ref(const mxArray * A){
 	check_type<type>(A);
 	type * data = (type*)mxGetData(A);
 	size_t data_length = mxGetNumberOfElements(A);
@@ -130,15 +138,15 @@ template<typename typem int dims> ndarray_ref<type,dims>::ndarray_ref(const mxAr
 	};
 	// take the pointer
 	assert(Size.prod() == data_length);
-	set_linear_ref(data,Size,ndarray_flags::host_only);
+	this->set_linear_ref(data,Size,ndarray_flags::host_only);
 	//_A = (mxArray*)A;
 }
 
 //! make a deep copy from ndarray_ref to matlab (outputs of mexFunction)
-template<typename typem int dims> void operator << (mxArray *& A, const ndarray_ref<type,dims> & x){
+template<typename type, int dims> void operator << (mxArray *& A, const ndarray_ref<type,dims> & x){
 	A = mxCreateNumericArray(dims, x.size().begin(), mexClassId<type>(), mxREAL);
 	auto Ar = ndarray_ref<type,dims>(A);
-	a << x; // copy data
+	Ar << x; // copy data
 }
 
 
@@ -159,8 +167,8 @@ public:
 		for (int i = 0; i < nfields; ++i){
 			std::string name = mxGetFieldNameByNumber(A, i);
 			mxArray * tmp = mxGetFieldByNumber(A, jstruct, i);
-			mx_array<double, 1> a(tmp);
-			if (a.length()>0){
+			ndarray_ref<double, 1> a(tmp);
+			if (a.numel()>0){
 				parent::operator[](name) = a[0];
 			};
 		};
@@ -179,15 +187,16 @@ public:
 		mxArray * A = mxCreateStructMatrix(1, 1, nfields, fnames);
 		ifield = 0;
 		for (parent::iterator it = parent::begin(); it != end(); ++it, ++ifield){
-			mx_array<double, 1> a(1);
+			int sz = 1;
+			mxArray * p = mxCreateNumericArray(1, &sz, mexClassId<double>(), mxREAL);
+			ndarray_ref<double, 1> a(p);
 			a[0] = it->second;
-			mxSetFieldByNumber(A, 0, ifield, a.get_mxArray_andDie());
+			mxSetFieldByNumber(A, 0, ifield, p);
 		};
 		delete fnames;
 		return A;
 	}
 };
-
 
 /*
 //! matlab allocator
@@ -218,4 +227,4 @@ namespace memory{
 		}
 	};
 };
- */
+*/

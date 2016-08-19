@@ -288,13 +288,16 @@ template<typename type, int dims> ndarray_ref<type, dims>& copy_data(ndarray_ref
 }
 //! copy_data:  a << b
 template<typename type1, typename type2, int dims> ndarray_ref<type1, dims>& operator << (ndarray_ref<type1, dims> & dest, const ndarray_ref<type2, dims> & src){
+	if(typeid(type1) == typeid(type2)){
+		return copy_data(dest, src.template recast<type1>() );
+	};
 	if(src.device_allowed() && dest.device_allowed()){
 		return device_op:: operator << (dest,src);
 	};
 	if(src.host_allowed() && dest.host_allowed()){
 		return host_op:: operator << (dest,src);
 	};
-	slperror("direct assignment not possible")<<"src=" <<src <<"\n dest=" << dest << "\n";
+	slperror("direct assignment not possible\n")<<"src=" <<src <<"\n dest=" << dest << "\n";
 }
 
 template<typename type1, typename type2, int dims>

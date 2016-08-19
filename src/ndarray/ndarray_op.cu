@@ -133,12 +133,16 @@ namespace{
 	template<int dims>
 	void dtest(){
 		// conversions
-		ndarray_ref<float, dims> a;
-		ndarray_ref<int, dims> b;
-		a << b;
-		b << a;
-		a << a;
-		b << b;
+		ndarray_ref<float, dims> f;
+		ndarray_ref<int, dims> i;
+		ndarray_ref<double, dims> d;
+		f << f;
+		i << i;
+		i << f;
+		f << i;
+		d << d;
+		f << d;
+		d << f;
 	};
 
 	void test(){
