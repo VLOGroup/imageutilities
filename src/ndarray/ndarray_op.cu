@@ -75,6 +75,13 @@ ndarray_ref<type1, dims> & operator << (ndarray_ref<type1, dims> & a, const ndar
 	return a;
 };
 
+template<typename type, int dims>
+ndarray_ref<type, dims> & madd2(ndarray_ref<type, dims> & a, const ndarray_ref<type, dims> & b, const ndarray_ref<type, dims> & c, type w1, type w2){
+	auto func = [=] __device__ (const intn<dims> & ii){ a.kernel()(ii) = b.kernel()(ii)*w1 + c.kernel()(ii)*w2; }; // operation capture
+	struct_dims<dims>::for_each(a.shape(), func);
+	return a;
+}
+
 
 /*
 template<typename type, int dims>
@@ -112,6 +119,7 @@ namespace{
 		a += a;
 		a *= a;
 		copy_data(a,b);
+		madd2(a,a,a,type(1),type(1));
 	};
 
 	template<typename type>

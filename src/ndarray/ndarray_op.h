@@ -161,6 +161,15 @@ bool operations_allowed(const ndarray_ref<type, dims> & a){
 		struct_dims<dims>::for_each(a.shape(), func);
 		return a;
 	}
+
+	//!madd2
+	template<typename type, int dims>
+	ndarray_ref<type, dims> & madd2(ndarray_ref<type, dims> & a, const ndarray_ref<type, dims> & b, const ndarray_ref<type, dims> & c, type w1, type w2){
+		auto func = [=] __device__ (const intn<dims> & ii){ a.kernel()(ii) = b.kernel()(ii)*w1 + c.kernel()(ii)*w2; }; // operation capture
+		struct_dims<dims>::for_each(a.shape(), func);
+		return a;
+	}
+
 };
 
 //________________________________device operations______________________________________________
@@ -226,6 +235,10 @@ bool operations_allowed(const ndarray_ref<type, dims> & a){
 		device_op::operator +=(const_cast<ndarray_ref<type, dims> &>(a), type(0));
 		return true;
 	}
+
+	template<typename type, int dims>
+	ndarray_ref<type, dims> & madd2(ndarray_ref<type, dims> & a, const ndarray_ref<type, dims> & b, const ndarray_ref<type, dims> & c, type w1, type w2);
+
 
 };
 
@@ -381,6 +394,23 @@ template<typename type, int dims>
 ndarray_ref<type, dims> & operator *= (ndarray_ref<type, dims> && a, type val){
 	return a*=val;
 }
+
+// a = b*w1 + c*w2
+template<typename type, int dims>
+ndarray_ref<type, dims> & madd2(ndarray_ref<type, dims> & a, const ndarray_ref<type, dims> & b, const ndarray_ref<type, dims> & c, type w1, type w2){
+	if(a.device_allowed() && b.device_allowed() && c.device_allowed()){
+		device_op::madd2(a,b,c,w1,w2);
+	}else{
+		host_op::madd2(a,b,c,w1,w2);
+	};
+	return a;
+}
+
+template<typename type, int dims>
+ndarray_ref<type, dims> & madd2(ndarray_ref<type, dims> && a, const ndarray_ref<type, dims> & b, const ndarray_ref<type, dims> & c, type w1, type w2){
+	return madd2(a,b,c,w1,w2);
+}
+
 
 
 /*
