@@ -366,6 +366,13 @@ public:
     unsigned int num_elements = this->data_[0];
     for (unsigned int i = 1; i < Ndim; i++)
     {
+      if (this->data_[i] == 0)
+      {
+        std::stringstream msg;
+        msg << "Zero size elements are not allowed. (" << *this << ")";
+        throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
+      }
+
       num_elements *= this->data_[i];
     }
     return num_elements;
@@ -509,11 +516,90 @@ public:
 };
 
 ////////////////////////////////////////////////////////////////////////////////
+/** \brief Template specialization for 2-d unsigned int vectors (size vectors).
+ *
+ * This class additionally has public members width, height and is used for
+ * the Image class to be compatible with previously written code.
+ */
+template<>
+class Size<2> : public SizeBase<2>
+{
+public:
+  /** Width: Reference to 0th entry of data buffer */
+  unsigned int& width;
+  /** Height: Reference to 1st entry of data buffer */
+  unsigned int& height;
+
+  /** Constructor. */
+  Size() :
+      SizeBase<2>(), width(this->data_[0]), height(this->data_[1])
+  {
+  }
+
+  /** Special Constructor.
+   *  Init all elements of the size vector with a special value.
+   *  @param value value to initialize size vector elements.*/
+  Size(unsigned int value) :
+      SizeBase<2>(value), width(this->data_[0]), height(this->data_[1])
+  {
+  }
+
+  /** Special Constructor.
+   *  Init all elements of the vector with a initializer list.
+   *  @param list Initializer list, e.g. {1,2}.*/
+  Size(std::initializer_list<unsigned int> list) :
+      SizeBase<2>(list), width(this->data_[0]), height(this->data_[1])
+  {
+  }
+
+  /** Special Constructor. Init size with width, height.
+   *  @param width Set 0th entry of data buffer
+   *  @param height Set 1st entry of data buffer
+   */
+  Size(unsigned int width, unsigned int height) :
+      SizeBase<2>(), width(this->data_[0]), height(this->data_[1])
+  {
+    data_[0] = width;
+    data_[1] = height;
+  }
+
+  /** Destructor. */
+  ~Size()
+  {
+  }
+
+  /** Public copy constructor. */
+  Size(const Size& from) :
+      SizeBase<2>(from), width(this->data_[0]), height(this->data_[1])
+  {
+  }
+
+  /** Public copy constructor. */
+  Size(const SizeBase& from) :
+      SizeBase<2>(from), width(this->data_[0]), height(this->data_[1])
+  {
+  }
+
+  /** Public copy assignment operator. */
+  Size& operator=(const Size& from)
+  {
+    SizeBase::operator=(from);
+    return *this;
+  }
+
+  /** Public copy assignment operator. */
+  Size& operator=(const SizeBase<2>& from)
+  {
+    SizeBase::operator=(from);
+    return *this;
+  }
+};
+
+////////////////////////////////////////////////////////////////////////////////
 /** \brief Template specialization for 3-d unsigned int vectors (size vectors).
  *
- * This class additionally has public members width, height, depth and implements
- * the previous IuSize class. There exists a typedef iu::Size<3> IuSize to be
- * compatible with previously written code.
+ * This class additionally has public members width, height, depth  and is used for
+ * the Volume class to be compatible with previously written code.
  */
 template<>
 class Size<3> : public SizeBase<3>
@@ -551,13 +637,12 @@ public:
   {
   }
 
-  /** Special Constructor. Init size with width, height, depth. Depth equals
-   *  zero for Image.
+  /** Special Constructor. Init size with width, height, depth.
    *  @param width Set 0th entry of data buffer
    *  @param height Set 1st entry of data buffer
    *  @param depth Set 2nd entry of data buffer
    */
-  Size(unsigned int width, unsigned int height, unsigned int depth = 0) :
+  Size(unsigned int width, unsigned int height, unsigned int depth) :
       SizeBase<3>(), width(this->data_[0]), height(this->data_[1]),
       depth(this->data_[2])
   {
@@ -601,7 +686,4 @@ public:
 };
 
 }  //namespace iu
-
-/** Typedef to be compatible with previously written code. */
-typedef iu::Size<3> IuSize;
 

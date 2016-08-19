@@ -60,7 +60,7 @@ public:
   /** Special constructor.
    *  @param size Size of the Image
    */
-  ImageCpu(const IuSize& size) :
+  ImageCpu(const iu::Size<2>& size) :
     Image(size.width, size.height), data_(0), pitch_(0),
     ext_data_pointer_(false)
   {

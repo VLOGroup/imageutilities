@@ -27,7 +27,7 @@ namespace iuprivate {
 
 namespace iu {
 
-Qt5ImageGpuWidget::Qt5ImageGpuWidget(const IuSize sz, QWidget *parent)
+Qt5ImageGpuWidget::Qt5ImageGpuWidget(const iu::Size<2> sz, QWidget *parent)
     : QOpenGLWidget(parent)
 {
     QSurfaceFormat format;

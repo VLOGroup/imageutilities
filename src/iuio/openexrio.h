@@ -56,9 +56,9 @@ public:
 
     /**
      * @brief return size of the OpenEXR image
-     * @return Iusize
+     * @return iu::Size<2>
      */
-    IuSize get_size() { return sz_; }
+    iu::Size<2> get_size() { return sz_; }
 
     /**
      * @brief Get a list of all channels in the file
@@ -136,7 +136,7 @@ public:
     #endif
 
 private:
-    IuSize sz_;
+    iu::Size<2> sz_;
     std::string filename_;
     std::vector<Channel> channels_;
     std::map<Imf::PixelType, std::string> pixeltype_to_string_;
@@ -158,7 +158,7 @@ public:
      * @param filename name of the file.
      * @param size size of the image.
      */
-    OpenEXROutputFile(const std::string& filename, IuSize size);
+    OpenEXROutputFile(const std::string& filename, iu::Size<2> size);
     ~OpenEXROutputFile();
 
 
@@ -254,7 +254,7 @@ private:
     bool check_channel_name(const std::string& name);
     bool check_attachement_name(const std::string& name);
 
-    IuSize sz_;
+    iu::Size<2> sz_;
     std::string filename_;
 
     Imf::Header header_;

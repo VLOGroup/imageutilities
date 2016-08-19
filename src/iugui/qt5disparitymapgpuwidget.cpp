@@ -24,7 +24,7 @@ namespace iuprivate {
 
 namespace iu {
 
-Qt5DisparitymapGpuWidget::Qt5DisparitymapGpuWidget(const IuSize sz, float translation, float f, float cx, float cy, float B, QWidget *parent)
+Qt5DisparitymapGpuWidget::Qt5DisparitymapGpuWidget(const iu::Size<2> sz, float translation, float f, float cx, float cy, float B, QWidget *parent)
     : QOpenGLWidget(parent)
 {
     QSurfaceFormat format;
