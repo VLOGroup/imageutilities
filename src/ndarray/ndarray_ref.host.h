@@ -41,6 +41,9 @@ namespace iu
 	template<class iu_class> class proxy;
 }
 
+// forward declaration of mxArray, for matlab interface
+class mxArray;
+
 /*
 template<typename T, typename U> struct member_ptr_t{
 	typedef U T::* type;
@@ -593,6 +596,8 @@ public:
 	ndarray_ref(const iu::LinearDeviceMemory<type, 1> & x, const intn<dims> & size);
 	ndarray_ref(const iu::LinearHostMemory<type, 1> * x, const intn<dims> & size);
 	ndarray_ref(const iu::LinearDeviceMemory<type, 1> * x, const intn<dims> & size);
+	//! from mxArray * -- include mex_io.h
+	ndarray_ref(const mxArray *);
 public: // operations
 	//! reshape to get descending order of strides - last index fastest
 	ndarray_ref<type, dims> reshape_descending() const;
