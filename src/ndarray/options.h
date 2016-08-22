@@ -1,5 +1,4 @@
-#ifndef options_h
-#define options_h
+#pragma once
 
 #include<map>
 
@@ -29,7 +28,7 @@ public:
 
 };
 
-std::ostream & operator << (std::ostream & ss, options & O){
+inline std::ostream & operator << (std::ostream & ss, options & O){
 	ss << "Options:\n";
 	for (options::iterator it = O.begin(); it != O.end(); ++it){
 		ss << it->first << ": " << it->second << "\n";
@@ -83,5 +82,3 @@ template<> inline toption<bool>::operator bool()const{
 };
 
 #define NEWOPTION(type,name,dvalue) toption<type> name = toption<type>(#name,dvalue, this);
-
-#endif
