@@ -161,11 +161,16 @@ public:
      */
 		__device__ void coords(unsigned int linearIdx, short *dim0, short *dim1, short *dim2, short *dim3)
 		{
-			*dim0 = linearIdx / stride0;
-			*dim1 = (linearIdx % stride0) / stride1;
-			*dim2 = ((linearIdx % stride0) % stride1) / stride2;
-			*dim3 = ((linearIdx % stride0) % stride1) % stride2;
-		}
+            // modulo is slow
+//            *dim0 = linearIdx / stride0;
+//            *dim1 = (linearIdx % stride0) / stride1;
+//            *dim2 = ((linearIdx % stride0) % stride1) / stride2;
+//            *dim3 = ((linearIdx % stride0) % stride1) % stride2;
+            *dim0 = linearIdx / stride0;
+            *dim1 = (linearIdx - *dim0 * stride0) / stride1;
+            *dim2 = (linearIdx - (*dim0 * stride0 + *dim1 * stride1)) / stride2;
+            *dim3 = linearIdx - (*dim0 * stride0 + *dim1 * stride1 + *dim2 * stride2);
+        }
 
 		/** Constructor */
 		__host__ TensorKernelData(const TensorGpu<PixelType> &tensor) :
