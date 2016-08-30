@@ -65,22 +65,21 @@ public:
 		(*val) = new_val;
 		//(*ops)[name] = new_val;
 	};
-	// when setting from an option, only copy the value
-	void operator = (const toption<type> & o2){
-		(*this) = type(o2);
-	};
-	/*
-	toption(const toption<type> & x) delete;
-	operator = (const toption<type> & x) delete;
-	*/
+
+	//! copy and operator =
 	toption(const toption<type> & x){ // do not copy the parent and member pointer
 		*this = x;
 	};
+	// when setting from an option, only copy the value
 	toption<type> & operator = (const toption<type> & x){ // do not copy the parent and member pointer
 		*val = *x.val;
 		name = x.name;
 		return * this;
 	};
+	/*
+	toption(const toption<type> & x) delete;
+	operator = (const toption<type> & x) delete;
+	*/
 };
 
 template<class type> toption<type>::operator type()const{
