@@ -172,7 +172,7 @@ template<> struct IUMATH_DLLAPI type_trait<double>
   /** Compute maximum value. */
   static inline __host__ __device__ double max(double x, double y)
   {
-      return dmaxd(x, y);
+      return fmax(x, y);
   }
 
   /** Define basic real type (double) */
@@ -185,7 +185,7 @@ template<> struct IUMATH_DLLAPI type_trait<double>
   struct is_complex { static const bool value = true; };
 
   /** Return type name. */
-  static inline __host__ char* name()
+  static const char* name()
   {
       return "double";
   }
