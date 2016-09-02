@@ -24,6 +24,9 @@ public:
 		NCHW, NHWC
 	};
 
+  /** Define the current pixel type. */
+  typedef PixelType pixel_type;
+
   /** Constructor.
    *  @param memoryLayout MemoryLayout
    * */

@@ -322,6 +322,19 @@ static inline void checkSize(const iu::LinearMemory<Ndim> *linmem1, const iu::Li
   }
 }
 
+template<unsigned int Ndim>
+static inline void checkSize(const iu::Size<Ndim> &size1, const iu::Size<Ndim> &size2,
+               const char* file, const char* function, const int line)
+{
+  if (size1 != size2)
+  {
+    std::stringstream msg;
+    msg << "Size mismatch! First size is " << size1 << ". ";
+    msg << "Second size is " << size2;
+    throw IuException(msg.str(), file, function, line);
+  }
+}
+
 static inline void checkSize(const iu::Image *image, const iu::LinearMemory<1> *linmem,
                const char* file, const char* function, const int line)
 {
