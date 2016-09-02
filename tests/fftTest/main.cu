@@ -4,8 +4,7 @@
 #include "../config.h"
 #include "iucore.h"
 #include "iumath.h"
-#include "iuio.h"
-#include "iuhelpermath.h"
+#include "iumath/typetraits.h"
 
 template <typename T>
 void printImage(T &image)
@@ -39,8 +38,9 @@ void printVolume(T &volume, unsigned int slice)
 void test_fft2_image_float()
 {
   std::cout << "TEST: FFT2 IMAGE FLOAT" << std::endl;
-  iu::Size<3> size({5,10});
-  float data[size.numel()];
+  iu::Size<2> size({5,10});
+  const unsigned int numel = size.numel();
+  float *data = new float[numel];
 
   // Fill data pointer
   for (unsigned int i=0; i < size.numel(); i++)
@@ -58,7 +58,7 @@ void test_fft2_image_float()
   iu::copy(&h_img, &d_img);
 
   // Create output image with half width
-  iu::Size<3> halfsize = size;
+  iu::Size<2> halfsize = size;
   halfsize.width = halfsize.width/2 + 1;
   iu::ImageGpu_32f_C2 d_output_fourier(halfsize);
   iu::math::fill(d_output_fourier, make_float2(0,0));
@@ -77,14 +77,16 @@ void test_fft2_image_float()
   std::cout << "output image == input image:" << std::endl;
   printImage(h_img);
 
+  delete[] data;
   std::cout << "DONE: FFT2 IMAGE FLOAT" << std::endl;
 }
 
 void test_fft2_image_double()
 {
   std::cout << "TEST: FFT2 IMAGE DOUBLE" << std::endl;
-  iu::Size<3> size({5,10});
-  double data[size.numel()];
+  iu::Size<2> size({5,10});
+  const unsigned int numel = size.numel();
+  double *data = new double[numel];
 
   // Fill data pointer
   for (unsigned int i=0; i < size.numel(); i++)
@@ -102,7 +104,7 @@ void test_fft2_image_double()
   iu::copy(&h_img, &d_img);
 
   // Create output image with half width
-  iu::Size<3> halfsize = size;
+  iu::Size<2> halfsize = size;
   halfsize.width = halfsize.width/2 + 1;
   iu::ImageGpu_64f_C2 d_output_fourier(halfsize);
   iu::math::fill(d_output_fourier, make_double2(0,0));
@@ -121,6 +123,7 @@ void test_fft2_image_double()
   std::cout << "output image == input image:" << std::endl;
   printImage(h_img);
 
+  delete[] data;
   std::cout << "DONE: FFT2 IMAGE DOUBLE" << std::endl;
 }
 
@@ -129,7 +132,8 @@ void test_fft2_volume_float()
   unsigned int slice = 2;
   std::cout << "TEST: FFT2 VOLUME FLOAT" << std::endl;
   iu::Size<3> size({5,10,4});
-  float data[size.numel()];
+  const unsigned int numel = size.numel();
+  float *data = new float[numel];
 
   // Fill data pointer
   for (unsigned int i=0; i < size.numel(); i++)
@@ -166,6 +170,7 @@ void test_fft2_volume_float()
   std::cout << "output volume == input volume:" << std::endl;
   printVolume(h_img, slice);
 
+  delete[] data;
   std::cout << "DONE: FFT2 VOLUME FLOAT" << std::endl;
 }
 
@@ -174,7 +179,8 @@ void test_fft2_volume_double()
   unsigned int slice = 2;
   std::cout << "TEST: FFT2 VOLUME DOUBLE" << std::endl;
   iu::Size<3> size({5,10,4});
-  double data[size.numel()];
+  const unsigned int numel = size.numel();
+  double *data = new double[numel];
 
   // Fill data pointer
   for (unsigned int i=0; i < size.numel(); i++)
@@ -211,15 +217,18 @@ void test_fft2_volume_double()
   std::cout << "output volume == input volume:" << std::endl;
   printVolume(h_img, slice);
 
+  delete[] data;
   std::cout << "DONE: FFT2 VOLUME DOUBLE" << std::endl;
 }
 
 template<typename PixelType>
 void test_fft2_linmem2()
 {
-  std::cout << "TEST: FFT2 LINMEM2 " << typeid(PixelType).name() << std::endl;
+  std::cout << "TEST: FFT2 LINMEM2 " << iu::type_trait<PixelType>::name() << std::endl;
   iu::Size<2> size({5,10});
-  PixelType data[size.numel()];
+
+  const unsigned int numel = size.numel();
+  PixelType * data = new PixelType[numel];
 
   // Fill data pointer
   for (unsigned int i=0; i < size.numel(); i++)
@@ -241,11 +250,11 @@ void test_fft2_linmem2()
   halfsize[0] = halfsize[0]/2 + 1;
 
   // Define the complex data type
-  typedef typename iu::VectorType<PixelType, 2>::type ComplexType;
-  iu::LinearDeviceMemory<ComplexType, 2>  d_output_fourier(halfsize);
-  iu::math::fill(d_output_fourier, iu::VectorType<PixelType, 2>::make(0));
-  iu::LinearHostMemory<ComplexType, 2> h_output_fourier(halfsize);
-  iu::math::fill(h_output_fourier, iu::VectorType<PixelType, 2>::make(0));
+  typedef typename iu::type_trait<PixelType>::complex_type complex_type;
+  iu::LinearDeviceMemory<complex_type, 2>  d_output_fourier(halfsize);
+  iu::math::fill(d_output_fourier, iu::type_trait<PixelType>::make_complex(0));
+  iu::LinearHostMemory<complex_type, 2> h_output_fourier(halfsize);
+  iu::math::fill(h_output_fourier, iu::type_trait<PixelType>::make_complex(0));
 
   // Perform fft2 real -> complex
   iu::math::fft::fft2(d_img, d_output_fourier);
@@ -259,7 +268,8 @@ void test_fft2_linmem2()
   std::cout << "output image == input image:" << std::endl;
   printImage(h_img);
 
-  std::cout << "DONE: FFT2 LINMEM " << typeid(PixelType).name() << std::endl;
+  delete[] data;
+  std::cout << "DONE: FFT2 LINMEM " << iu::type_trait<PixelType>::name() << std::endl;
 }
 
 template<typename PixelType, unsigned int Ndim>
@@ -267,11 +277,12 @@ void test_fft2_linmemNd()
 {
   unsigned int slice = 6;
   bool scale_sqrt = true;
-  std::cout << "TEST: FFT2 LINMEM" << Ndim << " " << typeid(PixelType).name() << std::endl;
+  std::cout << "TEST: FFT2 LINMEM" << Ndim << " " << iu::type_trait<PixelType>::name() << std::endl;
   iu::Size<Ndim> size;
   for (unsigned int i = 0; i < Ndim; i++)
     size[i] = 5 + i;
-  PixelType data[size.numel()];
+  const unsigned int numel = size.numel();
+  PixelType *data = new PixelType[numel];
 
   // Fill data pointer
   for (unsigned int i=0; i < size.numel(); i++)
@@ -293,11 +304,11 @@ void test_fft2_linmemNd()
   halfsize[0] = halfsize[0]/2 + 1;
 
   // Define the complex data type
-  typedef typename iu::VectorType<PixelType, 2>::type ComplexType;
-  iu::LinearDeviceMemory<ComplexType, Ndim>  d_output_fourier(halfsize);
-  iu::math::fill(d_output_fourier, iu::VectorType<PixelType, 2>::make(0));
-  iu::LinearHostMemory<ComplexType, Ndim> h_output_fourier(halfsize);
-  iu::math::fill(h_output_fourier, iu::VectorType<PixelType, 2>::make(0));
+  typedef typename iu::type_trait<PixelType>::complex_type complex_type;
+  iu::LinearDeviceMemory<complex_type, Ndim>  d_output_fourier(halfsize);
+  iu::math::fill(d_output_fourier, iu::type_trait<PixelType>::make_complex(0));
+  iu::LinearHostMemory<complex_type, Ndim> h_output_fourier(halfsize);
+  iu::math::fill(h_output_fourier, iu::type_trait<PixelType>::make_complex(0));
 
   // Perform fft2 real -> complex
   iu::math::fft::fft2(d_img, d_output_fourier, scale_sqrt);
@@ -311,11 +322,13 @@ void test_fft2_linmemNd()
   std::cout << "output image == input image:" << std::endl;
   printVolume(h_img, slice);
 
-  std::cout << "DONE: FFT2 LINMEM" << Ndim << " " << typeid(PixelType).name() << std::endl;
+  delete[] data;
+  std::cout << "DONE: FFT2 LINMEM" << Ndim << " " << iu::type_trait<PixelType>::name() << std::endl;
 }
 
 int main()
 {
+    std::cout << "FFT test" << std::endl;
     // 2D real -> complex fft / complex -> real ifft
     test_fft2_image_float();
     test_fft2_image_double();
@@ -332,9 +345,6 @@ int main()
     // TODO fftshift / ifftshift
     // TODO get rid of pitch in constructor with external datapointer -> make internally
     // TODO make second special constructor based on size
-    typedef double PixelType;
-    iu::VectorType<PixelType, 2>::type vec = iu::VectorType<PixelType, 2>::make(5);
-    std::cout << vec << " " << length(vec) << std::endl;
 
     std::cout << "DONE :)" << std::endl;
 }

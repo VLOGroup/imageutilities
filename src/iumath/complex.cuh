@@ -6,16 +6,7 @@
 
 #include "iucore.h"
 #include <thrust/transform.h>
-
-float2 __host__ __device__ make_complex(float x, float y)
-{
-  return make_float2(x, y);
-}
-
-double2 __host__ __device__ make_complex(double x, double y)
-{
-  return make_double2(x, y);
-}
+#include "typetraits.h"
 
 template<typename ComplexType, typename RealType>
 struct abs_functor: public thrust::unary_function<ComplexType, RealType>
@@ -73,7 +64,7 @@ struct complex_multiply_functor: public thrust::unary_function<thrust::tuple<Com
   {
     ComplexType a = thrust::get<0>(t);
     ComplexType b = thrust::get<1>(t);
-    return make_complex(a.x * b.x - a.y * b.y, a.x * b.y + a.y * b.x);
+    return iu::type_trait<ComplexType>::make_complex(a.x * b.x - a.y * b.y, a.x * b.y + a.y * b.x);
   }
 };
 
@@ -86,7 +77,7 @@ thrust::tuple<ComplexType, ComplexType>, ComplexType>
   {
     ComplexType a = thrust::get<0>(t);
     ComplexType b = thrust::get<1>(t);
-    return make_complex(a.x * b.x + a.y * b.y, - a.x * b.y + a.y * b.x);
+    return iu::type_trait<ComplexType>::make_complex(a.x * b.x + a.y * b.y, - a.x * b.y + a.y * b.x);
   }
 };
 

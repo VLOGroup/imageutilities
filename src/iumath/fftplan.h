@@ -44,6 +44,8 @@ public:
    *  @param src_pitch Source pitch
    *  @param dst_pitch Destination pitch
    */
+  inline Plan(const iu::Size<2> &size, const int src_pitch,
+              const int dst_pitch);
   inline Plan(const iu::Size<3> &size, const int src_pitch,
               const int dst_pitch);
 
@@ -113,7 +115,98 @@ private:
   cufftHandle plan_;
 };
 
-/** Explicit FFT2 plan constructors for pitched memory (float): real -> complex
+/** Explicit FFT2 plan constructors for pitched memory (Image, float): real -> complex
+ *  @param size Size of the pitched memory.
+ *  @param src_pitch Source pitch
+ *  @param dst_pitch Destination pitch
+ */
+template<>
+inline Plan<freal, fcomplex, 2>::Plan(const iu::Size<2> &size,
+                                      const int src_pitch, const int dst_pitch)
+{
+  int rank = 2;
+  int width = static_cast<int>(size.width);
+  int height = static_cast<int>(size.height);
+  int n[2] = { height, width };
+  int istride = 1, ostride = 1;  // Stride lengths
+  int idist = src_pitch * height, odist = dst_pitch * height;  // Distance between batches
+  int inembed[] = { height, src_pitch };  // src size with pitch
+  int onembed[] = { height, dst_pitch };  // dst size with pitch
+  int batch = 1;
+  if (width == 0 || height == 0)
+  {
+    std::stringstream msg;
+    msg << "Size elements cannot be zero! (Size: " << size << ")";
+    throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
+  }
+
+  IU_CUFFT_SAFE_CALL(cufftPlanMany(&plan_, rank, n, inembed, istride, idist,  // *inembed, istride, idist
+                                   onembed, ostride, odist,  // *onembed, ostride, odist
+                                   CUFFT_R2C, batch));
+}
+
+/** Explicit FFT2 plan constructors for pitched memory (Image, float): complex -> real
+ *  @param size Size of the pitched memory.
+ *  @param src_pitch Source pitch
+ *  @param dst_pitch Destination pitch
+ */
+template<>
+inline Plan<fcomplex, freal, 2>::Plan(const iu::Size<2> &size, const int src_pitch,
+                                      const int dst_pitch)
+{
+  int rank = 2;
+  int width = static_cast<int>(size.width);
+  int height = static_cast<int>(size.height);
+  int n[2] = { height, width };
+  int istride = 1, ostride = 1;  // Stride lengths
+  int idist = src_pitch * height, odist = dst_pitch * height;  // Distance between batches
+  int inembed[] = { height, src_pitch };  // src size with pitch
+  int onembed[] = { height, dst_pitch };  // dst size with pitch
+  int batch = 1;
+  if (width == 0 || height == 0)
+  {
+    std::stringstream msg;
+    msg << "Size elements cannot be zero! (Size: " << size << ")";
+    throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
+  }
+
+  IU_CUFFT_SAFE_CALL(cufftPlanMany(&plan_, rank, n, inembed, istride, idist,  // *inembed, istride, idist
+                                   onembed, ostride, odist,  // *onembed, ostride, odist
+                                   CUFFT_C2R, batch));
+}
+
+/** Explicit FFT2 plan constructors for pitched memory (Image, float): complex -> complex
+ *  @param size Size of the pitched memory.
+ *  @param src_pitch Source pitch
+ *  @param dst_pitch Destination pitch
+ */
+template<>
+inline Plan<fcomplex, fcomplex, 2>::Plan(const iu::Size<2> &size,
+                                         const int src_pitch,
+                                         const int dst_pitch)
+{
+  int rank = 2;
+  int width = static_cast<int>(size.width);
+  int height = static_cast<int>(size.height);
+  int n[2] = { height, width };
+  int istride = 1, ostride = 1;  // Stride lengths
+  int idist = src_pitch * height, odist = dst_pitch * height;  // Distance between batches
+  int inembed[] = { height, src_pitch };  // src size with pitch
+  int onembed[] = { height, dst_pitch };  // dst size with pitch
+  int batch = 1;
+  if (width == 0 || height == 0)
+  {
+    std::stringstream msg;
+    msg << "Size elements cannot be zero! (Size: " << size << ")";
+    throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
+  }
+
+  IU_CUFFT_SAFE_CALL(cufftPlanMany(&plan_, rank, n, inembed, istride, idist,  // *inembed, istride, idist
+                                   onembed, ostride, odist,  // *onembed, ostride, odist
+                                   CUFFT_C2C, batch));
+}
+
+/** Explicit FFT2 plan constructors for pitched memory (Volume, float): real -> complex
  *  @param size Size of the pitched memory.
  *  @param src_pitch Source pitch
  *  @param dst_pitch Destination pitch
@@ -125,71 +218,86 @@ inline Plan<freal, fcomplex, 2>::Plan(const iu::Size<3> &size,
   int rank = 2;
   int width = static_cast<int>(size.width);
   int height = static_cast<int>(size.height);
-  int depth = static_cast<int>(size.depth);
   int n[2] = { height, width };
   int istride = 1, ostride = 1;  // Stride lengths
   int idist = src_pitch * height, odist = dst_pitch * height;  // Distance between batches
   int inembed[] = { height, src_pitch };  // src size with pitch
   int onembed[] = { height, dst_pitch };  // dst size with pitch
-  int batch = max(1, depth);
+  int batch = static_cast<int>(size.depth);
+  if (batch == 0 || width == 0 || height == 0)
+  {
+    std::stringstream msg;
+    msg << "Size elements cannot be zero! (Size: " << size << ")";
+    throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
+  }
 
   IU_CUFFT_SAFE_CALL(cufftPlanMany(&plan_, rank, n, inembed, istride, idist,  // *inembed, istride, idist
                                    onembed, ostride, odist,  // *onembed, ostride, odist
                                    CUFFT_R2C, batch));
 }
 
-/** Explicit FFT2 plan constructors for pitched memory (float): complex -> real
+/** Explicit FFT2 plan constructors for pitched memory (Volume, float): complex -> real
  *  @param size Size of the pitched memory.
  *  @param src_pitch Source pitch
  *  @param dst_pitch Destination pitch
  */
 template<>
-inline Plan<fcomplex, freal, 2>::Plan(const IuSize &size, const int src_pitch,
+inline Plan<fcomplex, freal, 2>::Plan(const iu::Size<3> &size, const int src_pitch,
                                       const int dst_pitch)
 {
   int rank = 2;
   int width = static_cast<int>(size.width);
   int height = static_cast<int>(size.height);
-  int depth = static_cast<int>(size.depth);
   int n[2] = { height, width };
   int istride = 1, ostride = 1;  // Stride lengths
   int idist = src_pitch * height, odist = dst_pitch * height;  // Distance between batches
   int inembed[] = { height, src_pitch };  // src size with pitch
   int onembed[] = { height, dst_pitch };  // dst size with pitch
-  int batch = max(1, depth);
+  int batch = static_cast<int>(size.depth);
+  if (batch == 0 || width == 0 || height == 0)
+  {
+    std::stringstream msg;
+    msg << "Size elements cannot be zero! (Size: " << size << ")";
+    throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
+  }
 
   IU_CUFFT_SAFE_CALL(cufftPlanMany(&plan_, rank, n, inembed, istride, idist,  // *inembed, istride, idist
                                    onembed, ostride, odist,  // *onembed, ostride, odist
                                    CUFFT_C2R, batch));
 }
 
-/** Explicit FFT2 plan constructors for pitched memory (float): complex -> complex
+/** Explicit FFT2 plan constructors for pitched memory (Volume, float): complex -> complex
  *  @param size Size of the pitched memory.
  *  @param src_pitch Source pitch
  *  @param dst_pitch Destination pitch
  */
 template<>
-inline Plan<fcomplex, fcomplex, 2>::Plan(const IuSize &size,
+inline Plan<fcomplex, fcomplex, 2>::Plan(const iu::Size<3> &size,
                                          const int src_pitch,
                                          const int dst_pitch)
 {
   int rank = 2;
   int width = static_cast<int>(size.width);
   int height = static_cast<int>(size.height);
-  int depth = static_cast<int>(size.depth);
   int n[2] = { height, width };
   int istride = 1, ostride = 1;  // Stride lengths
   int idist = src_pitch * height, odist = dst_pitch * height;  // Distance between batches
   int inembed[] = { height, src_pitch };  // src size with pitch
   int onembed[] = { height, dst_pitch };  // dst size with pitch
-  int batch = max(1, depth);
+  int batch = static_cast<int>(size.depth);
+  if (batch == 0 || width == 0 || height == 0)
+  {
+    std::stringstream msg;
+    msg << "Size elements cannot be zero! (Size: " << size << ")";
+    throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
+  }
 
   IU_CUFFT_SAFE_CALL(cufftPlanMany(&plan_, rank, n, inembed, istride, idist,  // *inembed, istride, idist
                                    onembed, ostride, odist,  // *onembed, ostride, odist
                                    CUFFT_C2C, batch));
 }
 
-/** Explicit FFT3 plan constructors for pitched memory (float): real -> complex
+/** Explicit FFT3 plan constructors for pitched memory (Volume, float): real -> complex
  *  @param size Size of the pitched memory.
  *  @param src_pitch Source pitch
  *  @param dst_pitch Destination pitch
@@ -202,10 +310,10 @@ inline Plan<freal, fcomplex, 3>::Plan(const iu::Size<3> &size,
   int width = static_cast<int>(size.width);
   int height = static_cast<int>(size.height);
   int depth = static_cast<int>(size.depth);
-  if (depth == 0)
+  if (depth == 0 || width == 0 || height == 0)
   {
     std::stringstream msg;
-    msg << "Requested 3d Plan for 2d image (Size: " << size << ")";
+    msg << "Size elements cannot be zero! (Size: " << size << ")";
     throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
   }
   int n[3] = { depth, height, width };
@@ -220,23 +328,23 @@ inline Plan<freal, fcomplex, 3>::Plan(const iu::Size<3> &size,
                                    CUFFT_R2C, batch));
 }
 
-/** Explicit FFT3 plan constructors for pitched memory (float): complex -> real
+/** Explicit FFT3 plan constructors for pitched memory (Volume, float): complex -> real
  *  @param size Size of the pitched memory.
  *  @param src_pitch Source pitch
  *  @param dst_pitch Destination pitch
  */
 template<>
-inline Plan<fcomplex, freal, 3>::Plan(const IuSize &size, const int src_pitch,
+inline Plan<fcomplex, freal, 3>::Plan(const iu::Size<3> &size, const int src_pitch,
                                       const int dst_pitch)
 {
   int rank = 3;
   int width = static_cast<int>(size.width);
   int height = static_cast<int>(size.height);
   int depth = static_cast<int>(size.depth);
-  if (depth == 0)
+  if (depth == 0 || width == 0 || height == 0)
   {
     std::stringstream msg;
-    msg << "Requested 3d Plan for 2d image (Size: " << size << ")";
+    msg << "Size elements cannot be zero! (Size: " << size << ")";
     throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
   }
   int n[3] = { depth, height, width };
@@ -251,13 +359,13 @@ inline Plan<fcomplex, freal, 3>::Plan(const IuSize &size, const int src_pitch,
                                    CUFFT_C2R, batch));
 }
 
-/** Explicit FFT3 plan constructors for pitched memory (float): complex -> complex
+/** Explicit FFT3 plan constructors for pitched memory (Volume, float): complex -> complex
  *  @param size Size of the pitched memory.
  *  @param src_pitch Source pitch
  *  @param dst_pitch Destination pitch
  */
 template<>
-inline Plan<fcomplex, fcomplex, 3>::Plan(const IuSize &size,
+inline Plan<fcomplex, fcomplex, 3>::Plan(const iu::Size<3> &size,
                                          const int src_pitch,
                                          const int dst_pitch)
 {
@@ -265,10 +373,10 @@ inline Plan<fcomplex, fcomplex, 3>::Plan(const IuSize &size,
   int width = static_cast<int>(size.width);
   int height = static_cast<int>(size.height);
   int depth = static_cast<int>(size.depth);
-  if (depth == 0)
+  if (depth == 0 || width == 0 || height == 0)
   {
     std::stringstream msg;
-    msg << "Requested 3d Plan for 2d image (Size: " << size << ")";
+    msg << "Size elements cannot be zero! (Size: " << size << ")";
     throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
   }
   int n[3] = { depth, height, width };
@@ -294,6 +402,12 @@ inline Plan<freal, fcomplex, 2>::Plan(const iu::Size<2> &size)
   int height = static_cast<int>(size[1]);
   int n[2] = { height, width };
   int batch = 1;
+  if (width == 0 || height == 0)
+  {
+    std::stringstream msg;
+    msg << "Size elements cannot be zero! (Size: " << size << ")";
+    throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
+  }
 
   IU_CUFFT_SAFE_CALL(cufftPlanMany(&plan_, rank, n, NULL, 1, width * height,  // *inembed, istride, idist
       NULL, 1, width * height / 2,// *onembed, ostride, odist
@@ -311,6 +425,12 @@ inline Plan<fcomplex, freal, 2>::Plan(const iu::Size<2> &size)
   int height = static_cast<int>(size[1]);
   int n[2] = { height, width };
   int batch = 1;
+  if (width == 0 || height == 0)
+  {
+    std::stringstream msg;
+    msg << "Size elements cannot be zero! (Size: " << size << ")";
+    throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
+  }
 
   IU_CUFFT_SAFE_CALL(cufftPlanMany(&plan_, rank, n, NULL, 1, width * height / 2,  // *inembed, istride, idist
       NULL, 1, width * height,// *onembed, ostride, odist
@@ -328,6 +448,12 @@ inline Plan<fcomplex, fcomplex, 2>::Plan(const iu::Size<2> &size)
   int height = static_cast<int>(size[1]);
   int n[2] = { height, width };
   int batch = 1;
+  if (width == 0 || height == 0)
+  {
+    std::stringstream msg;
+    msg << "Size elements cannot be zero! (Size: " << size << ")";
+    throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
+  }
 
   IU_CUFFT_SAFE_CALL(cufftPlanMany(&plan_, rank, n, NULL, 1, width * height,  // *inembed, istride, idist
       NULL, 1, width * height,// *onembed, ostride, odist
@@ -347,6 +473,12 @@ inline Plan<freal, fcomplex, 2>::Plan(const iu::Size<3> &size)
   int height = static_cast<int>(size[1]);
   int n[2] = { height, width };
   int batch = static_cast<int>(size[2]);
+  if (batch == 0 || width == 0 || height == 0)
+  {
+    std::stringstream msg;
+    msg << "Size elements cannot be zero! (Size: " << size << ")";
+    throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
+  }
 
   IU_CUFFT_SAFE_CALL(cufftPlanMany(&plan_, rank, n, NULL, 1, size[0] * size[1],  // *inembed, istride, idist
       NULL, 1, width * height / 2,// *onembed, ostride, odist
@@ -366,6 +498,12 @@ inline Plan<fcomplex, freal, 2>::Plan(const iu::Size<3> &size)
   int height = static_cast<int>(size[1]);
   int n[2] = { height, width };
   int batch = static_cast<int>(size[2]);
+  if (batch == 0 || width == 0 || height == 0)
+  {
+    std::stringstream msg;
+    msg << "Size elements cannot be zero! (Size: " << size << ")";
+    throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
+  }
 
   IU_CUFFT_SAFE_CALL(cufftPlanMany(&plan_, rank, n, NULL, 1, width * height / 2,  // *inembed, istride, idist
       NULL, 1, width * height,// *onembed, ostride, odist
@@ -385,6 +523,12 @@ inline Plan<fcomplex, fcomplex, 2>::Plan(const iu::Size<3> &size)
   int height = static_cast<int>(size[1]);
   int n[2] = { height, width };
   int batch = static_cast<int>(size[2]);
+  if (batch == 0 || width == 0 || height == 0)
+  {
+    std::stringstream msg;
+    msg << "Size elements cannot be zero! (Size: " << size << ")";
+    throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
+  }
 
   IU_CUFFT_SAFE_CALL(cufftPlanMany(&plan_, rank, n, NULL, 1, width * height,  // *inembed, istride, idist
       NULL, 1, width * height,// *onembed, ostride, odist
@@ -404,6 +548,12 @@ inline Plan<freal, fcomplex, 2>::Plan(const iu::Size<4> &size)
   int height = static_cast<int>(size[1]);
   int n[2] = { height, width };
   int batch = static_cast<int>(size[2] * size[3]);
+  if (batch == 0 || width == 0 || height == 0)
+  {
+    std::stringstream msg;
+    msg << "Size elements cannot be zero! (Size: " << size << ")";
+    throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
+  }
 
   IU_CUFFT_SAFE_CALL(cufftPlanMany(&plan_, rank, n, NULL, 1, width * height,  // *inembed, istride, idist
       NULL, 1, width * height/2,// *onembed, ostride, odist
@@ -423,6 +573,12 @@ inline Plan<fcomplex, freal, 2>::Plan(const iu::Size<4> &size)
   int height = static_cast<int>(size[1]);
   int n[2] = { height, width };
   int batch = static_cast<int>(size[2]);
+  if (batch == 0 || width == 0 || height == 0)
+  {
+    std::stringstream msg;
+    msg << "Size elements cannot be zero! (Size: " << size << ")";
+    throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
+  }
 
   IU_CUFFT_SAFE_CALL(cufftPlanMany(&plan_, rank, n, NULL, 1, width * height/2,  // *inembed, istride, idist
       NULL, 1, width * height,// *onembed, ostride, odist
@@ -442,7 +598,12 @@ inline Plan<fcomplex, fcomplex, 2>::Plan(const iu::Size<4> &size)
   int height = static_cast<int>(size[1]);
   int n[2] = { height, width };
   int batch = static_cast<int>(size[2] * size[3]);
-  ;
+  if (batch == 0 || width == 0 || height == 0)
+  {
+    std::stringstream msg;
+    msg << "Size elements cannot be zero! (Size: " << size << ")";
+    throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
+  }
 
   IU_CUFFT_SAFE_CALL(cufftPlanMany(&plan_, rank, n, NULL, 1, width * height,  // *inembed, istride, idist
       NULL, 1, width * height,// *onembed, ostride, odist
@@ -461,6 +622,12 @@ inline Plan<freal, fcomplex, 3>::Plan(const iu::Size<3> &size)
   int depth = static_cast<int>(size[2]);
   int n[3] = { depth, height, width };
   int batch = 1;
+  if (depth == 0 || width == 0 || height == 0)
+  {
+    std::stringstream msg;
+    msg << "Size elements cannot be zero! (Size: " << size << ")";
+    throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
+  }
 
   IU_CUFFT_SAFE_CALL(
       cufftPlanMany(&plan_, rank, n, NULL, 1, width * height * depth,  // *inembed, istride, idist
@@ -480,6 +647,12 @@ inline Plan<fcomplex, freal, 3>::Plan(const iu::Size<3> &size)
   int depth = static_cast<int>(size[2]);
   int n[3] = { depth, height, width };
   int batch = 1;
+  if (depth == 0 || width == 0 || height == 0)
+  {
+    std::stringstream msg;
+    msg << "Size elements cannot be zero! (Size: " << size << ")";
+    throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
+  }
 
   IU_CUFFT_SAFE_CALL(
       cufftPlanMany(&plan_, rank, n, NULL, 1, width * height * depth/2,  // *inembed, istride, idist
@@ -499,6 +672,12 @@ inline Plan<fcomplex, fcomplex, 3>::Plan(const iu::Size<3> &size)
   int depth = static_cast<int>(size[2]);
   int n[3] = { depth, height, width };
   int batch = 1;
+  if (depth == 0 || width == 0 || height == 0)
+  {
+    std::stringstream msg;
+    msg << "Size elements cannot be zero! (Size: " << size << ")";
+    throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
+  }
 
   IU_CUFFT_SAFE_CALL(
       cufftPlanMany(&plan_, rank, n, NULL, 1, width * height * depth,  // *inembed, istride, idist
@@ -520,7 +699,12 @@ inline Plan<freal, fcomplex, 3>::Plan(const iu::Size<4> &size)
   int depth = static_cast<int>(size[2]);
   int n[3] = { depth, height, width };
   int batch = static_cast<int>(size[3]);
-  ;
+  if (batch == 0 || depth == 0 || width == 0 || height == 0)
+  {
+    std::stringstream msg;
+    msg << "Size elements cannot be zero! (Size: " << size << ")";
+    throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
+  }
 
   IU_CUFFT_SAFE_CALL(
       cufftPlanMany(&plan_, rank, n, NULL, 1, width * height * depth,  // *inembed, istride, idist
@@ -542,7 +726,12 @@ inline Plan<fcomplex, freal, 3>::Plan(const iu::Size<4> &size)
   int depth = static_cast<int>(size[2]);
   int n[3] = { depth, height, width };
   int batch = static_cast<int>(size[3]);
-  ;
+  if (batch == 0 || depth == 0 || width == 0 || height == 0)
+  {
+    std::stringstream msg;
+    msg << "Size elements cannot be zero! (Size: " << size << ")";
+    throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
+  }
 
   IU_CUFFT_SAFE_CALL(
       cufftPlanMany(&plan_, rank, n, NULL, 1, width * height * depth/2,  // *inembed, istride, idist
@@ -564,7 +753,12 @@ inline Plan<fcomplex, fcomplex, 3>::Plan(const iu::Size<4> &size)
   int depth = static_cast<int>(size[2]);
   int n[3] = { depth, height, width };
   int batch = static_cast<int>(size[3]);
-  ;
+  if (batch == 0 || depth == 0 || width == 0 || height == 0)
+  {
+    std::stringstream msg;
+    msg << "Size elements cannot be zero! (Size: " << size << ")";
+    throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
+  }
 
   IU_CUFFT_SAFE_CALL(
       cufftPlanMany(&plan_, rank, n, NULL, 1, width * height * depth,  // *inembed, istride, idist
@@ -573,7 +767,100 @@ inline Plan<fcomplex, fcomplex, 3>::Plan(const iu::Size<4> &size)
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
-/** Explicit FFT2 plan constructors for pitched memory (double): real -> complex
+/////////////////////////////////////////////////////////////////////////////////////
+/** Explicit FFT2 plan constructors for pitched memory (Image, double): real -> complex
+ *  @param size Size of the pitched memory.
+ *  @param src_pitch Source pitch
+ *  @param dst_pitch Destination pitch
+ */
+template<>
+inline Plan<dreal, dcomplex, 2>::Plan(const iu::Size<2> &size,
+                                      const int src_pitch, const int dst_pitch)
+{
+  int rank = 2;
+  int width = static_cast<int>(size.width);
+  int height = static_cast<int>(size.height);
+  int n[2] = { height, width };
+  int istride = 1, ostride = 1;  // Stride lengths
+  int idist = src_pitch * height, odist = dst_pitch * height;  // Distance between batches
+  int inembed[] = { height, src_pitch };  // src size with pitch
+  int onembed[] = { height, dst_pitch };  // dst size with pitch
+  int batch = 1;
+  if (width == 0 || height == 0)
+  {
+    std::stringstream msg;
+    msg << "Size elements cannot be zero! (Size: " << size << ")";
+    throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
+  }
+
+  IU_CUFFT_SAFE_CALL(cufftPlanMany(&plan_, rank, n, inembed, istride, idist,  // *inembed, istride, idist
+                                   onembed, ostride, odist,  // *onembed, ostride, odist
+                                   CUFFT_D2Z, batch));
+}
+
+/** Explicit FFT2 plan constructors for pitched memory (Image, double): complex -> real
+ *  @param size Size of the pitched memory.
+ *  @param src_pitch Source pitch
+ *  @param dst_pitch Destination pitch
+ */
+template<>
+inline Plan<dcomplex, dreal, 2>::Plan(const iu::Size<2> &size, const int src_pitch,
+                                      const int dst_pitch)
+{
+  int rank = 2;
+  int width = static_cast<int>(size.width);
+  int height = static_cast<int>(size.height);
+  int n[2] = { height, width };
+  int istride = 1, ostride = 1;  // Stride lengths
+  int idist = src_pitch * height, odist = dst_pitch * height;  // Distance between batches
+  int inembed[] = { height, src_pitch };  // src size with pitch
+  int onembed[] = { height, dst_pitch };  // dst size with pitch
+  int batch = 1;
+  if (width == 0 || height == 0)
+  {
+    std::stringstream msg;
+    msg << "Size elements cannot be zero! (Size: " << size << ")";
+    throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
+  }
+
+  IU_CUFFT_SAFE_CALL(cufftPlanMany(&plan_, rank, n, inembed, istride, idist,  // *inembed, istride, idist
+                                   onembed, ostride, odist,  // *onembed, ostride, odist
+                                   CUFFT_Z2D, batch));
+}
+
+/** Explicit FFT2 plan constructors for pitched memory (Image, double): complex -> complex
+ *  @param size Size of the pitched memory.
+ *  @param src_pitch Source pitch
+ *  @param dst_pitch Destination pitch
+ */
+template<>
+inline Plan<dcomplex, dcomplex, 2>::Plan(const iu::Size<2> &size,
+                                         const int src_pitch,
+                                         const int dst_pitch)
+{
+  int rank = 2;
+  int width = static_cast<int>(size.width);
+  int height = static_cast<int>(size.height);
+  int n[2] = { height, width };
+  int istride = 1, ostride = 1;  // Stride lengths
+  int idist = src_pitch * height, odist = dst_pitch * height;  // Distance between batches
+  int inembed[] = { height, src_pitch };  // src size with pitch
+  int onembed[] = { height, dst_pitch };  // dst size with pitch
+  int batch = 1;
+  if (width == 0 || height == 0)
+  {
+    std::stringstream msg;
+    msg << "Size elements cannot be zero! (Size: " << size << ")";
+    throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
+  }
+
+  IU_CUFFT_SAFE_CALL(cufftPlanMany(&plan_, rank, n, inembed, istride, idist,  // *inembed, istride, idist
+                                   onembed, ostride, odist,  // *onembed, ostride, odist
+                                   CUFFT_Z2Z, batch));
+}
+
+
+/** Explicit FFT2 plan constructors for pitched memory (Volume, double): real -> complex
  *  @param size Size of the pitched memory.
  *  @param src_pitch Source pitch
  *  @param dst_pitch Destination pitch
@@ -585,71 +872,86 @@ inline Plan<dreal, dcomplex, 2>::Plan(const iu::Size<3> &size,
   int rank = 2;
   int width = static_cast<int>(size.width);
   int height = static_cast<int>(size.height);
-  int depth = static_cast<int>(size.depth);
   int n[2] = { height, width };
   int istride = 1, ostride = 1;  // Stride lengths
   int idist = src_pitch * height, odist = dst_pitch * height;  // Distance between batches
   int inembed[] = { height, src_pitch };  // src size with pitch
   int onembed[] = { height, dst_pitch };  // dst size with pitch
-  int batch = max(1, depth);
+  int batch = static_cast<int>(size.depth);
+  if (batch == 0 || width == 0 || height == 0)
+  {
+    std::stringstream msg;
+    msg << "Size elements cannot be zero! (Size: " << size << ")";
+    throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
+  }
 
   IU_CUFFT_SAFE_CALL(cufftPlanMany(&plan_, rank, n, inembed, istride, idist,  // *inembed, istride, idist
                                    onembed, ostride, odist,  // *onembed, ostride, odist
                                    CUFFT_D2Z, batch));
 }
 
-/** Explicit FFT2 plan constructors for pitched memory (double): complex -> real
+/** Explicit FFT2 plan constructors for pitched memory (Volume, double): complex -> real
  *  @param size Size of the pitched memory.
  *  @param src_pitch Source pitch
  *  @param dst_pitch Destination pitch
  */
 template<>
-inline Plan<dcomplex, dreal, 2>::Plan(const IuSize &size, const int src_pitch,
+inline Plan<dcomplex, dreal, 2>::Plan(const iu::Size<3> &size, const int src_pitch,
                                       const int dst_pitch)
 {
   int rank = 2;
   int width = static_cast<int>(size.width);
   int height = static_cast<int>(size.height);
-  int depth = static_cast<int>(size.depth);
   int n[2] = { height, width };
   int istride = 1, ostride = 1;  // Stride lengths
   int idist = src_pitch * height, odist = dst_pitch * height;  // Distance between batches
   int inembed[] = { height, src_pitch };  // src size with pitch
   int onembed[] = { height, dst_pitch };  // dst size with pitch
-  int batch = max(1, depth);
+  int batch = static_cast<int>(size.depth);
+  if (batch == 0 || width == 0 || height == 0)
+  {
+    std::stringstream msg;
+    msg << "Size elements cannot be zero! (Size: " << size << ")";
+    throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
+  }
 
   IU_CUFFT_SAFE_CALL(cufftPlanMany(&plan_, rank, n, inembed, istride, idist,  // *inembed, istride, idist
                                    onembed, ostride, odist,  // *onembed, ostride, odist
                                    CUFFT_Z2D, batch));
 }
 
-/** Explicit FFT2 plan constructors for pitched memory (double): complex -> complex
+/** Explicit FFT2 plan constructors for pitched memory (Volume, double): complex -> complex
  *  @param size Size of the pitched memory.
  *  @param src_pitch Source pitch
  *  @param dst_pitch Destination pitch
  */
 template<>
-inline Plan<dcomplex, dcomplex, 2>::Plan(const IuSize &size,
+inline Plan<dcomplex, dcomplex, 2>::Plan(const iu::Size<3> &size,
                                          const int src_pitch,
                                          const int dst_pitch)
 {
   int rank = 2;
   int width = static_cast<int>(size.width);
   int height = static_cast<int>(size.height);
-  int depth = static_cast<int>(size.depth);
   int n[2] = { height, width };
   int istride = 1, ostride = 1;  // Stride lengths
   int idist = src_pitch * height, odist = dst_pitch * height;  // Distance between batches
   int inembed[] = { height, src_pitch };  // src size with pitch
   int onembed[] = { height, dst_pitch };  // dst size with pitch
-  int batch = max(1, depth);
+  int batch = static_cast<int>(size.depth);
+  if (batch == 0 || width == 0 || height == 0)
+  {
+    std::stringstream msg;
+    msg << "Size elements cannot be zero! (Size: " << size << ")";
+    throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
+  }
 
   IU_CUFFT_SAFE_CALL(cufftPlanMany(&plan_, rank, n, inembed, istride, idist,  // *inembed, istride, idist
                                    onembed, ostride, odist,  // *onembed, ostride, odist
                                    CUFFT_Z2Z, batch));
 }
 
-/** Explicit FFT3 plan constructors for pitched memory (double): real -> complex
+/** Explicit FFT3 plan constructors for pitched memory (Volume, double): real -> complex
  *  @param size Size of the pitched memory.
  *  @param src_pitch Source pitch
  *  @param dst_pitch Destination pitch
@@ -662,10 +964,10 @@ inline Plan<dreal, dcomplex, 3>::Plan(const iu::Size<3> &size,
   int width = static_cast<int>(size.width);
   int height = static_cast<int>(size.height);
   int depth = static_cast<int>(size.depth);
-  if (depth == 0)
+  if (depth == 0 || width == 0 || height == 0)
   {
     std::stringstream msg;
-    msg << "Requested 3d Plan for 2d image (Size: " << size << ")";
+    msg << "Size elements cannot be zero! (Size: " << size << ")";
     throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
   }
   int n[3] = { depth, height, width };
@@ -680,23 +982,23 @@ inline Plan<dreal, dcomplex, 3>::Plan(const iu::Size<3> &size,
                                    CUFFT_D2Z, batch));
 }
 
-/** Explicit FFT3 plan constructors for pitched memory (double): complex -> real
+/** Explicit FFT3 plan constructors for pitched memory (Volume, double): complex -> real
  *  @param size Size of the pitched memory.
  *  @param src_pitch Source pitch
  *  @param dst_pitch Destination pitch
  */
 template<>
-inline Plan<dcomplex, dreal, 3>::Plan(const IuSize &size, const int src_pitch,
+inline Plan<dcomplex, dreal, 3>::Plan(const iu::Size<3> &size, const int src_pitch,
                                       const int dst_pitch)
 {
   int rank = 3;
   int width = static_cast<int>(size.width);
   int height = static_cast<int>(size.height);
   int depth = static_cast<int>(size.depth);
-  if (depth == 0)
+  if (depth == 0 || width == 0 || height == 0)
   {
     std::stringstream msg;
-    msg << "Requested 3d Plan for 2d image (Size: " << size << ")";
+    msg << "Size elements cannot be zero! (Size: " << size << ")";
     throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
   }
   int n[3] = { depth, height, width };
@@ -711,13 +1013,13 @@ inline Plan<dcomplex, dreal, 3>::Plan(const IuSize &size, const int src_pitch,
                                    CUFFT_Z2D, batch));
 }
 
-/** Explicit FFT3 plan constructors for pitched memory (double): complex -> complex
+/** Explicit FFT3 plan constructors for pitched memory (Volume, double): complex -> complex
  *  @param size Size of the pitched memory.
  *  @param src_pitch Source pitch
  *  @param dst_pitch Destination pitch
  */
 template<>
-inline Plan<dcomplex, dcomplex, 3>::Plan(const IuSize &size,
+inline Plan<dcomplex, dcomplex, 3>::Plan(const iu::Size<3> &size,
                                          const int src_pitch,
                                          const int dst_pitch)
 {
@@ -725,10 +1027,10 @@ inline Plan<dcomplex, dcomplex, 3>::Plan(const IuSize &size,
   int width = static_cast<int>(size.width);
   int height = static_cast<int>(size.height);
   int depth = static_cast<int>(size.depth);
-  if (depth == 0)
+  if (depth == 0 || width == 0 || height == 0)
   {
     std::stringstream msg;
-    msg << "Requested 3d Plan for 2d image (Size: " << size << ")";
+    msg << "Size elements cannot be zero! (Size: " << size << ")";
     throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
   }
   int n[3] = { depth, height, width };
@@ -754,6 +1056,12 @@ inline Plan<dreal, dcomplex, 2>::Plan(const iu::Size<2> &size)
   int height = static_cast<int>(size[1]);
   int n[2] = { height, width };
   int batch = 1;
+  if (batch == 0 || width == 0 || height == 0)
+  {
+    std::stringstream msg;
+    msg << "Size elements cannot be zero! (Size: " << size << ")";
+    throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
+  }
 
   IU_CUFFT_SAFE_CALL(cufftPlanMany(&plan_, rank, n, NULL, 1, width * height,  // *inembed, istride, idist
       NULL, 1, width * height/2,// *onembed, ostride, odist
@@ -771,6 +1079,12 @@ inline Plan<dcomplex, dreal, 2>::Plan(const iu::Size<2> &size)
   int height = static_cast<int>(size[1]);
   int n[2] = { height, width };
   int batch = 1;
+  if (batch == 0 || width == 0 || height == 0)
+  {
+    std::stringstream msg;
+    msg << "Size elements cannot be zero! (Size: " << size << ")";
+    throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
+  }
 
   IU_CUFFT_SAFE_CALL(cufftPlanMany(&plan_, rank, n, NULL, 1, width * height/2,  // *inembed, istride, idist
       NULL, 1, width * height,// *onembed, ostride, odist
@@ -788,6 +1102,12 @@ inline Plan<dcomplex, dcomplex, 2>::Plan(const iu::Size<2> &size)
   int height = static_cast<int>(size[1]);
   int n[2] = { height, width };
   int batch = 1;
+  if (batch == 0 || width == 0 || height == 0)
+  {
+    std::stringstream msg;
+    msg << "Size elements cannot be zero! (Size: " << size << ")";
+    throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
+  }
 
   IU_CUFFT_SAFE_CALL(cufftPlanMany(&plan_, rank, n, NULL, 1, width * height,  // *inembed, istride, idist
       NULL, 1, width * height,// *onembed, ostride, odist
@@ -807,6 +1127,12 @@ inline Plan<dreal, dcomplex, 2>::Plan(const iu::Size<3> &size)
   int height = static_cast<int>(size[1]);
   int n[2] = { height, width };
   int batch = static_cast<int>(size[2]);
+  if (batch == 0 || width == 0 || height == 0)
+  {
+    std::stringstream msg;
+    msg << "Size elements cannot be zero! (Size: " << size << ")";
+    throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
+  }
 
   IU_CUFFT_SAFE_CALL(cufftPlanMany(&plan_, rank, n, NULL, 1, width * height,  // *inembed, istride, idist
       NULL, 1, width * height/2,// *onembed, ostride, odist
@@ -826,6 +1152,12 @@ inline Plan<dcomplex, dreal, 2>::Plan(const iu::Size<3> &size)
   int height = static_cast<int>(size[1]);
   int n[2] = { height, width };
   int batch = static_cast<int>(size[2]);
+  if (batch == 0 || width == 0 || height == 0)
+  {
+    std::stringstream msg;
+    msg << "Size elements cannot be zero! (Size: " << size << ")";
+    throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
+  }
 
   IU_CUFFT_SAFE_CALL(cufftPlanMany(&plan_, rank, n, NULL, 1, width * height/2,  // *inembed, istride, idist
       NULL, 1, width * height,// *onembed, ostride, odist
@@ -845,6 +1177,12 @@ inline Plan<dcomplex, dcomplex, 2>::Plan(const iu::Size<3> &size)
   int height = static_cast<int>(size[1]);
   int n[2] = { height, width };
   int batch = static_cast<int>(size[2]);
+  if (batch == 0 || width == 0 || height == 0)
+  {
+    std::stringstream msg;
+    msg << "Size elements cannot be zero! (Size: " << size << ")";
+    throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
+  }
 
   IU_CUFFT_SAFE_CALL(cufftPlanMany(&plan_, rank, n, NULL, 1, width * height,  // *inembed, istride, idist
       NULL, 1, width * height,// *onembed, ostride, odist
@@ -864,6 +1202,12 @@ inline Plan<dreal, dcomplex, 2>::Plan(const iu::Size<4> &size)
   int height = static_cast<int>(size[1]);
   int n[2] = { height, width };
   int batch = static_cast<int>(size[2] * size[3]);
+  if (batch == 0 || width == 0 || height == 0)
+  {
+    std::stringstream msg;
+    msg << "Size elements cannot be zero! (Size: " << size << ")";
+    throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
+  }
 
   IU_CUFFT_SAFE_CALL(cufftPlanMany(&plan_, rank, n, NULL, 1, width * height,  // *inembed, istride, idist
       NULL, 1, width * height/2,// *onembed, ostride, odist
@@ -883,6 +1227,12 @@ inline Plan<dcomplex, dreal, 2>::Plan(const iu::Size<4> &size)
   int height = static_cast<int>(size[1]);
   int n[2] = { height, width };
   int batch = static_cast<int>(size[2]);
+  if (batch == 0 || width == 0 || height == 0)
+  {
+    std::stringstream msg;
+    msg << "Size elements cannot be zero! (Size: " << size << ")";
+    throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
+  }
 
   IU_CUFFT_SAFE_CALL(cufftPlanMany(&plan_, rank, n, NULL, 1, width * height/2,  // *inembed, istride, idist
       NULL, 1, width * height,// *onembed, ostride, odist
@@ -902,7 +1252,12 @@ inline Plan<dcomplex, dcomplex, 2>::Plan(const iu::Size<4> &size)
   int height = static_cast<int>(size[1]);
   int n[2] = { height, width };
   int batch = static_cast<int>(size[2] * size[3]);
-  ;
+  if (batch == 0 || width == 0 || height == 0)
+  {
+    std::stringstream msg;
+    msg << "Size elements cannot be zero! (Size: " << size << ")";
+    throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
+  }
 
   IU_CUFFT_SAFE_CALL(cufftPlanMany(&plan_, rank, n, NULL, 1, width * height,  // *inembed, istride, idist
       NULL, 1, width * height,// *onembed, ostride, odist
@@ -921,6 +1276,12 @@ inline Plan<dreal, dcomplex, 3>::Plan(const iu::Size<3> &size)
   int depth = static_cast<int>(size[2]);
   int n[3] = { depth, height, width };
   int batch = 1;
+  if (depth == 0 || width == 0 || height == 0)
+  {
+    std::stringstream msg;
+    msg << "Size elements cannot be zero! (Size: " << size << ")";
+    throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
+  }
 
   IU_CUFFT_SAFE_CALL(
       cufftPlanMany(&plan_, rank, n, NULL, 1, width * height * depth,  // *inembed, istride, idist
@@ -940,6 +1301,12 @@ inline Plan<dcomplex, dreal, 3>::Plan(const iu::Size<3> &size)
   int depth = static_cast<int>(size[2]);
   int n[3] = { depth, height, width };
   int batch = 1;
+  if (depth == 0 || width == 0 || height == 0)
+  {
+    std::stringstream msg;
+    msg << "Size elements cannot be zero! (Size: " << size << ")";
+    throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
+  }
 
   IU_CUFFT_SAFE_CALL(
       cufftPlanMany(&plan_, rank, n, NULL, 1, width * height * depth/2,  // *inembed, istride, idist
@@ -959,6 +1326,12 @@ inline Plan<dcomplex, dcomplex, 3>::Plan(const iu::Size<3> &size)
   int depth = static_cast<int>(size[2]);
   int n[3] = { depth, height, width };
   int batch = 1;
+  if (depth == 0 || width == 0 || height == 0)
+  {
+    std::stringstream msg;
+    msg << "Size elements cannot be zero! (Size: " << size << ")";
+    throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
+  }
 
   IU_CUFFT_SAFE_CALL(
       cufftPlanMany(&plan_, rank, n, NULL, 1, width * height * depth,  // *inembed, istride, idist
@@ -980,7 +1353,12 @@ inline Plan<dreal, dcomplex, 3>::Plan(const iu::Size<4> &size)
   int depth = static_cast<int>(size[2]);
   int n[3] = { depth, height, width };
   int batch = static_cast<int>(size[3]);
-  ;
+  if (batch == 0 || depth == 0 || width == 0 || height == 0)
+  {
+    std::stringstream msg;
+    msg << "Size elements cannot be zero! (Size: " << size << ")";
+    throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
+  }
 
   IU_CUFFT_SAFE_CALL(
       cufftPlanMany(&plan_, rank, n, NULL, 1, width * height * depth,  // *inembed, istride, idist
@@ -1002,7 +1380,12 @@ inline Plan<dcomplex, dreal, 3>::Plan(const iu::Size<4> &size)
   int depth = static_cast<int>(size[2]);
   int n[3] = { depth, height, width };
   int batch = static_cast<int>(size[3]);
-  ;
+  if (batch == 0 || depth == 0 || width == 0 || height == 0)
+  {
+    std::stringstream msg;
+    msg << "Size elements cannot be zero! (Size: " << size << ")";
+    throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
+  }
 
   IU_CUFFT_SAFE_CALL(
       cufftPlanMany(&plan_, rank, n, NULL, 1, width * height * depth/2,  // *inembed, istride, idist
@@ -1024,7 +1407,12 @@ inline Plan<dcomplex, dcomplex, 3>::Plan(const iu::Size<4> &size)
   int depth = static_cast<int>(size[2]);
   int n[3] = { depth, height, width };
   int batch = static_cast<int>(size[3]);
-  ;
+  if (batch == 0 || depth == 0 || width == 0 || height == 0)
+  {
+    std::stringstream msg;
+    msg << "Size elements cannot be zero! (Size: " << size << ")";
+    throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
+  }
 
   IU_CUFFT_SAFE_CALL(
       cufftPlanMany(&plan_, rank, n, NULL, 1, width * height * depth,  // *inembed, istride, idist

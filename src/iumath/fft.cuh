@@ -1,15 +1,8 @@
-/*
- * fft.cuh
- *
- *  Created on: Feb 26, 2016
- *      Author: kerstin
- */
-
 #pragma once
 
 #include "../iudefs.h"
 #include "../iucutil.h"
-#include "fft.cu"
+#include "fft_kernels.cuh"
 #include "fftplan.h"
 #include "complex.cuh"
 #include "arithmetics.cuh"
@@ -200,8 +193,7 @@ void fft2(PitchedMemoryType<ComplexType, Allocator<ComplexType> >& src,
 
   if (scale_sqrt)
   {
-    typedef decltype(ComplexType::x) PixelType;
-    ComplexType scale = iu::VectorType<PixelType, 2>::make(
+    ComplexType scale = iu::type_trait<ComplexType>::make_complex(
         sqrt(
             static_cast<double>(1)
                 / static_cast<double>(src.size().width * src.size().height)));
@@ -229,8 +221,7 @@ void fft2(LinearMemoryType<ComplexType, Ndim>& src,
 
   if (scale_sqrt)
   {
-    typedef decltype(ComplexType::x) PixelType;
-    ComplexType scale = iu::VectorType<PixelType, 2>::make(
+    ComplexType scale = iu::type_trait<ComplexType>::make_complex(
         sqrt(
             static_cast<double>(1)
                 / static_cast<double>(src.size()[0] * src.size()[1])));
@@ -259,7 +250,7 @@ typename std::enable_if<
     PitchedMemoryType<OutputType, Allocator<OutputType> >& dst,
     bool scale_sqrt = false)
 {
-  iu::Size<3> halfsize = src.size();
+  auto halfsize = src.size();
   halfsize.width = halfsize.width / 2 + 1;
 
   if (!(dst.size() == halfsize))
@@ -277,7 +268,7 @@ typename std::enable_if<
 
   if (scale_sqrt)
   {
-    OutputType scale = iu::VectorType<InputType, 2>::make(
+    OutputType scale = iu::type_trait<OutputType>::make_complex(
         sqrt(
             static_cast<double>(1)
                 / static_cast<double>(src.size().width * src.size().height)));
@@ -324,7 +315,7 @@ typename std::enable_if<
 
   if (scale_sqrt)
   {
-    OutputType scale = iu::VectorType<InputType, 2>::make(
+    OutputType scale = iu::type_trait<OutputType>::make_complex(
         sqrt(
             static_cast<double>(1)
                 / static_cast<double>(src.size()[0] * src.size()[1])));
@@ -399,8 +390,7 @@ void ifft2(PitchedMemoryType<ComplexType, Allocator<ComplexType> >& src,
 
   if (scale_sqrt)
   {
-    typedef decltype(ComplexType::x) PixelType;
-    ComplexType scale = iu::VectorType<PixelType, 2>::make(
+    ComplexType scale = iu::type_trait<ComplexType>::make_complex(
         sqrt(
             static_cast<double>(1)
                 / static_cast<double>(src.size().width * src.size().height)));
@@ -408,8 +398,7 @@ void ifft2(PitchedMemoryType<ComplexType, Allocator<ComplexType> >& src,
   }
   else
   {
-    typedef decltype(ComplexType::x) PixelType;
-    ComplexType scale = iu::VectorType<PixelType, 2>::make(
+    ComplexType scale = iu::type_trait<ComplexType>::make_complex(
         static_cast<double>(1)
             / static_cast<double>(src.size().width * src.size().height));
     iuprivate::math::mulC(dst, scale, dst);
@@ -436,8 +425,7 @@ void ifft2(LinearMemoryType<ComplexType, Ndim>& src,
 
   if (scale_sqrt)
   {
-    typedef decltype(ComplexType::x) PixelType;
-    ComplexType scale = iu::VectorType<PixelType, 2>::make(
+    ComplexType scale = iu::type_trait<ComplexType>::make_complex(
         sqrt(
             static_cast<double>(1)
                 / static_cast<double>(src.size()[0] * src.size()[1])));
@@ -445,8 +433,7 @@ void ifft2(LinearMemoryType<ComplexType, Ndim>& src,
   }
   else
   {
-    typedef decltype(ComplexType::x) PixelType;
-    ComplexType scale = iu::VectorType<PixelType, 2>::make(
+    ComplexType scale = iu::type_trait<ComplexType>::make_complex(
         static_cast<double>(1)
             / static_cast<double>(src.size()[0] * src.size()[1]));
     iuprivate::math::mulC(dst, scale, dst);
@@ -492,7 +479,7 @@ void ifft2(LinearMemoryType<ComplexType, Ndim>& src,
 //
 //  if (scale_sqrt)
 //  {
-//    OutputType scale = iu::VectorType<InputType, 2>::make(
+//    OutputType scale = iu::VectorType<InputType, 2>::makeComplex(
 //        sqrt(
 //            static_cast<double>(1)
 //                / static_cast<double>(src.size().width * src.size().height)));
@@ -500,7 +487,7 @@ void ifft2(LinearMemoryType<ComplexType, Ndim>& src,
 //  }
 //  else
 //  {
-//    OutputType scale = iu::VectorType<InputType, 2>::make(
+//    OutputType scale = iu::VectorType<InputType, 2>::makeComplex(
 //        static_cast<double>(1)
 //            / static_cast<double>(src.size().width * src.size().height));
 //    iuprivate::math::mulC(dst, scale, dst);
@@ -527,7 +514,7 @@ typename std::enable_if<
     PitchedMemoryType<OutputType, Allocator<OutputType> >& dst,
     bool scale_sqrt = false)
 {
-  iu::Size<3> halfsize = dst.size();
+  auto halfsize = dst.size();
   halfsize.width = halfsize.width / 2 + 1;
 
   if (!(src.size() == halfsize))
