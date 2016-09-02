@@ -18,6 +18,10 @@ template<typename PixelType, unsigned int Ndim>
 class LinearDeviceMemory: public LinearMemory<Ndim>
 {
 public:
+  /** Define the current pixel type. */
+  typedef PixelType pixel_type;
+  static const unsigned int ndim = Ndim;
+
   /** Constructor. */
   LinearDeviceMemory() :
       LinearMemory<Ndim>(), data_(0), ext_data_pointer_(false)

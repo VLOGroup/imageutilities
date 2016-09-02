@@ -10,7 +10,7 @@
 #include "iucore.h"
 #include "iucore/copy.h"
 #include "iucore/image_allocator_cpu.h"
-
+#include <sstream>
 
 #include "iuio.h"
 
@@ -30,6 +30,36 @@ namespace python {
  */
 
 
+template <typename PixelType>
+struct dtype {};
+
+template <>
+struct dtype<float> {
+  static const char kind = 'f';
+  static const char type = 'f';
+  static const int npy_type = NPY_FLOAT32;
+};
+
+template <>
+struct dtype<double> {
+  static const char kind = 'f';
+  static const char type = 'd';
+  static const int npy_type = NPY_FLOAT64;
+};
+
+template <>
+struct dtype<float2> {
+  static const char kind = 'c';
+  static const char type = 'F';
+  static const int npy_type =  NPY_COMPLEX64;
+};
+
+template <>
+struct dtype<double2> {
+  static const char kind = 'c';
+  static const char type = 'D';
+  static const int npy_type =  NPY_COMPLEX128;
+};
 
 /**
    * @brief Python exception class
@@ -224,6 +254,29 @@ PyObject* PyArray_from_ImageGpu(iu::ImageGpu<PixelType, Allocator> &img)
     return res;
 }
 
+/**
+ * @brief PyArray from an LinearDeviceMemory
+ * @param img An LinearDeviceMemory
+ * @return A PyObject* representing a numpy array that can be returned directly to python.
+ */
+template<typename PixelType, unsigned int Ndim>
+PyObject* PyArray_from_LinearDeviceMemory(iu::LinearDeviceMemory<PixelType, Ndim> &devicemem)
+{
+    npy_intp dims[2];
+    for (unsigned int i=0; i < Ndim; i++)
+    {
+      dims[i] = devicemem.size()[Ndim-1-i];
+    }
+    PyObject* res = NULL;
+
+    res = PyArray_SimpleNew(Ndim, dims, dtype<PixelType>::npy_type);        // new numpy array
+
+    PixelType* data = static_cast<PixelType*>(PyArray_DATA((PyArrayObject*)res));    // data pointer
+    iu::LinearHostMemory<PixelType, Ndim> h_pyRef(data, devicemem.size(), true);  // wrapped in imagecpu
+
+    iu::copy(&devicemem, &h_pyRef);
+    return res;
+}
 
 
 /**
@@ -382,6 +435,42 @@ ImageCpu<PixelType, Allocator>::ImageCpu(boost::python::object &py_arr) : data_(
     }
 
     pitch_ = strides[0];
+    data_ = reinterpret_cast<PixelType*>(PyArray_DATA(py_img));
+}
+
+template<typename PixelType, unsigned int Ndim>
+LinearHostMemory<PixelType, Ndim>::LinearHostMemory(boost::python::object &py_arr) : data_(0), ext_data_pointer_(true)
+{
+    PyArrayObject* py_img = NULL;
+
+    py_img = python::getPyArrayFromPyObject(py_arr, python::dtype<PixelType>::kind, python::dtype<PixelType>::type);
+    int ndim = PyArray_NDIM(py_img);
+    if (ndim != Ndim)
+    {
+      std::stringstream msg;
+      msg << "LinearHostMemory_from_PyArray(): Dimension mismatch! dim_numpy=" << ndim << " dim_requested=" << Ndim;
+      throw python::Exc(msg.str());
+    }
+    npy_intp* dims = PyArray_DIMS(py_img);
+    iu::Size<Ndim> size;
+    for (unsigned int i=0; i < Ndim; i++)
+    {
+      size[i] = dims[Ndim-1-i];
+    }
+
+    this->size_ = size;
+
+//    npy_intp* strides = PyArray_STRIDES(py_img);
+//
+//    if (strides[1] != sizeof(PixelType))
+//    {
+//        char msg[250];
+//        sprintf(msg, "LinearHostMemory from PyArray datatype mismatch.\n"
+//                     "Tried to construct LinearHostMemory with %ld-bit type, PyArray has "
+//                     "%ld-bit type\n", sizeof(PixelType)*CHAR_BIT, strides[1]*CHAR_BIT);
+//        throw python::Exc(msg);
+//    }
+
     data_ = reinterpret_cast<PixelType*>(PyArray_DATA(py_img));
 }
 

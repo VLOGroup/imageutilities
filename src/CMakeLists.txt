@@ -17,7 +17,7 @@ set(CMAKE_MODULE_PATH ${OT_IU_CMAKE_MODULE_PATH})
 ##-----------------------------------------------------------------------------
 ## Current version number:
 ##-----------------------------------------------------------------------------
-set(IMAGEUTILITIES_VERSION "2.0.0")
+set(IMAGEUTILITIES_VERSION "2.1.0")
 
 string(REGEX MATCHALL "[0-9]" IMAGEUTILITIES_VERSION_PARTS "${IMAGEUTILITIES_VERSION}")
 
