@@ -1,8 +1,8 @@
 #pragma once
 
-#include <helper_math.h>
 #include <cmath>
 #include <iostream>
+#include <helper_math.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 // other host / device math functions
@@ -548,15 +548,15 @@ inline __host__ __device__ double4 operator/(double b, double4 a)
 
 inline  __host__ __device__ double2 dmind(double2 a, double2 b)
 {
-    return make_double2(min(a.x,b.x), min(a.y,b.y));
+    return make_double2(fmin(a.x,b.x), fmin(a.y,b.y));
 }
 inline __host__ __device__ double3 dmind(double3 a, double3 b)
 {
-    return make_double3(min(a.x,b.x), min(a.y,b.y), min(a.z,b.z));
+    return make_double3(fmin(a.x,b.x), fmin(a.y,b.y), fmin(a.z,b.z));
 }
 inline  __host__ __device__ double4 dmind(double4 a, double4 b)
 {
-    return make_double4(min(a.x,b.x), min(a.y,b.y), min(a.z,b.z), min(a.w,b.w));
+    return make_double4(fmin(a.x,b.x), fmin(a.y,b.y), fmin(a.z,b.z), fmin(a.w,b.w));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -565,15 +565,15 @@ inline  __host__ __device__ double4 dmind(double4 a, double4 b)
 
 inline __host__ __device__ double2 dmaxd(double2 a, double2 b)
 {
-    return make_double2(max(a.x,b.x), max(a.y,b.y));
+    return make_double2(fmax(a.x,b.x), fmax(a.y,b.y));
 }
 inline __host__ __device__ double3 dmaxd(double3 a, double3 b)
 {
-    return make_double3(max(a.x,b.x), max(a.y,b.y), max(a.z,b.z));
+    return make_double3(fmax(a.x,b.x), fmax(a.y,b.y), fmax(a.z,b.z));
 }
 inline __host__ __device__ double4 dmaxd(double4 a, double4 b)
 {
-    return make_double4(max(a.x,b.x), max(a.y,b.y), max(a.z,b.z), max(a.w,b.w));
+    return make_double4(fmax(a.x,b.x), fmax(a.y,b.y), fmax(a.z,b.z), fmax(a.w,b.w));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -605,7 +605,7 @@ inline __device__ __host__ double4 lerp(double4 a, double4 b, double t)
 
 inline __device__ __host__ double clamp(double f, double a, double b)
 {
-    return max(a, min(f, b));
+    return fmax(a, fmin(f, b));
 }
 inline __device__ __host__ double2 clamp(double2 v, double a, double b)
 {
@@ -672,17 +672,17 @@ inline __host__ __device__ double length(double4 v)
 
 inline __host__ __device__ double2 normalize(double2 v)
 {
-    double invLen = 1.0f / sqrtf(dot(v, v));
+    double invLen = 1.0f / sqrt(dot(v, v));
     return v * invLen;
 }
 inline __host__ __device__ double3 normalize(double3 v)
 {
-    double invLen = 1.0f / sqrtf(dot(v, v));
+    double invLen = 1.0f / sqrt(dot(v, v));
     return v * invLen;
 }
 inline __host__ __device__ double4 normalize(double4 v)
 {
-    double invLen = 1.0f / sqrtf(dot(v, v));
+    double invLen = 1.0f / sqrt(dot(v, v));
     return v * invLen;
 }
 
@@ -709,7 +709,7 @@ inline __host__ __device__ double4 floor(double4 v)
 
 inline __host__ __device__ double frac(double v)
 {
-    return v - floorf(v);
+    return v - floor(v);
 }
 inline __host__ __device__ double2 frac(double2 v)
 {
@@ -806,4 +806,3 @@ inline __device__ __host__ double4 smoothstep(double4 a, double4 b, double4 x)
     double4 y = clamp((x - a) / (b - a), 0.0, 1.0);
     return (y*y*(make_double4(3.0) - (make_double4(2.0)*y)));
 }
-

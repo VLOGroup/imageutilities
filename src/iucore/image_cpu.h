@@ -27,6 +27,9 @@ template<typename PixelType, class Allocator>
 class ImageCpu : public Image
 {
 public:
+  /** Define the current pixel type. */
+  typedef PixelType pixel_type;
+
   /** Constructor. */
   ImageCpu() :
     Image(),

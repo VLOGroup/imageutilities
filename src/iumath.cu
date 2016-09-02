@@ -5,6 +5,8 @@
 #include "iumath/arithmetics.cuh"
 #include "iumath/statistics.cuh"
 #include "iumath/complex.cuh"
+#include "iumath/fft.cuh"
+
 #include "iuhelpermath.h"
 namespace iu {
 namespace math {
@@ -1432,7 +1434,127 @@ void multiplyConjugate(iu::LinearHostMemory<double2, 4>& complex_src1, iu::Linea
 void multiplyConjugate(iu::LinearDeviceMemory<double2, 4>& complex_src1, iu::LinearDeviceMemory<double2, 4>& complex_src2, iu::LinearDeviceMemory<double2, 4>& complex_dst){iuprivate::math::complex::multiplyConjugate(complex_src1,complex_src2,complex_dst);}
 void multiplyConjugate(iu::LinearHostMemory<double2, 5>& complex_src1, iu::LinearHostMemory<double2, 5>& complex_src2, iu::LinearHostMemory<double2, 5>& complex_dst){iuprivate::math::complex::multiplyConjugate(complex_src1,complex_src2,complex_dst);}
 void multiplyConjugate(iu::LinearDeviceMemory<double2, 5>& complex_src1, iu::LinearDeviceMemory<double2, 5>& complex_src2, iu::LinearDeviceMemory<double2, 5>& complex_dst){iuprivate::math::complex::multiplyConjugate(complex_src1,complex_src2,complex_dst);}
-}
+}  //namespace complex
+
+namespace fft{
+// fftshift2
+void fftshift2(iu::ImageGpu_32f_C1& src, iu::ImageGpu_32f_C1& dst) {iuprivate::math::fft::fftshift2(src, dst);}
+void fftshift2(iu::ImageGpu_32f_C2& src, iu::ImageGpu_32f_C2& dst) {iuprivate::math::fft::fftshift2(src, dst);}
+void fftshift2(iu::VolumeGpu_32f_C1& src, iu::VolumeGpu_32f_C1& dst) {iuprivate::math::fft::fftshift2(src, dst);}
+void fftshift2(iu::VolumeGpu_32f_C2& src, iu::VolumeGpu_32f_C2& dst) {iuprivate::math::fft::fftshift2(src, dst);}
+void fftshift2(iu::LinearDeviceMemory<float, 2>& src, iu::LinearDeviceMemory<float, 2>& dst) {iuprivate::math::fft::fftshift2(src, dst);}
+void fftshift2(iu::LinearDeviceMemory<float2, 2>& src, iu::LinearDeviceMemory<float2, 2>& dst) {iuprivate::math::fft::fftshift2(src, dst);}
+void fftshift2(iu::LinearDeviceMemory<float, 3>& src, iu::LinearDeviceMemory<float, 3>& dst) {iuprivate::math::fft::fftshift2(src, dst);}
+void fftshift2(iu::LinearDeviceMemory<float2, 3>& src, iu::LinearDeviceMemory<float2, 3>& dst) {iuprivate::math::fft::fftshift2(src, dst);}
+void fftshift2(iu::LinearDeviceMemory<float, 4>& src, iu::LinearDeviceMemory<float, 4>& dst) {iuprivate::math::fft::fftshift2(src, dst);}
+void fftshift2(iu::LinearDeviceMemory<float2, 4>& src, iu::LinearDeviceMemory<float2, 4>& dst) {iuprivate::math::fft::fftshift2(src, dst);}
+
+void fftshift2(iu::ImageGpu_64f_C1& src, iu::ImageGpu_64f_C1& dst) {iuprivate::math::fft::fftshift2(src, dst);}
+void fftshift2(iu::ImageGpu_64f_C2& src, iu::ImageGpu_64f_C2& dst) {iuprivate::math::fft::fftshift2(src, dst);}
+void fftshift2(iu::VolumeGpu_64f_C1& src, iu::VolumeGpu_64f_C1& dst) {iuprivate::math::fft::fftshift2(src, dst);}
+void fftshift2(iu::VolumeGpu_64f_C2& src, iu::VolumeGpu_64f_C2& dst) {iuprivate::math::fft::fftshift2(src, dst);}
+void fftshift2(iu::LinearDeviceMemory<double, 2>& src, iu::LinearDeviceMemory<double, 2>& dst) {iuprivate::math::fft::fftshift2(src, dst);}
+void fftshift2(iu::LinearDeviceMemory<double2, 2>& src, iu::LinearDeviceMemory<double2, 2>& dst) {iuprivate::math::fft::fftshift2(src, dst);}
+void fftshift2(iu::LinearDeviceMemory<double, 3>& src, iu::LinearDeviceMemory<double, 3>& dst) {iuprivate::math::fft::fftshift2(src, dst);}
+void fftshift2(iu::LinearDeviceMemory<double2, 3>& src, iu::LinearDeviceMemory<double2, 3>& dst) {iuprivate::math::fft::fftshift2(src, dst);}
+void fftshift2(iu::LinearDeviceMemory<double, 4>& src, iu::LinearDeviceMemory<double, 4>& dst) {iuprivate::math::fft::fftshift2(src, dst);}
+void fftshift2(iu::LinearDeviceMemory<double2, 4>& src, iu::LinearDeviceMemory<double2, 4>& dst) {iuprivate::math::fft::fftshift2(src, dst);}
+
+// ifftshift2
+void ifftshift2(iu::ImageGpu_32f_C1& src, iu::ImageGpu_32f_C1& dst) {iuprivate::math::fft::ifftshift2(src, dst);}
+void ifftshift2(iu::ImageGpu_32f_C2& src, iu::ImageGpu_32f_C2& dst) {iuprivate::math::fft::ifftshift2(src, dst);}
+void ifftshift2(iu::VolumeGpu_32f_C1& src, iu::VolumeGpu_32f_C1& dst) {iuprivate::math::fft::ifftshift2(src, dst);}
+void ifftshift2(iu::VolumeGpu_32f_C2& src, iu::VolumeGpu_32f_C2& dst) {iuprivate::math::fft::ifftshift2(src, dst);}
+void ifftshift2(iu::LinearDeviceMemory<float, 2>& src, iu::LinearDeviceMemory<float, 2>& dst) {iuprivate::math::fft::ifftshift2(src, dst);}
+void ifftshift2(iu::LinearDeviceMemory<float2, 2>& src, iu::LinearDeviceMemory<float2, 2>& dst) {iuprivate::math::fft::ifftshift2(src, dst);}
+void ifftshift2(iu::LinearDeviceMemory<float, 3>& src, iu::LinearDeviceMemory<float, 3>& dst) {iuprivate::math::fft::ifftshift2(src, dst);}
+void ifftshift2(iu::LinearDeviceMemory<float2, 3>& src, iu::LinearDeviceMemory<float2, 3>& dst) {iuprivate::math::fft::ifftshift2(src, dst);}
+void ifftshift2(iu::LinearDeviceMemory<float, 4>& src, iu::LinearDeviceMemory<float, 4>& dst) {iuprivate::math::fft::ifftshift2(src, dst);}
+void ifftshift2(iu::LinearDeviceMemory<float2, 4>& src, iu::LinearDeviceMemory<float2, 4>& dst) {iuprivate::math::fft::ifftshift2(src, dst);}
+
+void ifftshift2(iu::ImageGpu_64f_C1& src, iu::ImageGpu_64f_C1& dst) {iuprivate::math::fft::ifftshift2(src, dst);}
+void ifftshift2(iu::ImageGpu_64f_C2& src, iu::ImageGpu_64f_C2& dst) {iuprivate::math::fft::ifftshift2(src, dst);}
+void ifftshift2(iu::VolumeGpu_64f_C1& src, iu::VolumeGpu_64f_C1& dst) {iuprivate::math::fft::ifftshift2(src, dst);}
+void ifftshift2(iu::VolumeGpu_64f_C2& src, iu::VolumeGpu_64f_C2& dst) {iuprivate::math::fft::ifftshift2(src, dst);}
+void ifftshift2(iu::LinearDeviceMemory<double, 2>& src, iu::LinearDeviceMemory<double, 2>& dst) {iuprivate::math::fft::ifftshift2(src, dst);}
+void ifftshift2(iu::LinearDeviceMemory<double2, 2>& src, iu::LinearDeviceMemory<double2, 2>& dst) {iuprivate::math::fft::ifftshift2(src, dst);}
+void ifftshift2(iu::LinearDeviceMemory<double, 3>& src, iu::LinearDeviceMemory<double, 3>& dst) {iuprivate::math::fft::ifftshift2(src, dst);}
+void ifftshift2(iu::LinearDeviceMemory<double2, 3>& src, iu::LinearDeviceMemory<double2, 3>& dst) {iuprivate::math::fft::ifftshift2(src, dst);}
+void ifftshift2(iu::LinearDeviceMemory<double, 4>& src, iu::LinearDeviceMemory<double, 4>& dst) {iuprivate::math::fft::ifftshift2(src, dst);}
+void ifftshift2(iu::LinearDeviceMemory<double2, 4>& src, iu::LinearDeviceMemory<double2, 4>& dst) {iuprivate::math::fft::ifftshift2(src, dst);}
+
+// fft2
+void fft2(iu::ImageGpu_32f_C2& src, iu::ImageGpu_32f_C2& dst, bool scale_sqrt) {iuprivate::math::fft::fft2(src,  dst, scale_sqrt);}
+void fft2(iu::VolumeGpu_32f_C2& src, iu::VolumeGpu_32f_C2& dst, bool scale_sqrt) {iuprivate::math::fft::fft2(src,  dst, scale_sqrt);}
+void fft2(iu::ImageGpu_32f_C1& src, iu::ImageGpu_32f_C2& dst, bool scale_sqrt) {iuprivate::math::fft::fft2(src,  dst, scale_sqrt);}
+void fft2(iu::VolumeGpu_32f_C1& src, iu::VolumeGpu_32f_C2& dst, bool scale_sqrt) {iuprivate::math::fft::fft2(src,  dst, scale_sqrt);}
+void fft2(iu::LinearDeviceMemory<float2, 2>& src, iu::LinearDeviceMemory<float2, 2>& dst, bool scale_sqrt) {iuprivate::math::fft::fft2(src,  dst, scale_sqrt);}
+void fft2(iu::LinearDeviceMemory<float2, 3>& src, iu::LinearDeviceMemory<float2, 3>& dst, bool scale_sqrt) {iuprivate::math::fft::fft2(src,  dst, scale_sqrt);}
+void fft2(iu::LinearDeviceMemory<float2, 4>& src, iu::LinearDeviceMemory<float2, 4>& dst, bool scale_sqrt) {iuprivate::math::fft::fft2(src,  dst, scale_sqrt);}
+void fft2(iu::LinearDeviceMemory<float, 2>& src, iu::LinearDeviceMemory<float2, 2>& dst, bool scale_sqrt) {iuprivate::math::fft::fft2(src,  dst, scale_sqrt);}
+void fft2(iu::LinearDeviceMemory<float, 3>& src, iu::LinearDeviceMemory<float2, 3>& dst, bool scale_sqrt) {iuprivate::math::fft::fft2(src,  dst, scale_sqrt);}
+void fft2(iu::LinearDeviceMemory<float, 4>& src, iu::LinearDeviceMemory<float2, 4>& dst, bool scale_sqrt) {iuprivate::math::fft::fft2(src,  dst, scale_sqrt);}
+
+void fft2(iu::ImageGpu_64f_C2& src, iu::ImageGpu_64f_C2& dst, bool scale_sqrt) {iuprivate::math::fft::fft2(src,  dst, scale_sqrt);}
+void fft2(iu::VolumeGpu_64f_C2& src, iu::VolumeGpu_64f_C2& dst, bool scale_sqrt) {iuprivate::math::fft::fft2(src,  dst, scale_sqrt);}
+void fft2(iu::ImageGpu_64f_C1& src, iu::ImageGpu_64f_C2& dst, bool scale_sqrt) {iuprivate::math::fft::fft2(src,  dst, scale_sqrt);}
+void fft2(iu::VolumeGpu_64f_C1& src, iu::VolumeGpu_64f_C2& dst, bool scale_sqrt) {iuprivate::math::fft::fft2(src,  dst, scale_sqrt);}
+void fft2(iu::LinearDeviceMemory<double2, 2>& src, iu::LinearDeviceMemory<double2, 2>& dst, bool scale_sqrt) {iuprivate::math::fft::fft2(src,  dst, scale_sqrt);}
+void fft2(iu::LinearDeviceMemory<double2, 3>& src, iu::LinearDeviceMemory<double2, 3>& dst, bool scale_sqrt) {iuprivate::math::fft::fft2(src,  dst, scale_sqrt);}
+void fft2(iu::LinearDeviceMemory<double2, 4>& src, iu::LinearDeviceMemory<double2, 4>& dst, bool scale_sqrt) {iuprivate::math::fft::fft2(src,  dst, scale_sqrt);}
+void fft2(iu::LinearDeviceMemory<double, 2>& src, iu::LinearDeviceMemory<double2, 2>& dst, bool scale_sqrt) {iuprivate::math::fft::fft2(src,  dst, scale_sqrt);}
+void fft2(iu::LinearDeviceMemory<double, 3>& src, iu::LinearDeviceMemory<double2, 3>& dst, bool scale_sqrt) {iuprivate::math::fft::fft2(src,  dst, scale_sqrt);}
+void fft2(iu::LinearDeviceMemory<double, 4>& src, iu::LinearDeviceMemory<double2, 4>& dst, bool scale_sqrt) {iuprivate::math::fft::fft2(src,  dst, scale_sqrt);}
+
+// ifft2
+void ifft2(iu::ImageGpu_32f_C2& src, iu::ImageGpu_32f_C2& dst, bool scale_sqrt) {iuprivate::math::fft::ifft2(src,  dst, scale_sqrt);}
+void ifft2(iu::VolumeGpu_32f_C2& src, iu::VolumeGpu_32f_C2& dst, bool scale_sqrt) {iuprivate::math::fft::ifft2(src,  dst, scale_sqrt);}
+void ifft2(iu::ImageGpu_32f_C2& src, iu::ImageGpu_32f_C1& dst, bool scale_sqrt) {iuprivate::math::fft::ifft2(src,  dst, scale_sqrt);}
+void ifft2(iu::VolumeGpu_32f_C2& src, iu::VolumeGpu_32f_C1& dst, bool scale_sqrt) {iuprivate::math::fft::ifft2(src,  dst, scale_sqrt);}
+void ifft2(iu::LinearDeviceMemory<float2, 2>& src, iu::LinearDeviceMemory<float2, 2>& dst, bool scale_sqrt) {iuprivate::math::fft::ifft2(src,  dst, scale_sqrt);}
+void ifft2(iu::LinearDeviceMemory<float2, 3>& src, iu::LinearDeviceMemory<float2, 3>& dst, bool scale_sqrt) {iuprivate::math::fft::ifft2(src,  dst, scale_sqrt);}
+void ifft2(iu::LinearDeviceMemory<float2, 4>& src, iu::LinearDeviceMemory<float2, 4>& dst, bool scale_sqrt) {iuprivate::math::fft::ifft2(src,  dst, scale_sqrt);}
+void ifft2(iu::LinearDeviceMemory<float2, 2>& src, iu::LinearDeviceMemory<float, 2>& dst, bool scale_sqrt) {iuprivate::math::fft::ifft2(src,  dst, scale_sqrt);}
+void ifft2(iu::LinearDeviceMemory<float2, 3>& src, iu::LinearDeviceMemory<float, 3>& dst, bool scale_sqrt) {iuprivate::math::fft::ifft2(src,  dst, scale_sqrt);}
+void ifft2(iu::LinearDeviceMemory<float2, 4>& src, iu::LinearDeviceMemory<float, 4>& dst, bool scale_sqrt) {iuprivate::math::fft::ifft2(src,  dst, scale_sqrt);}
+
+void ifft2(iu::ImageGpu_64f_C2& src, iu::ImageGpu_64f_C2& dst, bool scale_sqrt) {iuprivate::math::fft::ifft2(src,  dst, scale_sqrt);}
+void ifft2(iu::VolumeGpu_64f_C2& src, iu::VolumeGpu_64f_C2& dst, bool scale_sqrt) {iuprivate::math::fft::ifft2(src,  dst, scale_sqrt);}
+void ifft2(iu::ImageGpu_64f_C2& src, iu::ImageGpu_64f_C1& dst, bool scale_sqrt) {iuprivate::math::fft::ifft2(src,  dst, scale_sqrt);}
+void ifft2(iu::VolumeGpu_64f_C2& src, iu::VolumeGpu_64f_C1& dst, bool scale_sqrt) {iuprivate::math::fft::ifft2(src,  dst, scale_sqrt);}
+void ifft2(iu::LinearDeviceMemory<double2, 2>& src, iu::LinearDeviceMemory<double2, 2>& dst, bool scale_sqrt) {iuprivate::math::fft::ifft2(src,  dst, scale_sqrt);}
+void ifft2(iu::LinearDeviceMemory<double2, 3>& src, iu::LinearDeviceMemory<double2, 3>& dst, bool scale_sqrt) {iuprivate::math::fft::ifft2(src,  dst, scale_sqrt);}
+void ifft2(iu::LinearDeviceMemory<double2, 4>& src, iu::LinearDeviceMemory<double2, 4>& dst, bool scale_sqrt) {iuprivate::math::fft::ifft2(src,  dst, scale_sqrt);}
+void ifft2(iu::LinearDeviceMemory<double2, 2>& src, iu::LinearDeviceMemory<double, 2>& dst, bool scale_sqrt) {iuprivate::math::fft::ifft2(src,  dst, scale_sqrt);}
+void ifft2(iu::LinearDeviceMemory<double2, 3>& src, iu::LinearDeviceMemory<double, 3>& dst, bool scale_sqrt) {iuprivate::math::fft::ifft2(src,  dst, scale_sqrt);}
+void ifft2(iu::LinearDeviceMemory<double2, 4>& src, iu::LinearDeviceMemory<double, 4>& dst, bool scale_sqrt) {iuprivate::math::fft::ifft2(src,  dst, scale_sqrt);}
+
+// fft2c
+void fft2c(iu::ImageGpu_32f_C2& src, iu::ImageGpu_32f_C2& dst, bool scale_sqrt) {iuprivate::math::fft::fft2c(src,  dst, scale_sqrt);}
+void fft2c(iu::VolumeGpu_32f_C2& src, iu::VolumeGpu_32f_C2& dst, bool scale_sqrt) {iuprivate::math::fft::fft2c(src,  dst, scale_sqrt);}
+void fft2c(iu::LinearDeviceMemory<float2, 2>& src, iu::LinearDeviceMemory<float2, 2>& dst, bool scale_sqrt) {iuprivate::math::fft::fft2c(src,  dst, scale_sqrt);}
+void fft2c(iu::LinearDeviceMemory<float2, 3>& src, iu::LinearDeviceMemory<float2, 3>& dst, bool scale_sqrt) {iuprivate::math::fft::fft2c(src,  dst, scale_sqrt);}
+void fft2c(iu::LinearDeviceMemory<float2, 4>& src, iu::LinearDeviceMemory<float2, 4>& dst, bool scale_sqrt) {iuprivate::math::fft::fft2c(src,  dst, scale_sqrt);}
+
+void fft2c(iu::ImageGpu_64f_C2& src, iu::ImageGpu_64f_C2& dst, bool scale_sqrt) {iuprivate::math::fft::fft2c(src,  dst, scale_sqrt);}
+void fft2c(iu::VolumeGpu_64f_C2& src, iu::VolumeGpu_64f_C2& dst, bool scale_sqrt) {iuprivate::math::fft::fft2c(src,  dst, scale_sqrt);}
+void fft2c(iu::LinearDeviceMemory<double2, 2>& src, iu::LinearDeviceMemory<double2, 2>& dst, bool scale_sqrt) {iuprivate::math::fft::fft2c(src,  dst, scale_sqrt);}
+void fft2c(iu::LinearDeviceMemory<double2, 3>& src, iu::LinearDeviceMemory<double2, 3>& dst, bool scale_sqrt) {iuprivate::math::fft::fft2c(src,  dst, scale_sqrt);}
+void fft2c(iu::LinearDeviceMemory<double2, 4>& src, iu::LinearDeviceMemory<double2, 4>& dst, bool scale_sqrt) {iuprivate::math::fft::fft2c(src,  dst, scale_sqrt);}
+
+// ifft2c
+void ifft2c(iu::ImageGpu_32f_C2& src, iu::ImageGpu_32f_C2& dst, bool scale_sqrt) {iuprivate::math::fft::ifft2c(src,  dst, scale_sqrt);}
+void ifft2c(iu::VolumeGpu_32f_C2& src, iu::VolumeGpu_32f_C2& dst, bool scale_sqrt) {iuprivate::math::fft::ifft2c(src,  dst, scale_sqrt);}
+void ifft2c(iu::LinearDeviceMemory<float2, 2>& src, iu::LinearDeviceMemory<float2, 2>& dst, bool scale_sqrt) {iuprivate::math::fft::ifft2c(src,  dst, scale_sqrt);}
+void ifft2c(iu::LinearDeviceMemory<float2, 3>& src, iu::LinearDeviceMemory<float2, 3>& dst, bool scale_sqrt) {iuprivate::math::fft::ifft2c(src,  dst, scale_sqrt);}
+void ifft2c(iu::LinearDeviceMemory<float2, 4>& src, iu::LinearDeviceMemory<float2, 4>& dst, bool scale_sqrt) {iuprivate::math::fft::ifft2c(src,  dst, scale_sqrt);}
+
+void ifft2c(iu::ImageGpu_64f_C2& src, iu::ImageGpu_64f_C2& dst, bool scale_sqrt) {iuprivate::math::fft::ifft2c(src,  dst, scale_sqrt);}
+void ifft2c(iu::VolumeGpu_64f_C2& src, iu::VolumeGpu_64f_C2& dst, bool scale_sqrt) {iuprivate::math::fft::ifft2c(src,  dst, scale_sqrt);}
+void ifft2c(iu::LinearDeviceMemory<double2, 2>& src, iu::LinearDeviceMemory<double2, 2>& dst, bool scale_sqrt) {iuprivate::math::fft::ifft2c(src,  dst, scale_sqrt);}
+void ifft2c(iu::LinearDeviceMemory<double2, 3>& src, iu::LinearDeviceMemory<double2, 3>& dst, bool scale_sqrt) {iuprivate::math::fft::ifft2c(src,  dst, scale_sqrt);}
+void ifft2c(iu::LinearDeviceMemory<double2, 4>& src, iu::LinearDeviceMemory<double2, 4>& dst, bool scale_sqrt) {iuprivate::math::fft::ifft2c(src,  dst, scale_sqrt);}
+} //namespace fft
 
 
 } //namespace math

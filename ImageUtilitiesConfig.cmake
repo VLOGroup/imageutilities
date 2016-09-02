@@ -47,9 +47,11 @@ else(NOT ANDROID)
 endif(NOT ANDROID)
 
 # add the C++11 flag if not already set, since we are now using this also
-if(NOT "${CUDA_NVCC_FLAGS}" MATCHES "c\\+\\+11")
-    set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -std=c++11")
-endif(NOT "${CUDA_NVCC_FLAGS}" MATCHES "c\\+\\+11")
+if(NOT WIN32)
+    if(NOT "${CUDA_NVCC_FLAGS}" MATCHES "c\\+\\+11")
+        set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -std=c++11")
+    endif(NOT "${CUDA_NVCC_FLAGS}" MATCHES "c\\+\\+11")
+endif(NOT WIN32)
 
 ### trouble if FindPackage(ImageutilitiesLight) is called multiple times with different IU_MODULES
 ### do the full check every times
@@ -60,14 +62,23 @@ endif(NOT "${CUDA_NVCC_FLAGS}" MATCHES "c\\+\\+11")
 #else(IMAGEUTILITIES_INCLUDE_DIR AND IMAGEUTILITIES_LIBRARY_DIR)
 
     # derive directories from the environment variable
+    
+if(WIN32)
+  string(REPLACE "\\" "/" CUDA_SDK_ROOT_DIR $ENV{CUDA_SDK_ROOT_DIR})
+  string(REPLACE "\\" "/" IMAGEUTILITIES_ROOT $ENV{IMAGEUTILITIES_ROOT})
+else(WIN32)
+  set(CUDA_SDK_ROOT_DIR $ENV{CUDA_SDK_ROOT_DIR})
+  set(IMAGEUTILITIES_ROOT $ENV{IMAGEUTILITIES_ROOT})
+endif(WIN32)
+
   set(IMAGEUTILITIES_INCLUDE_DIR 
-  "$ENV{IMAGEUTILITIES_ROOT}/include" 
-  "$ENV{CUDA_SDK_ROOT_DIR}/common/inc"
+  "${IMAGEUTILITIES_ROOT}/include" 
+  "${CUDA_SDK_ROOT_DIR}/common/inc"
   CACHE PATH "The include directory of the Imageutilities Library")
 
   set(POTENTIAL_LIBRARY_PATHS
-    $ENV{IMAGEUTILITIES_ROOT}/lib
-    $ENV{IMAGEUTILITIES_ROOT}/lib64
+    ${IMAGEUTILITIES_ROOT}/lib
+    ${IMAGEUTILITIES_ROOT}/lib64
 	)
 
   set(IU_MODULES "iucore")    # always include core module

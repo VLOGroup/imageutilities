@@ -14,7 +14,6 @@ set(CUDA_PROPAGATE_HOST_FLAGS OFF)
 file(TO_CMAKE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../cmake" OT_IU_CMAKE_MODULE_PATH)
 set(CMAKE_MODULE_PATH ${OT_IU_CMAKE_MODULE_PATH})
 
-
 ##-----------------------------------------------------------------------------
 ## Current version number:
 ##-----------------------------------------------------------------------------
@@ -256,11 +255,11 @@ if(IU_USE_MATH)
   set( IU_PUBLIC_HEADERS
     ${IU_PUBLIC_HEADERS}
     ${CMAKE_CURRENT_SOURCE_DIR}/iumath.h
-
    )
 
   set(IU_PUBLIC_MATH_HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/iumath/iumathapi.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/iumath/typetraits.h
    )
 
   set( IU_MATH_HEADERS
@@ -268,10 +267,13 @@ if(IU_USE_MATH)
     ${CMAKE_CURRENT_SOURCE_DIR}/iumath/arithmetics.cuh
     ${CMAKE_CURRENT_SOURCE_DIR}/iumath/statistics.cuh
     ${CMAKE_CURRENT_SOURCE_DIR}/iumath/complex.cuh
+    ${CMAKE_CURRENT_SOURCE_DIR}/iumath/fft.cuh
+    ${CMAKE_CURRENT_SOURCE_DIR}/iumath/fftplan.h
     ${CMAKE_CURRENT_SOURCE_DIR}/iumath.h
     ${CMAKE_CURRENT_SOURCE_DIR}/iumath/iumathapi.h
   )
   set( IU_MATH_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/iumath/fft_kernels.cuh
     ${CMAKE_CURRENT_SOURCE_DIR}/iumath.cu
   )
 
@@ -533,6 +535,7 @@ if(IU_USE_MATH)
   target_link_libraries( ${IU_MATH_LIB}
     ${CUDA_LIBRARIES}
     )
+  cuda_add_cufft_to_target(${IU_MATH_LIB})
   set(IU_LIBS ${IU_LIBS} ${IU_MATH_LIB})
 
 

@@ -53,7 +53,7 @@ public:
   }
 
   /** Destructor. */
-  ~VectorBase()
+  virtual ~VectorBase()
   {
   }
 
@@ -356,7 +356,7 @@ public:
   }
 
   /** Destructor. */
-  ~SizeBase()
+  virtual ~SizeBase()
   {
   }
 
