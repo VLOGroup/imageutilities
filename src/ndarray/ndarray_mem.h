@@ -165,6 +165,7 @@ public: //_________________ memory stuff
 	}
 	//
 	~ndarray(){
+		//std::cout <<"deallocating array" << *this;
 		try{
 			clear();
 		}catch(std::exception & err){
