@@ -25,7 +25,7 @@ public:
 		};
 		//parent::operator = (O1);
 	};
-
+	virtual ~options(){};
 };
 
 inline std::ostream & operator << (std::ostream & ss, options & O){
@@ -72,6 +72,9 @@ public:
 	};
 	// when setting from an option, only copy the value
 	toption<type> & operator = (const toption<type> & x){ // do not copy the parent and member pointer
+		val  = &(*ops)[name]; // relink if the pointer has moved
+		//std::cout << *ops;
+		//std::cout << "copy assign " << x.name << " " << *x.val<< "\n";
 		*val = *x.val;
 		name = x.name;
 		return * this;
