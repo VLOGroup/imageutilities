@@ -12,6 +12,9 @@ template<typename PixelType>
 class TensorCpu : public LinearHostMemory<PixelType, 1>
 {
 public:
+	/** Define the current pixel type. */
+	typedef PixelType pixel_type;
+
   /** Constructor. */
 	TensorCpu() :
 			LinearHostMemory<PixelType, 1>(), samples_(0), channels_(0), height_(0), width_(0)

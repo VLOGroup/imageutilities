@@ -6,7 +6,6 @@
 #include "vector.h"
 
 namespace iu {
-
 /** \defgroup MemoryManagement Memory management
  *  \ingroup Core
  *  \brief Handles memory management of different types of host and device classes.
@@ -158,10 +157,11 @@ public:
     return out;
   }
 
-private:
+protected:
   /** size of the memory.*/
   Size<Ndim> size_;
 
+private:
   /** Stride of the memory. First dimension is always one.*/
   Size<Ndim> stride_;
 

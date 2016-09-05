@@ -60,5 +60,13 @@ if(WIN32)
   add_definitions("/MT")
 endif(WIN32)
 
+# Disable warnings on MSVC
+IF (MSVC)
+  # Disable Warning	C4267: conversion from 'size_t' to 'thrust', possible loss of data
+  # Disable Warning C4800: forcing value to bool 'true' of 'false'
+  # Disable Warning C4996: This function of variable may be unsafe. Consider using strerror_s instead.
+  ADD_DEFINITIONS("/wd4267 /wd4800 /wd4996")
+ENDIF (MSVC)
+
 add_subdirectory(src)
 add_subdirectory(tests)

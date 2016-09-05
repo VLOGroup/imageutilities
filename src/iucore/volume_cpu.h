@@ -13,6 +13,9 @@ template<typename PixelType, class Allocator>
 class VolumeCpu : public Volume
 {
 public:
+  /** Define the current pixel type. */
+  typedef PixelType pixel_type;
+
   /** Constructor. */
   VolumeCpu() :
     Volume(),
