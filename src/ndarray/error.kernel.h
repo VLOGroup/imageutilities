@@ -90,14 +90,14 @@ struct pf_stream{
 
 	__host__ __device__  pf_stream & operator << (float x)  {
 		if (DEBUG_LVL >= lvl){
-			printf("%5.2f", x);
+			printf("%5.3f", x);
 		};
 		return *this;
 	}
 
 	__host__ __device__  pf_stream & operator << (double x)  {
 		if (DEBUG_LVL >= lvl){
-			printf("%5.2f", x);
+			printf("%5.3f", x);
 		};
 		return *this;
 	}

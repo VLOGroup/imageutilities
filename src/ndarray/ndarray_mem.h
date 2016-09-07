@@ -22,11 +22,11 @@ namespace memory{
 		}
 		//! allocate a chunk
 		virtual void allocate(void *& ptr, size_t size_bytes){
-			slperror("empty / mot implemented");
+			throw_error("empty / mot implemented");
 		}
 		//! deallocate
 		virtual void deallocate(void * ptr){
-			slperror("empty / mot implemented");
+			throw_error("empty / mot implemented");
 		}
 
 		//! allocate array according to size, output the pointer and stride_bytes

@@ -2,12 +2,16 @@
 
 #include<map>
 
-class options : public std::map < std::string, double > {
+//template<class type> struct toption;
+
+class options : private std::map < std::string, double > {
 public:
 	typedef std::map<std::string, double> parent;
 public:
-	//double & operator()(const std::string & key, double _default);
-	//void print();
+	using parent::operator [];
+	using parent::begin;
+	using parent::end;
+	using parent::iterator;
 	double & operator()(const std::string & key, double _default){
 		parent::iterator i = find(key);
 		if (i == end()){// not found, construct default
@@ -23,9 +27,7 @@ public:
 		for (parent::const_iterator it = O1.begin(); it != O1.end(); ++it){
 			(*this)[it->first] = it->second;
 		};
-		//parent::operator = (O1);
 	};
-	virtual ~options(){};
 };
 
 inline std::ostream & operator << (std::ostream & ss, options & O){
@@ -45,24 +47,19 @@ public:
 public:
 	//! quick read access
 	operator type()const;
-	/*
-	operator type()const{
-		//return type((*ops)[name]);
-		return (type)(*val);
-	};
-	*/
 	
 	//operator type() const;
 	toption(std::string name, type dvalue, options * ops){
+		static_assert(sizeof(type) <= sizeof(double), "bad");
 		this->name = name;
 		this->ops = ops;
 		double & V = (*ops)[name];
-		V = dvalue;
+		V = double(dvalue);
 		this->val = &V;
 	};
 	//! quick write access
 	void operator = (const type & new_val){ // if overwrite, then store in the map
-		(*val) = new_val;
+		(*val) = (double)new_val;
 		//(*ops)[name] = new_val;
 	};
 
@@ -71,25 +68,16 @@ public:
 		*this = x;
 	};
 	// when setting from an option, only copy the value
-	toption<type> & operator = (const toption<type> & x){ // do not copy the parent and member pointer
-		val  = &(*ops)[name]; // relink if the pointer has moved
-		//std::cout << *ops;
-		//std::cout << "copy assign " << x.name << " " << *x.val<< "\n";
+	toption<type> & operator = (const toption<type> & x){
+		val  = &(*ops)[name]; // relink if the pointer has moved due to copy
 		*val = *x.val;
-		name = x.name;
 		return * this;
 	};
-	/*
-	toption(const toption<type> & x) delete;
-	operator = (const toption<type> & x) delete;
-	*/
 };
 
 template<class type> toption<type>::operator type()const{
 	return (type)(*val);
 };
-
-//template<> toption<bool>::operator bool()const;
 
 template<> inline toption<bool>::operator bool()const{
 	return *val!=0;

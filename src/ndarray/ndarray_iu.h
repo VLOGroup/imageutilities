@@ -86,7 +86,7 @@ namespace special2{
 		} else if (t.memoryLayout() == iu::TensorGpu<type>::NHWC){
 			size = intn<4>(t.samples(), t.height(), t.width(), t.channels());
 		} else{
-			slperror("unknown TensorGPU shape");
+			throw_error("unknown TensorGPU shape");
 		};
 		this->template set_linear_ref<false>(const_cast<type*>(t.data()), size, ndarray_flags::device_only); //assume TensorGpu has descending strides
 		return *this;

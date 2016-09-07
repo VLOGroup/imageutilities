@@ -48,7 +48,7 @@ int ptr_access_flags(void * ptr){
 	if(attr.hostPointer == ptr && attr.devicePointer == ptr) return ndarray_flags::host_device;
 	if(attr.hostPointer == ptr) return ndarray_flags::host_only;
 	if(attr.devicePointer == ptr) return ndarray_flags::device_only;
-    slperror("no access?");
+    throw_error("no access?");
     return ndarray_flags::no_access;
 };
 

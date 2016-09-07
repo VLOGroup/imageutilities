@@ -603,8 +603,9 @@ public: // operations
 	ndarray_ref<type, dims> reshape_descending() const;
 	//! reshape to get ascending order of strides - first index fastest
 	ndarray_ref<type, dims> reshape_ascending() const;
-	//! reshape to a new size
-	ndarray_ref<type, dims> reshape(const intn<dims> & sz);
+	//! reshape to a new size / dimension
+	template<int dims2>
+	ndarray_ref<type, dims2> reshape(const intn<dims2> & sz);
 public: // recast and slicing
 	//! reinterpret same data as a different type (no type conversion)
 	template<typename type2> ndarray_ref<type2, dims> recast()const;
@@ -740,10 +741,75 @@ ndarray_ref<type, dims> ndarray_ref<type, dims>::reshape_ascending() const {
 	return ndarray_ref<type, dims>(ptr(), sz2, strideb2, access());
 }
 
-//! reshape to a new size
+//! reshape to a new size / dimension
 template<typename type, int dims>
-ndarray_ref<type, dims> ndarray_ref<type, dims>::reshape(const intn<dims> & sz){
-	slperror("not implemented");
+template<int dims2>
+ndarray_ref<type, dims2> ndarray_ref<type, dims>::reshape(const intn<dims2> & sz2){
+	//throw_error("not implemented");
+	//product of sizes must match
+	runtime_check(size().prod() == sz2.prod()) << "cannot reshape - different number of elements";
+	runtime_check(size() > 0);
+	runtime_check(sz2 > 0);
+	// but also not any strides are possible, break into smallest product-matching groups
+	intn<dims2> st2;
+	int d1o = 0;
+	int d2o = 0;
+	int d1 = 0;
+	int d2 = 0;
+	int cs1 = size()[d1];
+	int cs2 = size()[d2];
+	bool ascending = true;
+	bool descending = true;
+	while(d1 < dims && d2 < dims2){
+		// skip over trivial dimensions
+		while(d1 < dims && size()[d1] == 1)++d1;
+		while(d2 < dims2 && sz2[d2] == 1)++d2;
+		if(cs1 == cs2){ // found a group
+			// group strides must be either ascending or descending contiguous
+			if(ascending){
+				int s = stride_bytes()[d1o];
+				int cs = 1;
+				for(int d = d2o; d <= d2; ++d){
+					st2[d] = cs*s;
+					cs = cs*sz2[d];
+				};
+			}else{ // descending
+				runtime_check(descending) << "group strides are not consistent\n" << "sz1=" << size() << "\n sz2=" << sz2 << "\n st1=" << stride_bytes() << "\n range: " << d1o << "-" << d1 << "\n";
+				int s = stride_bytes()[d1];
+				int cs = 1;
+				for(int d = d2; d >= d2o; --d){
+					st2[d] = cs*s;
+					cs = cs*sz2[d];
+				};
+			};
+			// go to the next group
+			if(d1 == dims-1){ //end of size
+				runtime_check(d2 == dims2-1);
+				break;
+			}else{
+				runtime_check(d2 < dims2-1) << "sz1=" << size() << "\n sz2=" << sz2 << "\n st1=" << stride_bytes() << "\n range: " << d1o << "-" << d1 << "\n" <<" d2=" << d2 <<"\n";
+				++d1;
+				++d2;
+				d1o = d1;
+				d2o = d2;
+				cs1 = size()[d1];
+				cs2 = sz2[d2];
+				ascending = true;
+				descending = true;
+			};
+		}else if(cs1 < cs2){
+			// increment d1
+			runtime_check(++d1 < dims);
+			// check if ascending
+			ascending = ascending && stride_bytes()[d1] % stride_bytes()[d1-1] == 0;
+			descending = descending && stride_bytes()[d1-1] % stride_bytes()[d1] == 0;
+			cs1 *= size()[d1];
+		}else{ // cs1 > cs2
+			runtime_check(++d2 < dims2);
+			cs2 *= sz2[d2];
+		};
+	};
+	return ndarray_ref<type, dims2>(ptr(), sz2, st2, access());
 }
 
 // ! transpose (only the shape, for transposing data see ndarray_op.h)
@@ -874,6 +940,7 @@ typename ndarray_ref<type, dims>::decrement_dim_type ndarray_ref<type, dims>::co
 	sz[d1] = sz[d1] * x.size(d1+1);
 	return decrement_dim_type(x.ptr(), sz, st, x.access());
 }
+
 /*
 //__CRTP_definitions_______________________
 namespace base2{
@@ -913,7 +980,7 @@ namespace kernel{
 	template<typename type, int dims>
 	__host__ ndarray_ref<type, dims> & ndarray_ref<type,dims>::operator = (const ::ndarray_ref<type, dims> & derived){
 		if(!derived.device_allowed()){
-			slperror("entering kernel for this array is not permitted") << derived;
+			throw_error("entering kernel for this array is not permitted") << derived;
 		};
 		//std::cout << "array entering kernel: " << derived << "\n";
 		const ndarray_ref<type,dims> * base = &derived;
@@ -932,7 +999,7 @@ template <typename tstream> void print_flags(tstream & ss, const ndarray_flags &
 		case ndarray_flags::host_only : ss << "host";break;
 		case ndarray_flags::device_only : ss << "device";break;
 		case ndarray_flags::host_device : ss << "host, device"; break;
-		default: slperror("unexpected case");
+		default: throw_error("unexpected case");
 	};
 	ss << "; linear_dim: " << ff.linear_dim();
 }
@@ -946,7 +1013,7 @@ template <typename tstream> tstream & operator << (tstream & ss, const ndarray_f
 		case ndarray_flags::host_only : ss << "host";break;
 		case ndarray_flags::device_only : ss << "device";break;
 		case ndarray_flags::host_device : ss << "host, device"; break;
-		default: slperror("unexpected case");
+		default: throw_error("unexpected case");
 	};
 	ss << "; linear_dim: " << ff.linear_dim();
 	return ss;

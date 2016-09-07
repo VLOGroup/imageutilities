@@ -50,7 +50,7 @@ public:
 	const char * what()const throw() override;
 };
 
-#define slperror(text_stuff)\
+#define throw_error(text_stuff)\
     throw error_stream(text_stuff).set_file_line(__FILE__,__LINE__)
 
 

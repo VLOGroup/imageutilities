@@ -282,7 +282,7 @@ template<typename type, int dims> ndarray_ref<type, dims>& copy_data(ndarray_ref
 				return host_op::copy_data(dest,src);
 			};
 		}else{
-			slperror("copy between different sizes not implemented");
+			throw_error("copy between different sizes not implemented");
 		};
 	};
 }
@@ -297,7 +297,7 @@ template<typename type1, typename type2, int dims> ndarray_ref<type1, dims>& ope
 	if(src.host_allowed() && dest.host_allowed()){
 		return host_op:: operator << (dest,src);
 	};
-	slperror("direct assignment not possible\n")<<"src=" <<src <<"\n dest=" << dest << "\n";
+	throw_error("direct assignment not possible\n")<<"src=" <<src <<"\n dest=" << dest << "\n";
 }
 
 template<typename type1, typename type2, int dims>

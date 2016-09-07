@@ -152,7 +152,7 @@ public:
 #endif
 	//! default copy ctr
 	HOSTDEVICE intn(const intn<n> & b) = default;
-	//! construct from a list -> improve to a variadic template
+	//! construct from a list
 	HOSTDEVICE intn(int a0, int a1, int a2 = 0, int a3 = 0, int a4 = 0, int a5 = 0){
 		V(0) = a0;
 		if (n > 1)V(1) = a1;
@@ -160,6 +160,18 @@ public:
 		if (n > 3)V(n > 3? 3 : 0) = a3;
 		if (n > 4)V(n > 4? 4 : 0) = a4;
 		if (n > 5)V(n > 5? 5 : 0) = a5;
+	}
+	//! construct from initializer list, e.g. {1,2,3}
+	HOSTDEVICE intn(std::initializer_list<int> list){
+		auto a = list.begin();
+		for(int i=0; i<n; ++i){
+			if(i < int(list.size())){
+				V(i) = *a;
+			}else{
+				V(i) = 0;
+			};
+			++a;
+		};
 	}
 public://__________initializers
 	HOSTDEVICE intn<n> & operator = (const array_type & x){
@@ -449,6 +461,12 @@ public:// const math operators
 	HOSTDEVICE bool operator < (const int val) const {
 		for (int i = 0; i < n; ++i){
 			if(!((*this)[i] < val)) return false;
+		};
+		return true;
+	}
+	HOSTDEVICE bool operator > (const int val) const {
+		for (int i = 0; i < n; ++i){
+			if(!((*this)[i] > val)) return false;
 		};
 		return true;
 	}
