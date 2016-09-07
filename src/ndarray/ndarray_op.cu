@@ -43,6 +43,14 @@ template<typename type, int dims>
 	return a;
 }
 
+// a-=b
+template<typename type, int dims>
+	ndarray_ref<type, dims> & operator -= (ndarray_ref<type, dims> & a, const ndarray_ref<type, dims> & b){
+	auto func = [=] __device__ (const intn<dims> & ii){ a.kernel()(ii) -= b.kernel()(ii); }; // operation capture
+	struct_dims<dims>::for_each(a.shape(), func);
+	return a;
+}
+
 // a*=b
 template<typename type, int dims>
 	ndarray_ref<type, dims> & operator *= (ndarray_ref<type, dims> & a, const ndarray_ref<type, dims> & b){
@@ -109,49 +117,48 @@ template ndarray_ref<float, 3> & copy_data (ndarray_ref<float, 3> & a, const nda
 
 };
 
-namespace{
-	template<typename type, int dims>
-	void ttest(){
-		ndarray_ref<type, dims> a, b;
-		a *= type(1);
-		a += type(1);
-		a << type(1);
-		a += a;
-		a *= a;
-		copy_data(a,b);
-		madd2(a,a,a,type(1),type(1));
-	};
+template<typename type, int dims>
+void ttest(){
+	ndarray_ref<type, dims> a, b;
+	a *= type(1);
+	a += type(1);
+	a << type(1);
+	a += a;
+	a -= a;
+	a *= a;
+	copy_data(a,b);
+	madd2(a,a,a,type(1),type(1));
+}
 
-	template<typename type>
-	void tdtest(){
-		ttest<type,1>();
-		ttest<type,2>();
-		ttest<type,3>();
-		ttest<type,4>();
-	};
+template<typename type>
+void tdtest(){
+	ttest<type,1>();
+	ttest<type,2>();
+	ttest<type,3>();
+	ttest<type,4>();
+}
 
-	template<int dims>
-	void dtest(){
-		// conversions
-		ndarray_ref<float, dims> f;
-		ndarray_ref<int, dims> i;
-		ndarray_ref<double, dims> d;
-		f << f;
-		i << i;
-		i << f;
-		f << i;
-		d << d;
-		f << d;
-		d << f;
-	};
+template<int dims>
+void dtest(){
+	// conversions
+	ndarray_ref<float, dims> f;
+	ndarray_ref<int, dims> i;
+	ndarray_ref<double, dims> d;
+	f << f;
+	i << i;
+	i << f;
+	f << i;
+	d << d;
+	f << d;
+	d << f;
+}
 
-	void test(){
-		tdtest<float>();
-		tdtest<int>();
-		// conversions
-		dtest<1>();
-		dtest<2>();
-		dtest<3>();
-		dtest<4>();
-	};
-};
+void test_ops(){
+	tdtest<float>();
+	tdtest<int>();
+	// conversions
+	dtest<1>();
+	dtest<2>();
+	dtest<3>();
+	dtest<4>();
+}

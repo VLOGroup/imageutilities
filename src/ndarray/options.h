@@ -69,7 +69,7 @@ public:
 	};
 	// when setting from an option, only copy the value
 	toption<type> & operator = (const toption<type> & x){
-		val  = &(*ops)[name]; // relink if the pointer has moved due to copy
+		val = &(*ops)[name]; // relink if the pointer has moved due to copy
 		*val = *x.val;
 		return * this;
 	};
@@ -80,7 +80,7 @@ template<class type> toption<type>::operator type()const{
 };
 
 template<> inline toption<bool>::operator bool()const{
-	return *val!=0;
+	return float(*val);
 };
 
 #define NEWOPTION(type,name,dvalue) toption<type> name = toption<type>(#name,dvalue, this);

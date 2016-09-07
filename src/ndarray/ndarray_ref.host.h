@@ -228,8 +228,12 @@ namespace base2{
 		template<int dim> bool aligned(int bytes) const;
 	public: // checked element access
 		type * __restrict__ ptr(const intn<dims> & ii) const;
-		type * __restrict__ ptr(int i0, int i1 = 0, int i2 = 0, int i3 = 0) const;
-		type & operator ()(int i0, int i1 = 0, int i2 = 0, int i3 = 0) const;
+		//! pointer access: ptr(1,5,3)
+		template<typename... Args>
+		type * __restrict__ ptr(Args... args) const;
+		//! element access: operator()(1,5,3)
+		template<typename... Args>
+		type & operator ()(Args... args) const;
 		type & operator ()(const intn<dims> & ii) const;
 		//! last element
 		type * last()const;
@@ -301,14 +305,16 @@ namespace base2{
 	}
 
 	template<typename type, int dims>
-	type * __restrict__ ndarray_ref<type, dims>::ptr(int i0, int i1, int i2, int i3) const { // zero entries will be optimized out
-		return ptr(intn<dims>(i0, i1, i2, i3));
+	template<typename...AA>
+	inline type * __restrict__ ndarray_ref<type, dims>::ptr(AA... aa) const { // zero entries will be optimized out
+		return ptr(intn<dims>(aa...));
 	}
 
 	template<typename type, int dims>
-	type & ndarray_ref<type, dims>::operator ()(int i0, int i1, int i2, int i3) const {
+	template<typename...AA>
+	inline type & ndarray_ref<type, dims>::operator ()(AA... aa) const {
 		runtime_check(host_allowed());
-		return *ptr(i0, i1, i2, i3);
+		return *ptr(aa...);
 	}
 
 	template<typename type, int dims>
@@ -606,6 +612,11 @@ public: // operations
 	//! reshape to a new size / dimension
 	template<int dims2>
 	ndarray_ref<type, dims2> reshape(const intn<dims2> & sz);
+	//! reshape alias
+	template<typename... Args>
+	ndarray_ref<type, sizeof...(Args)> reshape(Args... args){
+		return reshape(intn<sizeof...(Args)>{args...});
+	}
 public: // recast and slicing
 	//! reinterpret same data as a different type (no type conversion)
 	template<typename type2> ndarray_ref<type2, dims> recast()const;

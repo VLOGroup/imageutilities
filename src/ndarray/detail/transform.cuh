@@ -239,7 +239,7 @@ namespace nd{
 			}
 			int r = (size[0]) % dimBlock.x; // folding over reminder
 			// coverage in dimBlock.y
-			int W = dimBlock.x + r; //
+			//int W = dimBlock.x + r; //
 			dim3 dimGrid(divup(size[0], dimBlock.x), divup(size[1], dimBlock.y), 1);
 			layout L;
 			L.r = r;

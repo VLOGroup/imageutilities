@@ -209,9 +209,16 @@ public://__________constructors / initializers
 		this->find_linear_dim();
 	}
 	//! construct array of a given size using Allocator, e.g. create<memory::GPU>(100,100)
+	template<class Allocator, typename... Args>
+	void create(int d0, Args... args){
+		create<Allocator>(intn<dims>(d0,args...));
+	}
+	/*
+	//! construct array of a given size using Allocator, e.g. create<memory::GPU>(100,100)
 	template<class Allocator> void create(int sz0, int sz1 = 1, int sz2 = 1, int sz3 = 1){
 		create<Allocator>(intn<dims>(sz0, sz1, sz2, sz3));
 	}
+	*/
 	//! copy constructor - deep copy using the same allocator
 	explicit ndarray(const ndarray<type, dims> & x){
 		set_allocator(&x.allocator());

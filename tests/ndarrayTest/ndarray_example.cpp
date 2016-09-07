@@ -178,8 +178,8 @@ void intro_test(){
 	cudaDeviceSynchronize();
 	t2 += t2; // resolves to GPU operation
 	cudaDeviceSynchronize();
-	std::cout << t2(0,0) << "\n"; // should print 2
-	runtime_check(t2(0,0)==2);
+	std::cout << t2(0,0,0) << "\n"; // should print 2
+	runtime_check(t2(0,0,0)==2);
 	//
 	delete p1;
 	cudaFree(p2);
@@ -312,8 +312,8 @@ void test_4D(){
 	std::cout << r1 << "\n";
 	r1 = r.permute_dims({1,0,3,2}).reshape(intn<2>{7*13,2*5});
 	std::cout << r1 << "\n";
-	r1 = r.permute_dims({2,1,3,0}).reshape(intn<2>{7*13,2,5});
-	std::cout << r1 << "\n";
+	auto r2 = r.permute_dims({2,1,3,0}).reshape(7*13,2,5);
+	std::cout << r2 << "\n";
 }
 
 //! type conversions

@@ -15,11 +15,21 @@ namespace nd{
 		}
 	};
 
+	template<typename type, int dims>
+	void add(ndarray_ref<type,dims> & a, const type w){
+		transform(add_a<type>(w), a);
+	}
+
 	template<typename type> struct add_ab{
 		HOSTDEVICE void operator()(type & a, const type & b)const{
 			a += b;
 		}
 	};
+
+	template<typename type, int dims>
+	void add(ndarray_ref<type,dims> & a, const ndarray_ref<type,dims> & b){
+		transform(add_ab<type>(), a, b);
+	}
 
 	template<typename type> struct add_abc{
 		HOSTDEVICE void operator()(type & a, const type & b, const type & c)const{
@@ -27,27 +37,29 @@ namespace nd{
 		}
 	};
 
+	template<typename type, int dims>
+	void add(ndarray_ref<type,dims> & a, const ndarray_ref<type,dims> & b, const ndarray_ref<type,dims> & c){
+		transform(add_abc<type>(), a, b, c);
+	}
+
+	template<typename type> struct madd_abc{
+		type w;
+		void HOSTDEVICE operator ()(type & a, const type & b, const type & c)const{
+			a = b*w + c;
+		}
+	};
+
+	template<typename type, int dims>
+	void madd(ndarray_ref<type,dims> & a, const ndarray_ref<type,dims> & b, const ndarray_ref<type,dims> & c, type w){
+		transform(madd_abc<type>{w}, a, b, c);
+	}
+
 	template<typename type> struct madd2_abc{
 		type w1, w2;
 		void HOSTDEVICE operator ()(type & a, const type & b, const type & c)const{
 			a = b*w1 + c*w2;
 		}
 	};
-
-	template<typename type, int dims>
-	void add(ndarray_ref<type,dims> & a, const type w){
-		transform(add_a<type>(w), a);
-	}
-
-	template<typename type, int dims>
-	void add(ndarray_ref<type,dims> & a, const ndarray_ref<type,dims> & b){
-		transform(add_ab<type>(), a, b);
-	}
-
-	template<typename type, int dims>
-	void add(ndarray_ref<type,dims> & a, const ndarray_ref<type,dims> & b, const ndarray_ref<type,dims> & c){
-		transform(add_abc<type>(), a, b, c);
-	}
 
 	template<typename type, int dims>
 	void madd2(ndarray_ref<type,dims> & a, const ndarray_ref<type,dims> & b, const ndarray_ref<type,dims> & c, type w1, type w2){
@@ -92,5 +104,18 @@ namespace nd{
 		transform(grad_ab<type, dims>(), a, b);
 	}
 };
+
+// operators
+namespace nd{
+	template<typename type, int dims> ndarray_ref<type,dims> & operator += (ndarray_ref<type,dims> & a, const ndarray_ref<type,dims> & b){
+		transform(madd_abc<type>{1}, a, b, a); // a = b + a
+		return a;
+	}
+	template<typename type, int dims> ndarray_ref<type,dims> & operator -= (ndarray_ref<type,dims> & a, const ndarray_ref<type,dims> & b){
+		transform(madd_abc<type>{1}, a, b, a); // a =-b + a
+		return a;
+	}
+};
+
 
 void test_transform();

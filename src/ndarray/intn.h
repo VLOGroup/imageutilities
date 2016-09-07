@@ -152,6 +152,7 @@ public:
 #endif
 	//! default copy ctr
 	HOSTDEVICE intn(const intn<n> & b) = default;
+	/*
 	//! construct from a list
 	HOSTDEVICE intn(int a0, int a1, int a2 = 0, int a3 = 0, int a4 = 0, int a5 = 0){
 		V(0) = a0;
@@ -161,8 +162,15 @@ public:
 		if (n > 4)V(n > 4? 4 : 0) = a4;
 		if (n > 5)V(n > 5? 5 : 0) = a5;
 	}
+	*/
+
+
 	//! construct from initializer list, e.g. {1,2,3}
+	/*!
+	 * example: intn<3>{12, 2, 3};
+	 */
 	HOSTDEVICE intn(std::initializer_list<int> list){
+		//static_assert(list.size() == n, "size missmatch");
 		auto a = list.begin();
 		for(int i=0; i<n; ++i){
 			if(i < int(list.size())){
@@ -172,6 +180,14 @@ public:
 			};
 			++a;
 		};
+	}
+	//! construct from variadic list -- allows implicit element type conversion (e.g .sfrom short, unsigned, etc.)
+	/*!
+	 * example: intn<3>(12, 2, 3);
+	 */
+	template<typename... Args>
+	HOSTDEVICE intn(Args... args) : intn(std::initializer_list<int>( {int(args)...} )){
+		static_assert(sizeof...(Args)==n,"size missmatch"); // check number of arguments is matching
 	}
 public://__________initializers
 	HOSTDEVICE intn<n> & operator = (const array_type & x){
