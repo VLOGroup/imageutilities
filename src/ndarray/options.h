@@ -12,6 +12,7 @@ public:
 	using parent::begin;
 	using parent::end;
 	using parent::iterator;
+	using parent::size;
 	double & operator()(const std::string & key, double _default){
 		parent::iterator i = find(key);
 		if (i == end()){// not found, construct default

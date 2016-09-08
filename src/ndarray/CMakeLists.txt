@@ -57,9 +57,7 @@ ${SRC_DIR}/ndarray_op.cu
 ${SRC_DIR}/common_transforms.cu
 ${SRC_DIR}/test_transform.cpp
 ${SRC_DIR}/test_iterator.cu
-#${SRC_DIR}/test_mex.cpp
-#${SRC_DIR}/ndarray_example.cpp
-#${SRC_DIR}/ndarray_example.cu
+${SRC_DIR}/test_iusize.cpp
 )
 
 #message("COMPILER FLAGS for ndarray:")

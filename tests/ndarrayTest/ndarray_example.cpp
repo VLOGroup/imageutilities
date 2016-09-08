@@ -287,9 +287,15 @@ void test_3D(){
 	//std::cout << r;
 	//print_array("\n r=", r.unpack());
 	template_foo(x1);
+
+	// reshape into 4D
+	iu::VolumeGpu_32f_C1 V3(4,8,10);
+	auto r3 = V3.ref().reshape(2,2,8,10);
+	std::cout << r3 << "\n";
 }
 
 void test_4D(){
+
 	iu::TensorGpu<float> V1(2, 5,7,13);
 	iu::TensorGpu<int>   V2(7,13,2,5);
 	std::cout << V2;
@@ -312,7 +318,7 @@ void test_4D(){
 	std::cout << r1 << "\n";
 	r1 = r.permute_dims({1,0,3,2}).reshape(intn<2>{7*13,2*5});
 	std::cout << r1 << "\n";
-	auto r2 = r.permute_dims({2,1,3,0}).reshape(7*13,2,5);
+	auto r2 = r.permute_dims({2,1,3,0}).reshape(2*13,5*7).reshape(2*13*5,7);
 	std::cout << r2 << "\n";
 }
 
@@ -334,9 +340,9 @@ float test_warn(long long x){
  */
 
 int main(){
-	test_transform();
+	//test_transform();
 	//test_bit_index();
-	return 0;
+	//return 0;
 	test_cuda_constructors();
 
 	intro_test();

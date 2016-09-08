@@ -768,7 +768,7 @@ ndarray_ref<type, dims2> ndarray_ref<type, dims>::reshape(const intn<dims2> & sz
 	int d1 = 0;
 	int d2 = 0;
 	int cs1 = size()[d1];
-	int cs2 = size()[d2];
+	int cs2 = sz2[d2];
 	bool ascending = true;
 	bool descending = true;
 	while(d1 < dims && d2 < dims2){
@@ -810,13 +810,15 @@ ndarray_ref<type, dims2> ndarray_ref<type, dims>::reshape(const intn<dims2> & sz
 			};
 		}else if(cs1 < cs2){
 			// increment d1
-			runtime_check(++d1 < dims) << "sz1=" << size() << "\n sz2=" << sz2 << "\n st1=" << stride_bytes() << "\n range: " << d1o << "-" << d1 << "\n" <<" d2=" << d2 << "\n cs1="<< cs1 << " cs2=" << cs2;
+			++d1;
+			runtime_check(d1 < dims) << "sz1=" << size() << "\n sz2=" << sz2 << "\n st1=" << stride_bytes() << "\n range: " << d1o << "-" << d1 << "\n" <<" d2=" << d2 << "\n cs1="<< cs1 << " cs2=" << cs2;
 			// check if ascending
 			ascending = ascending && stride_bytes()[d1] % stride_bytes()[d1-1] == 0;
 			descending = descending && stride_bytes()[d1-1] % stride_bytes()[d1] == 0;
 			cs1 *= size()[d1];
 		}else{ // cs1 > cs2
-			runtime_check(++d2 < dims2);
+			++d2;
+			runtime_check(d2 < dims2);
 			cs2 *= sz2[d2];
 		};
 	};
