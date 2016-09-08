@@ -810,7 +810,7 @@ ndarray_ref<type, dims2> ndarray_ref<type, dims>::reshape(const intn<dims2> & sz
 			};
 		}else if(cs1 < cs2){
 			// increment d1
-			runtime_check(++d1 < dims);
+			runtime_check(++d1 < dims) << "sz1=" << size() << "\n sz2=" << sz2 << "\n st1=" << stride_bytes() << "\n range: " << d1o << "-" << d1 << "\n" <<" d2=" << d2 << "\n cs1="<< cs1 << " cs2=" << cs2;
 			// check if ascending
 			ascending = ascending && stride_bytes()[d1] % stride_bytes()[d1-1] == 0;
 			descending = descending && stride_bytes()[d1-1] % stride_bytes()[d1] == 0;
