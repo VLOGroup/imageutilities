@@ -211,21 +211,21 @@ namespace base2{
 		//! check has the same shape as another ndarray_ref
 		bool same_shape(const ndarray_ref<type, dims> & x) const;
 		//! whether strides are ascending
-		bool strides_ascending() const;
+		bool strides_ascending() const = delete;
 		//! whether strides are descending
-		bool strides_descending() const;
+		bool strides_descending() const = delete;
 		//! whether addresses contiguous memory (can be converted to linear memory)
-		bool is_contiguous() const;
+		bool is_contiguous() const = delete;
 		//! get dimension ordering from strides - in increasing value of strides
-		intn<dims> dims_order() const;
+		intn<dims> dims_order() const = delete;
 		//! how many bytes padded on a given dimension (for the dimension with the smallest stride results in padded bytes per element)
-		int dim_padding(int dim) const;
+		int dim_padding(int dim) const = delete;
 		//! check strides are consistent (cover the size without overlap)
-		bool strides_consistent() const;
+		bool strides_consistent() const = delete;
 		//! check alignment of all dimensions, typically 4B and 16B alignments are needed (same as to check alignment of the smallest stride)
-		bool aligned(int bytes) const;
+		bool aligned(int bytes) const = delete;
 		//! check alignment on a given dimensions
-		template<int dim> bool aligned(int bytes) const;
+		template<int dim> bool aligned(int bytes) const = delete;
 	public: // checked element access
 		type * __restrict__ ptr(const intn<dims> & ii) const;
 		//! pointer access: ptr(1,5,3)
@@ -341,14 +341,14 @@ namespace base2{
 
 	template<typename type, int dims>
 	void ndarray_ref<type, dims>::find_linear_dim(){
-		int d = stride_bytes().min_idx();
+		int d = stride_bytes().min_abs_idx();
 		if (stride_bytes(d) == intsizeof(type)){
 			flag_bits._linear_dim = d;
 		} else{
 			flag_bits._linear_dim = max_dimensions();
 		};
 	}
-
+/*
 	template<typename type, int dims>
 	intn<dims> ndarray_ref<type, dims>::dims_order() const {
 		return stride_bytes().sort_idx();
@@ -414,6 +414,7 @@ namespace base2{
 	template<int dim>  bool ndarray_ref<type, dims>::aligned(int bytes) const {
 		return (stride_bytes(dim) % bytes == 0);
 	}
+	*/
 }
 
 namespace special2{
@@ -592,9 +593,10 @@ public:
 	ndarray_ref() = default;
 	//using parent::operator =;
 	using parent::access;
-	using parent::stride_bytes;
 	using parent::ptr;
 	using parent::size;
+	using parent::stride_bytes;
+
 public:
 	//! from LinearHostMemory1d and size
 	ndarray_ref(const iu::LinearHostMemory<type, 1> & x, const intn<dims> & size);
@@ -606,9 +608,9 @@ public:
 	ndarray_ref(const mxArray_tag *);
 public: // operations
 	//! reshape to get descending order of strides - last index fastest
-	ndarray_ref<type, dims> reshape_descending() const;
+	ndarray_ref<type, dims> reshape_descending() const = delete;
 	//! reshape to get ascending order of strides - first index fastest
-	ndarray_ref<type, dims> reshape_ascending() const;
+	ndarray_ref<type, dims> reshape_ascending() const = delete;
 	//! reshape to a new size / dimension
 	template<int dims2>
 	ndarray_ref<type, dims2> reshape(const intn<dims2> & sz);
@@ -643,6 +645,8 @@ public: // recast and slicing
 	ndarray_ref<type, dims> subrange(intn<dims> origin, intn<dims> new_size) const;
 	//! permute dimensions according to substitution p
 	ndarray_ref<type, dims> permute_dims(intn<dims> p) const;
+	//! reflection on a given dimension -> negative strides
+	ndarray_ref<type, dims> reflect_dim(int dim) const;
 	//! compress dimensions which can address the same data with fewer strides, e.g. linea memory with ascending strides compressed down to 1D
 	ndarray_ref<type,dims> compress_dims()const;
 	//! whether dimension is linearly addressable
@@ -668,6 +672,7 @@ template<typename type, int dims>
 template<typename type2> ndarray_ref<type2, dims> ndarray_ref<type, dims>::recast()const{
 	// check: first dimension must be contiguous
 	runtime_check_this(sizeof(type) == sizeof(type2) || this->template stride<char>(0) == intsizeof(type));
+	//runtime_check_this(sizeof(type) == sizeof(type2) || stride<char>(0) == intsizeof(type));
 	return ndarray_ref<type2, dims>(parent::template recast<type2>(), access());
 }
 
@@ -726,6 +731,7 @@ template<int dim1, int dim2> ndarray_ref<type, dims - 2> ndarray_ref<type, dims>
 	return ndarray_ref<type, dims - 2>(parent::template subdim<dim1, dim2>(i_dim1, i_dim2), access());
 }
 
+/*
 //! reshape to get descending order of strides - last index fastest
 template<typename type, int dims>
 ndarray_ref<type, dims> ndarray_ref<type, dims>::reshape_descending() const {
@@ -751,6 +757,7 @@ ndarray_ref<type, dims> ndarray_ref<type, dims>::reshape_ascending() const {
 	}
 	return ndarray_ref<type, dims>(ptr(), sz2, strideb2, access());
 }
+*/
 
 //! reshape to a new size / dimension
 template<typename type, int dims>
@@ -894,7 +901,17 @@ ndarray_ref<type, dims> ndarray_ref<type, dims>::permute_dims(intn<dims> p) cons
 	};
 	runtime_check(sz2 >=0) << "p= " << p << " is not a proper permutation\n";
 	return ndarray_ref<type, dims>(ptr(),sz2,st2,access());
-};
+}
+
+//! reflection on a given dimension -> negative strides
+template<typename type, int dims>
+ndarray_ref<type, dims> ndarray_ref<type, dims>::reflect_dim(int dim) const{
+	runtime_check(dim>=0 && dim < dims);
+	intn<dims> st2 = stride_bytes();
+	type * p = ptr() + (size(dim)-1)*this->stride(dim);
+	st2[dim] = -st2[dim];
+	return ndarray_ref<type, dims>(p,size(),st2,access());
+}
 
 //! compress_dims
 template<typename type, int dims>

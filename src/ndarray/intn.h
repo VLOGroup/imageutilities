@@ -290,6 +290,20 @@ public: // min max and sorting
 		return idx;
 	}
 
+	//! min element index
+	HOSTDEVICE int min_abs_idx() const {
+		static_assert(n>0,"bad");
+		int val = abs(V(0));
+		int idx = 0;
+		for(int i = 1; i<n; ++i){
+			if(abs(V(i)) < val){
+				val = abs(V(i));
+				idx = i;
+			};
+		};
+		return idx;
+	}
+
 	//! sort in ascending order
 	__host__ intn<n> sort() const {
 		intn<n> x = *this;

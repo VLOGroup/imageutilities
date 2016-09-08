@@ -212,6 +212,12 @@ void test_1(){
 	std::cout << r << "\n"; // accessing managed memory from host
 	if(r != 100) throw_error("test failed");
 	//int fl = ptr_access_flags(x);
+
+	print_array("\n c=", c, 0);
+	std:: cout << "c=" << c <<"\n";
+	std:: cout << "c.reflect_dim(1)=" << c.reflect_dim(1) <<"\n";
+	c << c.reflect_dim(1);
+	print_array("\n c.reflect_dim(1)=", c,0);
 	delete x;
 
 }
@@ -320,6 +326,9 @@ void test_4D(){
 	std::cout << r1 << "\n";
 	auto r2 = r.permute_dims({2,1,3,0}).reshape(2*13,5*7).reshape(2*13*5,7);
 	std::cout << r2 << "\n";
+	print_array("\n r2=", r2.subrange({0,0},{3,3}),0);
+	r2 << r2.reflect_dim(1);
+	print_array("\n r2.reflect_dim(1)=", r2.subrange({0,0},{3,3}),0);
 }
 
 //! type conversions
@@ -359,6 +368,7 @@ int main(){
 	//
 	test_IuSize();
 	//
+	return EXIT_SUCCESS;
 	test_thrust_iterator_1();
 	test_thrust_iterator_2();
 	//std::cout << test_warn(13);

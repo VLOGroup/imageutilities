@@ -1,6 +1,6 @@
 #include <cuda.h>
 #include <assert.h>
-#include <device_functions.h>
+//#include <device_functions.h>
 #include "./../src/ndarray/ndarray_ref.kernel.h"
 
 // using ndarray_ref inside kernel
