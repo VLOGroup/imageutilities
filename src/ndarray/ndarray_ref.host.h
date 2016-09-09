@@ -646,7 +646,7 @@ public: // recast and slicing
 	//! permute dimensions according to substitution p
 	ndarray_ref<type, dims> permute_dims(intn<dims> p) const;
 	//! reflection on a given dimension -> negative strides
-	ndarray_ref<type, dims> reflect_dim(int dim) const;
+	ndarray_ref<type, dims> flip_dim(int dim) const;
 	//! compress dimensions which can address the same data with fewer strides, e.g. linea memory with ascending strides compressed down to 1D
 	ndarray_ref<type,dims> compress_dims()const;
 	//! whether dimension is linearly addressable
@@ -905,7 +905,7 @@ ndarray_ref<type, dims> ndarray_ref<type, dims>::permute_dims(intn<dims> p) cons
 
 //! reflection on a given dimension -> negative strides
 template<typename type, int dims>
-ndarray_ref<type, dims> ndarray_ref<type, dims>::reflect_dim(int dim) const{
+ndarray_ref<type, dims> ndarray_ref<type, dims>::flip_dim(int dim) const{
 	runtime_check(dim>=0 && dim < dims);
 	intn<dims> st2 = stride_bytes();
 	type * p = ptr() + (size(dim)-1)*this->stride(dim);
