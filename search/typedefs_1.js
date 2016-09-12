@@ -1,0 +1,4 @@
+var searchData=
+[
+  ['pixel_5ftype',['pixel_type',['../classiu_1_1ImageCpu.html#a8112643b6559832da708f487a7fded22',1,'iu::ImageCpu::pixel_type()'],['../classiu_1_1ImageGpu.html#ad95f2fb6fbd3e2e09b56455f4eaac2ea',1,'iu::ImageGpu::pixel_type()'],['../classiu_1_1LinearDeviceMemory.html#a6498c451a52af6fd562a40224fcd274a',1,'iu::LinearDeviceMemory::pixel_type()'],['../classiu_1_1LinearHostMemory.html#aa3b43ee680f9abf0b64e7329b113776e',1,'iu::LinearHostMemory::pixel_type()'],['../classiu_1_1TensorCpu.html#a21cdd3fe3b022e71d1719d2d70636431',1,'iu::TensorCpu::pixel_type()'],['../classiu_1_1TensorGpu.html#a54df1fda7dc8df68ad02df0989b79338',1,'iu::TensorGpu::pixel_type()'],['../classiu_1_1VolumeCpu.html#a5e249f7cc0325ef9e9efaec033900a59',1,'iu::VolumeCpu::pixel_type()'],['../classiu_1_1VolumeGpu.html#a0a50d05da79d63cb64b03d1f51f7ea6a',1,'iu::VolumeGpu::pixel_type()']]]
+];

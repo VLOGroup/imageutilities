@@ -73,7 +73,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Friends</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Groups</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Friends</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Groups</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(9)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -126,6 +126,11 @@ Public Types</h2></td></tr>
  }</td></tr>
 <tr class="memdesc:ae8eb2338f0d053fe75aaaf32597272c2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Memory layout to access the data elements.  <a href="classiu_1_1TensorGpu.html#ae8eb2338f0d053fe75aaaf32597272c2">More...</a><br/></td></tr>
 <tr class="separator:ae8eb2338f0d053fe75aaaf32597272c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a54df1fda7dc8df68ad02df0989b79338"><td class="memItemLeft" align="right" valign="top">typedef PixelType&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classiu_1_1TensorGpu.html#a54df1fda7dc8df68ad02df0989b79338">pixel_type</a></td></tr>
+<tr class="separator:a54df1fda7dc8df68ad02df0989b79338"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_types_classiu_1_1LinearDeviceMemory"><td colspan="2" onclick="javascript:toggleInherit('pub_types_classiu_1_1LinearDeviceMemory')"><img src="closed.png" alt="-"/>&#160;Public Types inherited from <a class="el" href="classiu_1_1LinearDeviceMemory.html">iu::LinearDeviceMemory&lt; PixelType, 1 &gt;</a></td></tr>
+<tr class="memitem:a6498c451a52af6fd562a40224fcd274a inherit pub_types_classiu_1_1LinearDeviceMemory"><td class="memItemLeft" align="right" valign="top">typedef PixelType&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classiu_1_1LinearDeviceMemory.html#a6498c451a52af6fd562a40224fcd274a">pixel_type</a></td></tr>
+<tr class="separator:a6498c451a52af6fd562a40224fcd274a inherit pub_types_classiu_1_1LinearDeviceMemory"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -195,8 +200,6 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a081240a28fdfbaddd74f94bbca83739d inherit pub_methods_classiu_1_1LinearMemory"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6482e7304d6250a9fec0ec0f790c2ca8 inherit pub_methods_classiu_1_1LinearMemory"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classiu_1_1LinearMemory.html#a6482e7304d6250a9fec0ec0f790c2ca8">numel</a> () const </td></tr>
 <tr class="separator:a6482e7304d6250a9fec0ec0f790c2ca8 inherit pub_methods_classiu_1_1LinearMemory"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afe5920aa14f99a2901192c1d32f22b68 inherit pub_methods_classiu_1_1LinearMemory"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classiu_1_1LinearMemory.html#afe5920aa14f99a2901192c1d32f22b68">length</a> () const </td></tr>
-<tr class="separator:afe5920aa14f99a2901192c1d32f22b68 inherit pub_methods_classiu_1_1LinearMemory"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af54fa0ef78b54a98d8725e9d1e16b2ae inherit pub_methods_classiu_1_1LinearMemory"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classiu_1_1Size.html">Size</a>&lt; Ndim &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classiu_1_1LinearMemory.html#af54fa0ef78b54a98d8725e9d1e16b2ae">size</a> () const </td></tr>
 <tr class="separator:af54fa0ef78b54a98d8725e9d1e16b2ae inherit pub_methods_classiu_1_1LinearMemory"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a35e67d0d80007e8bdb314134ba40a529 inherit pub_methods_classiu_1_1LinearMemory"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classiu_1_1Size.html">Size</a>&lt; Ndim &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classiu_1_1LinearMemory.html#a35e67d0d80007e8bdb314134ba40a529">stride</a> () const </td></tr>
@@ -206,13 +209,42 @@ Public Member Functions</h2></td></tr>
 Friends</h2></td></tr>
 <tr class="memitem:a740835f08d82a226c28565500b2b0c7a"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classiu_1_1TensorGpu.html#a740835f08d82a226c28565500b2b0c7a">operator&lt;&lt;</a> (std::ostream &amp;out, <a class="el" href="classiu_1_1TensorGpu.html">TensorGpu</a> const &amp;tensor)</td></tr>
 <tr class="separator:a740835f08d82a226c28565500b2b0c7a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
+Additional Inherited Members</h2></td></tr>
+<tr class="inherit_header pub_static_attribs_classiu_1_1LinearDeviceMemory"><td colspan="2" onclick="javascript:toggleInherit('pub_static_attribs_classiu_1_1LinearDeviceMemory')"><img src="closed.png" alt="-"/>&#160;Static Public Attributes inherited from <a class="el" href="classiu_1_1LinearDeviceMemory.html">iu::LinearDeviceMemory&lt; PixelType, 1 &gt;</a></td></tr>
+<tr class="memitem:a349aa2921091d85e37f24f817ff2d3b3 inherit pub_static_attribs_classiu_1_1LinearDeviceMemory"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a349aa2921091d85e37f24f817ff2d3b3"></a>
+static const unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>ndim</b></td></tr>
+<tr class="separator:a349aa2921091d85e37f24f817ff2d3b3 inherit pub_static_attribs_classiu_1_1LinearDeviceMemory"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pro_methods_classiu_1_1LinearMemory"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classiu_1_1LinearMemory')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classiu_1_1LinearMemory.html">iu::LinearMemory&lt; Ndim &gt;</a></td></tr>
+<tr class="memitem:ae06a76ddd202c3b85537ee234b184578 inherit pro_methods_classiu_1_1LinearMemory"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classiu_1_1LinearMemory.html#ae06a76ddd202c3b85537ee234b184578">computeStride</a> ()</td></tr>
+<tr class="separator:ae06a76ddd202c3b85537ee234b184578 inherit pro_methods_classiu_1_1LinearMemory"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pro_attribs_classiu_1_1LinearMemory"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classiu_1_1LinearMemory')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classiu_1_1LinearMemory.html">iu::LinearMemory&lt; Ndim &gt;</a></td></tr>
+<tr class="memitem:afef7b2cb60316c46869bbb3f143810c0 inherit pro_attribs_classiu_1_1LinearMemory"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classiu_1_1Size.html">Size</a>&lt; Ndim &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classiu_1_1LinearMemory.html#afef7b2cb60316c46869bbb3f143810c0">size_</a></td></tr>
+<tr class="separator:afef7b2cb60316c46869bbb3f143810c0 inherit pro_attribs_classiu_1_1LinearMemory"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;typename PixelType&gt;<br/>
 class iu::TensorGpu&lt; PixelType &gt;</h3>
 
 <p>Device 4D tensor class. </p>
-</div><h2 class="groupheader">Member Enumeration Documentation</h2>
+</div><h2 class="groupheader">Member Typedef Documentation</h2>
+<a class="anchor" id="a54df1fda7dc8df68ad02df0989b79338"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename PixelType&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef PixelType <a class="el" href="classiu_1_1TensorGpu.html">iu::TensorGpu</a>&lt; PixelType &gt;::<a class="el" href="classiu_1_1TensorGpu.html#a54df1fda7dc8df68ad02df0989b79338">pixel_type</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Define the current pixel type. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Enumeration Documentation</h2>
 <a class="anchor" id="ae8eb2338f0d053fe75aaaf32597272c2"></a>
 <div class="memitem">
 <div class="memproto">
@@ -650,7 +682,7 @@ template&lt;typename PixelType&gt; </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Aug 3 2016 08:57:40 for Image Utilities (IU) by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Sep 12 2016 15:28:05 for Image Utilities (IU) by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

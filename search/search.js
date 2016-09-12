@@ -12,10 +12,11 @@ var indexSectionsWithContent =
   2: "i",
   3: "abcdefghiklmnopqrstuvw~",
   4: "cdehlnpstw",
-  5: "m",
-  6: "o",
-  7: "123acfilmopstuv",
-  8: "t"
+  5: "cpr",
+  6: "m",
+  7: "o",
+  8: "123acfilmopstuv",
+  9: "t"
 };
 
 var indexSectionNames =
@@ -25,10 +26,11 @@ var indexSectionNames =
   2: "namespaces",
   3: "functions",
   4: "variables",
-  5: "enums",
-  6: "related",
-  7: "groups",
-  8: "pages"
+  5: "typedefs",
+  6: "enums",
+  7: "related",
+  8: "groups",
+  9: "pages"
 };
 
 function convertToId(search)

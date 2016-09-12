@@ -73,7 +73,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Friends</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Groups</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Friends</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Groups</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(9)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -90,6 +90,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Data Structures</a> &#124;
+<a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a>  </div>
   <div class="headertitle">
 <div class="title">iu::VolumeGpu&lt; PixelType, Allocator &gt; Class Template Reference<div class="ingroups"><a class="el" href="group__Volume.html">Pitched Memory: Volume</a></div></div>  </div>
@@ -116,6 +117,11 @@ Data Structures</h2></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Struct pointer <a class="el" href="structiu_1_1VolumeGpu_1_1KernelData.html" title="Struct pointer KernelData that can be used in CUDA kernels. ">KernelData</a> that can be used in CUDA kernels.  <a href="structiu_1_1VolumeGpu_1_1KernelData.html#details">More...</a><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
+Public Types</h2></td></tr>
+<tr class="memitem:a0a50d05da79d63cb64b03d1f51f7ea6a"><td class="memItemLeft" align="right" valign="top">typedef PixelType&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classiu_1_1VolumeGpu.html#a0a50d05da79d63cb64b03d1f51f7ea6a">pixel_type</a></td></tr>
+<tr class="separator:a0a50d05da79d63cb64b03d1f51f7ea6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ad798a63586435a72fe42ee51d8bd0707"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classiu_1_1VolumeGpu.html#ad798a63586435a72fe42ee51d8bd0707">VolumeGpu</a> ()</td></tr>
@@ -124,8 +130,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:aab6697f32556496a3759b851e15a7240"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a34a88a7c6742366e5a2ae60f814c0423"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classiu_1_1VolumeGpu.html#a34a88a7c6742366e5a2ae60f814c0423">VolumeGpu</a> (unsigned int _width, unsigned int _height, unsigned int _depth)</td></tr>
 <tr class="separator:a34a88a7c6742366e5a2ae60f814c0423"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab938ceddbab5f4705564c617d009900c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classiu_1_1VolumeGpu.html#ab938ceddbab5f4705564c617d009900c">VolumeGpu</a> (const <a class="el" href="classiu_1_1Size_3_013_01_4.html">IuSize</a> &amp;<a class="el" href="classiu_1_1Volume.html#aec4402d7cdd65a1a33817fb8bab28488">size</a>)</td></tr>
-<tr class="separator:ab938ceddbab5f4705564c617d009900c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2a66fb1a8f6e610f42d6ccabc2ba4e2a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classiu_1_1VolumeGpu.html#a2a66fb1a8f6e610f42d6ccabc2ba4e2a">VolumeGpu</a> (const <a class="el" href="classiu_1_1Size.html">iu::Size</a>&lt; 3 &gt; &amp;<a class="el" href="classiu_1_1Volume.html#af3825e2ddcba14d52f6dcb53cda6fed2">size</a>)</td></tr>
+<tr class="separator:a2a66fb1a8f6e610f42d6ccabc2ba4e2a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a189d88bec80652d35ff332fdd4cb20a7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classiu_1_1VolumeGpu.html#a189d88bec80652d35ff332fdd4cb20a7">VolumeGpu</a> (PixelType *_data, unsigned int _width, unsigned int _height, unsigned int _depth, size_t _pitch, bool ext_data_pointer=false)</td></tr>
 <tr class="separator:a189d88bec80652d35ff332fdd4cb20a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a55b014d103e1229f50fb6e91d665b043"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classiu_1_1VolumeGpu.html#a55b014d103e1229f50fb6e91d665b043">bytes</a> () const </td></tr>
@@ -165,12 +171,12 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a97f82d826c3e55a391f75d4120789c01 inherit pub_methods_classiu_1_1Volume"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a82928b043906311f5a595124cf67572f inherit pub_methods_classiu_1_1Volume"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classiu_1_1Volume.html#a82928b043906311f5a595124cf67572f">Volume</a> (unsigned int <a class="el" href="classiu_1_1Volume.html#a43db53c7e17d9019ad484026168df7e0">width</a>, unsigned int <a class="el" href="classiu_1_1Volume.html#ab9a199917e48d2859214fcff128a5d03">height</a>, unsigned int <a class="el" href="classiu_1_1Volume.html#afdc6ace35e8ca199e9730f5735f5af9d">depth</a>)</td></tr>
 <tr class="separator:a82928b043906311f5a595124cf67572f inherit pub_methods_classiu_1_1Volume"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa7ad47ebc86eb1d38c6f9807c3c5db00 inherit pub_methods_classiu_1_1Volume"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classiu_1_1Volume.html#aa7ad47ebc86eb1d38c6f9807c3c5db00">Volume</a> (const <a class="el" href="classiu_1_1Size_3_013_01_4.html">IuSize</a> &amp;<a class="el" href="classiu_1_1Volume.html#aec4402d7cdd65a1a33817fb8bab28488">size</a>)</td></tr>
-<tr class="separator:aa7ad47ebc86eb1d38c6f9807c3c5db00 inherit pub_methods_classiu_1_1Volume"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8a61a5a087be2196c76bc8076b470030 inherit pub_methods_classiu_1_1Volume"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classiu_1_1Volume.html#a8a61a5a087be2196c76bc8076b470030">Volume</a> (const <a class="el" href="classiu_1_1Size.html">iu::Size</a>&lt; 3 &gt; &amp;<a class="el" href="classiu_1_1Volume.html#af3825e2ddcba14d52f6dcb53cda6fed2">size</a>)</td></tr>
+<tr class="separator:a8a61a5a087be2196c76bc8076b470030 inherit pub_methods_classiu_1_1Volume"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a74dd17c49d51eb3237d828794d6ea8ff inherit pub_methods_classiu_1_1Volume"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classiu_1_1Volume.html#a74dd17c49d51eb3237d828794d6ea8ff">sameType</a> (const <a class="el" href="classiu_1_1Volume.html">Volume</a> &amp;from)</td></tr>
 <tr class="separator:a74dd17c49d51eb3237d828794d6ea8ff inherit pub_methods_classiu_1_1Volume"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aec4402d7cdd65a1a33817fb8bab28488 inherit pub_methods_classiu_1_1Volume"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classiu_1_1Size_3_013_01_4.html">IuSize</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classiu_1_1Volume.html#aec4402d7cdd65a1a33817fb8bab28488">size</a> () const </td></tr>
-<tr class="separator:aec4402d7cdd65a1a33817fb8bab28488 inherit pub_methods_classiu_1_1Volume"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af3825e2ddcba14d52f6dcb53cda6fed2 inherit pub_methods_classiu_1_1Volume"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classiu_1_1Size.html">iu::Size</a>&lt; 3 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classiu_1_1Volume.html#af3825e2ddcba14d52f6dcb53cda6fed2">size</a> () const </td></tr>
+<tr class="separator:af3825e2ddcba14d52f6dcb53cda6fed2 inherit pub_methods_classiu_1_1Volume"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a43db53c7e17d9019ad484026168df7e0 inherit pub_methods_classiu_1_1Volume"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classiu_1_1Volume.html#a43db53c7e17d9019ad484026168df7e0">width</a> () const </td></tr>
 <tr class="separator:a43db53c7e17d9019ad484026168df7e0 inherit pub_methods_classiu_1_1Volume"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab9a199917e48d2859214fcff128a5d03 inherit pub_methods_classiu_1_1Volume"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classiu_1_1Volume.html#ab9a199917e48d2859214fcff128a5d03">height</a> () const </td></tr>
@@ -185,7 +191,23 @@ Public Member Functions</h2></td></tr>
 class iu::VolumeGpu&lt; PixelType, Allocator &gt;</h3>
 
 <p>Device 3D volume class (pitched memory). </p>
-</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+</div><h2 class="groupheader">Member Typedef Documentation</h2>
+<a class="anchor" id="a0a50d05da79d63cb64b03d1f51f7ea6a"></a>
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename PixelType, class Allocator&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef PixelType <a class="el" href="classiu_1_1VolumeGpu.html">iu::VolumeGpu</a>&lt; PixelType, Allocator &gt;::<a class="el" href="classiu_1_1VolumeGpu.html#a0a50d05da79d63cb64b03d1f51f7ea6a">pixel_type</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Define the current pixel type. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="ad798a63586435a72fe42ee51d8bd0707"></a>
 <div class="memitem">
 <div class="memproto">
@@ -289,7 +311,7 @@ template&lt;typename PixelType, class Allocator&gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="ab938ceddbab5f4705564c617d009900c"></a>
+<a class="anchor" id="a2a66fb1a8f6e610f42d6ccabc2ba4e2a"></a>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
@@ -301,7 +323,7 @@ template&lt;typename PixelType, class Allocator&gt; </div>
         <tr>
           <td class="memname"><a class="el" href="classiu_1_1VolumeGpu.html">iu::VolumeGpu</a>&lt; PixelType, Allocator &gt;::<a class="el" href="classiu_1_1VolumeGpu.html">VolumeGpu</a> </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classiu_1_1Size_3_013_01_4.html">IuSize</a> &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classiu_1_1Size.html">iu::Size</a>&lt; 3 &gt; &amp;&#160;</td>
           <td class="paramname"><em>size</em></td><td>)</td>
           <td></td>
         </tr>
@@ -824,7 +846,7 @@ template&lt;typename PixelType, class Allocator&gt; </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Aug 3 2016 08:57:40 for Image Utilities (IU) by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Sep 12 2016 15:28:05 for Image Utilities (IU) by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

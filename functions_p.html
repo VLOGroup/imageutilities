@@ -73,6 +73,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li class="current"><a href="functions.html"><span>All</span></a></li>
       <li><a href="functions_func.html"><span>Functions</span></a></li>
       <li><a href="functions_vars.html"><span>Variables</span></a></li>
+      <li><a href="functions_type.html"><span>Typedefs</span></a></li>
       <li><a href="functions_enum.html"><span>Enumerations</span></a></li>
       <li><a href="functions_rela.html"><span>Related&#160;Functions</span></a></li>
     </ul>
@@ -110,7 +111,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Friends</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Groups</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Friends</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Groups</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(9)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -138,17 +139,27 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 : <a class="el" href="classiu_1_1ImageCpu.html#a14fb81f5696091fed6958535033e18c6">iu::ImageCpu&lt; PixelType, Allocator &gt;</a>
 , <a class="el" href="classiu_1_1ImageGpu.html#a0525f9b98d5590298b1020bde7a4750e">iu::ImageGpu&lt; PixelType, Allocator &gt;</a>
 </li>
+<li>pixel_type
+: <a class="el" href="classiu_1_1ImageCpu.html#a8112643b6559832da708f487a7fded22">iu::ImageCpu&lt; PixelType, Allocator &gt;</a>
+, <a class="el" href="classiu_1_1ImageGpu.html#ad95f2fb6fbd3e2e09b56455f4eaac2ea">iu::ImageGpu&lt; PixelType, Allocator &gt;</a>
+, <a class="el" href="classiu_1_1LinearDeviceMemory.html#a6498c451a52af6fd562a40224fcd274a">iu::LinearDeviceMemory&lt; PixelType, Ndim &gt;</a>
+, <a class="el" href="classiu_1_1LinearHostMemory.html#aa3b43ee680f9abf0b64e7329b113776e">iu::LinearHostMemory&lt; PixelType, Ndim &gt;</a>
+, <a class="el" href="classiu_1_1TensorCpu.html#a21cdd3fe3b022e71d1719d2d70636431">iu::TensorCpu&lt; PixelType &gt;</a>
+, <a class="el" href="classiu_1_1TensorGpu.html#a54df1fda7dc8df68ad02df0989b79338">iu::TensorGpu&lt; PixelType &gt;</a>
+, <a class="el" href="classiu_1_1VolumeCpu.html#a5e249f7cc0325ef9e9efaec033900a59">iu::VolumeCpu&lt; PixelType, Allocator &gt;</a>
+, <a class="el" href="classiu_1_1VolumeGpu.html#a0a50d05da79d63cb64b03d1f51f7ea6a">iu::VolumeGpu&lt; PixelType, Allocator &gt;</a>
+</li>
 <li>prepareTexture()
 : <a class="el" href="classiu_1_1ImageGpu.html#a762a50f6225be7629af3adfa6fd61fff">iu::ImageGpu&lt; PixelType, Allocator &gt;</a>
 </li>
 <li>ptr()
-: <a class="el" href="classiu_1_1SizeBase.html#a78207bc26e97d94bf335605ca3162622">iu::SizeBase&lt; Ndim &gt;</a>
+: <a class="el" href="classiu_1_1SizeBase.html#a64f185a1a149541ec6fd7be88f043728">iu::SizeBase&lt; Ndim &gt;</a>
 </li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Aug 3 2016 08:57:43 for Image Utilities (IU) by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Sep 12 2016 15:28:06 for Image Utilities (IU) by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
