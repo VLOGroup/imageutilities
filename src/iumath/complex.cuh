@@ -225,6 +225,42 @@ void multiply(
 }
 
 
+/** Multiply a complex (two channel) image with a real image
+ * \param[in] complex_src1 First complex source image
+ * \param[in] real_src2 Second real source image
+ * \param[out] complex_dst Complex result image
+ *
+ */
+template<template<typename, typename > class PitchedMemoryType, template<
+    typename > class Allocator, typename ComplexPixelType, typename RealPixelType>
+void multiply(
+    PitchedMemoryType<ComplexPixelType, Allocator<ComplexPixelType> >& complex_src1,
+    PitchedMemoryType<RealPixelType, Allocator<RealPixelType> >& real_src2,
+    PitchedMemoryType<ComplexPixelType, Allocator<ComplexPixelType> >& complex_dst)
+{
+  thrust::transform(
+      thrust::make_zip_iterator(
+          thrust::make_tuple(complex_src1.begin(), real_src2.begin())),
+      thrust::make_zip_iterator(
+          thrust::make_tuple(complex_src1.end(), real_src2.end())), complex_dst.begin(),
+                    complex_scale_functor<ComplexPixelType, RealPixelType>());
+}
+
+template<template<typename, unsigned int> class LinearMemoryType, typename ComplexPixelType, typename RealPixelType, unsigned int Ndim>
+void multiply(
+    LinearMemoryType<ComplexPixelType, Ndim>& complex_src1,
+    LinearMemoryType<RealPixelType, Ndim>& real_src2,
+    LinearMemoryType<ComplexPixelType, Ndim>& complex_dst)
+{
+  thrust::transform(
+      thrust::make_zip_iterator(
+          thrust::make_tuple(complex_src1.begin(), real_src2.begin())),
+      thrust::make_zip_iterator(
+          thrust::make_tuple(complex_src1.end(), real_src2.end())), complex_dst.begin(),
+                    complex_scale_functor<ComplexPixelType, RealPixelType>());
+}
+
+
 /** Multiply one complex (two channel) image with the complex conjugate of a second complex image
  * \param[in] complex_src1 First complex source image
  * \param[in] complex_src2 Second complex source image

@@ -59,9 +59,10 @@ public:
    *  @param[in] input Complex input float buffer.
    *  @param[out] output Real output float buffer.
    */
-  inline void exec(fcomplex * input, freal * output)
+  inline void exec(const fcomplex * input, freal * output)
   {
-    IU_CUFFT_SAFE_CALL(cufftExecC2R(plan_, input, output));
+    fcomplex * nonconst_input = const_cast<fcomplex *>(input);
+    IU_CUFFT_SAFE_CALL(cufftExecC2R(plan_, nonconst_input, output));
   }
 
   /** FFT plan execution (float): complex -> complex
@@ -69,27 +70,30 @@ public:
    *  @param[out] output Complex output float buffer.
    *  @param[in] direction CUFFT_FORWARD or CUFFT_INVERSE
    */
-  inline void exec(fcomplex * input, fcomplex * output, int direction)
+  inline void exec(const fcomplex * input, fcomplex * output, int direction)
   {
-    IU_CUFFT_SAFE_CALL(cufftExecC2C(plan_, input, output, direction));
+    fcomplex * nonconst_input = const_cast<fcomplex *>(input);
+    IU_CUFFT_SAFE_CALL(cufftExecC2C(plan_, nonconst_input, output, direction));
   }
 
   /** FFT plan execution (float): real -> complex
    *  @param[in] input Real input float buffer.
    *  @param[out] output Complex output float buffer.
    */
-  inline void exec(freal * input, fcomplex * output)
+  inline void exec(const freal * input, fcomplex * output)
   {
-    IU_CUFFT_SAFE_CALL(cufftExecR2C(plan_, input, output));
+    freal * nonconst_input = const_cast<freal *>(input);
+    IU_CUFFT_SAFE_CALL(cufftExecR2C(plan_, nonconst_input, output));
   }
 
   /** FFT plan execution (double): complex -> real
    *  @param[in] input Complex input double buffer.
    *  @param[out] output Real output double buffer.
    */
-  inline void exec(dcomplex * input, dreal * output)
+  inline void exec(const dcomplex * input, dreal * output)
   {
-    IU_CUFFT_SAFE_CALL(cufftExecZ2D(plan_, input, output));
+    dcomplex * nonconst_input = const_cast<dcomplex *>(input);
+    IU_CUFFT_SAFE_CALL(cufftExecZ2D(plan_, nonconst_input, output));
   }
 
   /** FFT plan execution (double): complex -> complex
@@ -97,18 +101,20 @@ public:
    *  @param[out] output Complex output double buffer.
    *  @param[in] direction CUFFT_FORWARD or CUFFT_INVERSE
    */
-  inline void exec(dcomplex * input, dcomplex * output, int direction)
+  inline void exec(const dcomplex * input, dcomplex * output, int direction)
   {
-    IU_CUFFT_SAFE_CALL(cufftExecZ2Z(plan_, input, output, direction));
+    dcomplex * nonconst_input = const_cast<dcomplex *>(input);
+    IU_CUFFT_SAFE_CALL(cufftExecZ2Z(plan_, nonconst_input, output, direction));
   }
 
   /** FFT plan execution (double): real -> complex
    *  @param[in] input Real input double buffer.
    *  @param[out] output Complex output double buffer.
    */
-  inline void exec(dreal * input, dcomplex * output)
+  inline void exec(const dreal * input, dcomplex * output)
   {
-    IU_CUFFT_SAFE_CALL(cufftExecD2Z(plan_, input, output));
+    dreal * nonconst_input = const_cast<dreal *>(input);
+    IU_CUFFT_SAFE_CALL(cufftExecD2Z(plan_, nonconst_input, output));
   }
 
 private:

@@ -24,7 +24,7 @@ namespace fft {
  *  @param dst Destination image
  */
 template<typename PixelType, class Allocator>
-void fftshift2(iu::ImageGpu<PixelType, Allocator>& src,
+void fftshift2(const iu::ImageGpu<PixelType, Allocator>& src,
                iu::ImageGpu<PixelType, Allocator>& dst)
 {
   dim3 dimBlock(COMMON_BLOCK_SIZE_X, COMMON_BLOCK_SIZE_Y, 1);
@@ -42,7 +42,7 @@ void fftshift2(iu::ImageGpu<PixelType, Allocator>& src,
  *  @param dst Destination volume
  */
 template<typename PixelType, class Allocator>
-void fftshift2(iu::VolumeGpu<PixelType, Allocator>& src,
+void fftshift2(const iu::VolumeGpu<PixelType, Allocator>& src,
                iu::VolumeGpu<PixelType, Allocator>& dst)
 {
   dim3 dimBlock(COMMON_BLOCK_SIZE_X, COMMON_BLOCK_SIZE_Y, COMMON_BLOCK_SIZE_Z);
@@ -62,7 +62,7 @@ void fftshift2(iu::VolumeGpu<PixelType, Allocator>& src,
  */
 template<typename PixelType, unsigned int Ndim, typename ResultType = void>
 typename std::enable_if<(Ndim == 2), ResultType>::type fftshift2(
-    iu::LinearDeviceMemory<PixelType, Ndim>& src,
+    const iu::LinearDeviceMemory<PixelType, Ndim>& src,
     iu::LinearDeviceMemory<PixelType, Ndim>& dst)
 {
   dim3 dimBlock(COMMON_BLOCK_SIZE_X, COMMON_BLOCK_SIZE_Y, 1);
@@ -81,7 +81,7 @@ typename std::enable_if<(Ndim == 2), ResultType>::type fftshift2(
  */
 template<typename PixelType, unsigned int Ndim, typename ResultType = void>
 typename std::enable_if<(Ndim > 2), ResultType>::type fftshift2(
-    iu::LinearDeviceMemory<PixelType, Ndim>& src,
+    const iu::LinearDeviceMemory<PixelType, Ndim>& src,
     iu::LinearDeviceMemory<PixelType, Ndim>& dst)
 {
   dim3 dimBlock(COMMON_BLOCK_SIZE_X, COMMON_BLOCK_SIZE_Y, COMMON_BLOCK_SIZE_Z);
@@ -101,7 +101,7 @@ typename std::enable_if<(Ndim > 2), ResultType>::type fftshift2(
  *  @param dst Destination image
  */
 template<typename PixelType, class Allocator>
-void ifftshift2(iu::ImageGpu<PixelType, Allocator>& src,
+void ifftshift2(const iu::ImageGpu<PixelType, Allocator>& src,
                 iu::ImageGpu<PixelType, Allocator>& dst)
 {
   dim3 dimBlock(COMMON_BLOCK_SIZE_X, COMMON_BLOCK_SIZE_Y, 1);
@@ -119,7 +119,7 @@ void ifftshift2(iu::ImageGpu<PixelType, Allocator>& src,
  *  @param dst Destination volume
  */
 template<typename PixelType, class Allocator>
-void ifftshift2(iu::VolumeGpu<PixelType, Allocator>& src,
+void ifftshift2(const iu::VolumeGpu<PixelType, Allocator>& src,
                 iu::VolumeGpu<PixelType, Allocator>& dst)
 {
   dim3 dimBlock(COMMON_BLOCK_SIZE_X, COMMON_BLOCK_SIZE_Y, COMMON_BLOCK_SIZE_Z);
@@ -139,7 +139,7 @@ void ifftshift2(iu::VolumeGpu<PixelType, Allocator>& src,
  */
 template<typename PixelType, unsigned int Ndim, typename ResultType = void>
 typename std::enable_if<(Ndim == 2), ResultType>::type ifftshift2(
-    iu::LinearDeviceMemory<PixelType, Ndim>& src,
+    const iu::LinearDeviceMemory<PixelType, Ndim>& src,
     iu::LinearDeviceMemory<PixelType, Ndim>& dst)
 {
   dim3 dimBlock(COMMON_BLOCK_SIZE_X, COMMON_BLOCK_SIZE_Y, 1);
@@ -158,7 +158,7 @@ typename std::enable_if<(Ndim == 2), ResultType>::type ifftshift2(
  */
 template<typename PixelType, unsigned int Ndim, typename ResultType = void>
 typename std::enable_if<(Ndim > 2), ResultType>::type ifftshift2(
-    iu::LinearDeviceMemory<PixelType, Ndim>& src,
+    const iu::LinearDeviceMemory<PixelType, Ndim>& src,
     iu::LinearDeviceMemory<PixelType, Ndim>& dst)
 {
   dim3 dimBlock(COMMON_BLOCK_SIZE_X, COMMON_BLOCK_SIZE_Y, COMMON_BLOCK_SIZE_Z);
@@ -182,7 +182,7 @@ typename std::enable_if<(Ndim > 2), ResultType>::type ifftshift2(
  */
 template<template<typename, typename > class PitchedMemoryType, template<
     typename > class Allocator, typename ComplexType>
-void fft2(PitchedMemoryType<ComplexType, Allocator<ComplexType> >& src,
+void fft2(const PitchedMemoryType<ComplexType, Allocator<ComplexType> >& src,
           PitchedMemoryType<ComplexType, Allocator<ComplexType> >& dst,
           bool scale_sqrt = false)
 {
@@ -212,7 +212,7 @@ void fft2(PitchedMemoryType<ComplexType, Allocator<ComplexType> >& src,
  */
 template<template<typename, unsigned int> class LinearMemoryType,
     typename ComplexType, unsigned int Ndim>
-void fft2(LinearMemoryType<ComplexType, Ndim>& src,
+void fft2(const LinearMemoryType<ComplexType, Ndim>& src,
           LinearMemoryType<ComplexType, Ndim>& dst, bool scale_sqrt = false)
 {
   IU_SIZE_CHECK(&src, &dst);
@@ -246,7 +246,7 @@ template<template<typename, typename > class PitchedMemoryType, template<
 typename std::enable_if<
     std::is_same<InputType, float>::value
         || std::is_same<InputType, double>::value, void>::type fft2(
-    PitchedMemoryType<InputType, Allocator<InputType> >& src,
+    const PitchedMemoryType<InputType, Allocator<InputType> >& src,
     PitchedMemoryType<OutputType, Allocator<OutputType> >& dst,
     bool scale_sqrt = false)
 {
@@ -294,7 +294,7 @@ template<template<typename, unsigned int> class LinearMemoryType,
 typename std::enable_if<
     std::is_same<InputType, float>::value
         || std::is_same<InputType, double>::value, void>::type fft2(
-    LinearMemoryType<InputType, Ndim>& src,
+    const LinearMemoryType<InputType, Ndim>& src,
     LinearMemoryType<OutputType, Ndim>& dst, bool scale_sqrt = false)
 {
   iu::Size<Ndim> halfsize = src.size();
@@ -379,7 +379,7 @@ typename std::enable_if<
   */
 template<template<typename, typename > class PitchedMemoryType, template<
     typename > class Allocator, typename ComplexType>
-void ifft2(PitchedMemoryType<ComplexType, Allocator<ComplexType> >& src,
+void ifft2(const PitchedMemoryType<ComplexType, Allocator<ComplexType> >& src,
            PitchedMemoryType<ComplexType, Allocator<ComplexType> >& dst,
            bool scale_sqrt = false)
 {
@@ -416,7 +416,7 @@ void ifft2(PitchedMemoryType<ComplexType, Allocator<ComplexType> >& src,
  */
 template<template<typename, unsigned int> class LinearMemoryType,
     typename ComplexType, unsigned int Ndim>
-void ifft2(LinearMemoryType<ComplexType, Ndim>& src,
+void ifft2(const LinearMemoryType<ComplexType, Ndim>& src,
            LinearMemoryType<ComplexType, Ndim>& dst, bool scale_sqrt = false)
 {
   IU_SIZE_CHECK(&src, &dst);
@@ -510,7 +510,7 @@ void ifft2(LinearMemoryType<ComplexType, Ndim>& src,
 typename std::enable_if<
     std::is_same<InputType, float2>::value
         || std::is_same<InputType, double2>::value, void>::type ifft2(
-    PitchedMemoryType<InputType, Allocator<InputType> >& src,
+    const PitchedMemoryType<InputType, Allocator<InputType> >& src,
     PitchedMemoryType<OutputType, Allocator<OutputType> >& dst,
     bool scale_sqrt = false)
 {
@@ -563,7 +563,7 @@ template<template<typename, unsigned int> class LinearMemoryType,
 typename std::enable_if<
     std::is_same<InputType, float2>::value
         || std::is_same<InputType, double2>::value, void>::type ifft2(
-    LinearMemoryType<InputType, Ndim>& src,
+    const LinearMemoryType<InputType, Ndim>& src,
     LinearMemoryType<OutputType, Ndim>& dst, bool scale_sqrt = false)
 {
   iu::Size<Ndim> halfsize = dst.size();
@@ -610,13 +610,14 @@ typename std::enable_if<
  */
 template<template<typename, typename > class PitchedMemoryType, template<
     typename > class Allocator, typename ComplexType>
-void fft2c(PitchedMemoryType<ComplexType, Allocator<ComplexType> >& src,
+void fft2c(const PitchedMemoryType<ComplexType, Allocator<ComplexType> >& src,
            PitchedMemoryType<ComplexType, Allocator<ComplexType> >& dst,
            bool scale_sqrt = false)
 {
+  PitchedMemoryType<ComplexType, Allocator<ComplexType> > tmp(src.size());
   ifftshift2(src, dst);
-  fft2(dst, src, scale_sqrt);
-  fftshift2(src, dst);
+  fft2(dst, tmp, scale_sqrt);
+  fftshift2(tmp, dst);
 }
 
 /** \brief centered 2d complex-to-complex fft for linear memory types.
@@ -631,12 +632,13 @@ void fft2c(PitchedMemoryType<ComplexType, Allocator<ComplexType> >& src,
  */
 template<template<typename, unsigned int> class LinearMemoryType,
     typename ComplexType, unsigned int Ndim>
-void fft2c(LinearMemoryType<ComplexType, Ndim>& src,
+void fft2c(const LinearMemoryType<ComplexType, Ndim>& src,
            LinearMemoryType<ComplexType, Ndim>& dst, bool scale_sqrt = false)
 {
+  LinearMemoryType<ComplexType, Ndim> tmp(src.size());
   ifftshift2(src, dst);
-  fft2(dst, src, scale_sqrt);
-  fftshift2(src, dst);
+  fft2(dst, tmp, scale_sqrt);
+  fftshift2(tmp, dst);
 }
 
 /** \brief centered 2d complex-to-complex ifft for pitched memory types.
@@ -651,13 +653,14 @@ void fft2c(LinearMemoryType<ComplexType, Ndim>& src,
  */
 template<template<typename, typename > class PitchedMemoryType, template<
     typename > class Allocator, typename ComplexType>
-void ifft2c(PitchedMemoryType<ComplexType, Allocator<ComplexType> >& src,
+void ifft2c(const PitchedMemoryType<ComplexType, Allocator<ComplexType> >& src,
             PitchedMemoryType<ComplexType, Allocator<ComplexType> >& dst,
             bool scale_sqrt = false)
 {
+  PitchedMemoryType<ComplexType, Allocator<ComplexType> > tmp(src.size());
   ifftshift2(src, dst);
-  ifft2(dst, src, scale_sqrt);
-  fftshift2(src, dst);
+  ifft2(dst, tmp, scale_sqrt);
+  fftshift2(tmp, dst);
 }
 
 /** \brief centered 2d complex-to-complex ifft for linear memory types.
@@ -672,12 +675,13 @@ void ifft2c(PitchedMemoryType<ComplexType, Allocator<ComplexType> >& src,
  */
 template<template<typename, unsigned int> class LinearMemoryType,
     typename ComplexType, unsigned int Ndim>
-void ifft2c(LinearMemoryType<ComplexType, Ndim>& src,
+void ifft2c(const LinearMemoryType<ComplexType, Ndim>& src,
             LinearMemoryType<ComplexType, Ndim>& dst, bool scale_sqrt = false)
 {
+  LinearMemoryType<ComplexType, Ndim> tmp(src.size());
   ifftshift2(src, dst);
-  ifft2(dst, src, scale_sqrt);
-  fftshift2(src, dst);
+  ifft2(dst, tmp, scale_sqrt);
+  fftshift2(tmp, dst);
 }
 
 } /* namespace fft */
