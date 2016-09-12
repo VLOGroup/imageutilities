@@ -459,7 +459,7 @@ LinearHostMemory<PixelType, Ndim>::LinearHostMemory(boost::python::object &py_ar
     }
 
     this->size_ = size;
-
+    this->computeStride();
 //    npy_intp* strides = PyArray_STRIDES(py_img);
 //
 //    if (strides[1] != sizeof(PixelType))

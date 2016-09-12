@@ -161,10 +161,6 @@ protected:
   /** size of the memory.*/
   Size<Ndim> size_;
 
-private:
-  /** Stride of the memory. First dimension is always one.*/
-  Size<Ndim> stride_;
-
   /** Compute the strides of the memory*/
   void computeStride()
   {
@@ -176,6 +172,10 @@ private:
         stride_[i] = stride_[i - 1] * size_[i - 1];
     }
   }
+
+private:
+  /** Stride of the memory. First dimension is always one.*/
+  Size<Ndim> stride_;
 
 private:
   /** Private copy constructor. */

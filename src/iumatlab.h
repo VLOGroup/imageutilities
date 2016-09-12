@@ -243,6 +243,8 @@ LinearHostMemory<PixelType, Ndim>::LinearHostMemory(
     this->size_[i] = matlab_size[i];
   }
 
+  this->computeStride();
+
   // Allocate data
   data_ = (PixelType*) malloc(this->numel() * sizeof(PixelType));
   if (data_ == 0)
