@@ -13,6 +13,12 @@ namespace iu {
 
 namespace matlab {
 
+/** \defgroup IuMatlab iumatlab
+ * \brief Interface to matlab. Contains functions to convert between ImageUtilities classes and
+ * matlab (mex) objects.
+ * \{
+ */
+
 template<typename PixelType>
 struct dtype
 {
@@ -42,6 +48,10 @@ struct dtype<double2>
   static const mxComplexity matlab_type = mxCOMPLEX;
 };
 
+/** @brief Get matlab dimensions
+  * @param[in] iu::Size iu size
+  * @param[out] dims Matlab dimensions
+  */
 template<unsigned int Ndim>
 void getMatlabDims(const iu::Size<Ndim> size, mwSize *dims)
 {
@@ -54,6 +64,10 @@ void getMatlabDims(const iu::Size<Ndim> size, mwSize *dims)
   }
 }
 
+/** @brief Convert Matlab mex array to linear host memory (complex images)
+  * @param[in] mex_array Mex array
+  * @param[out] hostmem LinearHostMemory
+  */
 template<typename PixelType, unsigned int Ndim, typename ResultType = void>
 typename std::enable_if<
     std::is_same<PixelType, typename iu::type_trait<PixelType>::complex_type>::value,
@@ -95,6 +109,10 @@ typename std::enable_if<
   }
 }
 
+/** @brief Convert Matlab mex array to linear host memory (real images)
+  * @param[in] mex_array Mex array
+  * @param[out] hostmem LinearHostMemory
+  */
 template<typename PixelType, unsigned int Ndim, typename ResultType = void>
 typename std::enable_if<
     std::is_same<PixelType, typename iu::type_trait<PixelType>::real_type>::value,
@@ -133,6 +151,10 @@ typename std::enable_if<
   }
 }
 
+/** @brief Convert LinearHostMemory to mex array (complex images)
+  * @param[in] hostmem LinearHostMemory
+  * @param[out] mex_array Mex array
+  */
 template<typename PixelType, unsigned int Ndim, typename ResultType = void>
 typename std::enable_if<
     std::is_same<PixelType, typename iu::type_trait<PixelType>::complex_type>::value,
@@ -176,6 +198,10 @@ typename std::enable_if<
   mxSetPi(mex_array, output_imag);
 }
 
+/** @brief Convert LinearHostMemory to mex array (real images)
+  * @param[in] hostmem LinearHostMemory
+  * @param[out] mex_array Mex array
+  */
 template<typename PixelType, unsigned int Ndim, typename ResultType = void>
 typename std::enable_if<
     std::is_same<PixelType, typename iu::type_trait<PixelType>::real_type>::value,
@@ -214,8 +240,17 @@ typename std::enable_if<
 
   mxSetPr(mex_array, output_real);
 }
-}
 
+/** \} */ // end of iumatlab
+
+}  // end of namespace matlab
+
+/** \ingroup IuMatlab
+ *  \{ */
+
+/** @brief Special LinearHostMemory constructor
+  * @param mex_array Mex array
+  */
 template<typename PixelType, unsigned int Ndim>
 LinearHostMemory<PixelType, Ndim>::LinearHostMemory(
     const mxArray_tag& mex_array) :
@@ -253,5 +288,8 @@ LinearHostMemory<PixelType, Ndim>::LinearHostMemory(
   // convert Matlab to C
   matlab::convertMatlabToC(mex_array, *this);
 }
-}
+
+/** \} */ // end of ingroup IuMatlab
+
+} // end of namespace iu
 

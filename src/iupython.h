@@ -360,6 +360,9 @@ namespace iu {
 /** \ingroup IuPython
  *  \{ */
 
+/** @brief Special ImageCpu constructor
+  * @param py_arr Python array
+  */
 template<typename PixelType, class Allocator>
 ImageCpu<PixelType, Allocator>::ImageCpu(boost::python::object &py_arr) : data_(0), pitch_(0), ext_data_pointer_(true)
 {
@@ -438,6 +441,9 @@ ImageCpu<PixelType, Allocator>::ImageCpu(boost::python::object &py_arr) : data_(
     data_ = reinterpret_cast<PixelType*>(PyArray_DATA(py_img));
 }
 
+/** @brief Special LinearHostMemory constructor
+  * @param py_arr Python array
+  */
 template<typename PixelType, unsigned int Ndim>
 LinearHostMemory<PixelType, Ndim>::LinearHostMemory(boost::python::object &py_arr) : data_(0), ext_data_pointer_(true)
 {

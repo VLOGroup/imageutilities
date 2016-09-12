@@ -8,6 +8,8 @@ Installation
 - Set up environment variable `CUDA_SDK_ROOT_DIR` to point to the NVidia CUDA examples
 - Set up environment vaiable `IMAGEUTILITIES_ROOT` to point to the path of this directory
 
+- To use the matlab wrapper, set up environment vaiable `MATLAB_ROOT` to point to matlab root directory
+
 To build simply perform the following steps:
 
 ~~~
