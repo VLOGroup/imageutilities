@@ -1577,137 +1577,137 @@ namespace fft {
  * \param[in] src source
  * \param[out] dst destination
  */
-IUMATH_DLLAPI void fftshift2(iu::ImageGpu_32f_C1& src, iu::ImageGpu_32f_C1& dst);
-IUMATH_DLLAPI void fftshift2(iu::ImageGpu_32f_C2& src, iu::ImageGpu_32f_C2& dst);
-IUMATH_DLLAPI void fftshift2(iu::VolumeGpu_32f_C1& src, iu::VolumeGpu_32f_C1& dst);
-IUMATH_DLLAPI void fftshift2(iu::VolumeGpu_32f_C2& src, iu::VolumeGpu_32f_C2& dst);
-IUMATH_DLLAPI void fftshift2(iu::LinearDeviceMemory<float, 2>& src, iu::LinearDeviceMemory<float, 2>& dst);
-IUMATH_DLLAPI void fftshift2(iu::LinearDeviceMemory<float2, 2>& src, iu::LinearDeviceMemory<float2, 2>& dst);
-IUMATH_DLLAPI void fftshift2(iu::LinearDeviceMemory<float, 3>& src, iu::LinearDeviceMemory<float, 3>& dst);
-IUMATH_DLLAPI void fftshift2(iu::LinearDeviceMemory<float2, 3>& src, iu::LinearDeviceMemory<float2, 3>& dst);
-IUMATH_DLLAPI void fftshift2(iu::LinearDeviceMemory<float, 4>& src, iu::LinearDeviceMemory<float, 4>& dst);
-IUMATH_DLLAPI void fftshift2(iu::LinearDeviceMemory<float2, 4>& src, iu::LinearDeviceMemory<float2, 4>& dst);
+IUMATH_DLLAPI void fftshift2(const iu::ImageGpu_32f_C1& src, iu::ImageGpu_32f_C1& dst);
+IUMATH_DLLAPI void fftshift2(const iu::ImageGpu_32f_C2& src, iu::ImageGpu_32f_C2& dst);
+IUMATH_DLLAPI void fftshift2(const iu::VolumeGpu_32f_C1& src, iu::VolumeGpu_32f_C1& dst);
+IUMATH_DLLAPI void fftshift2(const iu::VolumeGpu_32f_C2& src, iu::VolumeGpu_32f_C2& dst);
+IUMATH_DLLAPI void fftshift2(const iu::LinearDeviceMemory<float, 2>& src, iu::LinearDeviceMemory<float, 2>& dst);
+IUMATH_DLLAPI void fftshift2(const iu::LinearDeviceMemory<float2, 2>& src, iu::LinearDeviceMemory<float2, 2>& dst);
+IUMATH_DLLAPI void fftshift2(const iu::LinearDeviceMemory<float, 3>& src, iu::LinearDeviceMemory<float, 3>& dst);
+IUMATH_DLLAPI void fftshift2(const iu::LinearDeviceMemory<float2, 3>& src, iu::LinearDeviceMemory<float2, 3>& dst);
+IUMATH_DLLAPI void fftshift2(const iu::LinearDeviceMemory<float, 4>& src, iu::LinearDeviceMemory<float, 4>& dst);
+IUMATH_DLLAPI void fftshift2(const iu::LinearDeviceMemory<float2, 4>& src, iu::LinearDeviceMemory<float2, 4>& dst);
 
-IUMATH_DLLAPI void fftshift2(iu::ImageGpu_64f_C1& src, iu::ImageGpu_64f_C1& dst);
-IUMATH_DLLAPI void fftshift2(iu::ImageGpu_64f_C2& src, iu::ImageGpu_64f_C2& dst);
-IUMATH_DLLAPI void fftshift2(iu::VolumeGpu_64f_C1& src, iu::VolumeGpu_64f_C1& dst);
-IUMATH_DLLAPI void fftshift2(iu::VolumeGpu_64f_C2& src, iu::VolumeGpu_64f_C2& dst);
-IUMATH_DLLAPI void fftshift2(iu::LinearDeviceMemory<double, 2>& src, iu::LinearDeviceMemory<double, 2>& dst);
-IUMATH_DLLAPI void fftshift2(iu::LinearDeviceMemory<double2, 2>& src, iu::LinearDeviceMemory<double2, 2>& dst);
-IUMATH_DLLAPI void fftshift2(iu::LinearDeviceMemory<double, 3>& src, iu::LinearDeviceMemory<double, 3>& dst);
-IUMATH_DLLAPI void fftshift2(iu::LinearDeviceMemory<double2, 3>& src, iu::LinearDeviceMemory<double2, 3>& dst);
-IUMATH_DLLAPI void fftshift2(iu::LinearDeviceMemory<double, 4>& src, iu::LinearDeviceMemory<double, 4>& dst);
-IUMATH_DLLAPI void fftshift2(iu::LinearDeviceMemory<double2, 4>& src, iu::LinearDeviceMemory<double2, 4>& dst);
+IUMATH_DLLAPI void fftshift2(const iu::ImageGpu_64f_C1& src, iu::ImageGpu_64f_C1& dst);
+IUMATH_DLLAPI void fftshift2(const iu::ImageGpu_64f_C2& src, iu::ImageGpu_64f_C2& dst);
+IUMATH_DLLAPI void fftshift2(const iu::VolumeGpu_64f_C1& src, iu::VolumeGpu_64f_C1& dst);
+IUMATH_DLLAPI void fftshift2(const iu::VolumeGpu_64f_C2& src, iu::VolumeGpu_64f_C2& dst);
+IUMATH_DLLAPI void fftshift2(const iu::LinearDeviceMemory<double, 2>& src, iu::LinearDeviceMemory<double, 2>& dst);
+IUMATH_DLLAPI void fftshift2(const iu::LinearDeviceMemory<double2, 2>& src, iu::LinearDeviceMemory<double2, 2>& dst);
+IUMATH_DLLAPI void fftshift2(const iu::LinearDeviceMemory<double, 3>& src, iu::LinearDeviceMemory<double, 3>& dst);
+IUMATH_DLLAPI void fftshift2(const iu::LinearDeviceMemory<double2, 3>& src, iu::LinearDeviceMemory<double2, 3>& dst);
+IUMATH_DLLAPI void fftshift2(const iu::LinearDeviceMemory<double, 4>& src, iu::LinearDeviceMemory<double, 4>& dst);
+IUMATH_DLLAPI void fftshift2(const iu::LinearDeviceMemory<double2, 4>& src, iu::LinearDeviceMemory<double2, 4>& dst);
 
 /** Compute the ifftshift2
  * \param[in] src source
  * \param[out] dst destination
  */
-IUMATH_DLLAPI void ifftshift2(iu::ImageGpu_32f_C1& src, iu::ImageGpu_32f_C1& dst);
-IUMATH_DLLAPI void ifftshift2(iu::ImageGpu_32f_C2& src, iu::ImageGpu_32f_C2& dst);
-IUMATH_DLLAPI void ifftshift2(iu::VolumeGpu_32f_C1& src, iu::VolumeGpu_32f_C1& dst);
-IUMATH_DLLAPI void ifftshift2(iu::VolumeGpu_32f_C2& src, iu::VolumeGpu_32f_C2& dst);
-IUMATH_DLLAPI void ifftshift2(iu::LinearDeviceMemory<float, 2>& src, iu::LinearDeviceMemory<float, 2>& dst);
-IUMATH_DLLAPI void ifftshift2(iu::LinearDeviceMemory<float2, 2>& src, iu::LinearDeviceMemory<float2, 2>& dst);
-IUMATH_DLLAPI void ifftshift2(iu::LinearDeviceMemory<float, 3>& src, iu::LinearDeviceMemory<float, 3>& dst);
-IUMATH_DLLAPI void ifftshift2(iu::LinearDeviceMemory<float2, 3>& src, iu::LinearDeviceMemory<float2, 3>& dst);
-IUMATH_DLLAPI void ifftshift2(iu::LinearDeviceMemory<float, 4>& src, iu::LinearDeviceMemory<float, 4>& dst);
-IUMATH_DLLAPI void ifftshift2(iu::LinearDeviceMemory<float2, 4>& src, iu::LinearDeviceMemory<float2, 4>& dst);
+IUMATH_DLLAPI void ifftshift2(const iu::ImageGpu_32f_C1& src, iu::ImageGpu_32f_C1& dst);
+IUMATH_DLLAPI void ifftshift2(const iu::ImageGpu_32f_C2& src, iu::ImageGpu_32f_C2& dst);
+IUMATH_DLLAPI void ifftshift2(const iu::VolumeGpu_32f_C1& src, iu::VolumeGpu_32f_C1& dst);
+IUMATH_DLLAPI void ifftshift2(const iu::VolumeGpu_32f_C2& src, iu::VolumeGpu_32f_C2& dst);
+IUMATH_DLLAPI void ifftshift2(const iu::LinearDeviceMemory<float, 2>& src, iu::LinearDeviceMemory<float, 2>& dst);
+IUMATH_DLLAPI void ifftshift2(const iu::LinearDeviceMemory<float2, 2>& src, iu::LinearDeviceMemory<float2, 2>& dst);
+IUMATH_DLLAPI void ifftshift2(const iu::LinearDeviceMemory<float, 3>& src, iu::LinearDeviceMemory<float, 3>& dst);
+IUMATH_DLLAPI void ifftshift2(const iu::LinearDeviceMemory<float2, 3>& src, iu::LinearDeviceMemory<float2, 3>& dst);
+IUMATH_DLLAPI void ifftshift2(const iu::LinearDeviceMemory<float, 4>& src, iu::LinearDeviceMemory<float, 4>& dst);
+IUMATH_DLLAPI void ifftshift2(const iu::LinearDeviceMemory<float2, 4>& src, iu::LinearDeviceMemory<float2, 4>& dst);
 
-IUMATH_DLLAPI void ifftshift2(iu::ImageGpu_64f_C1& src, iu::ImageGpu_64f_C1& dst);
-IUMATH_DLLAPI void ifftshift2(iu::ImageGpu_64f_C2& src, iu::ImageGpu_64f_C2& dst);
-IUMATH_DLLAPI void ifftshift2(iu::VolumeGpu_64f_C1& src, iu::VolumeGpu_64f_C1& dst);
-IUMATH_DLLAPI void ifftshift2(iu::VolumeGpu_64f_C2& src, iu::VolumeGpu_64f_C2& dst);
-IUMATH_DLLAPI void ifftshift2(iu::LinearDeviceMemory<double, 2>& src, iu::LinearDeviceMemory<double, 2>& dst);
-IUMATH_DLLAPI void ifftshift2(iu::LinearDeviceMemory<double2, 2>& src, iu::LinearDeviceMemory<double2, 2>& dst);
-IUMATH_DLLAPI void ifftshift2(iu::LinearDeviceMemory<double, 3>& src, iu::LinearDeviceMemory<double, 3>& dst);
-IUMATH_DLLAPI void ifftshift2(iu::LinearDeviceMemory<double2, 3>& src, iu::LinearDeviceMemory<double2, 3>& dst);
-IUMATH_DLLAPI void ifftshift2(iu::LinearDeviceMemory<double, 4>& src, iu::LinearDeviceMemory<double, 4>& dst);
-IUMATH_DLLAPI void ifftshift2(iu::LinearDeviceMemory<double2, 4>& src, iu::LinearDeviceMemory<double2, 4>& dst);
+IUMATH_DLLAPI void ifftshift2(const iu::ImageGpu_64f_C1& src, iu::ImageGpu_64f_C1& dst);
+IUMATH_DLLAPI void ifftshift2(const iu::ImageGpu_64f_C2& src, iu::ImageGpu_64f_C2& dst);
+IUMATH_DLLAPI void ifftshift2(const iu::VolumeGpu_64f_C1& src, iu::VolumeGpu_64f_C1& dst);
+IUMATH_DLLAPI void ifftshift2(const iu::VolumeGpu_64f_C2& src, iu::VolumeGpu_64f_C2& dst);
+IUMATH_DLLAPI void ifftshift2(const iu::LinearDeviceMemory<double, 2>& src, iu::LinearDeviceMemory<double, 2>& dst);
+IUMATH_DLLAPI void ifftshift2(const iu::LinearDeviceMemory<double2, 2>& src, iu::LinearDeviceMemory<double2, 2>& dst);
+IUMATH_DLLAPI void ifftshift2(const iu::LinearDeviceMemory<double, 3>& src, iu::LinearDeviceMemory<double, 3>& dst);
+IUMATH_DLLAPI void ifftshift2(const iu::LinearDeviceMemory<double2, 3>& src, iu::LinearDeviceMemory<double2, 3>& dst);
+IUMATH_DLLAPI void ifftshift2(const iu::LinearDeviceMemory<double, 4>& src, iu::LinearDeviceMemory<double, 4>& dst);
+IUMATH_DLLAPI void ifftshift2(const iu::LinearDeviceMemory<double2, 4>& src, iu::LinearDeviceMemory<double2, 4>& dst);
 
 /** Compute the (batched) fft2
  * \param[in] src source
  * \param[out] dst destination
  */
-IUMATH_DLLAPI void fft2(iu::ImageGpu_32f_C2& src, iu::ImageGpu_32f_C2& dst, bool scale_sqrt=false);
-IUMATH_DLLAPI void fft2(iu::VolumeGpu_32f_C2& src, iu::VolumeGpu_32f_C2& dst, bool scale_sqrt=false);
-IUMATH_DLLAPI void fft2(iu::ImageGpu_32f_C1& src, iu::ImageGpu_32f_C2& dst, bool scale_sqrt=false);
-IUMATH_DLLAPI void fft2(iu::VolumeGpu_32f_C1& src, iu::VolumeGpu_32f_C2& dst, bool scale_sqrt=false);
-IUMATH_DLLAPI void fft2(iu::LinearDeviceMemory<float2, 2>& src, iu::LinearDeviceMemory<float2, 2>& dst, bool scale_sqrt=false);
-IUMATH_DLLAPI void fft2(iu::LinearDeviceMemory<float2, 3>& src, iu::LinearDeviceMemory<float2, 3>& dst, bool scale_sqrt=false);
-IUMATH_DLLAPI void fft2(iu::LinearDeviceMemory<float2, 4>& src, iu::LinearDeviceMemory<float2, 4>& dst, bool scale_sqrt=false);
-IUMATH_DLLAPI void fft2(iu::LinearDeviceMemory<float, 2>& src, iu::LinearDeviceMemory<float2, 2>& dst, bool scale_sqrt=false);
-IUMATH_DLLAPI void fft2(iu::LinearDeviceMemory<float, 3>& src, iu::LinearDeviceMemory<float2, 3>& dst, bool scale_sqrt=false);
-IUMATH_DLLAPI void fft2(iu::LinearDeviceMemory<float, 4>& src, iu::LinearDeviceMemory<float2, 4>& dst, bool scale_sqrt=false);
+IUMATH_DLLAPI void fft2(const iu::ImageGpu_32f_C2& src, iu::ImageGpu_32f_C2& dst, bool scale_sqrt=false);
+IUMATH_DLLAPI void fft2(const iu::VolumeGpu_32f_C2& src, iu::VolumeGpu_32f_C2& dst, bool scale_sqrt=false);
+IUMATH_DLLAPI void fft2(const iu::ImageGpu_32f_C1& src, iu::ImageGpu_32f_C2& dst, bool scale_sqrt=false);
+IUMATH_DLLAPI void fft2(const iu::VolumeGpu_32f_C1& src, iu::VolumeGpu_32f_C2& dst, bool scale_sqrt=false);
+IUMATH_DLLAPI void fft2(const iu::LinearDeviceMemory<float2, 2>& src, iu::LinearDeviceMemory<float2, 2>& dst, bool scale_sqrt=false);
+IUMATH_DLLAPI void fft2(const iu::LinearDeviceMemory<float2, 3>& src, iu::LinearDeviceMemory<float2, 3>& dst, bool scale_sqrt=false);
+IUMATH_DLLAPI void fft2(const iu::LinearDeviceMemory<float2, 4>& src, iu::LinearDeviceMemory<float2, 4>& dst, bool scale_sqrt=false);
+IUMATH_DLLAPI void fft2(const iu::LinearDeviceMemory<float, 2>& src, iu::LinearDeviceMemory<float2, 2>& dst, bool scale_sqrt=false);
+IUMATH_DLLAPI void fft2(const iu::LinearDeviceMemory<float, 3>& src, iu::LinearDeviceMemory<float2, 3>& dst, bool scale_sqrt=false);
+IUMATH_DLLAPI void fft2(const iu::LinearDeviceMemory<float, 4>& src, iu::LinearDeviceMemory<float2, 4>& dst, bool scale_sqrt=false);
 
-IUMATH_DLLAPI void fft2(iu::ImageGpu_64f_C2& src, iu::ImageGpu_64f_C2& dst, bool scale_sqrt=false);
-IUMATH_DLLAPI void fft2(iu::VolumeGpu_64f_C2& src, iu::VolumeGpu_64f_C2& dst, bool scale_sqrt=false);
-IUMATH_DLLAPI void fft2(iu::ImageGpu_64f_C1& src, iu::ImageGpu_64f_C2& dst, bool scale_sqrt=false);
-IUMATH_DLLAPI void fft2(iu::VolumeGpu_64f_C1& src, iu::VolumeGpu_64f_C2& dst, bool scale_sqrt=false);
-IUMATH_DLLAPI void fft2(iu::LinearDeviceMemory<double2, 2>& src, iu::LinearDeviceMemory<double2, 2>& dst, bool scale_sqrt=false);
-IUMATH_DLLAPI void fft2(iu::LinearDeviceMemory<double2, 3>& src, iu::LinearDeviceMemory<double2, 3>& dst, bool scale_sqrt=false);
-IUMATH_DLLAPI void fft2(iu::LinearDeviceMemory<double2, 4>& src, iu::LinearDeviceMemory<double2, 4>& dst, bool scale_sqrt=false);
-IUMATH_DLLAPI void fft2(iu::LinearDeviceMemory<double, 2>& src, iu::LinearDeviceMemory<double2, 2>& dst, bool scale_sqrt=false);
-IUMATH_DLLAPI void fft2(iu::LinearDeviceMemory<double, 3>& src, iu::LinearDeviceMemory<double2, 3>& dst, bool scale_sqrt=false);
-IUMATH_DLLAPI void fft2(iu::LinearDeviceMemory<double, 4>& src, iu::LinearDeviceMemory<double2, 4>& dst, bool scale_sqrt=false);
+IUMATH_DLLAPI void fft2(const iu::ImageGpu_64f_C2& src, iu::ImageGpu_64f_C2& dst, bool scale_sqrt=false);
+IUMATH_DLLAPI void fft2(const iu::VolumeGpu_64f_C2& src, iu::VolumeGpu_64f_C2& dst, bool scale_sqrt=false);
+IUMATH_DLLAPI void fft2(const iu::ImageGpu_64f_C1& src, iu::ImageGpu_64f_C2& dst, bool scale_sqrt=false);
+IUMATH_DLLAPI void fft2(const iu::VolumeGpu_64f_C1& src, iu::VolumeGpu_64f_C2& dst, bool scale_sqrt=false);
+IUMATH_DLLAPI void fft2(const iu::LinearDeviceMemory<double2, 2>& src, iu::LinearDeviceMemory<double2, 2>& dst, bool scale_sqrt=false);
+IUMATH_DLLAPI void fft2(const iu::LinearDeviceMemory<double2, 3>& src, iu::LinearDeviceMemory<double2, 3>& dst, bool scale_sqrt=false);
+IUMATH_DLLAPI void fft2(const iu::LinearDeviceMemory<double2, 4>& src, iu::LinearDeviceMemory<double2, 4>& dst, bool scale_sqrt=false);
+IUMATH_DLLAPI void fft2(const iu::LinearDeviceMemory<double, 2>& src, iu::LinearDeviceMemory<double2, 2>& dst, bool scale_sqrt=false);
+IUMATH_DLLAPI void fft2(const iu::LinearDeviceMemory<double, 3>& src, iu::LinearDeviceMemory<double2, 3>& dst, bool scale_sqrt=false);
+IUMATH_DLLAPI void fft2(const iu::LinearDeviceMemory<double, 4>& src, iu::LinearDeviceMemory<double2, 4>& dst, bool scale_sqrt=false);
 
 /** Compute the (batched) ifft2
  * \param[in] src source
  * \param[out] dst destination
  */
-IUMATH_DLLAPI void ifft2(iu::ImageGpu_32f_C2& src, iu::ImageGpu_32f_C2& dst, bool scale_sqrt=false);
-IUMATH_DLLAPI void ifft2(iu::VolumeGpu_32f_C2& src, iu::VolumeGpu_32f_C2& dst, bool scale_sqrt=false);
-IUMATH_DLLAPI void ifft2(iu::ImageGpu_32f_C2& src, iu::ImageGpu_32f_C1& dst, bool scale_sqrt=false);
-IUMATH_DLLAPI void ifft2(iu::VolumeGpu_32f_C2& src, iu::VolumeGpu_32f_C1& dst, bool scale_sqrt=false);
-IUMATH_DLLAPI void ifft2(iu::LinearDeviceMemory<float2, 2>& src, iu::LinearDeviceMemory<float2, 2>& dst, bool scale_sqrt=false);
-IUMATH_DLLAPI void ifft2(iu::LinearDeviceMemory<float2, 3>& src, iu::LinearDeviceMemory<float2, 3>& dst, bool scale_sqrt=false);
-IUMATH_DLLAPI void ifft2(iu::LinearDeviceMemory<float2, 4>& src, iu::LinearDeviceMemory<float2, 4>& dst, bool scale_sqrt=false);
-IUMATH_DLLAPI void ifft2(iu::LinearDeviceMemory<float2, 2>& src, iu::LinearDeviceMemory<float, 2>& dst, bool scale_sqrt=false);
-IUMATH_DLLAPI void ifft2(iu::LinearDeviceMemory<float2, 3>& src, iu::LinearDeviceMemory<float, 3>& dst, bool scale_sqrt=false);
-IUMATH_DLLAPI void ifft2(iu::LinearDeviceMemory<float2, 4>& src, iu::LinearDeviceMemory<float, 4>& dst, bool scale_sqrt=false);
+IUMATH_DLLAPI void ifft2(const iu::ImageGpu_32f_C2& src, iu::ImageGpu_32f_C2& dst, bool scale_sqrt=false);
+IUMATH_DLLAPI void ifft2(const iu::VolumeGpu_32f_C2& src, iu::VolumeGpu_32f_C2& dst, bool scale_sqrt=false);
+IUMATH_DLLAPI void ifft2(const iu::ImageGpu_32f_C2& src, iu::ImageGpu_32f_C1& dst, bool scale_sqrt=false);
+IUMATH_DLLAPI void ifft2(const iu::VolumeGpu_32f_C2& src, iu::VolumeGpu_32f_C1& dst, bool scale_sqrt=false);
+IUMATH_DLLAPI void ifft2(const iu::LinearDeviceMemory<float2, 2>& src, iu::LinearDeviceMemory<float2, 2>& dst, bool scale_sqrt=false);
+IUMATH_DLLAPI void ifft2(const iu::LinearDeviceMemory<float2, 3>& src, iu::LinearDeviceMemory<float2, 3>& dst, bool scale_sqrt=false);
+IUMATH_DLLAPI void ifft2(const iu::LinearDeviceMemory<float2, 4>& src, iu::LinearDeviceMemory<float2, 4>& dst, bool scale_sqrt=false);
+IUMATH_DLLAPI void ifft2(const iu::LinearDeviceMemory<float2, 2>& src, iu::LinearDeviceMemory<float, 2>& dst, bool scale_sqrt=false);
+IUMATH_DLLAPI void ifft2(const iu::LinearDeviceMemory<float2, 3>& src, iu::LinearDeviceMemory<float, 3>& dst, bool scale_sqrt=false);
+IUMATH_DLLAPI void ifft2(const iu::LinearDeviceMemory<float2, 4>& src, iu::LinearDeviceMemory<float, 4>& dst, bool scale_sqrt=false);
 
-IUMATH_DLLAPI void ifft2(iu::ImageGpu_64f_C2& src, iu::ImageGpu_64f_C2& dst, bool scale_sqrt=false);
-IUMATH_DLLAPI void ifft2(iu::VolumeGpu_64f_C2& src, iu::VolumeGpu_64f_C2& dst, bool scale_sqrt=false);
-IUMATH_DLLAPI void ifft2(iu::ImageGpu_64f_C2& src, iu::ImageGpu_64f_C1& dst, bool scale_sqrt=false);
-IUMATH_DLLAPI void ifft2(iu::VolumeGpu_64f_C2& src, iu::VolumeGpu_64f_C1& dst, bool scale_sqrt=false);
-IUMATH_DLLAPI void ifft2(iu::LinearDeviceMemory<double2, 2>& src, iu::LinearDeviceMemory<double2, 2>& dst, bool scale_sqrt=false);
-IUMATH_DLLAPI void ifft2(iu::LinearDeviceMemory<double2, 3>& src, iu::LinearDeviceMemory<double2, 3>& dst, bool scale_sqrt=false);
-IUMATH_DLLAPI void ifft2(iu::LinearDeviceMemory<double2, 4>& src, iu::LinearDeviceMemory<double2, 4>& dst, bool scale_sqrt=false);
-IUMATH_DLLAPI void ifft2(iu::LinearDeviceMemory<double2, 2>& src, iu::LinearDeviceMemory<double, 2>& dst, bool scale_sqrt=false);
-IUMATH_DLLAPI void ifft2(iu::LinearDeviceMemory<double2, 3>& src, iu::LinearDeviceMemory<double, 3>& dst, bool scale_sqrt=false);
-IUMATH_DLLAPI void ifft2(iu::LinearDeviceMemory<double2, 4>& src, iu::LinearDeviceMemory<double, 4>& dst, bool scale_sqrt=false);
+IUMATH_DLLAPI void ifft2(const iu::ImageGpu_64f_C2& src, iu::ImageGpu_64f_C2& dst, bool scale_sqrt=false);
+IUMATH_DLLAPI void ifft2(const iu::VolumeGpu_64f_C2& src, iu::VolumeGpu_64f_C2& dst, bool scale_sqrt=false);
+IUMATH_DLLAPI void ifft2(const iu::ImageGpu_64f_C2& src, iu::ImageGpu_64f_C1& dst, bool scale_sqrt=false);
+IUMATH_DLLAPI void ifft2(const iu::VolumeGpu_64f_C2& src, iu::VolumeGpu_64f_C1& dst, bool scale_sqrt=false);
+IUMATH_DLLAPI void ifft2(const iu::LinearDeviceMemory<double2, 2>& src, iu::LinearDeviceMemory<double2, 2>& dst, bool scale_sqrt=false);
+IUMATH_DLLAPI void ifft2(const iu::LinearDeviceMemory<double2, 3>& src, iu::LinearDeviceMemory<double2, 3>& dst, bool scale_sqrt=false);
+IUMATH_DLLAPI void ifft2(const iu::LinearDeviceMemory<double2, 4>& src, iu::LinearDeviceMemory<double2, 4>& dst, bool scale_sqrt=false);
+IUMATH_DLLAPI void ifft2(const iu::LinearDeviceMemory<double2, 2>& src, iu::LinearDeviceMemory<double, 2>& dst, bool scale_sqrt=false);
+IUMATH_DLLAPI void ifft2(const iu::LinearDeviceMemory<double2, 3>& src, iu::LinearDeviceMemory<double, 3>& dst, bool scale_sqrt=false);
+IUMATH_DLLAPI void ifft2(const iu::LinearDeviceMemory<double2, 4>& src, iu::LinearDeviceMemory<double, 4>& dst, bool scale_sqrt=false);
 
 /** Compute the (batched) centered fft2
  * \param[in] src source
  * \param[out] dst destination
  */
-IUMATH_DLLAPI void fft2c(iu::ImageGpu_32f_C2& src, iu::ImageGpu_32f_C2& dst, bool scale_sqrt=false);
-IUMATH_DLLAPI void fft2c(iu::VolumeGpu_32f_C2& src, iu::VolumeGpu_32f_C2& dst, bool scale_sqrt=false);
-IUMATH_DLLAPI void fft2c(iu::LinearDeviceMemory<float2, 2>& src, iu::LinearDeviceMemory<float2, 2>& dst, bool scale_sqrt=false);
-IUMATH_DLLAPI void fft2c(iu::LinearDeviceMemory<float2, 3>& src, iu::LinearDeviceMemory<float2, 3>& dst, bool scale_sqrt=false);
-IUMATH_DLLAPI void fft2c(iu::LinearDeviceMemory<float2, 4>& src, iu::LinearDeviceMemory<float2, 4>& dst, bool scale_sqrt=false);
+IUMATH_DLLAPI void fft2c(const iu::ImageGpu_32f_C2& src, iu::ImageGpu_32f_C2& dst, bool scale_sqrt=false);
+IUMATH_DLLAPI void fft2c(const iu::VolumeGpu_32f_C2& src, iu::VolumeGpu_32f_C2& dst, bool scale_sqrt=false);
+IUMATH_DLLAPI void fft2c(const iu::LinearDeviceMemory<float2, 2>& src, iu::LinearDeviceMemory<float2, 2>& dst, bool scale_sqrt=false);
+IUMATH_DLLAPI void fft2c(const iu::LinearDeviceMemory<float2, 3>& src, iu::LinearDeviceMemory<float2, 3>& dst, bool scale_sqrt=false);
+IUMATH_DLLAPI void fft2c(const iu::LinearDeviceMemory<float2, 4>& src, iu::LinearDeviceMemory<float2, 4>& dst, bool scale_sqrt=false);
 
-IUMATH_DLLAPI void fft2c(iu::ImageGpu_64f_C2& src, iu::ImageGpu_64f_C2& dst, bool scale_sqrt=false);
-IUMATH_DLLAPI void fft2c(iu::VolumeGpu_64f_C2& src, iu::VolumeGpu_64f_C2& dst, bool scale_sqrt=false);
-IUMATH_DLLAPI void fft2c(iu::LinearDeviceMemory<double2, 2>& src, iu::LinearDeviceMemory<double2, 2>& dst, bool scale_sqrt=false);
-IUMATH_DLLAPI void fft2c(iu::LinearDeviceMemory<double2, 3>& src, iu::LinearDeviceMemory<double2, 3>& dst, bool scale_sqrt=false);
-IUMATH_DLLAPI void fft2c(iu::LinearDeviceMemory<double2, 4>& src, iu::LinearDeviceMemory<double2, 4>& dst, bool scale_sqrt=false);
+IUMATH_DLLAPI void fft2c(const iu::ImageGpu_64f_C2& src, iu::ImageGpu_64f_C2& dst, bool scale_sqrt=false);
+IUMATH_DLLAPI void fft2c(const iu::VolumeGpu_64f_C2& src, iu::VolumeGpu_64f_C2& dst, bool scale_sqrt=false);
+IUMATH_DLLAPI void fft2c(const iu::LinearDeviceMemory<double2, 2>& src, iu::LinearDeviceMemory<double2, 2>& dst, bool scale_sqrt=false);
+IUMATH_DLLAPI void fft2c(const iu::LinearDeviceMemory<double2, 3>& src, iu::LinearDeviceMemory<double2, 3>& dst, bool scale_sqrt=false);
+IUMATH_DLLAPI void fft2c(const iu::LinearDeviceMemory<double2, 4>& src, iu::LinearDeviceMemory<double2, 4>& dst, bool scale_sqrt=false);
 
 /** Compute the (batched) centered ifft2
  * \param[in] src source
  * \param[out] dst destination
  */
-IUMATH_DLLAPI void ifft2c(iu::ImageGpu_32f_C2& src, iu::ImageGpu_32f_C2& dst, bool scale_sqrt=false);
-IUMATH_DLLAPI void ifft2c(iu::VolumeGpu_32f_C2& src, iu::VolumeGpu_32f_C2& dst, bool scale_sqrt=false);
-IUMATH_DLLAPI void ifft2c(iu::LinearDeviceMemory<float2, 2>& src, iu::LinearDeviceMemory<float2, 2>& dst, bool scale_sqrt=false);
-IUMATH_DLLAPI void ifft2c(iu::LinearDeviceMemory<float2, 3>& src, iu::LinearDeviceMemory<float2, 3>& dst, bool scale_sqrt=false);
-IUMATH_DLLAPI void ifft2c(iu::LinearDeviceMemory<float2, 4>& src, iu::LinearDeviceMemory<float2, 4>& dst, bool scale_sqrt=false);
+IUMATH_DLLAPI void ifft2c(const iu::ImageGpu_32f_C2& src, iu::ImageGpu_32f_C2& dst, bool scale_sqrt=false);
+IUMATH_DLLAPI void ifft2c(const iu::VolumeGpu_32f_C2& src, iu::VolumeGpu_32f_C2& dst, bool scale_sqrt=false);
+IUMATH_DLLAPI void ifft2c(const iu::LinearDeviceMemory<float2, 2>& src, iu::LinearDeviceMemory<float2, 2>& dst, bool scale_sqrt=false);
+IUMATH_DLLAPI void ifft2c(const iu::LinearDeviceMemory<float2, 3>& src, iu::LinearDeviceMemory<float2, 3>& dst, bool scale_sqrt=false);
+IUMATH_DLLAPI void ifft2c(const iu::LinearDeviceMemory<float2, 4>& src, iu::LinearDeviceMemory<float2, 4>& dst, bool scale_sqrt=false);
 
-IUMATH_DLLAPI void ifft2c(iu::ImageGpu_64f_C2& src, iu::ImageGpu_64f_C2& dst, bool scale_sqrt=false);
-IUMATH_DLLAPI void ifft2c(iu::VolumeGpu_64f_C2& src, iu::VolumeGpu_64f_C2& dst, bool scale_sqrt=false);
-IUMATH_DLLAPI void ifft2c(iu::LinearDeviceMemory<double2, 2>& src, iu::LinearDeviceMemory<double2, 2>& dst, bool scale_sqrt=false);
-IUMATH_DLLAPI void ifft2c(iu::LinearDeviceMemory<double2, 3>& src, iu::LinearDeviceMemory<double2, 3>& dst, bool scale_sqrt=false);
-IUMATH_DLLAPI void ifft2c(iu::LinearDeviceMemory<double2, 4>& src, iu::LinearDeviceMemory<double2, 4>& dst, bool scale_sqrt=false);
+IUMATH_DLLAPI void ifft2c(const iu::ImageGpu_64f_C2& src, iu::ImageGpu_64f_C2& dst, bool scale_sqrt=false);
+IUMATH_DLLAPI void ifft2c(const iu::VolumeGpu_64f_C2& src, iu::VolumeGpu_64f_C2& dst, bool scale_sqrt=false);
+IUMATH_DLLAPI void ifft2c(const iu::LinearDeviceMemory<double2, 2>& src, iu::LinearDeviceMemory<double2, 2>& dst, bool scale_sqrt=false);
+IUMATH_DLLAPI void ifft2c(const iu::LinearDeviceMemory<double2, 3>& src, iu::LinearDeviceMemory<double2, 3>& dst, bool scale_sqrt=false);
+IUMATH_DLLAPI void ifft2c(const iu::LinearDeviceMemory<double2, 4>& src, iu::LinearDeviceMemory<double2, 4>& dst, bool scale_sqrt=false);
 
 /** \} */ // end of MathFFT
 

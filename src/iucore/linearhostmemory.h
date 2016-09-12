@@ -22,6 +22,8 @@ namespace boost
     }
 }
 
+class mxArray_tag;
+
 namespace iu {
 
 /**  \brief Linear host memory class.
@@ -285,6 +287,11 @@ public:
    * @param py_arr a boost::python::object representing a numpy array
    */
   LinearHostMemory(boost::python::api::object& py_arr);
+
+  /** LinearHostMemory constructor from mex arrays (matlab). The memory layout is
+   * changed from column-first to row-first order.
+   */
+  LinearHostMemory(const mxArray_tag& mex_arr);
 
 private:
   /** Pointer to host buffer. */

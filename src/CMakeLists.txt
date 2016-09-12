@@ -58,6 +58,7 @@ option(IU_USE_NDARRAY "Include NDArray module" OFF)
 option(WITH_FLYCAPTURE2 "Use FlyCapture2 - build pgrvideosource class." OFF)
 option(WITH_OPENEXR "Use OpenEXR - build OpenEXRIO classes." OFF)
 option(WITH_PYTHON "Use Python - include imageutilities <-> python interface. Requires boost.python and Eigen" OFF)
+option(WITH_MATLAB "Use Matlab - include imageutilities <-> matlab interface. Requires matlab" OFF)
 set(ANDROID_TOOLCHAIN_NAME arm-linux-androideabi-4.6)
 set(CUDA_PROPAGATE_HOST_FLAGS OFF)
 else(ANDROID)
@@ -68,6 +69,7 @@ option(IU_USE_NDARRAY "Include NDArray module" ON)
 option(WITH_FLYCAPTURE2 "Use FlyCapture2 - build pgrvideosource class." ON)
 option(WITH_OPENEXR "Use OpenEXR - build OpenEXRIO classes." ON)
 option(WITH_PYTHON "Use Python - include imageutilities <-> python interface. Requires numpy, boost.python and Eigen" OFF)
+option(WITH_MATLAB "Use Matlab - include imageutilities <-> matlab interface. Requires matlab" OFF)
 endif(ANDROID)
 
 ##-----------------------------------------------------------------------------
@@ -83,6 +85,9 @@ if(WITH_PYTHON)
     FIND_PACKAGE(Eigen3 REQUIRED)
 endif(WITH_PYTHON)
 
+if(WITH_MATLAB)
+    find_package(Matlab_ICG)
+endif(WITH_MATLAB)
 
 ##-----------------------------------------------------------------------------
 ## IO MODULE: OpenCV for Image I/O
@@ -312,6 +317,13 @@ if(WITH_PYTHON)
       ${CMAKE_CURRENT_SOURCE_DIR}/iupython.h
   )
 endif(WITH_PYTHON)
+
+if(WITH_MATLAB)
+  SET( IU_PUBLIC_HEADERS
+      ${IU_PUBLIC_HEADERS}
+      ${CMAKE_CURRENT_SOURCE_DIR}/iumatlab.h
+  )
+endif(WITH_MATLAB)
 
 # 
 SET( IU_PUBLIC_CORE_HEADERS
