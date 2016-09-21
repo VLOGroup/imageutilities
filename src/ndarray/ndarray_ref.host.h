@@ -12,9 +12,11 @@
 #endif
 
 template<typename compound_type> struct type_expand{
-	typedef compound_type type;
+	typedef compound_type s_type;
 	static const int n = 1;
 };
+
+#include "type_expand_cuda.h"
 
 #ifndef  __CUDA_ARCH__
 #define runtime_check_this(expression) if(!(expression))throw error_stream().set_file_line(__FILE__,__LINE__) << "Runtime check failed: " << #expression << *this << "\n"
@@ -578,7 +580,7 @@ namespace special3{
 		template<typename U>
 		::ndarray_ref<U,dims> subtype(U type::*member)const;
 		//! expand struct as a new dimension
-		::ndarray_ref<typename type_expand<type>::type, dims+1> unpack()const;
+		::ndarray_ref<typename type_expand<type>::s_type, dims+1> unpack()const;
 	};
 }
 
@@ -706,9 +708,9 @@ namespace special3{
 	};
 
 	template<typename type, int dims>
-	::ndarray_ref<typename type_expand<type>::type, dims+1>
+	::ndarray_ref<typename type_expand<type>::s_type, dims+1>
 	ndarray_ref<type,dims,true>::unpack()const{
-		typedef typename type_expand<type>::type type2;
+		typedef typename type_expand<type>::s_type type2;
 		intn<dims+1> sz2 = this->size().template insert<0>(type_expand<type>::n);
 		intn<dims+1> st2 = this->stride_bytes().template insert<0>(sizeof(type2));
 		return ::ndarray_ref<type2, dims+1>((type2*)this->ptr(), sz2, st2 , this->access());
