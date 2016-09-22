@@ -36,7 +36,8 @@ namespace special2{
 	template<class Allocator>
 	ndarray_ref<type, 2> & ndarray_ref<type, 2>::set_ref(const iu::ImageCpu<type, Allocator> & x){
 		intn<2> size(x.width(), x.height());
-		intn<2> stride_bytes = intn<2>(x.data(1, 0) - x.data(0, 0), x.data(0, 1) - x.data(0, 0))*intsizeof(type);
+		//intn<2> stride_bytes = intn<2>(x.data(1, 0) - x.data(0, 0), x.data(0, 1) - x.data(0, 0))*intsizeof(type);
+		intn<2> stride_bytes = intn<2>((char*)x.data(1, 0) - (char*)x.data(0, 0), (char*)x.data(0, 1) - (char*)x.data(0, 0));
 		set_ref(const_cast<type*>(x.data(0, 0)), size, stride_bytes, ndarray_flags::host_only);
 		return *this;
 	}
@@ -45,7 +46,8 @@ namespace special2{
 	template<class Allocator>
 	ndarray_ref<type, 2> & ndarray_ref<type, 2>::set_ref(const iu::ImageGpu<type, Allocator> & x){
 		intn<2> size(x.width(), x.height());
-		intn<2> stride_bytes = intn<2>(x.data(1, 0) - x.data(0, 0), x.data(0, 1) - x.data(0, 0))*intsizeof(type);
+		//intn<2> stride_bytes = intn<2>(x.data(1, 0) - x.data(0, 0), x.data(0, 1) - x.data(0, 0))*intsizeof(type);
+		intn<2> stride_bytes = intn<2>((char*)x.data(1, 0) - (char*)x.data(0, 0), (char*)x.data(0, 1) - (char*)x.data(0, 0));
 		set_ref(const_cast<type*>(x.data(0, 0)), size, stride_bytes, ndarray_flags::device_only);
 		return *this;
 	}
@@ -55,7 +57,8 @@ namespace special2{
 	template<class Allocator>
 	ndarray_ref<type, 3> & ndarray_ref<type, 3>::set_ref(const iu::VolumeCpu<type, Allocator> & x){
 		intn<3> size(x.width(), x.height(), x.depth());
-		intn<3> stride_bytes = intn<3>(x.data(1, 0, 0) - x.data(0, 0, 0), x.data(0, 1, 0) - x.data(0, 0, 0), x.data(0, 0, 1) - x.data(0, 0, 0))*intsizeof(type);
+		//intn<3> stride_bytes = intn<3>(x.data(1, 0, 0) - x.data(0, 0, 0), x.data(0, 1, 0) - x.data(0, 0, 0), x.data(0, 0, 1) - x.data(0, 0, 0))*intsizeof(type);
+		intn<3> stride_bytes = intn<3>((char*)x.data(1, 0, 0) - (char*)x.data(0, 0, 0), (char*)x.data(0, 1, 0) - (char*)x.data(0, 0, 0), (char*)x.data(0, 0, 1) - (char*)x.data(0, 0, 0));
 		this->set_ref(const_cast<type*>(x.data(0, 0, 0)), size, stride_bytes, ndarray_flags::host_only);
 		return *this;
 	}
@@ -64,7 +67,8 @@ namespace special2{
 	template<class Allocator>
 	ndarray_ref<type, 3> & ndarray_ref<type, 3>::set_ref(const iu::VolumeGpu<type, Allocator> & x){
 		intn<3> size(x.width(), x.height(), x.depth());
-		intn<3> stride_bytes = intn<3>(x.data(1, 0, 0) - x.data(0, 0, 0), x.data(0, 1, 0) - x.data(0, 0, 0), x.data(0, 0, 1) - x.data(0, 0, 0))*intsizeof(type);
+		//intn<3> stride_bytes = intn<3>(x.data(1, 0, 0) - x.data(0, 0, 0), x.data(0, 1, 0) - x.data(0, 0, 0), x.data(0, 0, 1) - x.data(0, 0, 0))*intsizeof(type);
+		intn<3> stride_bytes = intn<3>((char*)x.data(1, 0, 0) - (char*)x.data(0, 0, 0), (char*)x.data(0, 1, 0) - (char*)x.data(0, 0, 0), (char*)x.data(0, 0, 1) - (char*)x.data(0, 0, 0));
 		this->set_ref(const_cast<type*>(x.data(0, 0, 0)), size, stride_bytes, ndarray_flags::device_only);
 		return *this;
 	}
