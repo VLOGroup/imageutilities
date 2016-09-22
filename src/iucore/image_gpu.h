@@ -8,6 +8,25 @@ template<typename type, int dims> class ndarray_ref;
 
 namespace iu {
 
+
+template<typename PixelType, bool zero_reminder>
+struct use_PixelType{
+	  static int stride(int pitch_){
+		  return pitch_/sizeof(PixelType);
+	  }
+};
+
+template<typename PixelType>
+struct use_PixelType<PixelType,false>{
+	  static int __attribute__((deprecated("this function may return wrong result in case pitch_ is not divisible by sizeof(PixelType)"))) stride(int pitch_){
+		  if(pitch_ % sizeof(PixelType) != 0){
+			  throw std::runtime_error("bad! your are using wrong stride, because pitch is not divisible");
+		  };
+		  return pitch_/sizeof(PixelType);
+	  }
+};
+
+
 template<typename PixelType, class Allocator>
 /** \brief Device 2D image class (pitched memory).
  *  \ingroup Image
@@ -28,7 +47,7 @@ public:
   /** Destructor. */
   virtual ~ImageGpu()
   {
-    if(!ext_data_pointer_)
+	if(!ext_data_pointer_)
     {
       // do not delete externally handeled data pointers.
       Allocator::free(data_);
@@ -114,9 +133,12 @@ public:
    * @todo: returned value is invalid if sizeof(PixelType) == 3, e.g. for *_C3 images. Use
    * pitch in this case to calculate memory addresses by hand.
    */
-  virtual size_t stride() const
+
+
+  virtual size_t  stride() const
   {
-    return pitch_/sizeof(PixelType);
+	return use_PixelType<PixelType, sizeof(PixelType) % 32 == 0 ||sizeof(PixelType)==1 || sizeof(PixelType) == 2 || sizeof(PixelType) == 4 || sizeof(PixelType) == 8 || sizeof(PixelType) == 16 >::stride(pitch_);
+    //return pitch_/sizeof(PixelType);
   }
 
   /** Returns the bit depth of the data pointer. */
@@ -139,7 +161,8 @@ public:
    */
   PixelType* data(int ox = 0, int oy = 0)
   {
-    return &data_[oy * stride() + ox];
+    //return &data_[oy * stride() + ox];
+	  return (PixelType*)(  (char*)data_ + pitch_*oy + ox*sizeof(PixelType) );
   }
 
   /** Returns a const pointer to the pixel data.
@@ -150,8 +173,9 @@ public:
    */
   const PixelType* data(int ox = 0, int oy = 0) const
   {
-    return reinterpret_cast<const PixelType*>(
-        &data_[oy * stride() + ox]);
+	  return const_cast<ImageGpu*>(this)->data(ox,oy);
+    //return reinterpret_cast<const PixelType*>(
+     //   &data_[oy * stride() + ox]);
   }
 
   /** Returns a thrust pointer that can be used in custom operators
@@ -167,7 +191,8 @@ public:
    */
   thrust::device_ptr<PixelType> end(void)
   {
-      return thrust::device_ptr<PixelType>(data()+stride()*height());
+      //return thrust::device_ptr<PixelType>(data()+stride()*height());
+	  return thrust::device_ptr<PixelType>(data(width()-1,height()-1) + 1);
   }
 
   /** Prepare CUDA texture

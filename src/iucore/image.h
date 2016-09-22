@@ -117,7 +117,7 @@ public:
                                   Image const& image)
   {
     out << "Image: " << image.size() << " stride="
-        << image.stride() << " onDevice=" << image.onDevice();
+        << image.pitch() / double((image.bitDepth()/8)) << " onDevice=" << image.onDevice(); // stride may go fractional here
     return out;
   }
 

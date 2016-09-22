@@ -160,11 +160,17 @@ typename std::enable_if<
     std::is_same<PixelType, typename iu::type_trait<PixelType>::complex_type>::value,
     ResultType>::type convertCToMatlab(
     const iu::LinearHostMemory<PixelType, Ndim>& hostmem,
-    mxArray_tag *mex_array)
+    mxArray_tag **mex_array)
 {
-  // Convert to Matlab
   typedef typename iu::type_trait<PixelType>::complex_type complex_type;
-  int nelem = mxGetNumberOfElements(mex_array);
+
+  // Allocate memory
+  mwSize dims[Ndim];
+  iu::matlab::getMatlabDims(hostmem.size(), dims);
+  *mex_array = mxCreateNumericArray(Ndim, dims, mxDOUBLE_CLASS, iu::matlab::dtype<complex_type>::matlab_type);
+
+  // Convert to Matlab
+  int nelem = mxGetNumberOfElements(*mex_array);
 
   double* output_real = (double *) mxCalloc(nelem, sizeof(double));
   double* output_imag = (double *) mxCalloc(nelem, sizeof(double));
@@ -194,8 +200,8 @@ typename std::enable_if<
     }
   }
 
-  mxSetPr(mex_array, output_real);
-  mxSetPi(mex_array, output_imag);
+  mxSetPr(*mex_array, output_real);
+  mxSetPi(*mex_array, output_imag);
 }
 
 /** @brief Convert LinearHostMemory to mex array (real images)
@@ -207,11 +213,18 @@ typename std::enable_if<
     std::is_same<PixelType, typename iu::type_trait<PixelType>::real_type>::value,
     ResultType>::type convertCToMatlab(
     const iu::LinearHostMemory<PixelType, Ndim>& hostmem,
-    mxArray_tag* mex_array)
+    mxArray_tag** mex_array)
 {
+  typedef typename iu::type_trait<PixelType>::real_type real_type;
+
+  // Allocate memory
+  mwSize dims[Ndim];
+  iu::matlab::getMatlabDims(hostmem.size(), dims);
+  *mex_array = mxCreateNumericArray(Ndim, dims, mxDOUBLE_CLASS, iu::matlab::dtype<real_type>::matlab_type);
+
   // Convert to Matlab
   typedef typename iu::type_trait<PixelType>::real_type real_type;
-  int nelem = mxGetNumberOfElements(mex_array);
+  int nelem = mxGetNumberOfElements(*mex_array);
 
   double* output_real = (double *) mxCalloc(nelem, sizeof(double));
 
@@ -238,7 +251,7 @@ typename std::enable_if<
     }
   }
 
-  mxSetPr(mex_array, output_real);
+  mxSetPr(*mex_array, output_real);
 }
 
 /** \} */ // end of iumatlab
