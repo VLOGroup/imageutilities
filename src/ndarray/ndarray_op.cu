@@ -144,6 +144,8 @@ void dtest(){
 	ndarray_ref<float, dims> f;
 	ndarray_ref<int, dims> i;
 	ndarray_ref<double, dims> d;
+	ndarray_ref<unsigned int, dims> ui;
+	ndarray_ref<short int, dims> si;
 	f << f;
 	i << i;
 	i << f;
@@ -151,6 +153,8 @@ void dtest(){
 	d << d;
 	f << d;
 	d << f;
+	ui << ui;
+	si << si;
 }
 
 void test_ops(){

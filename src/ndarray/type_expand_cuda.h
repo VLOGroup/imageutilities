@@ -1,6 +1,7 @@
 #pragma once
 #include <vector_types.h>
 
+
 template<> struct type_expand<float2>{
 	typedef float s_type;
 	static const int n = 2;

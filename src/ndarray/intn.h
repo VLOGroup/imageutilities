@@ -1,19 +1,23 @@
 #pragma once
 
-#include "defines.h"
 #include "error.h"
 #include <type_traits>
 
 #ifdef  __CUDA_ARCH__
+#include <cuda.h>
 #include "error.kernel.h"
 #endif
+
+#include "defines.h"
+
 
 #ifndef  __CUDA_ARCH__
 #include <algorithm>
 #include <error.h>
 #include <cstddef>
-
 #endif
+
+
 
 #define HOSTDEVICE __host__ __device__ __forceinline__
 
@@ -209,6 +213,12 @@ public://__________initializers
 	}
 	//! convert to C++ array
 	explicit HOSTDEVICE operator array_type &(){ return as_array(); };
+	//! create increasing sequence
+	static HOSTDEVICE intn<n> enumerate(){
+		intn<n> r;
+		for (int i = 0; i < n; ++i)r[i] = i;
+		return r;
+	}
 public: //________________ element access
 	HOSTDEVICE int * begin(){ return &V(0); };
 	HOSTDEVICE const int * begin()const { return &V(0); };

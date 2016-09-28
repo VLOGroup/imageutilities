@@ -190,10 +190,20 @@ public://__________constructors / initializers
 	}
 	 */
 	//! construct array of a given size using Allocator
-	template<class Allocator> void create(const intn<dims> & size){
+	template<class Allocator> void create(const intn<dims> & size, const intn<dims> & order = intn<dims>::enumerate()){
 		runtime_check(!allocated());
+		intn<dims> szp;
+		intn<dims> stp;
+		// permute size to requested contiguity order
+		for(int d=0; d<dims; ++d){
+			szp[d] = size[order[d]];
+		};
 		set_allocator(memory::get<Allocator>());
-		allocator().allocate((void*&)_beg, size.begin(), dims, sizeof(type), _stride_bytes.begin());
+		allocator().allocate((void*&)_beg, szp.begin(), dims, sizeof(type), stp.begin());
+		// permute stride back to the original order
+		for(int d=0; d<dims; ++d){
+			_stride_bytes[order[d]] = stp[d];
+		};
 		sz = size;
 		this->set_access(allocator().access_policy());
 		this->find_linear_dim();

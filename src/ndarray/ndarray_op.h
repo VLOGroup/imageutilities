@@ -297,7 +297,7 @@ template<typename type, int dims> ndarray_ref<type, dims>& copy_data(ndarray_ref
 				return host_op::copy_data(dest,src);
 			};
 		}else{
-			throw_error("copy between different sizes not implemented");
+			throw_error("copy between different sizes not implemented") << "\n from: "<< src <<"\n to: "<< dest << "\n";
 		};
 	};
 }
