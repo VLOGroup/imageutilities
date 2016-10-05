@@ -18,7 +18,7 @@ before_script:
 #    - ./simpleTexture
 mvlib:
   tags:
-    - cuda-7.5
+    - cuda-8.0
   stage: build
   script:
     - mkdir -p build 
