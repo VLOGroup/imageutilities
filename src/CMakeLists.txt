@@ -554,7 +554,7 @@ if(IU_USE_MATH)
   if(IU_BUILD_STATIC)
     cuda_add_library( ${IU_MATH_LIB}_static STATIC ${IU_MATH_HEADERS} ${IU_MATH_SOURCES})
     target_link_libraries( ${IU_MATH_LIB}_static
-     ${CUDA_LIBRARIES}
+     ${CUDA_LIBRARIES} ${CUDA_CUFFT_LIBRARIES}
     )
     set(IU_LIBS_STATIC ${IU_LIBS_STATIC} ${IU_MATH_LIB}_static)
   endif(IU_BUILD_STATIC)
