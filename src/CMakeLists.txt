@@ -94,7 +94,7 @@ endif(WITH_MATLAB)
 if(ANDROID)
     set(OpenCV_DIR $ENV{NVPACK_CUDA_ROOT_DIR}/../OpenCV-2.4.8.2-Tegra-sdk/sdk/native/jni)
 endif(ANDROID)
-find_package( OpenCV QUIET COMPONENTS opencv_core opencv_highgui opencv_imgcodecs opencv_videostab)
+find_package( OpenCV QUIET COMPONENTS opencv_core opencv_highgui opencv_videostab)
 # only include if IO module is used and OpenCV found.
 if(IU_USE_IO AND OpenCV_LIBS)
 
@@ -130,7 +130,7 @@ if(IU_USE_IO AND OpenCV_LIBS)
   if(${OpenCV_VERSION_MAJOR} MATCHES "3")
     message("Enabling fixes for OpenCV >= 3")
     add_definitions(-DOPENCV_3)
-    find_package( OpenCV QUIET COMPONENTS opencv_videoio opencv_core opencv_highgui)
+    find_package( OpenCV QUIET COMPONENTS opencv_videoio opencv_core opencv_imgcodecs opencv_imgproc opencv_highgui)
   endif(${OpenCV_VERSION_MAJOR} MATCHES "3")
 
 

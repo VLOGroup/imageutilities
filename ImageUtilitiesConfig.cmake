@@ -192,6 +192,10 @@ endif(WIN32)
     endif()
     
     find_package(OpenCV REQUIRED COMPONENTS opencv_core opencv_highgui )
+    if(${OpenCV_VERSION_MAJOR} MATCHES "3")
+      message("Enabling fixes for OpenCV >= 3")
+      find_package( OpenCV REQUIRED COMPONENTS opencv_videoio opencv_core opencv_imgcodecs opencv_imgproc opencv_highgui)
+    endif(${OpenCV_VERSION_MAJOR} MATCHES "3")
 
     if(NOT OpenCV_FOUND)
       message(FATAL_ERROR "OpenCV not found (required by Imageutilities iuio")
