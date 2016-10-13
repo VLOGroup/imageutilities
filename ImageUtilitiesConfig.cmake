@@ -191,7 +191,7 @@ endif(WIN32)
       message(STATUS "ImageUtilities using iuio, adding OpenCV as dependency")
     endif()
     
-    find_package(OpenCV REQUIRED COMPONENTS opencv_core opencv_highgui opencv_imgproc opencv_imgcodecs)
+    find_package(OpenCV REQUIRED COMPONENTS opencv_core opencv_highgui )
 
     if(NOT OpenCV_FOUND)
       message(FATAL_ERROR "OpenCV not found (required by Imageutilities iuio")
