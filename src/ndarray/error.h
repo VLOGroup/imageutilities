@@ -32,6 +32,7 @@ public:
 public:
 	error_stream & operator << (int a){ ss << a; return *this;}
 	error_stream & operator << (long long a){ ss << a; return *this;}
+	error_stream & operator << (size_t a){ ss << a; return *this;}
 	error_stream & operator << (float a){ ss << a; return *this;}
 	error_stream & operator << (double a){ ss << a; return *this;}
 	error_stream & operator << (void * a){ ss << a; return *this;}
@@ -49,8 +50,7 @@ public:
 	const char * what()const throw() override;
 };
 
-
-#define slperror(text_stuff)\
+#define throw_error(text_stuff)\
     throw error_stream(text_stuff).set_file_line(__FILE__,__LINE__)
 
 
@@ -59,5 +59,8 @@ public:
 //    //return error_stream();
 //}
 
-
-#define runtime_check(expression) if(!(expression))throw error_stream().set_file_line(__FILE__,__LINE__) << "Runtime check failed: " << #expression << "\n"
+#ifndef  __CUDA_ARCH__
+	#define runtime_check(expression) if(!(expression)) error_stream().set_file_line(__FILE__,__LINE__) << "Runtime check failed: " << #expression << "\n"
+#else
+	#define runtime_check(expression) if(!(expression)) pf_error_stream(0) << __FILE__ << __LINE__ << "Runtime check failed " << #expression << "\n"
+#endif

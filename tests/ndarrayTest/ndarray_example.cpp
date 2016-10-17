@@ -1,55 +1,24 @@
 #include <cuda_runtime_api.h>
-#include "../../src/ndarray/ndarray.h"
-#include "../../src/ndarray/ndarray_iu.h"
+#include "ndarray/ndarray.h"
+#include "ndarray/ndarray_iu.h"
 #include "ndarray_example.h"
+#include "ndarray/tests.h"
+
+//#include "ndarray/bit_index.h"
+//#include "ndarray/transform.h"
+
+#include "ndarray/common_transforms.h"
+
+//void test_iterator(){
+//	thrust::device_vector<int> v(4);
+//	thrust::fill(thrust::device, v.begin(), v.end(), 137);
+//};
+
 
 void foo(const ndarray_ref<float,2> & x){
 	x(1,1) = 0;
 }
 
-void test_IuSize(){
-	//-----1D------
-	intn<1> a(5);
-	a = 3;
-	a < 10;
-	runtime_check(a.width == 3);
-	runtime_check(a.width == a[0]);
-	runtime_check(a.height == 1);
-	runtime_check(a.depth == 1);
-	//-----2D------
-	intn<2> b(5,6);
-	b >= 0;
-	b < intn<2>(10,10);
-	runtime_check(b.width ==5);
-	runtime_check(b.height ==6);
-	runtime_check(b.width ==b[0]);
-	runtime_check(b.height ==b[1]);
-	runtime_check(b.depth == 1);
-	//-----3D------
-	intn<3> c(5,6,7);
-	c >= 0;
-	c < intn<3>(10,10,10);
-	c == intn<3>(10,10,10);
-	runtime_check(c.width ==5);
-	runtime_check(c.height ==6);
-	runtime_check(c.depth ==7);
-	runtime_check(c.width ==c[0]);
-	runtime_check(c.height ==c[1]);
-	runtime_check(c.depth ==c[2]);
-	c = intn<3>(2,2,2);
-	intn<3> d(c);
-	d *= 1.5;
-	std::cout << "d=" << d << "\n";
-	//-----4D------
-	intn<4> s(2,3,4,5);
-	//s.height; // error
-	std::cout <<"s=" << s << "\n";
-	//  s=(2,3,4,5,)
-	std::cout << "s.erase<1>() = " << s.erase<1>() << "\n";
-	//	s.erase<1>() = (2,4,5,)
-	std::cout << "s.erase<1>().height = " << s.erase<1>().height << "\n";
-	//	s.erase<1>().height = 4
-};
 
 void intro_test(){
 	//Here a brief overview of ndarray functionality
@@ -178,11 +147,11 @@ void intro_test(){
 	int * p1 = new int[1000];
 	// interpret as 3D array:
 	//                                               vv  need to specify size, assumes linear memory layout
-	std::cout <<"linear 1:" << ndarray_ref<int,3>(p1,{10,10,10}) <<"\n";
+	std::cout <<"linear 1:" << ndarray_ref<int,3>(p1,{10,10,10},ndarray_flags::host_only) <<"\n";
 	//ndarray_ref<i,3>:ptr=0x166e6a0, size=(10,10,10,), strides_b=(4,40,400,), access: host; linear_dim: 0
 
 	ndarray_ref<int,3> t1;
-	t1.set_linear_ref<false>(p1,{10,10,10});
+	t1.set_linear_ref<false>(p1,{10,10,10},ndarray_flags::host_only);
 	//                ^ use descending strides layout (default is ascending strides)
 	std::cout  <<"linear 2:" << t1 << "\n";
 	//ndarray_ref<i,3>:ptr=0x166e6a0, size=(10,10,10,), strides_b=(400,40,4,), access: host; linear_dim: 2
@@ -209,8 +178,8 @@ void intro_test(){
 	cudaDeviceSynchronize();
 	t2 += t2; // resolves to GPU operation
 	cudaDeviceSynchronize();
-	std::cout << t2(0,0) << "\n"; // should print 2
-	runtime_check(t2(0,0)==2);
+	std::cout << t2(0,0,0) << "\n"; // should print 2
+	runtime_check(t2(0,0,0)==2);
 	//
 	delete p1;
 	cudaFree(p2);
@@ -221,7 +190,7 @@ void intro_test(){
 void test_1(){
 	ndarray_ref<float,3> a;
 	float * x = new float[1000];
-	a.set_linear_ref(x, {10, 10, 10}); //,ndarray_flags::host_only);
+	a.set_linear_ref(x, {10, 10, 10}, ndarray_flags::host_only);
 	for (int i = 0; i < a.size().prod(); ++i){
 		x[i] = i;
 	};
@@ -241,8 +210,14 @@ void test_1(){
 	cudaDeviceSynchronize();
 	int r = (int)c(9, 9);
 	std::cout << r << "\n"; // accessing managed memory from host
-	if(r != 100) slperror("test failed");
-	int fl = ptr_access_flags(x);
+	if(r != 100) throw_error("test failed");
+	//int fl = ptr_access_flags(x);
+
+	print_array("\n c=", c, 0);
+	std:: cout << "c=" << c <<"\n";
+	std:: cout << "c.flip_dim(1)=" << c.flip_dim(1) <<"\n";
+	c << c.flip_dim(1);
+	print_array("\n c.flip_dim(1)=", c,0);
 	delete x;
 
 }
@@ -260,7 +235,7 @@ template<typename type, int dims> void template_foo(ndarray_ref<type, dims> & x)
 template<typename type, int dims> void template_foo(ndarray_ref<float, 3> && x){
 	//template_foo(x);
 }
-*/
+ */
 
 
 //! Image utilities interfaces
@@ -318,9 +293,15 @@ void test_3D(){
 	//std::cout << r;
 	//print_array("\n r=", r.unpack());
 	template_foo(x1);
+
+	// reshape into 4D
+	iu::VolumeGpu_32f_C1 V3(4,8,10);
+	auto r3 = V3.ref().reshape(2,2,8,10);
+	std::cout << r3 << "\n";
 }
 
 void test_4D(){
+
 	iu::TensorGpu<float> V1(2, 5,7,13);
 	iu::TensorGpu<int>   V2(7,13,2,5);
 	std::cout << V2;
@@ -335,6 +316,19 @@ void test_4D(){
 	r << V2.ref();
 	//std::cout << r;
 	print_array("\n r=", r.subrange({0,0,0,0},{2,2,2,2}),0);
+	// reshape
+	std::cout << "reshape test\n"; // accessing managed memory from host
+	auto r1 = r.reshape(intn<2>{7*13,2*5});
+	std::cout << r1 << "\n";
+	r1 = r.permute_dims({0,1,3,2}).reshape(intn<2>{7*13,2*5});
+	std::cout << r1 << "\n";
+	r1 = r.permute_dims({1,0,3,2}).reshape(intn<2>{7*13,2*5});
+	std::cout << r1 << "\n";
+	auto r2 = r.permute_dims({2,1,3,0}).reshape(2*13,5*7).reshape(2*13*5,7);
+	std::cout << r2 << "\n";
+	print_array("\n r2=", r2.subrange({0,0},{3,3}),0);
+	r2 << r2.flip_dim(1);
+	print_array("\n r2.flip_dim(1)=", r2.subrange({0,0},{3,3}),0);
 }
 
 //! type conversions
@@ -352,10 +346,14 @@ float test_warn(long long x){
 	z = int(bla[z]);
 	return z;
 }
-*/
+ */
 
 int main(){
-	test_IuSize();
+	//test_transform();
+	//test_bit_index();
+	//return 0;
+	test_cuda_constructors();
+
 	intro_test();
 	try{
 		test_1();
@@ -367,6 +365,12 @@ int main(){
 	test_2D();
 	test_3D();
 	test_4D();
+	//
+	test_IuSize();
+	//
+	return EXIT_SUCCESS;
+	test_thrust_iterator_1();
+	test_thrust_iterator_2();
 	//std::cout << test_warn(13);
 	return EXIT_SUCCESS;
 }

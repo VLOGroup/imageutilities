@@ -90,7 +90,7 @@ namespace special2{
 		} else if (t.memoryLayout() == iu::TensorGpu<type>::NHWC){
 			size = intn<4>(t.samples(), t.height(), t.width(), t.channels());
 		} else{
-			slperror("unknown TensorGPU shape");
+			throw_error("unknown TensorGPU shape");
 		};
 		this->template set_linear_ref<false>(const_cast<type*>(t.data()), size, ndarray_flags::device_only); //assume TensorGpu has descending strides
 		return *this;
@@ -256,7 +256,65 @@ namespace iu{
 			channels_ = x.size(3);
 			memoryLayout_ = iu::TensorGpu<type>::NHWC;
 		};
-		*/
+		 */
 	}
+	//_______________math______________________________________
+	/*
+	//--------single array input--
+	//! addC: dest = src1 + val
+	template<typename type int dims> addC(const ndarray_ref<type,dims> & src, type val, ndarray_ref<type,dims> & dest){
+		add(dest,src,val);
+	}
+	//! mulC: dest = src1 * val
+	template<typename type int dims> mulC(const ndarray_ref<type,dims> & src, type val, ndarray_ref<type,dims> & dest){
+		mul(dest,src,val);
+	}
+	//! fill: dest = val
+	template<typename type int dims> fill(ndarray_ref<type,dims> & dest, type val){
+		dest << val;
+	}
+
+	//--------2 array input-------
+	//! dest = src1 + src2
+	template<typename type int dims> add(const ndarray_ref<type,dims> & src1, const ndarray_ref<type,dims> & src2, ndarray_ref<type,dims> & dest){
+		add(dest,src1,src2);
+	}
+	//! dest = src1 * src2
+	template<typename type int dims> mul(const ndarray_ref<type,dims> & src1, const ndarray_ref<type,dims> & src2, ndarray_ref<type,dims> & dest){
+		mul(dest,src,val);
+	}
+	//! dest = w1*src1 + w2*src2
+	template<typename type int dims> addWeighted(const ndarray_ref<type,dims> & src1, type w1, const ndarray_ref<type,dims> & src2, type w2, ndarray_ref<type,dims> & dest){
+		mul(src,val,dest);
+	}
+	//! maxVal = min(src(:))
+	template<typename type int dims> minMax(const ndarray_ref<type,dims> & src, float& minVal, float& maxVal){
+	}
+	//! sum of all elements
+	template<typename type int dims> summation(const ndarray_ref<type,dims> & src, float& sum){
+	}
+
+	//! sum_i |src1(i)-src2(i)|
+	void normDiffL1(const ndarray_ref<type,dims> & src1, const ndarray_ref<type,dims> & src2, float& norm){
+	}
+
+	//! sum_i |src1(i)-src2(i)|^2
+	void normDiffL2(const ndarray_ref<type,dims> & src1, const ndarray_ref<type,dims> & src2, float& norm){
+	}
+
+	//! mean-squared error (MSE) sum_i ( x_i - y_i )^2
+	void mse(const ndarray_ref<type,dims> & src1, const ndarray_ref<type,dims> & src2, float& norm){
+	}
+
+	//-- complex math------------
+	void abs(iu::VolumeCpu_32f_C2& complex, iu::VolumeCpu_32f_C1& real);
+	void real(iu::VolumeGpu_32f_C2& complex, iu::VolumeGpu_32f_C1& real);
+	void imag(iu::ImageCpu_32f_C2& complex, iu::ImageCpu_32f_C1& real);
+	void phase(iu::ImageCpu_32f_C2& complex, iu::ImageCpu_32f_C1& real);
+	void scale(iu::VolumeGpu_32f_C2& complex_src, const float& scale, iu::VolumeGpu_32f_C2& complex_dst);
+	void multiply(iu::VolumeGpu_32f_C2& complex_src, iu::VolumeGpu_32f_C1& real, iu::VolumeGpu_32f_C2& complex_dst);
+	void multiply(iu::VolumeGpu_32f_C2& complex_src1, iu::VolumeGpu_32f_C2& complex_src2, iu::VolumeGpu_32f_C2& complex_dst);
+	void multiplyConjugate(iu::ImageCpu_32f_C2& complex_src1, iu::ImageCpu_32f_C2& complex_src2, iu::ImageCpu_32f_C2& complex_dst);
+	 */
 }
 

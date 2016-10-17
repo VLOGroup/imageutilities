@@ -180,13 +180,22 @@ endif(WIN32)
   # additional dependencies
   #
 
+  list(FIND IU_MODULES iumath USE_IUMATH)    # using iumath requires cufft
+  if(USE_IUMATH GREATER 0)
+    set(IMAGEUTILITIES_LIBRARY ${IMAGEUTILITIES_LIBRARY} ${CUDA_CUFFT_LIBRARIES})
+  endif(USE_IUMATH GREATER 0)  
+
   list(FIND IU_MODULES iuio USE_IUIO)    # using iuio reuqires opencv
   if(USE_IUIO GREATER 0)
     if(NOT ImageUtilities_FIND_QUIETLY)
       message(STATUS "ImageUtilities using iuio, adding OpenCV as dependency")
     endif()
     
-    find_package(OpenCV REQUIRED COMPONENTS opencv_core opencv_highgui)
+    find_package(OpenCV REQUIRED COMPONENTS opencv_core opencv_highgui )
+    if(${OpenCV_VERSION_MAJOR} MATCHES "3")
+      message("Enabling fixes for OpenCV >= 3")
+      find_package( OpenCV REQUIRED COMPONENTS opencv_videoio opencv_core opencv_imgcodecs opencv_imgproc opencv_highgui)
+    endif(${OpenCV_VERSION_MAJOR} MATCHES "3")
 
     if(NOT OpenCV_FOUND)
       message(FATAL_ERROR "OpenCV not found (required by Imageutilities iuio")
@@ -202,14 +211,14 @@ endif(WIN32)
     if(OPENEXR_FOUND)
       add_definitions(-DIUIO_EXR)
       include_directories(${OPENEXR_INCLUDE_DIRS})
-
+      set(IMAGEUTILITIES_LIBRARY ${IMAGEUTILITIES_LIBRARY} ${OPENEXR_LIBRARIES} )
       find_package(Eigen3 QUIET)
       if(EIGEN3_FOUND)
           add_definitions(-DIUIO_EIGEN3)
       endif(EIGEN3_FOUND)
     endif(OPENEXR_FOUND)
       
-    set(IMAGEUTILITIES_LIBRARY ${IMAGEUTILITIES_LIBRARY} ${OpenCV_LIBS})
+    set(IMAGEUTILITIES_LIBRARY ${IMAGEUTILITIES_LIBRARY} ${OpenCV_LIBS} ${OpenCV_LIBRARIES})
   endif()
 
 

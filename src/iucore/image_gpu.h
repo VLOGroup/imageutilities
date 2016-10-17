@@ -18,9 +18,9 @@ struct use_PixelType{
 
 template<typename PixelType>
 struct use_PixelType<PixelType,false>{
-	  static int __attribute__((deprecated("this function may return wrong result in case pitch_ is not divisible by sizeof(PixelType)"))) stride(int pitch_){
+      static int __attribute__((deprecated("this function may return wrong result in case pitch_ is not divisible by sizeof(PixelType) (typically the case when using _C3 images)"))) stride(int pitch_){
 		  if(pitch_ % sizeof(PixelType) != 0){
-			  throw std::runtime_error("bad! your are using wrong stride, because pitch is not divisible");
+              throw std::runtime_error("bad! your are using wrong stride, because pitch is not divisible (are you using _C3 images? You shouldn't)");
 		  };
 		  return pitch_/sizeof(PixelType);
 	  }
@@ -133,8 +133,6 @@ public:
    * @todo: returned value is invalid if sizeof(PixelType) == 3, e.g. for *_C3 images. Use
    * pitch in this case to calculate memory addresses by hand.
    */
-
-
   virtual size_t  stride() const
   {
 	return use_PixelType<PixelType, sizeof(PixelType) % 32 == 0 ||sizeof(PixelType)==1 || sizeof(PixelType) == 2 || sizeof(PixelType) == 4 || sizeof(PixelType) == 8 || sizeof(PixelType) == 16 >::stride(pitch_);

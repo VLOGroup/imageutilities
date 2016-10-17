@@ -43,6 +43,14 @@ template<typename type, int dims>
 	return a;
 }
 
+// a-=b
+template<typename type, int dims>
+	ndarray_ref<type, dims> & operator -= (ndarray_ref<type, dims> & a, const ndarray_ref<type, dims> & b){
+	auto func = [=] __device__ (const intn<dims> & ii){ a.kernel()(ii) -= b.kernel()(ii); }; // operation capture
+	struct_dims<dims>::for_each(a.shape(), func);
+	return a;
+}
+
 // a*=b
 template<typename type, int dims>
 	ndarray_ref<type, dims> & operator *= (ndarray_ref<type, dims> & a, const ndarray_ref<type, dims> & b){
@@ -74,6 +82,13 @@ ndarray_ref<type1, dims> & operator << (ndarray_ref<type1, dims> & a, const ndar
 	struct_dims<dims>::for_each(a.shape(), func);
 	return a;
 };
+
+template<typename type, int dims>
+ndarray_ref<type, dims> & madd2(ndarray_ref<type, dims> & a, const ndarray_ref<type, dims> & b, const ndarray_ref<type, dims> & c, type w1, type w2){
+	auto func = [=] __device__ (const intn<dims> & ii){ a.kernel()(ii) = b.kernel()(ii)*w1 + c.kernel()(ii)*w2; }; // operation capture
+	struct_dims<dims>::for_each(a.shape(), func);
+	return a;
+}
 
 
 /*
@@ -109,9 +124,11 @@ void ttest(){
 	a += type(1);
 	a << type(1);
 	a += a;
+	a -= a;
 	a *= a;
 	copy_data(a,b);
-};
+	madd2(a,a,a,type(1),type(1));
+}
 
 template<typename type>
 void tdtest(){
@@ -119,20 +136,28 @@ void tdtest(){
 	ttest<type,2>();
 	ttest<type,3>();
 	ttest<type,4>();
-};
+}
 
 template<int dims>
 void dtest(){
 	// conversions
-	ndarray_ref<float, dims> a;
-	ndarray_ref<int, dims> b;
-	a << b;
-	b << a;
-	a << a;
-	b << b;
-};
+	ndarray_ref<float, dims> f;
+	ndarray_ref<int, dims> i;
+	ndarray_ref<double, dims> d;
+	ndarray_ref<unsigned int, dims> ui;
+	ndarray_ref<short int, dims> si;
+	f << f;
+	i << i;
+	i << f;
+	f << i;
+	d << d;
+	f << d;
+	d << f;
+	ui << ui;
+	si << si;
+}
 
-void test(){
+void test_ops(){
 	tdtest<float>();
 	tdtest<int>();
 	// conversions
@@ -140,4 +165,4 @@ void test(){
 	dtest<2>();
 	dtest<3>();
 	dtest<4>();
-};
+}

@@ -14,9 +14,9 @@ if(NOT WIN32)
   set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} "-std=c++11")
 endif(NOT WIN32)
 
-find_package(Boost REQUIRED COMPONENTS python)
-find_package(PythonLibs 2.7 REQUIRED)
+find_package(PythonLibs REQUIRED)
 Find_package(NumPy REQUIRED)
+find_package(Boost REQUIRED COMPONENTS python)
 FIND_PACKAGE(Eigen3 REQUIRED)
 
 include_directories(${NUMPY_INCLUDE_DIRS})
