@@ -212,12 +212,13 @@ namespace base2{
 		size_t size_bytes()const;
 		//! check has the same shape as another ndarray_ref
 		bool same_shape(const ndarray_ref<type, dims> & x) const;
+		//! whether addresses contiguous memory (can be converted to linear memory)
+		bool is_linear_ascending() const;
+		//------------deleted---------// todo: make safe with negative strides
 		//! whether strides are ascending
 		bool strides_ascending() const = delete;
 		//! whether strides are descending
 		bool strides_descending() const = delete;
-		//! whether addresses contiguous memory (can be converted to linear memory)
-		bool is_contiguous() const = delete;
 		//! get dimension ordering from strides - in increasing value of strides
 		intn<dims> dims_order() const = delete;
 		//! how many bytes padded on a given dimension (for the dimension with the smallest stride results in padded bytes per element)
@@ -228,6 +229,7 @@ namespace base2{
 		bool aligned(int bytes) const = delete;
 		//! check alignment on a given dimensions
 		template<int dim> bool aligned(int bytes) const = delete;
+		//-----------------------------
 	public: // checked element access
 		type * __restrict__ ptr(const intn<dims> & ii) const;
 		//! pointer access: ptr(1,5,3)
@@ -395,14 +397,17 @@ namespace base2{
 		return true;
 	}
 
+*/
 	template<typename type, int dims>
-	bool ndarray_ref<type, dims>::is_contiguous() const{
-		for (int d = 0; d < dims; ++d){
-			if(dim_padding(d) != 0) return false;
+	bool ndarray_ref<type, dims>::is_linear_ascending() const{
+		if(stride_bytes(0) != sizeof(type) ) return false;
+		for (int d = 0; d < dims-1; ++d){
+			if(! (stride_bytes(d+1) == stride_bytes(d)*size(d)) ) return false;
 		};
 		return true;
 	}
 
+/*
 	//! check alignment of all dimensions, typically 4B and 16B alignments are needed (same as to check alignment of the smallest stride)
 	template<typename type, int dims>
 	bool ndarray_ref<type, dims>::aligned(int bytes) const {
@@ -435,21 +440,6 @@ namespace special2{
 		//using parent::operator =;
 		using parent::set_ref;
 		ndarray_ref() = default;
-		// special constructors
-		ndarray_ref & set_ref(const iu::LinearHostMemory<type, 1> & x);
-		ndarray_ref & set_ref(const iu::LinearDeviceMemory<type, 1> & x);
-		ndarray_ref(const iu::LinearHostMemory<type, 1> & x){
-			set_ref(x);
-		}
-		ndarray_ref(const iu::LinearDeviceMemory<type, 1> & x){
-			set_ref(x);
-		}
-		ndarray_ref(const iu::LinearHostMemory<type, 1> * x){
-			set_ref(x);
-		}
-		ndarray_ref(const iu::LinearDeviceMemory<type, 1> * x){
-			set_ref(x);
-		}
 		//reverse conversions
 		//operator iu::LinearHostMemory1d<type>();
 		//operator iu::LinearDeviceMemory1d<type>();
@@ -598,14 +588,32 @@ public:
 	using parent::ptr;
 	using parent::size;
 	using parent::stride_bytes;
+	using parent::set_ref;
 
 public:
+	/*
 	//! from LinearHostMemory1d and size
 	ndarray_ref(const iu::LinearHostMemory<type, 1> & x, const intn<dims> & size);
 	//! from LinearDeviceMemory1d and size
 	ndarray_ref(const iu::LinearDeviceMemory<type, 1> & x, const intn<dims> & size);
 	ndarray_ref(const iu::LinearHostMemory<type, 1> * x, const intn<dims> & size);
 	ndarray_ref(const iu::LinearDeviceMemory<type, 1> * x, const intn<dims> & size);
+	*/
+	// special constructors from LinearDeviceMemory ND
+	ndarray_ref & set_ref(const iu::LinearHostMemory<type, dims> & x);
+	ndarray_ref & set_ref(const iu::LinearDeviceMemory<type, dims> & x);
+	ndarray_ref(const iu::LinearHostMemory<type, dims> & x){
+		set_ref(x);
+	}
+	ndarray_ref(const iu::LinearDeviceMemory<type, dims> & x){
+		set_ref(x);
+	}
+	ndarray_ref(const iu::LinearHostMemory<type, dims> * x){
+		set_ref(x);
+	}
+	ndarray_ref(const iu::LinearDeviceMemory<type, dims> * x){
+		set_ref(x);
+	}
 	//! from mxArray * -- include mex_io.h
 	ndarray_ref(const mxArray_tag *);
 public: // operations

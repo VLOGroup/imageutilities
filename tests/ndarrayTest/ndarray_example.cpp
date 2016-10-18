@@ -296,8 +296,14 @@ void test_3D(){
 
 	// reshape into 4D
 	iu::VolumeGpu_32f_C1 V3(4,8,10);
-	auto r3 = V3.ref().reshape(2,2,8,10);
-	std::cout << r3 << "\n";
+	auto r4 = V3.ref().reshape(2,2,8,10);
+	std::cout << r4 << "\n";
+
+	{
+		iu::LinearDeviceMemory<float,3> L1{V3.ref()};
+		iu::LinearHostMemory<float,4> L2(iu::Size<4>{4,8,10,10});
+		L2.ref().subdim<3>(0) << L1.ref();
+	}
 }
 
 void test_4D(){
