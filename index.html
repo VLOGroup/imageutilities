@@ -66,7 +66,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Friends</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Groups</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Friends</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Groups</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(9)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -85,6 +85,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <li>Set up environment variable <code>COMPUTE_CAPABILITY</code> with the CC of your CUDA-enabled GPU</li>
 <li>Set up environment variable <code>CUDA_SDK_ROOT_DIR</code> to point to the NVidia CUDA examples</li>
 <li>Set up environment vaiable <code>IMAGEUTILITIES_ROOT</code> to point to the path of this directory</li>
+<li>To use the matlab wrapper, set up environment vaiable <code>MATLAB_ROOT</code> to point to matlab root directory</li>
 </ul>
 <p>To build simply perform the following steps:</p>
 <div class="fragment"><div class="line">$ cd build</div>
@@ -110,14 +111,14 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a class="code" href="classiu_1_1ImageGpu.html">iu::ImageGpu_32f_C1</a> *I1 = iu::imread_cu32f_C1(DATA_PATH(<span class="stringliteral">&quot;army_1.png&quot;</span>));</div>
 <div class="line"><a class="code" href="classiu_1_1ImageGpu.html">iu::ImageGpu_32f_C1</a> *I2 = iu::imread_cu32f_C1(DATA_PATH(<span class="stringliteral">&quot;army_2.png&quot;</span>));</div>
 <div class="line"><span class="comment">// allocate memory for the output</span></div>
-<div class="line"><a class="code" href="classiu_1_1ImageGpu.html">iu::ImageGpu_32f_C1</a> result(I1-&gt;<a class="code" href="classiu_1_1Image.html#a9e4ba02cfff7359a9a1b600a85f1bd12">size</a>());</div>
+<div class="line"><a class="code" href="classiu_1_1ImageGpu.html">iu::ImageGpu_32f_C1</a> result(I1-&gt;<a class="code" href="classiu_1_1Image.html#aba8c1dc09d2c28a9b0001f0c74067cdb">size</a>());</div>
 <div class="line"></div>
 <div class="line"><span class="comment">// Add 0.5 to the first image and save the result</span></div>
-<div class="line"><a class="code" href="group__MathArithmetics.html#ga6eed694aa4a3bdbc3ff3ee04f86d7ad9">iu::math::addC</a>(*I1,0.5,result);</div>
+<div class="line"><a class="code" href="group__MathArithmetics.html#gab8c989ff773b88343c40003207732fca">iu::math::addC</a>(*I1,0.5,result);</div>
 <div class="line"><a class="code" href="group__ImageIO.html#gafd8b564a25c549e3d6d95e4a84f0223f">iu::imsave</a>(&amp;result,RESULTS_PATH(<span class="stringliteral">&quot;army_1_bright.png&quot;</span>));</div>
 <div class="line"></div>
 <div class="line"><span class="comment">// Subtract one image from the other and save the result</span></div>
-<div class="line"><a class="code" href="group__MathArithmetics.html#gac54a3cf1d53ab9f36b8f6e9ddfb5893d">iu::math::addWeighted</a>(*I1,1,*I2,-1,result);</div>
+<div class="line"><a class="code" href="group__MathArithmetics.html#ga847d6655b69ff0d3bb10232454ea2a1f">iu::math::addWeighted</a>(*I1,1,*I2,-1,result);</div>
 <div class="line"><a class="code" href="group__ImageIO.html#gafd8b564a25c549e3d6d95e4a84f0223f">iu::imsave</a>(&amp;result,RESULTS_PATH(<span class="stringliteral">&quot;army_1_minus_2.png&quot;</span>));</div>
 </div><!-- fragment --><p>They also make it easy to use images in CUDA kernels by providing additional information about the image that can be easily passed to kernels. Host code:</p>
 <div class="fragment"><div class="line"><a class="code" href="classiu_1_1ImageGpu.html">iu::ImageGpu_32f_C1</a> img(320,240);</div>
@@ -140,7 +141,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- fragment --> </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Aug 3 2016 08:57:43 for Image Utilities (IU) by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Oct 18 2016 07:55:58 for Image Utilities (IU) by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

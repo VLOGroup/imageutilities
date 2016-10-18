@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Friends</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Groups</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Friends</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Groups</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(9)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -104,7 +104,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;{</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    Q_OBJECT</div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="keyword">explicit</span> <a class="code" href="classiu_1_1Qt5ImageGpuWidget.html#a43799352a352a6a5bbda8e8862c455ba">Qt5ImageGpuWidget</a>(<span class="keyword">const</span> <a class="code" href="classiu_1_1Size_3_013_01_4.html">IuSize</a> sz, QWidget* parent = NULL);</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="keyword">explicit</span> <a class="code" href="classiu_1_1Qt5ImageGpuWidget.html#ae3f47f44049b0fe21fcf62eb5d7d87ba">Qt5ImageGpuWidget</a>(<span class="keyword">const</span> <a class="code" href="classiu_1_1Size_3_012_01_4.html">iu::Size&lt;2&gt;</a> sz, QWidget* parent = NULL);</div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <span class="keyword">virtual</span> ~<a class="code" href="classiu_1_1Qt5ImageGpuWidget.html">Qt5ImageGpuWidget</a>();</div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="keyword">public</span> slots:</div>
@@ -125,7 +125,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    GLuint texture_;</div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    cudaGraphicsResource_t cuda_img_;</div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    QOpenGLBuffer pbo_;</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    <a class="code" href="classiu_1_1Size_3_013_01_4.html">IuSize</a> image_size_;</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    <a class="code" href="classiu_1_1Size_3_012_01_4.html">iu::Size&lt;2&gt;</a> image_size_;</div>
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;</div>
 <div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    QOpenGLShaderProgram* shader_program_;</div>
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    QOpenGLVertexArrayObject* vao_;</div>
@@ -136,15 +136,15 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;</div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;</div>
 <div class="ttc" id="classiu_1_1Qt5ImageGpuWidget_html_a8c86970cc52823779484f4b039371683"><div class="ttname"><a href="classiu_1_1Qt5ImageGpuWidget.html#a8c86970cc52823779484f4b039371683">iu::Qt5ImageGpuWidget::update_image_colormap</a></div><div class="ttdeci">void update_image_colormap(iu::ImageGpu_32f_C1 *im, float minVal, float maxVal)</div></div>
-<div class="ttc" id="classiu_1_1Qt5ImageGpuWidget_html_a43799352a352a6a5bbda8e8862c455ba"><div class="ttname"><a href="classiu_1_1Qt5ImageGpuWidget.html#a43799352a352a6a5bbda8e8862c455ba">iu::Qt5ImageGpuWidget::Qt5ImageGpuWidget</a></div><div class="ttdeci">Qt5ImageGpuWidget(const IuSize sz, QWidget *parent=NULL)</div></div>
-<div class="ttc" id="classiu_1_1Size_3_013_01_4_html"><div class="ttname"><a href="classiu_1_1Size_3_013_01_4.html">iu::Size&lt; 3 &gt;</a></div><div class="ttdoc">Template specialization for 3-d unsigned int vectors (size vectors). </div><div class="ttdef"><b>Definition:</b> vector.h:519</div></div>
+<div class="ttc" id="classiu_1_1Qt5ImageGpuWidget_html_ae3f47f44049b0fe21fcf62eb5d7d87ba"><div class="ttname"><a href="classiu_1_1Qt5ImageGpuWidget.html#ae3f47f44049b0fe21fcf62eb5d7d87ba">iu::Qt5ImageGpuWidget::Qt5ImageGpuWidget</a></div><div class="ttdeci">Qt5ImageGpuWidget(const iu::Size&lt; 2 &gt; sz, QWidget *parent=NULL)</div></div>
 <div class="ttc" id="classiu_1_1Qt5ImageGpuWidget_html_a335d26a79dee8e317215aad5d16a604a"><div class="ttname"><a href="classiu_1_1Qt5ImageGpuWidget.html#a335d26a79dee8e317215aad5d16a604a">iu::Qt5ImageGpuWidget::update_image</a></div><div class="ttdeci">void update_image(iu::ImageGpu_8u_C1 *im)</div></div>
+<div class="ttc" id="classiu_1_1Size_3_012_01_4_html"><div class="ttname"><a href="classiu_1_1Size_3_012_01_4.html">iu::Size&lt; 2 &gt;</a></div><div class="ttdoc">Template specialization for 2-d unsigned int vectors (size vectors). </div><div class="ttdef"><b>Definition:</b> vector.h:525</div></div>
 <div class="ttc" id="classiu_1_1Qt5ImageGpuWidget_html"><div class="ttname"><a href="classiu_1_1Qt5ImageGpuWidget.html">iu::Qt5ImageGpuWidget</a></div><div class="ttdoc">Allows to display images directly in an OpenGL Widget. </div><div class="ttdef"><b>Definition:</b> qt5imagegpuwidget.h:19</div></div>
-<div class="ttc" id="classiu_1_1ImageGpu_html"><div class="ttname"><a href="classiu_1_1ImageGpu.html">iu::ImageGpu</a></div><div class="ttdoc">Device 2D image class (pitched memory). </div><div class="ttdef"><b>Definition:</b> image_gpu.h:15</div></div>
+<div class="ttc" id="classiu_1_1ImageGpu_html"><div class="ttname"><a href="classiu_1_1ImageGpu.html">iu::ImageGpu</a></div><div class="ttdoc">Device 2D image class (pitched memory). </div><div class="ttdef"><b>Definition:</b> image_gpu.h:34</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Aug 3 2016 08:57:39 for Image Utilities (IU) by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Oct 18 2016 07:55:56 for Image Utilities (IU) by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
