@@ -8,8 +8,8 @@ template<typename type, int dims> void test_all(){
 	ndarray<type, dims> a;
 	intn<dims> sz; sz = 100;
 	a.template create<memory::GPU>(sz);
-//	add(a,a,a);
-	add(a,a);
+//    add(a,a,a);
+//	add(a,a);
 //	add(a, type(0));
 //	madd2(a,a,a,type(0), type(0));
 	ndarray_ref<type, dims+1> g;
