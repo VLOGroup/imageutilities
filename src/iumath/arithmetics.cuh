@@ -49,6 +49,23 @@ void mulC(LinearMemoryType<PixelType, Ndim>& src, const PixelType& val,
     thrust::transform(src.begin(),src.end(),thrust::constant_iterator<PixelType>(val),dst.begin(),thrust::multiplies<PixelType>());
 }
 
+/** Absolute value of every pixel. (can be called in-place)
+ * \param[in] src Source image.
+ * \param[out] dst Destination image.
+ */
+template<template<typename, typename > class PitchedMemoryType,
+    template<typename> class Allocator, typename PixelType>
+void abs(PitchedMemoryType<PixelType, Allocator<PixelType> >& src, PitchedMemoryType<PixelType, Allocator<PixelType> >& dst)
+{
+	thrust::transform(src.begin(), src.end(), dst.begin(), abs_value<PixelType>());
+}
+
+template<template<typename, unsigned int> class LinearMemoryType, typename PixelType, unsigned int Ndim>
+void abs(LinearMemoryType<PixelType, Ndim>& src, LinearMemoryType<PixelType, Ndim>& dst)
+{
+	thrust::transform(src.begin(), src.end(), dst.begin(), abs_value<PixelType>());
+}
+
 /** Adding an image with an additional weighting factor to another.
  * \param[in] src1 Source image 1.
  * \param[in] src2 Source image 2.
