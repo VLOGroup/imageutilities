@@ -201,6 +201,13 @@ IUMATH_DLLAPI void addC(iu::LinearHostMemory<double2, 5>& src, const double2& va
 IUMATH_DLLAPI void addC(iu::LinearHostMemory<double3, 5>& src, const double3& val, iu::LinearHostMemory<double3, 5>& dst);
 IUMATH_DLLAPI void addC(iu::LinearHostMemory<double4, 5>& src, const double4& val, iu::LinearHostMemory<double4, 5>& dst);
 
+// absolute value
+/** Compute the absolute value of an array (can be called in-place)
+* \param src Source array
+* \param[out] dst Destination array
+*/
+IUMATH_DLLAPI void abs(iu::LinearDeviceMemory<float, 1>& src, iu::LinearDeviceMemory<float, 1>& dst);
+
 // multiply constant
 /** Multiply a constant to an array (can be called in-place)
  * \param src Source array

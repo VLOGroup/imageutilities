@@ -54,6 +54,15 @@ struct minmax_reduce_tuple :
     }
 };
 
+template <typename ValueType>
+struct abs_value
+{
+	__host__ __device__ ValueType operator()(const ValueType x) const
+	{
+		return abs(x);
+	}
+};
+
 template <typename ValueType, typename IndexType>
 struct sum_transform_tuple :
         public thrust::unary_function< thrust::tuple<ValueType, IndexType>,

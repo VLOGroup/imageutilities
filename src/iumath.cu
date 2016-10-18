@@ -331,6 +331,8 @@ void mulC(iu::LinearHostMemory<double2, 5>& src, const double2& val, iu::LinearH
 void mulC(iu::LinearHostMemory<double3, 5>& src, const double3& val, iu::LinearHostMemory<double3, 5>& dst) {iuprivate::math::mulC(src,val,dst);}
 void mulC(iu::LinearHostMemory<double4, 5>& src, const double4& val, iu::LinearHostMemory<double4, 5>& dst) {iuprivate::math::mulC(src,val,dst);}
 
+void abs(iu::LinearDeviceMemory<float, 1>&src, iu::LinearDeviceMemory<float,1>&dst) {iuprivate::math::abs(src, dst);}
+
 // pointwise weighted add
 void addWeighted(iu::ImageGpu_32f_C1& src1, const float& weight1,
                  iu::ImageGpu_32f_C1& src2, const float& weight2,iu::ImageGpu_32f_C1& dst) {iuprivate::math::addWeighted(src1,weight1,src2,weight2,dst);}
