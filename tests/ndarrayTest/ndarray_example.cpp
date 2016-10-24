@@ -367,9 +367,9 @@ int main(){
 		std::cout << e.what() <<"\n";
 		throw e;
 	};
-	test_1D();
+    test_1D();
 	test_2D();
-	test_3D();
+//	test_3D();
 	test_4D();
 	//
 	test_IuSize();
