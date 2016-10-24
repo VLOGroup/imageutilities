@@ -47,6 +47,10 @@ else(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     set(WITH_NDARRAY FALSE)
 endif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 
+add_flags(CMAKE_CXX_FLAGS "-Wno-unknown-pragmas -Wno-sign-compare")
+#add_flags(CMAKE_C_FLAGS "-Wno-unknown-pragmas")
+add_flags(CUDA_NVCC_FLAGS "-Xcompiler -Wno-unknown-pragmas -Xcompiler -Wno-sign-compare")
+
 if(WITH_NDARRAY)
 SET(SRC
 ${SRC_DIR}/error.cpp

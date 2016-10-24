@@ -220,6 +220,10 @@ public://__________initializers
 		for (int i = 0; i < n; ++i)V(i) = val;
 		return *this;
 	}
+
+	HOSTDEVICE void fill(const int val){
+			(*this) = val;
+		}
 	//! convert to C++ array
 	explicit HOSTDEVICE operator array_type &(){ return as_array(); };
 	//! create increasing sequence
@@ -231,6 +235,8 @@ public://__________initializers
 public: //________________ element access
 	HOSTDEVICE int * begin(){ return &V(0); };
 	HOSTDEVICE const int * begin()const { return &V(0); };
+	HOSTDEVICE int * ptr(){ return &V(0); };
+	HOSTDEVICE const int * ptr()const { return &V(0); };
 	HOSTDEVICE int * end(){ return begin() + n; };
 	HOSTDEVICE int const * end()const { return begin() + n; };
 	HOSTDEVICE int & operator[](const int i){ return V(i); };
@@ -241,6 +247,9 @@ public:
 		long long r = 1;
 		for (int i = 0; i < n; ++i) r *= V(i);
 		return r;
+	}
+	HOSTDEVICE long long numel() const {
+		return prod();
 	}
 public: // mapping between multiindex and linear index
 	//! index_to_integer is a 1-to-1 mapping of a multiindex in the octant [0 *this] to an integer in the interval [0 prod()-1]
@@ -443,10 +452,11 @@ public:// const math operators
 		return (intn<n>(*this)) += x;
 	}
 
+	//! multiplication by floating point with rounding
 	intn<n> operator * (const double factor) const {
 		intn<n> r;
 		for (int i = 0; i < n; ++i){
-			(*this)[i] = int((*this)[i] * factor + 0.5);
+			r[i] = int((*this)[i] * factor + 0.5);
 		};
 		return r;
 	}
@@ -525,9 +535,11 @@ public:// const math operators
 //	return i < int(x);
 //}
 
-//#pragma hd_warning_disable
+#pragma hd_warning_disable
 template<int n, typename tstream>
-HOSTDEVICE tstream & operator << (tstream & ss, intn<n> a){
+//template<int n, typename tstream, class = typename std::enable_if< (std::is_convertible<tstream,std::ostream>::value || std::is_convertible<tstream,host_stream>::value) >::type >
+//template<int n, typename tstream, class = typename std::enable_if<std::is_convertible<tstream,std::ostream>::value>::type >
+tstream & operator << (tstream & ss, intn<n> a){
 	ss << "(";
 	for(int i=0; i<n; ++i){
 		ss << a[i];

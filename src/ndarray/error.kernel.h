@@ -7,10 +7,9 @@
 #define DEBUG_LVL 0
 #endif
 
-
 //____________________stream_eater__________________________________
 
-struct stream_eater{
+struct stream_eater : public device_stream,  public host_stream{
 	__host__ __device__ __forceinline__ stream_eater & operator << (int a){return *this;}
 	__host__ __device__ __forceinline__ stream_eater & operator << (long long a){return *this;}
 	__host__ __device__ __forceinline__ stream_eater & operator << (size_t a){return *this;}
@@ -23,7 +22,7 @@ struct stream_eater{
 
 
 //____________________stream to printf______________________________
-struct pf_stream{
+struct pf_stream : public device_stream, public host_stream{
 	int lvl;
 	__host__ __device__ pf_stream(int _lvl = 0) :lvl(_lvl){
 		//printf("lvl= %i: ", lvl);

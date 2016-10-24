@@ -48,3 +48,6 @@
     #define DLL_LOCAL
   #endif
 #endif
+
+struct host_stream{};
+struct device_stream{};
