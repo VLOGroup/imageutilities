@@ -98,7 +98,7 @@ ndarray_ref<type, dims> & ndarray_ref<type, dims>::set_ref(const iu::LinearHostM
 	return *this;
 }
 
-/*
+
 template<typename type, int dims>
 ndarray_ref<type,dims>::ndarray_ref(const iu::LinearHostMemory<type, 1> & x, const intn<dims> & size){
 	this->set_linear_ref(const_cast<type*>(x.data()), size, ndarray_flags::host_only);
@@ -109,6 +109,7 @@ ndarray_ref<type,dims>::ndarray_ref(const iu::LinearDeviceMemory<type, 1>& x, co
 	this->set_linear_ref(const_cast<type*>(x.data()), size, ndarray_flags::device_only);
 }
 
+/*
 template<typename type, int dims>
 ndarray_ref<type,dims>::ndarray_ref(const iu::LinearHostMemory<type, 1> * x, const intn<dims> & size){
 	this->set_linear_ref(const_cast<type*>(x.data()), size, ndarray_flags::host_only);
@@ -191,7 +192,7 @@ namespace iu{
 
 	template<typename type, class Allocator>
 	VolumeCpu<type, Allocator>::VolumeCpu(const ndarray_ref<type,3> &x)
-	:Volume(size(0), size(1), size(2)), ext_data_pointer_(true){
+    :Volume(x.size(0), x.size(1), x.size(2)), ext_data_pointer_(true){
 		runtime_check(x.host_allowed());
 		runtime_check(x.stride_bytes(0)==sizeof(type)); //contiguous in width
 		data_ = x.ptr();
@@ -205,7 +206,7 @@ namespace iu{
 
 	template<typename type, class Allocator>
 	VolumeGpu<type, Allocator>::VolumeGpu(const ndarray_ref<type,3> &x)
-	:Volume(size(0), size(1), size(2)), ext_data_pointer_(true){
+    :Volume(x.size(0), x.size(1), x.size(2)), ext_data_pointer_(true){
 		runtime_check(x.device_allowed());
 		runtime_check(x.stride_bytes(0)==sizeof(type)); //contiguous in width
 		data_ = x.ptr();

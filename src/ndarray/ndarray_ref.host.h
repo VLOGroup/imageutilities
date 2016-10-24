@@ -591,14 +591,14 @@ public:
 	using parent::set_ref;
 
 public:
-	/*
+
 	//! from LinearHostMemory1d and size
 	ndarray_ref(const iu::LinearHostMemory<type, 1> & x, const intn<dims> & size);
 	//! from LinearDeviceMemory1d and size
 	ndarray_ref(const iu::LinearDeviceMemory<type, 1> & x, const intn<dims> & size);
-	ndarray_ref(const iu::LinearHostMemory<type, 1> * x, const intn<dims> & size);
-	ndarray_ref(const iu::LinearDeviceMemory<type, 1> * x, const intn<dims> & size);
-	*/
+    //ndarray_ref(const iu::LinearHostMemory<type, 1> * x, const intn<dims> & size);
+    //ndarray_ref(const iu::LinearDeviceMemory<type, 1> * x, const intn<dims> & size);
+
 	// special constructors from LinearDeviceMemory ND
 	ndarray_ref & set_ref(const iu::LinearHostMemory<type, dims> & x);
 	ndarray_ref & set_ref(const iu::LinearDeviceMemory<type, dims> & x);
