@@ -200,9 +200,9 @@ namespace base2{
 		 */
 	public:
 		//! helper conversion to the kernel base
-		__host__ __device__ __forceinline__ kernel::ndarray_ref<type, dims> & kernel(){ return *this; };
+		HOSTDEVICE kernel::ndarray_ref<type, dims> & kernel(){ return *this; };
 		//! helper conversion to the kernel base
-		__host__ __device__ __forceinline__ const kernel::ndarray_ref<type, dims> & kernel() const { return *this; };
+		HOSTDEVICE const kernel::ndarray_ref<type, dims> & kernel() const { return *this; };
 	public: // additional shape / size functions
 		//! shape
 		shapen<dims> shape() const;
@@ -666,8 +666,8 @@ public: // recast and slicing
 	//! compress dimensions (d1,d1+1), provided that dim_continuous(d1) is true
 	decrement_dim_type compress_dim(int d1)const;
 public: // convinience functions
-	__host__ __device__ __forceinline__ kernel::ndarray_ref<type,dims> & kernel(){return *this;};
-	__host__ __device__ __forceinline__ const kernel::ndarray_ref<type,dims> & kernel()const{return *this;};
+	HOSTDEVICE kernel::ndarray_ref<type,dims> & kernel(){return *this;};
+	HOSTDEVICE const kernel::ndarray_ref<type,dims> & kernel()const{return *this;};
 public: //iterators
 	template<typename System> ndarray_iterator<type, dims, System> begin_it() const;
 	template<typename System> ndarray_iterator<type, dims, System> end_it() const;
@@ -1013,12 +1013,12 @@ template<typename type, int dims> ndarray_ref<type,dims> make_ndarray_ref(type *
 
 namespace kernel{
 	template<typename type, int dims>
-	__host__ ndarray_ref<type,dims>::ndarray_ref(const ::ndarray_ref<type,dims> & derived){
+	HOST ndarray_ref<type,dims>::ndarray_ref(const ::ndarray_ref<type,dims> & derived){
 		*this = derived;
 	}
 
 	template<typename type, int dims>
-	__host__ ndarray_ref<type, dims> & ndarray_ref<type,dims>::operator = (const ::ndarray_ref<type, dims> & derived){
+	HOST ndarray_ref<type, dims> & ndarray_ref<type,dims>::operator = (const ::ndarray_ref<type, dims> & derived){
 		if(!derived.device_allowed()){
 			throw_error("entering kernel for this array is not permitted") << derived;
 		};

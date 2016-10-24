@@ -19,9 +19,6 @@
 
 
 
-#define HOSTDEVICE __host__ __device__ __forceinline__
-
-
 template<typename T, typename U> constexpr size_t offsetOf(U T::*member){
 	return (char*)&((T*)nullptr->*member) - (char*)nullptr;
 }
@@ -150,7 +147,7 @@ public:
 #ifdef __CUDA_ARCH__
 	HOSTDEVICE intn() = default; //uninitialized
 #else
-	__host__ __forceinline__ intn(){ //0-initialized
+	HOST intn(){ //0-initialized
 		for (int i = 0; i < n; ++i)V(i) = 0;
 	};
 #endif
@@ -166,7 +163,7 @@ public:
 		if (n > 4)V(n > 4? 4 : 0) = a4;
 		if (n > 5)V(n > 5? 5 : 0) = a5;
 	}
-	*/
+	 */
 
 
 	//! construct from initializer list, e.g. {1,2,3}
@@ -210,9 +207,9 @@ public://__________initializers
 	//! default operator =
 	HOSTDEVICE intn<n> & operator = (const intn<n> & x) = default;
 	//{
-//		for (int i = 0; i < n; ++i)V(i) = x[i];
-//		return *this;
-//	}
+	//		for (int i = 0; i < n; ++i)V(i) = x[i];
+	//		return *this;
+	//	}
 	HOSTDEVICE intn(const array_type & x){
 		(*this) = x;
 	}
@@ -222,8 +219,8 @@ public://__________initializers
 	}
 
 	HOSTDEVICE void fill(const int val){
-			(*this) = val;
-		}
+		(*this) = val;
+	}
 	//! convert to C++ array
 	explicit HOSTDEVICE operator array_type &(){ return as_array(); };
 	//! create increasing sequence
@@ -333,7 +330,7 @@ public: // min max and sorting
 	}
 
 	//! sort in ascending order
-	__host__ intn<n> sort() const {
+	intn<n> sort() const {
 		intn<n> x = *this;
 #ifndef  __CUDA_ARCH__
 		std::stable_sort(x.begin(), x.end());
@@ -341,7 +338,7 @@ public: // min max and sorting
 		return x;
 	};
 	//! sorting indicies
-	__host__ intn<n> sort_idx()const{
+	intn<n> sort_idx()const{
 		intn<n> idx;
 #ifndef  __CUDA_ARCH__
 		for (int d = 0; d < n; ++d){idx[d] = d;};
@@ -535,7 +532,7 @@ public:// const math operators
 //	return i < int(x);
 //}
 
-#pragma hd_warning_disable
+//#pragma hd_warning_disable
 template<int n, typename tstream>
 //template<int n, typename tstream, class = typename std::enable_if< (std::is_convertible<tstream,std::ostream>::value || std::is_convertible<tstream,host_stream>::value) >::type >
 //template<int n, typename tstream, class = typename std::enable_if<std::is_convertible<tstream,std::ostream>::value>::type >
