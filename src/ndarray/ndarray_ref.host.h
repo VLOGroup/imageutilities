@@ -200,9 +200,9 @@ namespace base2{
 		 */
 	public:
 		//! helper conversion to the kernel base
-		__host__ __device__ __forceinline__ kernel::ndarray_ref<type, dims> & kernel(){ return *this; };
+		HOSTDEVICE kernel::ndarray_ref<type, dims> & kernel(){ return *this; };
 		//! helper conversion to the kernel base
-		__host__ __device__ __forceinline__ const kernel::ndarray_ref<type, dims> & kernel() const { return *this; };
+		HOSTDEVICE const kernel::ndarray_ref<type, dims> & kernel() const { return *this; };
 	public: // additional shape / size functions
 		//! shape
 		shapen<dims> shape() const;
@@ -425,10 +425,14 @@ namespace base2{
 }
 
 namespace special2{
+	// generic case
 	template<typename type, int dims> class ndarray_ref : public base2::ndarray_ref < type, dims > {
+		typedef base2::ndarray_ref < type, dims> parent;
 	public:
 		// inherit constructors
-		using base2::ndarray_ref < type, dims >::ndarray_ref;
+		//using base2::ndarray_ref < type, dims >::ndarray_ref;
+		//inherit_constructors(ndarray_ref, parent)
+		template <typename... Args> ndarray_ref(Args&&... args) : parent(std::forward<Args>(args)...){}
 		ndarray_ref() = default;
 	};
 	// 1D array
@@ -436,7 +440,8 @@ namespace special2{
 		typedef  base2::ndarray_ref < type, 1> parent;
 	public:
 		// inherit constructors
-		using parent::parent;
+		//using parent::parent;
+		inherit_constructors(ndarray_ref, parent)
 		//using parent::operator =;
 		using parent::set_ref;
 		ndarray_ref() = default;
@@ -449,7 +454,8 @@ namespace special2{
 		typedef base2::ndarray_ref < type, 2> parent;
 	public:
 		// inherit constructors
-		using parent::parent;
+		//using parent::parent;
+		inherit_constructors(ndarray_ref, parent)
 		//using parent::operator =;
 		using parent::set_ref;
 
@@ -480,7 +486,8 @@ namespace special2{
 		typedef base2::ndarray_ref < type, 3> parent;
 	public:
 		// inherit constructors
-		using parent::parent;
+		//using parent::parent;
+		inherit_constructors(ndarray_ref, parent)
 		//using parent::operator =;
 		using parent::set_ref;
 		ndarray_ref() = default;
@@ -519,7 +526,8 @@ namespace special2{
 		typedef base2::ndarray_ref < type, 4> parent;
 	public:
 		// inherit constructors
-		using parent::parent;
+		//using parent::parent;
+		inherit_constructors(ndarray_ref, parent)
 		//using parent::operator =;
 		using parent::set_ref;
 		ndarray_ref() = default;
@@ -548,23 +556,29 @@ namespace special2{
 
 namespace special3{
 	template<typename type, int dims, bool is_not_class> class ndarray_ref : public special2::ndarray_ref < type, dims > {
+		typedef special2::ndarray_ref < type, dims > parent;
 	public:
 		// inherit constructors
-		using special2::ndarray_ref < type, dims >::ndarray_ref;
+		//using parent::parent;
+		inherit_constructors(ndarray_ref, parent)
 		ndarray_ref() = default;
 	};
 	//elementary type
 	template<typename type, int dims> class ndarray_ref<type,dims,false> : public special2::ndarray_ref < type, dims > {
+		typedef special2::ndarray_ref < type, dims > parent;
 	public:
 		// inherit constructors
-		using special2::ndarray_ref < type, dims >::ndarray_ref;
+		//using parent::parent;
+		inherit_constructors(ndarray_ref, parent)
 		ndarray_ref() = default;
 	};
 	//non-elementary type
 	template<typename type, int dims> class ndarray_ref<type,dims,true> : public special2::ndarray_ref < type, dims > {
+		typedef special2::ndarray_ref < type, dims > parent;
 	public:
 		// inherit constructors
-		using special2::ndarray_ref < type, dims >::ndarray_ref;
+		//using parent::parent;
+		inherit_constructors(ndarray_ref, parent)
 		ndarray_ref() = default;
 		//! slice a struct member from type
 		template<typename U>
@@ -581,7 +595,8 @@ template<typename type, int dims> class ndarray_ref : public special3::ndarray_r
 	typedef ::ndarray_ref<type, (dims>1)? dims-1 : 1> decrement_dim_type;
 public:
 	// inherit constructors
-	using parent::parent;
+	//using parent::parent;
+	inherit_constructors(ndarray_ref, parent)
 	ndarray_ref() = default;
 	//using parent::operator =;
 	using parent::access;
@@ -666,8 +681,8 @@ public: // recast and slicing
 	//! compress dimensions (d1,d1+1), provided that dim_continuous(d1) is true
 	decrement_dim_type compress_dim(int d1)const;
 public: // convinience functions
-	__host__ __device__ __forceinline__ kernel::ndarray_ref<type,dims> & kernel(){return *this;};
-	__host__ __device__ __forceinline__ const kernel::ndarray_ref<type,dims> & kernel()const{return *this;};
+	HOSTDEVICE kernel::ndarray_ref<type,dims> & kernel(){return *this;};
+	HOSTDEVICE const kernel::ndarray_ref<type,dims> & kernel()const{return *this;};
 public: //iterators
 	template<typename System> ndarray_iterator<type, dims, System> begin_it() const;
 	template<typename System> ndarray_iterator<type, dims, System> end_it() const;
@@ -1013,12 +1028,12 @@ template<typename type, int dims> ndarray_ref<type,dims> make_ndarray_ref(type *
 
 namespace kernel{
 	template<typename type, int dims>
-	__host__ ndarray_ref<type,dims>::ndarray_ref(const ::ndarray_ref<type,dims> & derived){
+	HOST ndarray_ref<type,dims>::ndarray_ref(const ::ndarray_ref<type,dims> & derived){
 		*this = derived;
 	}
 
 	template<typename type, int dims>
-	__host__ ndarray_ref<type, dims> & ndarray_ref<type,dims>::operator = (const ::ndarray_ref<type, dims> & derived){
+	HOST ndarray_ref<type, dims> & ndarray_ref<type,dims>::operator = (const ::ndarray_ref<type, dims> & derived){
 		if(!derived.device_allowed()){
 			throw_error("entering kernel for this array is not permitted") << derived;
 		};

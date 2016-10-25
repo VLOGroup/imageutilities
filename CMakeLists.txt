@@ -66,6 +66,8 @@ IF (MSVC)
   # Disable Warning C4800: forcing value to bool 'true' of 'false'
   # Disable Warning C4996: This function of variable may be unsafe. Consider using strerror_s instead.
   ADD_DEFINITIONS("/wd4267 /wd4800 /wd4996")
+  set(CMAKE_VS_PLATFORM_TOOLSET "CTP_Nov2013")
+  ADD_DEFINITIONS("/E")
 ENDIF (MSVC)
 
 add_subdirectory(src)

@@ -75,7 +75,7 @@ endif(ANDROID)
 ##-----------------------------------------------------------------------------
 ## Compiler Flags (to be added on demand)
 IF(NOT WIN32)
-  set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-Wall -std=c++11")
+  set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-Wall -std=c++11 -Wno-sign-compare")
 ENDIF(NOT WIN32)
 
 if(WITH_PYTHON)

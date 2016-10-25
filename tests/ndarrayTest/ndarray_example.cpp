@@ -300,7 +300,8 @@ void test_3D(){
 	std::cout << r4 << "\n";
 
 	{
-		iu::LinearDeviceMemory<float,3> L1{V3.ref()};
+		iu::LinearDeviceMemory<float,3> L0({4,8,10});
+		iu::LinearDeviceMemory<float,3> L1{L0.ref()};
 		iu::LinearHostMemory<float,4> L2(iu::Size<4>{4,8,10,10});
 		L2.ref().subdim<3>(0) << L1.ref();
 	}
@@ -369,7 +370,7 @@ int main(){
 	};
     test_1D();
 	test_2D();
-//	test_3D();
+	test_3D();
 	test_4D();
 	//
 	test_IuSize();

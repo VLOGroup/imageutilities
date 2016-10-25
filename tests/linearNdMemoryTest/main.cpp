@@ -91,7 +91,8 @@ void testLinear2dMemory()
 void testLinear4dMemory()
 {
   std::cout << "testLinear4dMemory() started." << std::endl;
-  iu::Size<4> size(20);
+  // iu::Size<4> size(20); // this constructor is depricated, use fill(20) or list all sizes
+  iu::Size<4> size(20,20,20,20);
   iu::LinearDeviceMemory<float, 4> mem_d(size);
   iu::math::fill(mem_d, 0.f);
   std::cout << mem_d << std::endl;

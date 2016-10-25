@@ -13,15 +13,22 @@
 
 #ifndef  __CUDA_ARCH__
 #include <algorithm>
-#include "error.h"
+#include <error.h>
 #include <cstddef>
 #endif
 
 
 
+<<<<<<< HEAD
+#define HOSTDEVICE __host__ __device__ __forceinline__
+
+/*
+=======
+>>>>>>> ndarray_dev1
 template<typename T, typename U> constexpr size_t offsetOf(U T::*member){
 	return (char*)&((T*)nullptr->*member) - (char*)nullptr;
 }
+*/
 
 //________________________________intn______________________________________________
 //! specializations of intn<n> for lower dimensions
@@ -141,11 +148,7 @@ template<int n> struct intn : public special::intn<n>{
 	typedef typename parent::array_type array_type;
 	typedef ::intn<(n>1)? n-1: 1> decrement_n_type;
 public:
-	//using parent::parent;
-	// forward constructors (VS2013 replacement for inheriting)
-	template <typename... Args> 
-	intn(Args&&... args) : parent(std::forward<Args>(args)...){
-	}
+	using parent::parent;
 	using parent::V;
 	using parent::as_array;
 #ifdef __CUDA_ARCH__

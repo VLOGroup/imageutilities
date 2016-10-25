@@ -189,18 +189,18 @@ public: // __________ constructors
 	HOSTDEVICE dslice& operator = (const dslice & b) = default;
 public:
 	//! construct from pointer and array of strides (count in bytes)
-	__host__  __device__ __forceinline__ dslice(type * p, const intn<dims> & __stride_bytes){
+	HOSTDEVICE dslice(type * p, const intn<dims> & __stride_bytes){
 		set_ref(p,__stride_bytes);
 	}
 	//! initialize from pointer and array of strides (count in bytes)
-	__host__  __device__ __forceinline__ void set_ref(type * p, const intn<dims> & __stride_bytes){
+	HOSTDEVICE void set_ref(type * p, const intn<dims> & __stride_bytes){
 		_beg = p;
 		_stride_bytes = __stride_bytes;
 	}
 public:
 	//! reinterpret as array of other base type (type2)
 	template<typename type2>
-	__host__  __device__ __forceinline__ dslice<type2, dims> recast()const{
+	HOSTDEVICE dslice<type2, dims> recast()const{
 		intn<dims> stb = _stride_bytes;
 		stb[0] = _stride_bytes[0] * intsizeof(type2) / intsizeof(type);
 		return dslice<type2, dims>((type2*)_beg, stb);
@@ -364,7 +364,7 @@ namespace kernel{
 		//! default copy
 		HOSTDEVICE ndarray_ref(const ndarray_ref<type,dims> & x) = default;
 		//! copy from a host ndarray_ref array (it is inherited, but the copy is a checking barrier)
-		__host__ ndarray_ref(const ::ndarray_ref<type,dims> & derived);
+		HOST ndarray_ref(const ::ndarray_ref<type,dims> & derived);
 		//! from a pointer
 		HOSTDEVICE ndarray_ref(type * const __beg, const intn<dims> & size, const intn<dims> & stride_bytes){
 			set_ref(__beg,size,stride_bytes);
@@ -376,7 +376,7 @@ namespace kernel{
 		//! copy =
 		HOSTDEVICE ndarray_ref<type, dims> & operator = (const ndarray_ref<type, dims> & x) = default;
 		//! copy from derived (host-device barrier)
-		__host__ ndarray_ref<type, dims> & operator = (const ::ndarray_ref<type, dims> & x);
+		HOST ndarray_ref<type, dims> & operator = (const ::ndarray_ref<type, dims> & x);
 		//! from a pointer and shape
 		HOSTDEVICE ndarray_ref & set_ref(type * const __beg, const intn<dims> & size, const intn<dims> & stride_bytes){
 			parent::set_ref(__beg, stride_bytes);
