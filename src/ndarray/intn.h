@@ -190,10 +190,19 @@ public:
 	/*!
 	 * example: intn<3>(12, 2, 3);
 	 */
-	template<typename... Args>
-	HOSTDEVICE intn(Args... args) : intn(std::initializer_list<int>( {int(args)...} )){
-		static_assert(sizeof...(Args)==n,"size missmatch"); // check number of arguments is matching
+	template<typename A0, typename... Args, class = typename std::enable_if<std::is_integral<A0>::value>::type>
+	HOSTDEVICE intn(A0 a0, Args... args) : intn(std::initializer_list<int>( {int(a0), int(args)...} )){
+		static_assert(sizeof...(Args)==n-1,"size missmatch"); // check number of arguments is matching
 	}
+
+	//! constructor from other array type, can be C array, std::vector, etc.
+	template<class other, class = typename std::enable_if<std::is_class<other>::value>::type>
+	explicit intn(const other & x){
+		for(int i=0; i< n; ++i){
+			(*this)[i] = x[i];
+		};
+	}
+
 public://__________initializers
 	HOSTDEVICE intn<n> & operator = (const array_type & x){
 		for (int i = 0; i < n; ++i)V(i) = x[i];

@@ -66,7 +66,7 @@ option(IU_USE_IO "Including IO module." ON)
 option(IU_USE_GUI "Including GUI module." ON)
 option(IU_USE_MATH "Including Math module." ON)
 option(IU_USE_NDARRAY "Include NDArray module" ON)
-option(WITH_FLYCAPTURE2 "Use FlyCapture2 - build pgrvideosource class." ON)
+option(WITH_FLYCAPTURE2 "Use FlyCapture2 - build pgrvideosource class." OFF)
 option(WITH_OPENEXR "Use OpenEXR - build OpenEXRIO classes." ON)
 option(WITH_PYTHON "Use Python - include imageutilities <-> python interface. Requires numpy, boost.python and Eigen" OFF)
 option(WITH_MATLAB "Use Matlab - include imageutilities <-> matlab interface. Requires matlab" OFF)
@@ -79,8 +79,8 @@ IF(NOT WIN32)
 ENDIF(NOT WIN32)
 
 if(WITH_PYTHON)
-    find_package(Boost REQUIRED COMPONENTS python)
     find_package(PythonLibs 2.7 REQUIRED)
+    find_package(Boost REQUIRED COMPONENTS python)
     find_package(NumPy REQUIRED)
     FIND_PACKAGE(Eigen3 REQUIRED)
 endif(WITH_PYTHON)
@@ -94,7 +94,7 @@ endif(WITH_MATLAB)
 if(ANDROID)
     set(OpenCV_DIR $ENV{NVPACK_CUDA_ROOT_DIR}/../OpenCV-2.4.8.2-Tegra-sdk/sdk/native/jni)
 endif(ANDROID)
-find_package( OpenCV QUIET COMPONENTS opencv_core opencv_highgui opencv_imgcodecs opencv_videostab)
+find_package( OpenCV QUIET COMPONENTS opencv_core opencv_highgui opencv_videostab)
 # only include if IO module is used and OpenCV found.
 if(IU_USE_IO AND OpenCV_LIBS)
 
@@ -125,12 +125,12 @@ if(IU_USE_IO AND OpenCV_LIBS)
     ${CMAKE_CURRENT_SOURCE_DIR}/iuio/imageio.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/iuio/opencvsource.cpp
     )
-  message("Found OpenCV Version: " ${OpenCV_VERSION_MAJOR} "." ${OpenCV_VERSION_MINOR})
+  #message("Found OpenCV Version: " ${OpenCV_VERSION_MAJOR} "." ${OpenCV_VERSION_MINOR})
   # check for OpenCV greaterequal 2.4
   if(${OpenCV_VERSION_MAJOR} MATCHES "3")
     message("Enabling fixes for OpenCV >= 3")
     add_definitions(-DOPENCV_3)
-    find_package( OpenCV QUIET COMPONENTS opencv_videoio opencv_core opencv_highgui)
+    find_package( OpenCV QUIET COMPONENTS opencv_videoio opencv_core opencv_imgcodecs opencv_imgproc opencv_highgui)
   endif(${OpenCV_VERSION_MAJOR} MATCHES "3")
 
 
@@ -138,7 +138,7 @@ if(IU_USE_IO AND OpenCV_LIBS)
   # Flycapture2 for pointgrey cameras
   ######################
   if(WITH_FLYCAPTURE2)
-    find_package(FlyCapture2 REQUIRED)
+    find_package(FlyCapture2 REQUIRED QUIET)
     if(FLYCAPTURE2_FOUND)
       message("  [+] build io module with Flycapture2/Pointgrey support")
       add_definitions(-DIUIO_PGR)
@@ -157,8 +157,8 @@ if(IU_USE_IO AND OpenCV_LIBS)
       set(ADDITIONAL_IUIO_DEPENDENCIES
          ${FLYCAPTURE2_LIBRARIES}
         )
-    
     endif(FLYCAPTURE2_FOUND)
+    
   else(WITH_FLYCAPTURE2)
       message("  [-] build io module without Flycapture2/Pointgrey support")
       set(ADDITIONAL_IUIO_DEPENDENCIES "")
@@ -168,7 +168,7 @@ if(IU_USE_IO AND OpenCV_LIBS)
   # OpenEXR
   ######################
   if(WITH_OPENEXR)
-    find_package(OpenEXR REQUIRED)
+    find_package(OpenEXR REQUIRED QUIET)
     if(OPENEXR_FOUND)
         message("  [+] build io module with OpenEXR support")
         include_directories(${OPENEXR_INCLUDE_DIRS})
@@ -554,7 +554,7 @@ if(IU_USE_MATH)
   if(IU_BUILD_STATIC)
     cuda_add_library( ${IU_MATH_LIB}_static STATIC ${IU_MATH_HEADERS} ${IU_MATH_SOURCES})
     target_link_libraries( ${IU_MATH_LIB}_static
-     ${CUDA_LIBRARIES}
+     ${CUDA_LIBRARIES} ${CUDA_CUFFT_LIBRARIES}
     )
     set(IU_LIBS_STATIC ${IU_LIBS_STATIC} ${IU_MATH_LIB}_static)
   endif(IU_BUILD_STATIC)

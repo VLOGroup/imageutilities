@@ -14,9 +14,9 @@ if(NOT WIN32)
   set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} "-std=c++11")
 endif(NOT WIN32)
 
-find_package(Boost REQUIRED COMPONENTS python)
-find_package(PythonLibs 2.7 REQUIRED)
+find_package(PythonLibs REQUIRED)
 Find_package(NumPy REQUIRED)
+find_package(Boost REQUIRED COMPONENTS python)
 FIND_PACKAGE(Eigen3 REQUIRED)
 
 include_directories(${NUMPY_INCLUDE_DIRS})
@@ -26,7 +26,7 @@ INCLUDE_DIRECTORIES( ${EIGEN3_INCLUDE_DIR} )
 
 # compile lib, this can be imported in python
 cuda_add_library(pyTest SHARED ${SOURCES})
-target_link_libraries(pyTest iucore iuio ${Boost_LIBRARIES} ${PYTHON_LIBRARIES})
+target_link_libraries(pyTest iucore ${Boost_LIBRARIES} ${PYTHON_LIBRARIES})
 
 # copy python script to test folder
 file(INSTALL pyTest.py DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})

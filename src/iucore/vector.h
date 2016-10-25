@@ -52,6 +52,16 @@ public:
     }
   }
 
+  /** Constructor from other array type, can be C array, std::vector, etc.
+   *
+   */
+  template<class other, class = typename std::enable_if<std::is_class<other>::value>::type>
+  explicit VectorBase(const other & x){
+	  for(unsigned int i=0; i< Ndim; ++i){
+		(*this)[i] = x[i];
+	  };
+  }
+
   /** Destructor. */
   virtual ~VectorBase()
   {
@@ -155,27 +165,30 @@ class Vector: public VectorBase<PixelType, Ndim>
 {
 public:
   /** Constructor */
-  Vector() :
-      VectorBase<PixelType, Ndim>()
-  {
-  }
+	Vector() = default;
+	using VectorBase<PixelType, Ndim>::VectorBase; // inheriting all constructors of VectorBase
 
-  /** Special Constructor.
-   *  Init all elements of the vector with a special value.
-   *  @param value value to initialize vector elements.*/
-  Vector(const PixelType& value) :
-      VectorBase<PixelType, Ndim>(value)
-  {
-  }
-
-  /** Special Constructor.
-   *  Init all elements of the vector with a initializer list.
-   *  @param list Initializer list, e.g. {1,2,3}.*/
-  Vector(std::initializer_list<PixelType> list) :
-      VectorBase<PixelType, Ndim>(list)
-  {
-
-  }
+//  Vector() :
+//      VectorBase<PixelType, Ndim>()
+//  {
+//  }
+//
+//  /** Special Constructor.
+//   *  Init all elements of the vector with a special value.
+//   *  @param value value to initialize vector elements.*/
+//  Vector(const PixelType& value) :
+//      VectorBase<PixelType, Ndim>(value)
+//  {
+//  }
+//
+//  /** Special Constructor.
+//   *  Init all elements of the vector with a initializer list.
+//   *  @param list Initializer list, e.g. {1,2,3}.*/
+//  Vector(std::initializer_list<PixelType> list) :
+//      VectorBase<PixelType, Ndim>(list)
+//  {
+//
+//  }
 
   /** Destructor. */
   ~Vector()
@@ -338,22 +351,24 @@ public:
   {
     this->fill(1);
   }
+//
+//  /** Special Constructor.
+//   *  Init all elements of the size vector with a special value.
+//   *  @param value value to initialize size vector elements.*/
+//  SizeBase(unsigned int value) :
+//      VectorBase<unsigned int, Ndim>(value)
+//  {
+//  }
+//
+//  /** Special Constructor.
+//   *  Init all elements of the vector with a initializer list.
+//   *  @param list Initializer list, e.g. {1,2,3}.*/
+//  SizeBase(std::initializer_list<unsigned int> list) :
+//      VectorBase<unsigned int, Ndim>(list)
+//  {
+//  }
 
-  /** Special Constructor.
-   *  Init all elements of the size vector with a special value.
-   *  @param value value to initialize size vector elements.*/
-  SizeBase(unsigned int value) :
-      VectorBase<unsigned int, Ndim>(value)
-  {
-  }
-
-  /** Special Constructor.
-   *  Init all elements of the vector with a initializer list.
-   *  @param list Initializer list, e.g. {1,2,3}.*/
-  SizeBase(std::initializer_list<unsigned int> list) :
-      VectorBase<unsigned int, Ndim>(list)
-  {
-  }
+  using VectorBase<unsigned int, Ndim>::VectorBase;
 
   /** Destructor. */
   virtual ~SizeBase()
@@ -460,27 +475,31 @@ template<unsigned int Ndim>
 class Size: public SizeBase<Ndim>
 {
 public:
-  /** Constructor. */
-  Size() :
-      SizeBase<Ndim>()
-  {
-  }
+	/** Constructor. */
+	Size() = default;
+	using SizeBase<Ndim>::SizeBase; // inherit all constructors of SizeBase
 
-  /** Special Constructor.
-   *  Init all elements of the size vector with a special value.
-   *  @param value value to initialize size vector elements.*/
-  Size(unsigned int value) :
-      SizeBase<Ndim>(value)
-  {
-  }
+//  Size() :
+//      SizeBase<Ndim>()
+//  {
+//  }
+//
+//  /** Special Constructor.
+//   *  Init all elements of the size vector with a special value.
+//   *  @param value value to initialize size vector elements.*/
+//  Size(unsigned int value) :
+//      SizeBase<Ndim>(value)
+//  {
+//  }
+//
+//  /** Special Constructor.
+//   *  Init all elements of the vector with a initializer list.
+//   *  @param list Initializer list, e.g. {1,2,3}.*/
+//  Size(std::initializer_list<unsigned int> list) :
+//      SizeBase<Ndim>(list)
+//  {
+//  }
 
-  /** Special Constructor.
-   *  Init all elements of the vector with a initializer list.
-   *  @param list Initializer list, e.g. {1,2,3}.*/
-  Size(std::initializer_list<unsigned int> list) :
-      SizeBase<Ndim>(list)
-  {
-  }
 
   /** Destructor. */
   ~Size()
@@ -544,6 +563,8 @@ public:
   {
   }
 
+  using SizeBase<2>::SizeBase;
+
   /** Special Constructor.
    *  Init all elements of the vector with a initializer list.
    *  @param list Initializer list, e.g. {1,2}.*/
@@ -562,6 +583,13 @@ public:
     data_[0] = width;
     data_[1] = height;
   }
+
+  template<class other, class = typename std::enable_if<std::is_class<other>::value>::type>
+   explicit Size(const other & x): width(this->data_[0]), height(this->data_[1]){
+ 	  for(unsigned int i=0; i< 2; ++i){
+ 		  (*this)[i] = x[i];
+ 	  };
+   }
 
   /** Destructor. */
   ~Size()
@@ -612,6 +640,7 @@ public:
   /** Depth: Reference to 2nd entry of data buffer */
   unsigned int& depth;
 
+
   /** Constructor. */
   Size() :
       SizeBase<3>(), width(this->data_[0]), height(this->data_[1]),
@@ -650,6 +679,14 @@ public:
     data_[1] = height;
     data_[2] = depth;
   }
+
+  template<class other, class = typename std::enable_if<std::is_class<other>::value>::type>
+  explicit Size(const other & x): width(this->data_[0]), height(this->data_[1]), depth(this->data_[2]){
+	  for(unsigned int i=0; i< 3; ++i){
+		  (*this)[i] = x[i];
+	  };
+  }
+
 
   /** Destructor. */
   ~Size()

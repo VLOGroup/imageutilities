@@ -12,9 +12,6 @@
 #include "iucore/image_allocator_cpu.h"
 #include <sstream>
 
-#include "iuio.h"
-
-
 namespace bp = boost::python;
 using std::string;
 
