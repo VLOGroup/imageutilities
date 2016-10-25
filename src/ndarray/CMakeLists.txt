@@ -73,7 +73,7 @@ ${SRC_DIR}/test_transform.cpp
 )
 
 if(NOT MSVC)
-SET(SRC
+SET(SRC ${SRC}
 ${SRC_DIR}/common_transforms.cu
 ${SRC_DIR}/test_iterator.cu
 )

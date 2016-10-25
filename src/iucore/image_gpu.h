@@ -16,14 +16,14 @@ struct use_PixelType{
 	  }
 };
 
-#ifndef _GNUC
+#if (_MSC_VER > 1000) && (_MSC_VER <= 1800)
 #define __attribute__(A) /* do nothing */
 #endif
 
 template<typename PixelType>
 struct use_PixelType<PixelType,false>{
-//      static int __attribute__((deprecated("this function may return wrong result in case pitch_ is not divisible by sizeof(PixelType) (typically the case when using _C3 images)"))) stride(int pitch_){
-          static int stride(int pitch_){
+      static int __attribute__((deprecated("this function may return wrong result in case pitch_ is not divisible by sizeof(PixelType) (typically the case when using _C3 images)"))) stride(int pitch_){
+//          static int stride(int pitch_){
               if(pitch_ % sizeof(PixelType) != 0){
               throw std::runtime_error("bad! your are using wrong stride, because pitch is not divisible (are you using _C3 images? You shouldn't)");
           };

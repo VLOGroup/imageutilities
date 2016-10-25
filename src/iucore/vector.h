@@ -13,9 +13,9 @@ namespace iu{
 	};
 	template<int dims>
 	// proposed implementation
-	//using Size = ::intn<dims>; // replacement of Size implementation
+	using Size = ::intn<dims>; // replacement of Size implementation
 	// old implementation
-	using Size = depricated::Size<dims>; // replacement of Size implementation
+	// using Size = depricated::Size<dims>; // replacement of Size implementation
 };
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -49,7 +49,7 @@ namespace iu{
 		/** Special Constructor.
 		 *  Init all elements of the vector with a initializer list.
 		 *  @param list Initializer list, e.g. {1,2,3}.*/
-		template<typename type2, class = typename std::enable_if<std::is_integral<type2>::value>::type>
+		template<typename type2, class = typename std::enable_if<std::is_convertible<type2,PixelType>::value>::type >
 		VectorBase(std::initializer_list<type2> list)
 		{
 			if (list.size() != Ndim)
@@ -72,7 +72,7 @@ namespace iu{
 		/*!
 		 * example: Size<3>(12, 2, 3);
 		 */
-		template<typename A0, typename... Args, class = typename std::enable_if<std::is_integral<A0>::value>::type>
+		template<typename A0, typename... Args, class = typename std::enable_if<std::is_convertible<A0,PixelType>::value>::type>
 		VectorBase(A0 a0, Args... args) : VectorBase(std::initializer_list<PixelType>( {PixelType(a0), PixelType(args)...} )){
 			static_assert(sizeof...(Args)==Ndim-1,"size missmatch"); // check number of arguments is matching
 		}
@@ -190,14 +190,14 @@ namespace iu{
 	{
 	public:
 		/** Constructor */
-		//Vector() = default;
+		Vector() = default;
 		//using VectorBase<PixelType, Ndim>::VectorBase; // inheriting all constructors of VectorBase
 		//using VectorBase<unsigned int, Ndim>::VectorBase;
 		//! forward constructor to VectorBase
 		//typedef VectorBase<PixelType, Ndim> parent;
 		//inherit_constructors(Vector, parent)
 		template <typename A0, typename... Args>
-		Vector(A0 && a0, Args&&... args) : VectorBase<unsigned int, Ndim>(std::forward<A0>(a0), std::forward<Args>(args)...){
+		Vector(A0 && a0, Args&&... args) : VectorBase<PixelType, Ndim>(std::forward<A0>(a0), std::forward<Args>(args)...){
 		}
 
 
@@ -649,11 +649,11 @@ namespace iu{
 				{
 				}
 
-			/** Public copy constructor. */
-			Size(const SizeBase& from) :
-				SizeBase<2>(from), width(this->data_[0]), height(this->data_[1])
-				{
-				}
+//			/** Public copy constructor. */
+//			Size(const SizeBase& from) :
+//				SizeBase<2>(from), width(this->data_[0]), height(this->data_[1])
+//				{
+//				}
 
 			/** Public copy assignment operator. */
 			Size& operator=(const Size& from)
@@ -750,12 +750,12 @@ namespace iu{
 				{
 				}
 
-			/** Public copy constructor. */
-			Size(const SizeBase& from) :
-				SizeBase<3>(from), width(this->data_[0]), height(this->data_[1]),
-				depth(this->data_[2])
-				{
-				}
+//			/** Public copy constructor. */
+//			Size(const SizeBase<3>& from) :
+//				SizeBase<3>(from), width(this->data_[0]), height(this->data_[1]),
+//				depth(this->data_[2])
+//				{
+//				}
 
 			/** Public copy assignment operator. */
 			Size& operator=(const Size& from)
