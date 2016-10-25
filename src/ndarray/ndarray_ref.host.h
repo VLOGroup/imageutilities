@@ -200,9 +200,9 @@ namespace base2{
 		 */
 	public:
 		//! helper conversion to the kernel base
-		HOSTDEVICE kernel::ndarray_ref<type, dims> & kernel(){ return *this; };
+		__HOSTDEVICE__ kernel::ndarray_ref<type, dims> & kernel(){ return *this; };
 		//! helper conversion to the kernel base
-		HOSTDEVICE const kernel::ndarray_ref<type, dims> & kernel() const { return *this; };
+		__HOSTDEVICE__ const kernel::ndarray_ref<type, dims> & kernel() const { return *this; };
 	public: // additional shape / size functions
 		//! shape
 		shapen<dims> shape() const;
@@ -341,7 +341,7 @@ namespace base2{
 	type * ndarray_ref<type, dims>::end() const{
 		//return last() + this->stride(0);
 		return ptr() + size(dims-1)*this->stride(dims-1);
-	}
+	}	
 
 	template<typename type, int dims>
 	void ndarray_ref<type, dims>::find_linear_dim(){
@@ -681,8 +681,8 @@ public: // recast and slicing
 	//! compress dimensions (d1,d1+1), provided that dim_continuous(d1) is true
 	decrement_dim_type compress_dim(int d1)const;
 public: // convinience functions
-	HOSTDEVICE kernel::ndarray_ref<type,dims> & kernel(){return *this;};
-	HOSTDEVICE const kernel::ndarray_ref<type,dims> & kernel()const{return *this;};
+	__HOSTDEVICE__ kernel::ndarray_ref<type,dims> & kernel(){return *this;};
+	__HOSTDEVICE__ const kernel::ndarray_ref<type,dims> & kernel()const{return *this;};
 public: //iterators
 	template<typename System> ndarray_iterator<type, dims, System> begin_it() const;
 	template<typename System> ndarray_iterator<type, dims, System> end_it() const;
@@ -1028,12 +1028,12 @@ template<typename type, int dims> ndarray_ref<type,dims> make_ndarray_ref(type *
 
 namespace kernel{
 	template<typename type, int dims>
-	HOST ndarray_ref<type,dims>::ndarray_ref(const ::ndarray_ref<type,dims> & derived){
+	__HOST__ ndarray_ref<type,dims>::ndarray_ref(const ::ndarray_ref<type,dims> & derived){
 		*this = derived;
 	}
 
 	template<typename type, int dims>
-	HOST ndarray_ref<type, dims> & ndarray_ref<type,dims>::operator = (const ::ndarray_ref<type, dims> & derived){
+	__HOST__ ndarray_ref<type, dims> & ndarray_ref<type,dims>::operator = (const ::ndarray_ref<type, dims> & derived){
 		if(!derived.device_allowed()){
 			throw_error("entering kernel for this array is not permitted") << derived;
 		};

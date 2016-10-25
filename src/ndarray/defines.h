@@ -50,18 +50,18 @@
 //#endif
 
 #ifdef __CUDA_ARCH__
-	#undef HOSTDEVICE
-	#undef HOST
-	#define HOSTDEVICE __host__ __device__ __forceinline__
-	#define HOST __host__ __forceinline__
+	#undef __HOSTDEVICE__
+	#undef __HOST__
+	#define __HOSTDEVICE__ __host__ __device__ __forceinline__
+	#define __HOST__ __host__ __forceinline__
 #else
-	#undef HOSTDEVICE
-	#undef HOST
-	#define HOSTDEVICE inline
-	#define HOST inline
+	#undef __HOSTDEVICE__
+	#undef __HOST__
+	#define __HOSTDEVICE__ inline
+	#define __HOST__ inline
 #endif
 
-#if (_MSC_VER > 1000) & (_MSC_VER <= 1800) // c++11 support (lack of)
+#if (_MSC_VER > 1000) && (_MSC_VER <= 1800) // c++11 support (lack of)
 	#pragma push_macro("constexpr")
 	#ifndef __cpp_constexpr
 	#define constexpr const

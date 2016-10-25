@@ -14,7 +14,7 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/tests)
 include_directories(${CMAKE_CURRENT_LIST_DIR}/../src/)
 
 ## Compiler Flags (to be added on demand)
-#set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-Wall --std=c++11")
+#set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-Wall -std=c++11")
 #set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} "-expt-extended-lambda -ftemplate-backtrace-limit=2 -Xcompiler -fPIC -lineinfo -Xcompiler -Wno-unused-but-set-variable -pg -lineinfo")
 
 # This is the path where the images and testdata are stored

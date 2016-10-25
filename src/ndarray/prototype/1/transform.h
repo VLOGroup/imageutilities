@@ -3,19 +3,19 @@
 #include "ndarray_ref.host.h"
 #include <tuple>
 
-#define HOSTDEVICE __host__ __device__ __forceinline__
+#define __HOSTDEVICE__ __host__ __device__ __forceinline__
 
 namespace nd{
 	// make functor
 
 	template<typename F, F * f, typename... AA> struct functor_b{
-	    HOSTDEVICE void operator()(AA&&... aa) const {
+	    __HOSTDEVICE__ void operator()(AA&&... aa) const {
 	        f(aa...);
 	    }
 	};
 
 	template<typename F, F & f, typename... AA> struct functor_b1{
-	    HOSTDEVICE void operator()(AA&&... aa) const {
+	    __HOSTDEVICE__ void operator()(AA&&... aa) const {
 	        f(aa...);
 	    }
 	};

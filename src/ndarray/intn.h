@@ -31,10 +31,11 @@ namespace special{
 	public:
 		typedef int array_type[n];
 		array_type v;
+		__HOSTDEVICE__ intn() = default;
 	protected://__________
-		HOSTDEVICE array_type & as_array(){ return v; }
-		HOSTDEVICE const array_type & as_array()const{ return v; }
-		HOSTDEVICE int & V(int i){
+		__HOSTDEVICE__ array_type & as_array(){ return v; }
+		__HOSTDEVICE__ const array_type & as_array()const{ return v; }
+		__HOSTDEVICE__ int & V(int i){
 			// instead of return v[i] make explicit loop: when i is known at compile time - optimized out, when i is dynamic should optimize as a switch
 			for(int j = 0; j<n; ++j ){
 				if(j==i) return v[j];
@@ -42,7 +43,7 @@ namespace special{
 			//runtime_check(false) << "index failed";
 			return v[0];
 		};
-		HOSTDEVICE const int & V(int i)const{
+		__HOSTDEVICE__ const int & V(int i)const{
 			return const_cast<intn<n>&>(*this).V(i);
 		};
 	};
@@ -55,20 +56,20 @@ namespace special{
 		int width;
 		static const int height = 1;
 		static const int depth = 1;
-		HOSTDEVICE intn() = default;
-		HOSTDEVICE intn(int a0){V(0) = a0;};
+		__HOSTDEVICE__ intn() = default;
+		//__HOSTDEVICE__ intn(int a0){V(0) = a0;};
 		// intn<1> is convertible to int
-		HOSTDEVICE operator int & (){return V(0);}
-		HOSTDEVICE operator const int & ()const {return V(0);}
+		__HOSTDEVICE__ operator int & (){return V(0);}
+		__HOSTDEVICE__ operator const int & ()const {return V(0);}
 	protected://__________
-		HOSTDEVICE array_type & as_array(){
+		__HOSTDEVICE__ array_type & as_array(){
 			return *(array_type*)&width;
 		}
-		HOSTDEVICE const array_type & as_array()const{
+		__HOSTDEVICE__ const array_type & as_array()const{
 			return *(const array_type *)&width;
 		}
-		HOSTDEVICE int & V(int i){return width;};
-		HOSTDEVICE const int & V(int i)const{return width;};
+		__HOSTDEVICE__ int & V(int i){return width;};
+		__HOSTDEVICE__ const int & V(int i)const{return width;};
 	};
 	//------------------
 	//! 2D specialization
@@ -79,24 +80,25 @@ namespace special{
 		int width;
 		int height;
 		static const int depth = 1;
+		__HOSTDEVICE__ intn() = default;
 	protected://__________
-		HOSTDEVICE array_type & as_array(){
+		__HOSTDEVICE__ array_type & as_array(){
 			static_assert(offsetof(intn<2>,height)==sizeof(int), "struct linear layout assumption failed");
 			return *(array_type*)&width;
 		}
-		HOSTDEVICE const array_type & as_array()const{
+		__HOSTDEVICE__ const array_type & as_array()const{
 			return const_cast<intn<2> *>(this)->as_array();
 		}
 
-		HOSTDEVICE int & V(int i){
+		__HOSTDEVICE__ int & V(int i){
 			switch(i){
 				case 1: return height;
 				default: return width;
 			};
 			//return as_array()[i];
 		}
-		//HOSTDEVICE const int & V(int i)const{return as_array()[i];};
-		HOSTDEVICE const int & V(int i)const{
+		//__HOSTDEVICE__ const int & V(int i)const{return as_array()[i];};
+		__HOSTDEVICE__ const int & V(int i)const{
 			return const_cast<intn<2>&>(*this).V(i);
 		}
 	};
@@ -109,17 +111,18 @@ namespace special{
 		int width;
 		int height;
 		int depth;
+		__HOSTDEVICE__ intn() = default;
 	protected://__________
-		HOSTDEVICE array_type & as_array(){
+		__HOSTDEVICE__ array_type & as_array(){
 			static_assert(offsetof(intn<3>,height)==sizeof(int), "struct linear layout assumption failed");
 			static_assert(offsetof(intn<3>,depth)==2*sizeof(int), "struct linear layout assumption failed");
 			return *(array_type*)&width;
 		}
-		HOSTDEVICE const array_type & as_array()const{
+		__HOSTDEVICE__ const array_type & as_array()const{
 			return const_cast<intn<3> *>(this)->as_array();
 		}
-		//HOSTDEVICE int & V(int i){return as_array()[i];};
-		HOSTDEVICE int & V(int i){
+		//__HOSTDEVICE__ int & V(int i){return as_array()[i];};
+		__HOSTDEVICE__ int & V(int i){
 			switch(i){
 				case 2: return depth;
 				case 1: return height;
@@ -127,8 +130,8 @@ namespace special{
 			};
 			//return as_array()[i];
 		}
-		//HOSTDEVICE const int & V(int i)const{return as_array()[i];};
-		HOSTDEVICE const int & V(int i)const{
+		//__HOSTDEVICE__ const int & V(int i)const{return as_array()[i];};
+		__HOSTDEVICE__ const int & V(int i)const{
 			return const_cast<intn<3>&>(*this).V(i);
 		};
 	};
@@ -142,24 +145,21 @@ template<int n> struct intn : public special::intn<n>{
 	typedef ::intn<(n>1)? n-1: 1> decrement_n_type;
 public:
 	//using parent::parent;
-	// forward constructors (VS2013 replacement for inheriting)
-	template <typename... Args> 
-	intn(Args&&... args) : parent(std::forward<Args>(args)...){
-	}
+	inherit_constructors(intn, parent)
 	using parent::V;
 	using parent::as_array;
 #ifdef __CUDA_ARCH__
-	HOSTDEVICE intn() = default; //uninitialized
+	__HOSTDEVICE__ intn() = default; //uninitialized
 #else
-	HOST intn(){ //0-initialized
+	__HOST__ intn(){ //0-initialized
 		for (int i = 0; i < n; ++i)V(i) = 0;
 	};
 #endif
 	//! default copy ctr
-	HOSTDEVICE intn(const intn<n> & b) = default;
+	__HOSTDEVICE__ intn(const intn<n> & b) = default;
 	/*
 	//! construct from a list
-	HOSTDEVICE intn(int a0, int a1, int a2 = 0, int a3 = 0, int a4 = 0, int a5 = 0){
+	__HOSTDEVICE__ intn(int a0, int a1, int a2 = 0, int a3 = 0, int a4 = 0, int a5 = 0){
 		V(0) = a0;
 		if (n > 1)V(1) = a1;
 		if (n > 2)V(n > 2? 2 : 0) = a2;
@@ -174,7 +174,7 @@ public:
 	/*!
 	 * example: intn<3>{12, 2, 3};
 	 */
-	HOSTDEVICE intn(std::initializer_list<int> list){
+	__HOSTDEVICE__ intn(std::initializer_list<int> list){
 		//static_assert(list.size() == n, "size missmatch");
 		auto a = list.begin();
 		for(int i=0; i<n; ++i){
@@ -191,7 +191,7 @@ public:
 	 * example: intn<3>(12, 2, 3);
 	 */
 	template<typename A0, typename... Args, class = typename std::enable_if<std::is_integral<A0>::value>::type>
-	HOSTDEVICE intn(A0 a0, Args... args) : intn(std::initializer_list<int>( {int(a0), int(args)...} )){
+	__HOSTDEVICE__ intn(A0 a0, Args... args) : intn(std::initializer_list<int>( {int(a0), int(args)...} )){
 		static_assert(sizeof...(Args)==n-1,"size missmatch"); // check number of arguments is matching
 	}
 
@@ -204,52 +204,52 @@ public:
 	}
 
 public://__________initializers
-	HOSTDEVICE intn<n> & operator = (const array_type & x){
+	__HOSTDEVICE__ intn<n> & operator = (const array_type & x){
 		for (int i = 0; i < n; ++i)V(i) = x[i];
 		return *this;
 	}
 	//! default operator =
-	HOSTDEVICE intn<n> & operator = (const intn<n> & x) = default;
+	__HOSTDEVICE__ intn<n> & operator = (const intn<n> & x) = default;
 	//{
 	//		for (int i = 0; i < n; ++i)V(i) = x[i];
 	//		return *this;
 	//	}
-	HOSTDEVICE intn(const array_type & x){
+	__HOSTDEVICE__ intn(const array_type & x){
 		(*this) = x;
 	}
-	HOSTDEVICE intn<n> & operator = (const int val){
+	__HOSTDEVICE__ intn<n> & operator = (const int val){
 		for (int i = 0; i < n; ++i)V(i) = val;
 		return *this;
 	}
 
-	HOSTDEVICE void fill(const int val){
+	__HOSTDEVICE__ void fill(const int val){
 		(*this) = val;
 	}
 	//! convert to C++ array
-	explicit HOSTDEVICE operator array_type &(){ return as_array(); };
+	explicit __HOSTDEVICE__ operator array_type &(){ return as_array(); };
 	//! create increasing sequence
-	static HOSTDEVICE intn<n> enumerate(){
+	static __HOSTDEVICE__ intn<n> enumerate(){
 		intn<n> r;
 		for (int i = 0; i < n; ++i)r[i] = i;
 		return r;
 	}
 public: //________________ element access
-	HOSTDEVICE int * begin(){ return &V(0); };
-	HOSTDEVICE const int * begin()const { return &V(0); };
-	HOSTDEVICE int * ptr(){ return &V(0); };
-	HOSTDEVICE const int * ptr()const { return &V(0); };
-	HOSTDEVICE int * end(){ return begin() + n; };
-	HOSTDEVICE int const * end()const { return begin() + n; };
-	HOSTDEVICE int & operator[](const int i){ return V(i); };
-	HOSTDEVICE const int & operator[](const int i) const { return V(i); };
+	__HOSTDEVICE__ int * begin(){ return &V(0); };
+	__HOSTDEVICE__ const int * begin()const { return &V(0); };
+	__HOSTDEVICE__ int * ptr(){ return &V(0); };
+	__HOSTDEVICE__ const int * ptr()const { return &V(0); };
+	__HOSTDEVICE__ int * end(){ return begin() + n; };
+	__HOSTDEVICE__ int const * end()const { return begin() + n; };
+	__HOSTDEVICE__ int & operator[](const int i){ return V(i); };
+	__HOSTDEVICE__ const int & operator[](const int i) const { return V(i); };
 
 public:
-	HOSTDEVICE long long prod() const {
+	__HOSTDEVICE__ long long prod() const {
 		long long r = 1;
 		for (int i = 0; i < n; ++i) r *= V(i);
 		return r;
 	}
-	HOSTDEVICE long long numel() const {
+	__HOSTDEVICE__ long long numel() const {
 		return prod();
 	}
 public: // mapping between multiindex and linear index
@@ -260,7 +260,7 @@ public: // mapping between multiindex and linear index
 	 * index_to_integer matches the linear memory arrangement with ascending strides irrespective of the ndarray_ref strides
 	 * dim1 is a threshold if the index / size is interpreted as shorter that n
 	 */
-	HOSTDEVICE int index_to_integer(const intn<n> & ii, int dim1 = n) const{
+	__HOSTDEVICE__ int index_to_integer(const intn<n> & ii, int dim1 = n) const{
 		int r = ii[dim1-1];
 		for(int d = n-2; d >= 0; --d){
 			if(d > dim1-2) continue;
@@ -269,7 +269,7 @@ public: // mapping between multiindex and linear index
 		return r;
 	}
 	//! integer_to_index is a 1-to-1 mapping of a multiindex in the octant [0 *this] to an integer in the interval [0 prod()-1]
-	HOSTDEVICE intn<n> integer_to_index(int i, int dim1 = n) const{
+	__HOSTDEVICE__ intn<n> integer_to_index(int i, int dim1 = n) const{
 		intn<n> ii;
 		for(int d = 0; d < n-1; ++d){
 			if(d < dim1){
@@ -284,7 +284,7 @@ public: // mapping between multiindex and linear index
 	}
 public: // min max and sorting
 	//! max element
-	HOSTDEVICE int max() const {
+	__HOSTDEVICE__ int max() const {
 		static_assert(n>0,"bad");
 		int val = V(0);
 		for(int i = 1; i<n; ++i){
@@ -293,7 +293,7 @@ public: // min max and sorting
 		return val;
 	}
 	//! max element index
-	HOSTDEVICE int max_idx() const {
+	__HOSTDEVICE__ int max_idx() const {
 		static_assert(n>0,"bad");
 		int val = V(0);
 		int idx = 0;
@@ -306,7 +306,7 @@ public: // min max and sorting
 		return idx;
 	}
 	//! min element index
-	HOSTDEVICE int min_idx() const {
+	__HOSTDEVICE__ int min_idx() const {
 		static_assert(n>0,"bad");
 		int val = V(0);
 		int idx = 0;
@@ -320,7 +320,7 @@ public: // min max and sorting
 	}
 
 	//! min element index
-	HOSTDEVICE int min_abs_idx() const {
+	__HOSTDEVICE__ int min_abs_idx() const {
 		static_assert(n>0,"bad");
 		int val = abs(V(0));
 		int idx = 0;
@@ -355,7 +355,7 @@ public: // min max and sorting
 
 public: //__________cut and permute
 	//! reverse the order of elements
-	HOSTDEVICE  intn<n> rev() const{
+	__HOSTDEVICE__  intn<n> rev() const{
 		intn<n> r;
 		for (int i = 0; i < n; ++i){
 			r[i] = (*this)[n - i - 1];
@@ -363,7 +363,7 @@ public: //__________cut and permute
 		return r;
 	}
 	//! append element in the end
-	HOSTDEVICE intn<n+1> cat(int a) const{
+	__HOSTDEVICE__ intn<n+1> cat(int a) const{
 		intn<n+1> r;
 		for (int i = 0; i < n; ++i){
 			r[i] = (*this)[i];
@@ -373,7 +373,7 @@ public: //__________cut and permute
 	}
 	//! insert element at j
 	template<int j>
-	HOSTDEVICE intn<n+1> insert(int a) const{
+	__HOSTDEVICE__ intn<n+1> insert(int a) const{
 		intn<n+1> r;
 		for (int i = 0; i < n; ++i){
 			int i1 = (i<j)? i : i+1;
@@ -385,7 +385,7 @@ public: //__________cut and permute
 
 	//! remove element at j
 	template<int j>
-	HOSTDEVICE decrement_n_type erase() const{
+	__HOSTDEVICE__ decrement_n_type erase() const{
 		decrement_n_type r;
 		for (int i = 0; i < n; ++i){
 			if(i<j || n==1){
@@ -398,7 +398,7 @@ public: //__________cut and permute
 	}
 
 	//! remove element at j
-	HOSTDEVICE decrement_n_type erase(int j) const{
+	__HOSTDEVICE__ decrement_n_type erase(int j) const{
 		//static_assert(n > 1,"bad");
 		runtime_check(j >=0 && j< n);
 		decrement_n_type r;
@@ -412,44 +412,44 @@ public: //__________cut and permute
 		return r;
 	}
 public: // _________l-value math operators
-	HOSTDEVICE intn<n> & operator += (const intn<n> & x){
+	__HOSTDEVICE__ intn<n> & operator += (const intn<n> & x){
 		for (int i = 0; i < n; ++i){
 			(*this)[i] += x[i];
 		};
 		return *this;
 	}
-	HOSTDEVICE intn<n> & operator -= (const intn<n> & x){
+	__HOSTDEVICE__ intn<n> & operator -= (const intn<n> & x){
 		for (int i = 0; i < n; ++i){
 			(*this)[i] -= x[i];
 		};
 		return *this;
 	}
-	HOSTDEVICE intn<n> & operator *= (const int val){
+	__HOSTDEVICE__ intn<n> & operator *= (const int val){
 		for (int i = 0; i < n; ++i){
 			(*this)[i] *= val;
 		};
 		return *this;
 	}
-	HOSTDEVICE intn<n> & operator /= (const int val){
+	__HOSTDEVICE__ intn<n> & operator /= (const int val){
 		for (int i = 0; i < n; ++i){
 			(*this)[i] /= val;
 		};
 		return *this;
 	}
 public:// const math operators
-	HOSTDEVICE intn<n> operator * (const int val) const {
+	__HOSTDEVICE__ intn<n> operator * (const int val) const {
 		return (intn<n>(*this)) *= val;
 	}
 
-	HOSTDEVICE intn<n> operator / (const int val)const {
+	__HOSTDEVICE__ intn<n> operator / (const int val)const {
 		return (intn<n>(*this)) /= val;
 	}
 
-	HOSTDEVICE intn<n> & operator + (const intn<n> & x) const{
+	__HOSTDEVICE__ intn<n> & operator + (const intn<n> & x) const{
 		return (intn<n>(*this)) += x;
 	}
 
-	HOSTDEVICE intn<n> & operator - (const intn<n> & x) const{
+	__HOSTDEVICE__ intn<n> & operator - (const intn<n> & x) const{
 		return (intn<n>(*this)) += x;
 	}
 
@@ -472,7 +472,7 @@ public:// const math operators
 	/*! For example: (2,2,3,2) -> (1,2,4,12) in prefix, and -> (12,6,2,1) in postfix
 	 */
 	template<bool prefix = true>
-	HOSTDEVICE intn<n> prefix_prod_ex() const {
+	__HOSTDEVICE__ intn<n> prefix_prod_ex() const {
 		intn<n> r;
 		int a = 1;
 		if(prefix){
@@ -489,42 +489,42 @@ public:// const math operators
 		return r;
 	}
 
-	HOSTDEVICE bool operator == (const intn<n> & x) const {
+	__HOSTDEVICE__ bool operator == (const intn<n> & x) const {
 		for (int i = 0; i < n; ++i){
 			if((*this)[i] != x[i]) return false;
 		};
 		return true;
 	}
 
-	HOSTDEVICE bool operator != (const intn<n> & x) const {
+	__HOSTDEVICE__ bool operator != (const intn<n> & x) const {
 		return !(*this == x);
 	}
 
-	HOSTDEVICE bool operator < (const intn<n> & x) const {
+	__HOSTDEVICE__ bool operator < (const intn<n> & x) const {
 		for (int i = 0; i < n; ++i){
 			if(!((*this)[i] < x[i])) return false;
 		};
 		return true;
 	}
-	HOSTDEVICE bool operator >= (const intn<n> & x) const {
+	__HOSTDEVICE__ bool operator >= (const intn<n> & x) const {
 		for (int i = 0; i < n; ++i){
 			if(!((*this)[i] >= x[i])) return false;
 		};
 		return true;
 	}
-	HOSTDEVICE bool operator >= (const int val) const {
+	__HOSTDEVICE__ bool operator >= (const int val) const {
 		for (int i = 0; i < n; ++i){
 			if(!((*this)[i] >= val)) return false;
 		};
 		return true;
 	}
-	HOSTDEVICE bool operator < (const int val) const {
+	__HOSTDEVICE__ bool operator < (const int val) const {
 		for (int i = 0; i < n; ++i){
 			if(!((*this)[i] < val)) return false;
 		};
 		return true;
 	}
-	HOSTDEVICE bool operator > (const int val) const {
+	__HOSTDEVICE__ bool operator > (const int val) const {
 		for (int i = 0; i < n; ++i){
 			if(!((*this)[i] > val)) return false;
 		};
@@ -532,7 +532,7 @@ public:// const math operators
 	}
 };
 
-//HOSTDEVICE bool operator < (int i, const intn<1> & x){
+//__HOSTDEVICE__ bool operator < (int i, const intn<1> & x){
 //	return i < int(x);
 //}
 
@@ -551,7 +551,7 @@ tstream & operator << (tstream & ss, intn<n> a){
 }
 
 template<int n>
-HOSTDEVICE intn<n> min(const intn<n> & a, const intn<n> & b){
+__HOSTDEVICE__ intn<n> min(const intn<n> & a, const intn<n> & b){
 	intn<n> r;
 	for(int i=0;i<n;++i){
 		r[i] = a[i]<b[i]? a[i] : b[i];
