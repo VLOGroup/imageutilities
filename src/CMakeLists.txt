@@ -9,7 +9,7 @@ option(IU_BUILD_STATIC "Build static libs too." OFF)
 # general settings
 #set(CMAKE_DEBUG_POSTFIX "d")
 set(CMAKE_BUILD_TYPE Release)
-set(CUDA_PROPAGATE___HOST___FLAGS OFF)
+set(CUDA_PROPAGATE_HOST_FLAGS OFF)
 
 file(TO_CMAKE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../cmake" OT_IU_CMAKE_MODULE_PATH)
 set(CMAKE_MODULE_PATH ${OT_IU_CMAKE_MODULE_PATH})
@@ -60,7 +60,7 @@ option(WITH_OPENEXR "Use OpenEXR - build OpenEXRIO classes." OFF)
 option(WITH_PYTHON "Use Python - include imageutilities <-> python interface. Requires boost.python and Eigen" OFF)
 option(WITH_MATLAB "Use Matlab - include imageutilities <-> matlab interface. Requires matlab" OFF)
 set(ANDROID_TOOLCHAIN_NAME arm-linux-androideabi-4.6)
-set(CUDA_PROPAGATE___HOST___FLAGS OFF)
+set(CUDA_PROPAGATE_HOST_FLAGS OFF)
 else(ANDROID)
 option(IU_USE_IO "Including IO module." ON)
 option(IU_USE_GUI "Including GUI module." ON)
@@ -531,7 +531,7 @@ endif(IU_USE_GUI)
 set(IU_MATH_LIB iumath)
 if(IU_USE_MATH)
   # The OPTIONS "-DIUMATH_DLL_EXPORTS" is used to manually propagate symbol to nvcc compiler
-  # because CUDA_SET_PROPAGATE___HOST___FLAGS is turend off.
+  # because CUDA_SET_PROPAGATE_HOST_FLAGS is turend off.
   cuda_add_library( ${IU_MATH_LIB} SHARED ${IU_MATH_HEADERS} ${IU_MATH_SOURCES}
 	  OPTIONS "-DIUMATH_DLL_EXPORTS")
   set_target_properties(${IU_MATH_LIB} PROPERTIES
