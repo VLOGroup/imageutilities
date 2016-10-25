@@ -376,7 +376,7 @@ int main(){
 	//test_transform();
 	//test_bit_index();
 	//return 0;
-	test_cuda_constructors();
+	//test_cuda_constructors();
 
 	intro_test();
 	try{
@@ -393,8 +393,8 @@ int main(){
 	test_IuSize();
 	//
 	return EXIT_SUCCESS;
-	test_thrust_iterator_1();
-	test_thrust_iterator_2();
+	//test_thrust_iterator_1();
+	//test_thrust_iterator_2();
 	//std::cout << test_warn(13);
 	return EXIT_SUCCESS;
 }

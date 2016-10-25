@@ -54,7 +54,7 @@
 #define __FORCEINLINE__ __forceinline
 #else
 #define __HALT__ __asm__ volatile("int3")
-#define __FORCEINLINE__ __attribute__((always_inline))
+#define __FORCEINLINE__ __attribute__((always_inline)) inline
 #endif
 
 #ifdef __CUDACC__ //__CUDA_ARCH__

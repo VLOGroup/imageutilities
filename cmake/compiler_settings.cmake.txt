@@ -4,7 +4,7 @@ set(CUDA_PROPAGATE_HOST_FLAGS OFF)
 
 if (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU" OR ${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
 	# using GCC or using Clang
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS} -std=c++11 -fPIC -fmax-errors=3 -fpermissive -ggdb -Wunused-result -Wno-unused-variable -Wno-unused-value -Wno-unused-but-set-variable -Wdisabled-optimization -Wdiv-by-zero -Wfloat-equal -Wc++11-compat")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS} -std=c++11 -fPIC -fmax-errors=3 -fpermissive -ggdb -Wunused-result -Wno-unused-variable -Wno-unused-value -Wno-unused-but-set-variable -Wdisabled-optimization -Wdiv-by-zero -Wc++11-compat -Wno-float-equal")
 	set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -expt-extended-lambda -ftemplate-backtrace-limit=2 -lineinfo -std=c++11 -Xcompiler -Wno-sign-compare")
         if(BUILD_RELEASE OR CMAKE_BUILD_TYPE STREQUAL "Release" OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo" OR NOT CMAKE_BUILD_TYPE) #RELEASE 
 		add_flags(CMAKE_CXX_FLAGS "-fopenmp -O3 -DPARALLEL -ffast-math -DNDEBUG")
