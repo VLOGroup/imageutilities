@@ -21,10 +21,11 @@
 
 #define HOSTDEVICE __host__ __device__ __forceinline__
 
-
+/*
 template<typename T, typename U> constexpr size_t offsetOf(U T::*member){
 	return (char*)&((T*)nullptr->*member) - (char*)nullptr;
 }
+*/
 
 //________________________________intn______________________________________________
 //! specializations of intn<n> for lower dimensions

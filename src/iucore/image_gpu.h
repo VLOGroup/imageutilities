@@ -16,6 +16,10 @@ struct use_PixelType{
 	  }
 };
 
+#ifndef _GNUC
+#define __attribute__(A) /* do nothing */
+#endif
+
 template<typename PixelType>
 struct use_PixelType<PixelType,false>{
       static int __attribute__((deprecated("this function may return wrong result in case pitch_ is not divisible by sizeof(PixelType) (typically the case when using _C3 images)"))) stride(int pitch_){
