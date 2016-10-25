@@ -8,7 +8,11 @@ option(IU_BUILD_STATIC "Build static libs too." OFF)
 
 # general settings
 #set(CMAKE_DEBUG_POSTFIX "d")
-set(CMAKE_BUILD_TYPE Release)
+
+if(NOT CMAKE_BUILD_TYPE)
+	set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "Choose the type of build, options are: Debug Release RelWithDebInfo MinSizeRel." FORCE)
+endif()
+
 set(CUDA_PROPAGATE_HOST_FLAGS OFF)
 
 file(TO_CMAKE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../cmake" OT_IU_CMAKE_MODULE_PATH)

@@ -57,6 +57,9 @@ else(NOT ANDROID)
 endif(NOT ANDROID)
 
 #------------- for compiler flags see cmake/compiler_settings.cmake.txt -----------------
+if(NOT CMAKE_BUILD_TYPE)
+	set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "Choose the type of build, options are: Debug Release RelWithDebInfo MinSizeRel." FORCE)
+endif()
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/compiler_settings.cmake.txt)
 #----------------------------------------------------------------------------------------
 

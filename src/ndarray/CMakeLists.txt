@@ -24,7 +24,7 @@ include_directories(${SRC_DIR})
 SET(CMAKE_CXX_FLAGS_SAVED ${CMAKE_CXX_FLAGS})
 SET(CUDA_NVCC_FLAGS_SAVED ${CUDA_NVCC_FLAGS})
 
-#include(${CMAKE_CURRENT_LIST_DIR}/cmake/flags_functions.cmake.txt)
+###include(${CMAKE_CURRENT_LIST_DIR}/cmake/flags_functions.cmake.txt)
 
 ##-----------build tools---------------------------
 
@@ -75,7 +75,7 @@ ${SRC_DIR}/test_transform.cpp
 if(NOT MSVC)
 SET(SRC ${SRC}
 ${SRC_DIR}/common_transforms.cu
-${SRC_DIR}/test_iterator.cu
+#${SRC_DIR}/test_iterator.cu
 )
 endif()
 
@@ -106,7 +106,7 @@ set(NDARRAY_LIB ${MYLIBS} PARENT_SCOPE)
 #my_cuda_add_executable(test_iterator test_iterator.cu)
 
 if(NOT MSVC)
-my_cuda_add_executable(test_transform common_transforms.cu)
+my_cuda_add_executable(test_transform test_transform common_transforms.cu)
 #add_custom_command(TARGET test_iterator POST_BUILD COMMAND ${CMAKE_COMMAND} -E chdir . pwd)
 #add_custom_command(TARGET test_iterator POST_BUILD COMMAND ${CMAKE_COMMAND} -E chdir src/ndarray/CMakeFiles/test_iterator.dir nvdisasm test_iterator.sm_35.cubin)
 #add_custom_command(TARGET test_iterator POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/src/ndarray/CMakeFiles/test_iterator.dir/test_iterator.ptx ${SRC_DIR}/test_iterator.ptx)
