@@ -72,11 +72,8 @@ option(WITH_PYTHON "Use Python - include imageutilities <-> python interface. Re
 option(WITH_MATLAB "Use Matlab - include imageutilities <-> matlab interface. Requires matlab" OFF)
 endif(ANDROID)
 
-##-----------------------------------------------------------------------------
-## Compiler Flags (to be added on demand)
-IF(NOT WIN32)
-  set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-Wall -std=c++11 -Wno-sign-compare")
-ENDIF(NOT WIN32)
+
+#------------- for compiler flags see cmake/compiler_settings.cmake.txt -----------------
 
 if(WITH_PYTHON)
     find_package(PythonLibs 2.7 REQUIRED)
@@ -446,10 +443,12 @@ ADD_CUSTOM_TARGET( apidoc
 
 
 ##-build ndarray---------------------------------------------------------------
-add_subdirectory(ndarray)
-message("NDARRAY_LIB" = ${NDARRAY_LIB})
-if(NOT NDARRAY_LIB)
-  #set(IU_USE_NDARRAY OFF CACHE PATH "IU: Omit NDArray module." FORCE)
+	if(IU_USE_NDARRAY)
+		add_subdirectory(ndarray)
+	message("NDARRAY_LIB" = ${NDARRAY_LIB})
+	if(NOT NDARRAY_LIB)
+	  #set(IU_USE_NDARRAY OFF CACHE PATH "IU: Omit NDArray module." FORCE)
+	endif()
 endif()
 ##-----------------------------------------------------------------------------
 ## build core library

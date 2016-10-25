@@ -4,8 +4,16 @@
 #include <thrust/iterator/iterator_facade.h>
 //#include "bit_index.h"
 
+
+#ifdef _MSC_VER
+	#include <intrin.h>
+	#define clz(x) __lzcnt(x)
+#elif __GNUC__
+	#define clz(x) __builtin_clz(x)
+#endif
+
 inline int fls(int x){
-	return x ? sizeof(x) * 8 - __builtin_clz(x) : 0;
+	return x ? sizeof(x) * 8 - clz(x) : 0;
 }
 
 #undef DEBUG_THIS

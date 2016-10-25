@@ -17,11 +17,11 @@
 #include <cstddef>
 #endif
 
-
-
+/*
 template<typename T, typename U> constexpr size_t offsetOf(U T::*member){
 	return (char*)&((T*)nullptr->*member) - (char*)nullptr;
 }
+*/
 
 //________________________________intn______________________________________________
 //! specializations of intn<n> for lower dimensions
@@ -145,7 +145,7 @@ template<int n> struct intn : public special::intn<n>{
 	typedef ::intn<(n>1)? n-1: 1> decrement_n_type;
 public:
 	//using parent::parent;
-	inherit_constructors(intn, parent)
+	//inherit_constructors(intn, parent)
 	using parent::V;
 	using parent::as_array;
 #ifdef __CUDA_ARCH__
@@ -174,12 +174,13 @@ public:
 	/*!
 	 * example: intn<3>{12, 2, 3};
 	 */
-	__HOSTDEVICE__ intn(std::initializer_list<int> list){
+	template<typename type2, class = typename std::enable_if<std::is_integral<type2>::value>::type>
+	__HOSTDEVICE__ intn(std::initializer_list<type2> list){
 		//static_assert(list.size() == n, "size missmatch");
 		auto a = list.begin();
 		for(int i=0; i<n; ++i){
 			if(i < int(list.size())){
-				V(i) = *a;
+				V(i) = (int)*a;
 			}else{
 				V(i) = 0;
 			};
@@ -454,17 +455,25 @@ public:// const math operators
 	}
 
 	//! multiplication by floating point with rounding
-	intn<n> operator * (const double factor) const {
-		intn<n> r;
+	template<typename type2, class = typename std::enable_if<std::is_floating_point<type2>::value>::type >
+	__HOSTDEVICE__ intn<n> & operator *= (const type2 & factor) {
 		for (int i = 0; i < n; ++i){
-			r[i] = int((*this)[i] * factor + 0.5);
+			(*this)[i] = int((*this)[i] * factor + 0.5);
 		};
-		return r;
+		return *this;
 	}
 
-	intn<n> operator / (const double factor) const{
+	//! multiplication by floating point with rounding
+	template<typename type2, class = typename std::enable_if<std::is_floating_point<type2>::value>::type >
+	intn<n> operator * (const type2 & factor) const {
+		return (intn<n>(*this)) *= factor;
+	}
+
+	//! division by floating point with rounding
+	template<typename type2, class = typename std::enable_if<std::is_floating_point<type2>::value>::type >
+	intn<n> operator / (const type2 & factor) const{
 		double invFactor = 1 / factor; // can be INF
-		return (*this) *= invFactor;
+		return (intn<n>(*this)) *= invFactor;
 	}
 
 

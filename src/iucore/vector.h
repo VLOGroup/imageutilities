@@ -13,9 +13,9 @@ namespace iu{
 	};
 	template<int dims>
 	// proposed implementation
-	using Size = ::intn<dims>; // replacement of Size implementation
+	//using Size = ::intn<dims>; // replacement of Size implementation
 	// old implementation
-	//using Size = depricated::Size<dims>; // replacement of Size implementation
+	using Size = depricated::Size<dims>; // replacement of Size implementation
 };
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -190,10 +190,12 @@ namespace iu{
 	{
 	public:
 		/** Constructor */
-		Vector() = default;
+		//Vector() = default;
 		//using VectorBase<PixelType, Ndim>::VectorBase; // inheriting all constructors of VectorBase
 		//using VectorBase<unsigned int, Ndim>::VectorBase;
 		//! forward constructor to VectorBase
+		//typedef VectorBase<PixelType, Ndim> parent;
+		//inherit_constructors(Vector, parent)
 		template <typename A0, typename... Args>
 		Vector(A0 && a0, Args&&... args) : VectorBase<unsigned int, Ndim>(std::forward<A0>(a0), std::forward<Args>(args)...){
 		}
@@ -513,7 +515,7 @@ namespace iu{
 		{
 		public:
 			/** Constructor. */
-			Size() = default;
+			//Size() = default;
 
 			//! forward constructor to base
 			template <typename... Args> Size(Args&&... args) : SizeBase<Ndim>(std::forward<Args>(args)...){}

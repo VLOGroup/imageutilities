@@ -9,10 +9,8 @@ set(SOURCES
     test.cu
 )
 
-if(NOT WIN32)
-  set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++11")
-  set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} "-std=c++11")
-endif(NOT WIN32)
+#------------- for compiler flags see cmake/compiler_settings.cmake.txt -----------------
+#========================================================================================
 
 find_package(PythonLibs REQUIRED)
 Find_package(NumPy REQUIRED)
