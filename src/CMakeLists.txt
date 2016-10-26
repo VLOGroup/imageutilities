@@ -459,7 +459,7 @@ endif()
 ## build core library
 set(IU_CORE_LIB iucore)
 
-cuda_add_library( ${IU_CORE_LIB} SHARED ${IU_HEADERS} ${IU_SOURCES})
+cuda_add_library( ${IU_CORE_LIB} ${IU_HEADERS} ${IU_SOURCES})
 set_target_properties(${IU_CORE_LIB} PROPERTIES
   DEFINE_SYMBOL IUCORE_DLL_EXPORTS
   VERSION ${IMAGEUTILITIES_VERSION}
@@ -483,7 +483,7 @@ message("additional iuio libs: ${ADDITIONAL_IUIO_DEPENDENCIES}")
 ## build io library
 set(IU_IO_LIB iuio)
 if(IU_USE_IO)
-  cuda_add_library( ${IU_IO_LIB} SHARED ${IU_IO_HEADERS} ${IU_IO_SOURCES} )
+  cuda_add_library( ${IU_IO_LIB} ${IU_IO_HEADERS} ${IU_IO_SOURCES} )
   set_target_properties(${IU_IO_LIB} PROPERTIES
     DEFINE_SYMBOL IUIO_DLL_EXPORTS
     VERSION ${IMAGEUTILITIES_VERSION}
@@ -509,7 +509,7 @@ endif(IU_USE_IO)
 ## build gui library
 set(IU_GUI_LIB iugui)
 if(IU_USE_GUI)
-  cuda_add_library( ${IU_GUI_LIB} SHARED ${IU_GUI_HEADERS} ${IU_GUI_SOURCES})
+  cuda_add_library( ${IU_GUI_LIB} ${IU_GUI_HEADERS} ${IU_GUI_SOURCES})
   set_target_properties(${IU_GUI_LIB} PROPERTIES
     DEFINE_SYMBOL IUGUI_DLL_EXPORTS
     VERSION ${IMAGEUTILITIES_VERSION}
@@ -536,7 +536,7 @@ set(IU_MATH_LIB iumath)
 if(IU_USE_MATH)
   # The OPTIONS "-DIUMATH_DLL_EXPORTS" is used to manually propagate symbol to nvcc compiler
   # because CUDA_SET_PROPAGATE_HOST_FLAGS is turend off.
-  cuda_add_library( ${IU_MATH_LIB} SHARED ${IU_MATH_HEADERS} ${IU_MATH_SOURCES}
+  cuda_add_library( ${IU_MATH_LIB} ${IU_MATH_HEADERS} ${IU_MATH_SOURCES}
 	  OPTIONS "-DIUMATH_DLL_EXPORTS")
   set_target_properties(${IU_MATH_LIB} PROPERTIES
     DEFINE_SYMBOL IUMATH_DLL_EXPORTS

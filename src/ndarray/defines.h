@@ -79,16 +79,25 @@
 	#define constexpr const
 	#endif
 	#define __attribute__(A) /* do nothing */
-	// now boys and girls, this is what VS2013 can compile to implement constructor inheritance, up to 4 arguments. variadic does not work
+	// this is what VS2013 can compile to implement constructor inheritance, up to 5 arguments. variadic inside the macro does not work
+	template <typename A> const A & get_some();
+	template <typename A> struct get_object_without_instantiation{
+		static const A * a;
+	};
+	template <typename C, typename... AA> struct test_constructor{
+		static const C c = C(*get_object_without_instantiation<AA>::a...);
+	};
 	#define inherit_constructors(derived, parent)\
 	template <typename A0>\
-	derived(const A0& a0, parent X = parent(A0()) ) : parent(a0){}\
+	derived(const A0& a0, parent X = test_constructor<parent,A0>::c) : parent(a0){}\
 	template <typename A0, typename A1>\
-	derived(const A0& a0, const A1& a1, parent X = parent(A0(),A1()) ) : parent(a0,a1){}\
+	derived(const A0& a0, const A1& a1, parent X = test_constructor<parent,A0,A1>::c) : parent(a0,a1){}\
 	template <typename A0, typename A1, typename A2>\
-	derived(const A0& a0, const A1& a1, const A2& a2, parent X = parent(A0(),A1(),A2()) ) : parent(a0,a1,a2){}\
+	derived(const A0& a0, const A1& a1, const A2& a2, parent X = test_constructor<parent,A0,A1,A2>::c ) : parent(a0,a1,a2){}\
 	template <typename A0, typename A1, typename A2, typename A3>\
-	derived(const A0& a0, const A1& a1, const A2& a2, const A3& a3, parent X = parent(A0(), A1(), A2(), A3())) : parent(a0, a1, a2, a3){}
+	derived(const A0& a0, const A1& a1, const A2& a2, const A3& a3, parent X = test_constructor<parent,A0,A1,A2,A3>::c) : parent(a0, a1, a2, a3){}\
+	template <typename A0, typename A1, typename A2, typename A3, typename A4>\
+	derived(const A0& a0, const A1& a1, const A2& a2, const A3& a3, const A4& a4, parent X = test_constructor<parent, A0, A1, A2, A3,A4>::c) : parent(a0, a1, a2, a3,a4){}
 #else
 	#define inherit_constructors(derived, base) using base::base;
 #endif
