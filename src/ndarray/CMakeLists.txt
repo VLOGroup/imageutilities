@@ -21,10 +21,9 @@ include_directories(${SRC_DIR})
 
 ##--------compiler settings------------------------
 
-SET(CMAKE_CXX_FLAGS_SAVED ${CMAKE_CXX_FLAGS})
-SET(CUDA_NVCC_FLAGS_SAVED ${CUDA_NVCC_FLAGS})
-
-###include(${CMAKE_CURRENT_LIST_DIR}/cmake/flags_functions.cmake.txt)
+##SET(CMAKE_CXX_FLAGS_SAVED ${CMAKE_CXX_FLAGS})
+##SET(CUDA_NVCC_FLAGS_SAVED ${CUDA_NVCC_FLAGS})
+##include(${CMAKE_CURRENT_LIST_DIR}/cmake/flags_functions.cmake.txt)
 
 ##-----------build tools---------------------------
 
@@ -68,6 +67,7 @@ ${SRC_DIR}/type_name.cpp
 ${SRC_DIR}/ndarray_mem.cpp
 ${SRC_DIR}/ndarray.cpp
 ${SRC_DIR}/ndarray_op.cu
+${SRC_DIR}/ndarray_op.cpp
 ${SRC_DIR}/test_iusize.cpp
 ${SRC_DIR}/test_transform.cpp
 )
@@ -86,27 +86,50 @@ endif()
 #message(STATUS "CMAKE_SHARED_LINKER_FLAGS = ${CMAKE_SHARED_LINKER_FLAGS}")
 #message(STATUS "CMAKE_LIB_LINKER_FLAGS = ${CMAKE_LIB_LINKER_FLAGS}")
 
+include_directories("${CMAKE_CURRENT_BINARY_DIR}") # to find generated *.h files
+my_cuda_add_library(ndarray ${SRC} ndarray_exports.h)
+target_include_directories(ndarray PUBLIC ${CMAKE_CURRENT_BINARY_DIR}) ##both are needed (WTF)
 
-my_cuda_add_library(ndarray SHARED ${SRC})
+#add_flags(CUDA_NVCC_FLAGS "-Xcompiler /Dndarray_EXPORTS")
+
 set_target_properties(ndarray PROPERTIES 
-	POSITION_INDEPENDENT_CODE ON
-	DEFINE_SYMBOL IUCORE_DLL_EXPORTS
+	WINDOWS_EXPORT_ALL_SYMBOLS ON
 	VERSION ${VERSION_MAJOR}
 	SOVERSION ${VERSION_MAJOR})
 
-target_link_libraries(ndarray)
-#set_target_properties(ndarray PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BUILD_DIRECTORY}/../)
+include(GenerateExportHeader)
 
-set(NDARRAY_LIB ${MYLIBS} PARENT_SCOPE)
+GENERATE_EXPORT_HEADER(ndarray
+    BASE_NAME ndarray
+    EXPORT_MACRO_NAME NDARRAY_EXPORTS
+    EXPORT_FILE_NAME ndarray_exports.h
+    STATIC_DEFINE SHARED_EXPORTS_BUILT_AS_STATIC)
+
+#set_target_properties(ndarray PROPERTIES 
+#	WINDOWS_EXPORT_ALL_SYMBOLS ON
+#	DEFINE_SYMBOL ndarray_EXPORTS
+#	VERSION ${VERSION_MAJOR}
+#	SOVERSION ${VERSION_MAJOR})
+
+#
+
+# target_link_libraries(ndarray)
+# set_target_properties(ndarray PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BUILD_DIRECTORY}/../)
+
+set(NDARRAY_LIB ndarray PARENT_SCOPE)
+
+#set(NDARRAY_LIB ${MYLIBS} PARENT_SCOPE)
 #set(NDARRAY_LIB ${MY_LIB_PATH}/${MYLIBS} PARENT_SCOPE)
-
 #my_cuda_add_executable(cuda_bug cuda_bug.cu)
 
 #add_flags(CUDA_NVCC_FLAGS "-O3 -keep -src-in-ptx -res-usage -Xptxas -lineinfo -Xptxas -v -Xptxas -warn-lmem-usage -Xptxas -warn-spills")
+
 #my_cuda_add_executable(test_iterator test_iterator.cu)
 
 if(NOT MSVC)
-my_cuda_add_executable(test_transform test_transform common_transforms.cu)
+my_cuda_add_executable(test_transform common_transforms.cu)
+
+#my_cuda_add_executable(test_transform test_transform.cpp common_transforms.cu)
 #add_custom_command(TARGET test_iterator POST_BUILD COMMAND ${CMAKE_COMMAND} -E chdir . pwd)
 #add_custom_command(TARGET test_iterator POST_BUILD COMMAND ${CMAKE_COMMAND} -E chdir src/ndarray/CMakeFiles/test_iterator.dir nvdisasm test_iterator.sm_35.cubin)
 #add_custom_command(TARGET test_iterator POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/src/ndarray/CMakeFiles/test_iterator.dir/test_iterator.ptx ${SRC_DIR}/test_iterator.ptx)
@@ -123,10 +146,11 @@ install( TARGETS ndarray
   ARCHIVE         DESTINATION   lib
   LIBRARY         DESTINATION   lib
   )
-install(FILES ${NDARRAY_PUBLIC_HEADERS}
+install(FILES ${NDARRAY_PUBLIC_HEADERS} ${PROJECT_BINARY_DIR}/ndarray_exports.h
   DESTINATION include/iu/ndarray
   COMPONENT Headers
   )
+
 endif(WITH_NDARRAY)
 #SET(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS_SAVED})
 #SET(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS_SAVED})

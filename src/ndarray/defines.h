@@ -52,9 +52,11 @@
 #if defined(_MSC_VER)
 #define __HALT__ __debugbreak()
 #define __FORCEINLINE__ __forceinline
+#define __NOINLINE__ __declspec(noinline)
 #else
 #define __HALT__ __asm__ volatile("int3")
 #define __FORCEINLINE__ __attribute__((always_inline)) inline
+#define __NOINLINE__ __attribute__((noinline))
 #endif
 
 #ifdef __CUDACC__ //__CUDA_ARCH__
@@ -62,11 +64,13 @@
 	#undef __HOST__
 	#define __HOSTDEVICE__ __host__ __device__ __forceinline__
 	#define __HOST__ __host__ __forceinline__
+	#define __RESTRICT__ __restrict__
 #else
 	#undef __HOSTDEVICE__
 	#undef __HOST__
 	#define __HOSTDEVICE__ __FORCEINLINE__
 	#define __HOST__ __FORCEINLINE__
+	#define __RESTRICT__
 #endif
 
 #if (_MSC_VER > 1000) && (_MSC_VER <= 1800) // c++11 support (lack of)

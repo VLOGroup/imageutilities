@@ -69,13 +69,13 @@ public: //arithmetics
 
 	//
 	template <typename ptype>
-	__HOSTDEVICE__ ptype * __restrict__ & step_pointer(ptype *& p) const {
+	__HOSTDEVICE__ ptype * __RESTRICT__ & step_pointer(ptype *& p) const {
 		return (ptype *&)((char*&)p += type_stride*intsizeof(type));
 	}
 
-#ifndef __restrict__
+#ifdef __CUDACC__
 	template <typename ptype>
-	__HOSTDEVICE__ ptype * __restrict__ & step_pointer(ptype * __restrict__ & p) const {
+	__HOSTDEVICE__ ptype * __RESTRICT__ & step_pointer(ptype * __RESTRICT__ & p) const {
 		return (ptype *&)((char*&)p += type_stride*intsizeof(type));
 	}
 #endif
@@ -118,23 +118,23 @@ __HOSTDEVICE__ tstride<type> operator *(int x, tstride<type> s){
 }
 //! pointer arithmetics
 template <typename ptype, typename stype>
-__HOSTDEVICE__ ptype * __restrict__ & operator += (ptype * __restrict__ & p, const tstride<stype> & s){
+__HOSTDEVICE__ ptype * __RESTRICT__ & operator += (ptype * __RESTRICT__ & p, const tstride<stype> & s){
 	return s.step_pointer(p);
 }
 
 template <typename ptype, typename stype>
-__HOSTDEVICE__ ptype * __restrict__ operator + (ptype * __restrict__ p, const tstride<stype> & s){
+__HOSTDEVICE__ ptype * __RESTRICT__ operator + (ptype * __RESTRICT__ p, const tstride<stype> & s){
 	ptype * P = p;
 	return s.step_pointer(P);
 }
 
 template <typename ptype, typename stype>
-__HOSTDEVICE__ ptype * __restrict__ & operator -= (ptype * __restrict__ & p, const tstride<stype> & s){
+__HOSTDEVICE__ ptype * __RESTRICT__ & operator -= (ptype * __RESTRICT__ & p, const tstride<stype> & s){
 	return (-s).step_pointer(p);
 }
 
 template <typename ptype, typename stype>
-__HOSTDEVICE__ ptype * __restrict__ operator - (ptype * __restrict__ p, const tstride<stype> & s){
+__HOSTDEVICE__ ptype * __RESTRICT__ operator - (ptype * __RESTRICT__ p, const tstride<stype> & s){
 	ptype * P = p;
 	return (-s).step_pointer(P);
 }
@@ -206,11 +206,11 @@ public:
 		return dslice<type2, dims>((type2*)_beg, stb);
 	}
 public: //____________ element access
-	__HOSTDEVICE__ type * __restrict__ begin() const { return _beg; }
+	__HOSTDEVICE__ type * __RESTRICT__ begin() const { return _beg; }
 	__HOSTDEVICE__ type & operator *() const { return *begin(); }
-	__HOSTDEVICE__ type * __restrict__ & ptr() { return _beg; }
-	__HOSTDEVICE__ type * __restrict__ const & ptr() const { return _beg; }
-	__HOSTDEVICE__ type * __restrict__ ptr(const intn<dims> & ii) const{
+	__HOSTDEVICE__ type * __RESTRICT__ & ptr() { return _beg; }
+	__HOSTDEVICE__ type * __RESTRICT__ const & ptr() const { return _beg; }
+	__HOSTDEVICE__ type * __RESTRICT__ ptr(const intn<dims> & ii) const{
 		type * p = begin();
 		for (int d = 0; d < dims; ++d){
 			p += ii[d] * stride<char>(d);
@@ -219,7 +219,7 @@ public: //____________ element access
 	}
 
 	template<typename...AA>
-	__HOSTDEVICE__ type * __restrict__ ptr(AA... aa) const {
+	__HOSTDEVICE__ type * __RESTRICT__ ptr(AA... aa) const {
 		return ptr(intn<dims>(aa...));
 	}
 
@@ -228,7 +228,7 @@ public: //____________ element access
 		return *ptr(intn<dims>(aa...));
 	}
 	/*
-	__HOSTDEVICE__ type * __restrict__ ptr(int i0 = 0, int i1 = 0, int i2 = 0, int i3 = 0) const { // zero entries will be optimized out
+	__HOSTDEVICE__ type * __RESTRICT__ ptr(int i0 = 0, int i1 = 0, int i2 = 0, int i3 = 0) const { // zero entries will be optimized out
 		type * p = begin() + i0 * stride<char>(0);
 		if (dims > 1){
 			p += i1 * stride<char>(1);
@@ -417,10 +417,10 @@ namespace kernel{
 		}
 	public: //____________ additional element access
 		/*
-		__HOSTDEVICE__ type * __restrict__ ptr(const intn<dims> & ii) const{
+		__HOSTDEVICE__ type * __RESTRICT__ ptr(const intn<dims> & ii) const{
 			return parent::ptr(ii);
 		}
-		__HOSTDEVICE__ type * __restrict__ ptr(int i0, int i1 = 0, int i2 = 0, int i3 = 0) const { // zero entries will be optimized out
+		__HOSTDEVICE__ type * __RESTRICT__ ptr(int i0, int i1 = 0, int i2 = 0, int i3 = 0) const { // zero entries will be optimized out
 			return parent::ptr(i0,i1,i2,i3);
 		}
 		__HOSTDEVICE__ type & operator ()(int i0, int i1 = 0, int i2 = 0, int i3 = 0) const {
