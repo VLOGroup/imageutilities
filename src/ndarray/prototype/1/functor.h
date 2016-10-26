@@ -1,7 +1,7 @@
 	// make functor
 
 	template<typename F, F f, typename... AA> struct functor_b{
-	    HOSTDEVICE void operator()(AA&&... aa) const {
+	    __HOSTDEVICE__ void operator()(AA&&... aa) const {
 	        f(aa...);
 	    }
 	};

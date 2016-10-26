@@ -56,17 +56,12 @@ else(NOT ANDROID)
   set(CUDA_NVCC_FLAGS -arch=sm_30 -target-cpu-arch=ARM -target-os-variant=Android)
 endif(NOT ANDROID)
 
-if(WIN32)
-  add_definitions("/MT")
-endif(WIN32)
-
-# Disable warnings on MSVC
-IF (MSVC)
-  # Disable Warning	C4267: conversion from 'size_t' to 'thrust', possible loss of data
-  # Disable Warning C4800: forcing value to bool 'true' of 'false'
-  # Disable Warning C4996: This function of variable may be unsafe. Consider using strerror_s instead.
-  ADD_DEFINITIONS("/wd4267 /wd4800 /wd4996")
-ENDIF (MSVC)
+#------------- for compiler flags see cmake/compiler_settings.cmake.txt -----------------
+if(NOT CMAKE_BUILD_TYPE)
+	set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "Choose the type of build, options are: Debug Release RelWithDebInfo MinSizeRel." FORCE)
+endif()
+include(${CMAKE_CURRENT_LIST_DIR}/cmake/compiler_settings.cmake.txt)
+#----------------------------------------------------------------------------------------
 
 add_subdirectory(src)
 add_subdirectory(tests)

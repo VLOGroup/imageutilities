@@ -15,7 +15,7 @@ namespace iu{
 	// proposed implementation
 	using Size = ::intn<dims>; // replacement of Size implementation
 	// old implementation
-	//using Size = to_be_depricated::Size<dims>; // replacement of Size implementation
+	// using Size = depricated::Size<dims>; // replacement of Size implementation
 };
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -49,7 +49,8 @@ namespace iu{
 		/** Special Constructor.
 		 *  Init all elements of the vector with a initializer list.
 		 *  @param list Initializer list, e.g. {1,2,3}.*/
-		VectorBase(std::initializer_list<PixelType> list)
+		template<typename type2, class = typename std::enable_if<std::is_convertible<type2,PixelType>::value>::type >
+		VectorBase(std::initializer_list<type2> list)
 		{
 			if (list.size() != Ndim)
 			{
@@ -62,7 +63,7 @@ namespace iu{
 			unsigned int i = 0;
 			for (auto elem : list)
 			{
-				data_[i] = elem;
+				data_[i] = (PixelType)elem;
 				++i;
 			}
 		}
@@ -71,12 +72,10 @@ namespace iu{
 		/*!
 		 * example: Size<3>(12, 2, 3);
 		 */
-		/* Size specializations fail to inherit this
-		template<typename A0, typename... Args, class = typename std::enable_if<std::is_integral<A0>::value>::type>
-		VectorBase(A0 a0, Args... args) : VectorBase(std::initializer_list<int>( {int(a0), int(args)...} )){
+		template<typename A0, typename... Args, class = typename std::enable_if<std::is_convertible<A0,PixelType>::value>::type>
+		VectorBase(A0 a0, Args... args) : VectorBase(std::initializer_list<PixelType>( {PixelType(a0), PixelType(args)...} )){
 			static_assert(sizeof...(Args)==Ndim-1,"size missmatch"); // check number of arguments is matching
 		}
-		*/
 
 		/** Constructor from other array type, can be C array, std::vector, etc.
 		 *
@@ -192,7 +191,15 @@ namespace iu{
 	public:
 		/** Constructor */
 		Vector() = default;
-		using VectorBase<PixelType, Ndim>::VectorBase; // inheriting all constructors of VectorBase
+		//using VectorBase<PixelType, Ndim>::VectorBase; // inheriting all constructors of VectorBase
+		//using VectorBase<unsigned int, Ndim>::VectorBase;
+		//! forward constructor to VectorBase
+		//typedef VectorBase<PixelType, Ndim> parent;
+		//inherit_constructors(Vector, parent)
+		template <typename A0, typename... Args>
+		Vector(A0 && a0, Args&&... args) : VectorBase<PixelType, Ndim>(std::forward<A0>(a0), std::forward<Args>(args)...){
+		}
+
 
 		//  Vector() :
 		//      VectorBase<PixelType, Ndim>()
@@ -396,7 +403,11 @@ namespace iu{
 			//  {
 			//  }
 
-			using VectorBase<unsigned int, Ndim>::VectorBase;
+			//using VectorBase<unsigned int, Ndim>::VectorBase;
+
+			template <typename A0, typename... Args>
+			SizeBase(A0 && a0, Args&&... args) : VectorBase<unsigned int, Ndim>(std::forward<A0>(a0), std::forward<Args>(args)...){
+			}
 
 			/** Destructor. */
 			virtual ~SizeBase()
@@ -504,8 +515,12 @@ namespace iu{
 		{
 		public:
 			/** Constructor. */
-			Size() = default;
-			using SizeBase<Ndim>::SizeBase; // inherit all constructors of SizeBase
+			//Size() = default;
+
+			//! forward constructor to base
+			template <typename... Args> Size(Args&&... args) : SizeBase<Ndim>(std::forward<Args>(args)...){}
+
+			//using SizeBase<Ndim>::SizeBase; // inherit all constructors of SizeBase
 
 			//  Size() :
 			//      SizeBase<Ndim>()
@@ -578,46 +593,50 @@ namespace iu{
 			unsigned int& height;
 
 			/** Constructor. */
-			Size() :
-				SizeBase<2>(), width(this->data_[0]), height(this->data_[1])
-				{
-				}
+//			Size() :
+//				SizeBase<2>(), width(this->data_[0]), height(this->data_[1])
+//				{
+//				}
+//
+//			/** Special Constructor.
+//			 *  Init all elements of the size vector with a special value.
+//			 *  @param value value to initialize size vector elements.*/
+//			Size(unsigned int value) :
+//				SizeBase<2>(value), width(this->data_[0]), height(this->data_[1])
+//				{
+//				}
+//
+//			using SizeBase<2>::SizeBase;
+//
+//			/** Special Constructor.
+//			 *  Init all elements of the vector with a initializer list.
+//			 *  @param list Initializer list, e.g. {1,2}.*/
+//			Size(std::initializer_list<unsigned int> list) :
+//				SizeBase<2>(list), width(this->data_[0]), height(this->data_[1])
+//				{
+//				}
+//
+//			/** Special Constructor. Init size with width, height.
+//			 *  @param width Set 0th entry of data buffer
+//			 *  @param height Set 1st entry of data buffer
+//			 */
+//			Size(unsigned int width, unsigned int height) :
+//				SizeBase<2>(), width(this->data_[0]), height(this->data_[1])
+//				{
+//				data_[0] = width;
+//				data_[1] = height;
+//				}
+//
+//			template<class other, class = typename std::enable_if<std::is_class<other>::value>::type>
+//			explicit Size(const other & x): width(this->data_[0]), height(this->data_[1]){
+//				for(unsigned int i=0; i< 2; ++i){
+//					(*this)[i] = x[i];
+//				};
+//			}
 
-			/** Special Constructor.
-			 *  Init all elements of the size vector with a special value.
-			 *  @param value value to initialize size vector elements.*/
-			Size(unsigned int value) :
-				SizeBase<2>(value), width(this->data_[0]), height(this->data_[1])
-				{
-				}
-
-			using SizeBase<2>::SizeBase;
-
-			/** Special Constructor.
-			 *  Init all elements of the vector with a initializer list.
-			 *  @param list Initializer list, e.g. {1,2}.*/
-			Size(std::initializer_list<unsigned int> list) :
-				SizeBase<2>(list), width(this->data_[0]), height(this->data_[1])
-				{
-				}
-
-			/** Special Constructor. Init size with width, height.
-			 *  @param width Set 0th entry of data buffer
-			 *  @param height Set 1st entry of data buffer
-			 */
-			Size(unsigned int width, unsigned int height) :
-				SizeBase<2>(), width(this->data_[0]), height(this->data_[1])
-				{
-				data_[0] = width;
-				data_[1] = height;
-				}
-
-			template<class other, class = typename std::enable_if<std::is_class<other>::value>::type>
-			explicit Size(const other & x): width(this->data_[0]), height(this->data_[1]){
-				for(unsigned int i=0; i< 2; ++i){
-					(*this)[i] = x[i];
-				};
-			}
+			//! forward constructor to base
+			template <typename... Args> Size(Args&&... args) : SizeBase<2>(std::forward<Args>(args)...)
+					, width(this->data_[0]), height(this->data_[1]){}
 
 			/** Destructor. */
 			~Size()
@@ -630,11 +649,11 @@ namespace iu{
 				{
 				}
 
-			/** Public copy constructor. */
-			Size(const SizeBase& from) :
-				SizeBase<2>(from), width(this->data_[0]), height(this->data_[1])
-				{
-				}
+//			/** Public copy constructor. */
+//			Size(const SizeBase& from) :
+//				SizeBase<2>(from), width(this->data_[0]), height(this->data_[1])
+//				{
+//				}
 
 			/** Public copy assignment operator. */
 			Size& operator=(const Size& from)
@@ -669,52 +688,55 @@ namespace iu{
 			unsigned int& depth;
 
 
-			/** Constructor. */
-			Size() :
-				SizeBase<3>(), width(this->data_[0]), height(this->data_[1]),
-				depth(this->data_[2])
-				{
-				}
+//			/** Constructor. */
+//			Size() :
+//				SizeBase<3>(), width(this->data_[0]), height(this->data_[1]),
+//				depth(this->data_[2])
+//				{
+//				}
+//
+//			/** Special Constructor.
+//			 *  Init all elements of the size vector with a special value.
+//			 *  @param value value to initialize size vector elements.*/
+//			Size(unsigned int value) :
+//				SizeBase<3>(value), width(this->data_[0]), height(this->data_[1]),
+//				depth(this->data_[2])
+//				{
+//				}
+//
+//			/** Special Constructor.
+//			 *  Init all elements of the vector with a initializer list.
+//			 *  @param list Initializer list, e.g. {1,2,3}.*/
+//			Size(std::initializer_list<unsigned int> list) :
+//				SizeBase<3>(list), width(this->data_[0]), height(this->data_[1]),
+//				depth(this->data_[2])
+//				{
+//				}
+//
+//			/** Special Constructor. Init size with width, height, depth.
+//			 *  @param width Set 0th entry of data buffer
+//			 *  @param height Set 1st entry of data buffer
+//			 *  @param depth Set 2nd entry of data buffer
+//			 */
+//			Size(unsigned int width, unsigned int height, unsigned int depth) :
+//				SizeBase<3>(), width(this->data_[0]), height(this->data_[1]),
+//				depth(this->data_[2])
+//				{
+//				data_[0] = width;
+//				data_[1] = height;
+//				data_[2] = depth;
+//				}
+//
+//			template<class other, class = typename std::enable_if<std::is_class<other>::value>::type>
+//			explicit Size(const other & x): width(this->data_[0]), height(this->data_[1]), depth(this->data_[2]){
+//				for(unsigned int i=0; i< 3; ++i){
+//					(*this)[i] = x[i];
+//				};
+//			}
 
-			/** Special Constructor.
-			 *  Init all elements of the size vector with a special value.
-			 *  @param value value to initialize size vector elements.*/
-			Size(unsigned int value) :
-				SizeBase<3>(value), width(this->data_[0]), height(this->data_[1]),
-				depth(this->data_[2])
-				{
-				}
-
-			/** Special Constructor.
-			 *  Init all elements of the vector with a initializer list.
-			 *  @param list Initializer list, e.g. {1,2,3}.*/
-			Size(std::initializer_list<unsigned int> list) :
-				SizeBase<3>(list), width(this->data_[0]), height(this->data_[1]),
-				depth(this->data_[2])
-				{
-				}
-
-			/** Special Constructor. Init size with width, height, depth.
-			 *  @param width Set 0th entry of data buffer
-			 *  @param height Set 1st entry of data buffer
-			 *  @param depth Set 2nd entry of data buffer
-			 */
-			Size(unsigned int width, unsigned int height, unsigned int depth) :
-				SizeBase<3>(), width(this->data_[0]), height(this->data_[1]),
-				depth(this->data_[2])
-				{
-				data_[0] = width;
-				data_[1] = height;
-				data_[2] = depth;
-				}
-
-			template<class other, class = typename std::enable_if<std::is_class<other>::value>::type>
-			explicit Size(const other & x): width(this->data_[0]), height(this->data_[1]), depth(this->data_[2]){
-				for(unsigned int i=0; i< 3; ++i){
-					(*this)[i] = x[i];
-				};
-			}
-
+			//! forward constructor to base
+			template <typename... Args> Size(Args&&... args) : SizeBase<3>(std::forward<Args>(args)...)
+										, width(data_[0]), height(data_[1]), depth(data_[2]){}
 
 			/** Destructor. */
 			~Size()
@@ -728,12 +750,12 @@ namespace iu{
 				{
 				}
 
-			/** Public copy constructor. */
-			Size(const SizeBase& from) :
-				SizeBase<3>(from), width(this->data_[0]), height(this->data_[1]),
-				depth(this->data_[2])
-				{
-				}
+//			/** Public copy constructor. */
+//			Size(const SizeBase<3>& from) :
+//				SizeBase<3>(from), width(this->data_[0]), height(this->data_[1]),
+//				depth(this->data_[2])
+//				{
+//				}
 
 			/** Public copy assignment operator. */
 			Size& operator=(const Size& from)

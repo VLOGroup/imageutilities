@@ -216,3 +216,14 @@ IUMATH_DLLAPI inline __host__ __device__ typename iu::type_trait<PixelType>::com
   dst.y = -src1.x * src2.y + src1.y * src2.x;
   return dst;
 }
+
+/** Take conjugate of a complex number. */
+template<typename PixelType>
+IUMATH_DLLAPI inline __host__ __device__ typename iu::type_trait<PixelType>::complex_type complex_conjugate(
+    const typename iu::type_trait<PixelType>::complex_type& src)
+{
+  typename iu::type_trait<PixelType>::complex_type dst;
+  dst.x = src.x;
+  dst.y = -src.y;
+  return dst;
+}

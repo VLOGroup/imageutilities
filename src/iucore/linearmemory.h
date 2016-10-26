@@ -104,7 +104,7 @@ public:
   /** Returns the number of elements saved in the buffer. (numel of buffer) */
   unsigned int numel() const
   {
-    return size_.numel();
+	  return (unsigned int)size_.numel();
   }
 
 //  /** Returns the number of elements saved in the buffer. (numel of buffer) */

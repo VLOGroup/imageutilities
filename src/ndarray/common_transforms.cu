@@ -1,3 +1,5 @@
+#include <cuda.h>
+
 #include "detail/transform.cuh"
 #include "common_transforms.h"
 #include "ndarray_mem.h"

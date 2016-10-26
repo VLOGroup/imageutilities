@@ -10,7 +10,7 @@ namespace nd{
 		return type();
 	};
 
-	template<typename type, int dims> constexpr int array_dims( const kernel::ndarray_ref<type, dims> &){
+	template<typename type, int dims> constexpr int array_dims(const kernel::ndarray_ref<type, dims> &){
 		return dims;
 	};
 
