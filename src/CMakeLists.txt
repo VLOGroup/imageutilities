@@ -12,6 +12,7 @@ option(IU_BUILD_STATIC "Build static libs too." OFF)
 if(NOT CMAKE_BUILD_TYPE)
 	set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "Choose the type of build, options are: Debug Release RelWithDebInfo MinSizeRel." FORCE)
 endif()
+#set(CMAKE_CONFIGURATION_TYPES "Debug;RelWithDebInfo" CACHE STRING "Multiple Configurations" FORCE)
 
 set(CUDA_PROPAGATE_HOST_FLAGS OFF)
 
