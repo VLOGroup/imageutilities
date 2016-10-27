@@ -27,9 +27,7 @@ namespace nd{
 
 
 	//! transform using a functor
-	template<typename F, typename A0, typename... AA>
-	__attribute__((noinline))
+	template<typename F, typename A0, typename... AA> __NOINLINE__
 	void transform(const F & f, A0 & a, const AA&... aa);
-
 
 };

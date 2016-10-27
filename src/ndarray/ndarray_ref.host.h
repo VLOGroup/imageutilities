@@ -71,7 +71,7 @@ protected:
 	union{
 		struct{
 			unsigned int _access:2;//! access bits
-			unsigned int _linear_dim:4; //! which dimension has contiguous linear memory access
+			// depricated // unsigned int _linear_dim:4; //! which dimension has contiguous linear memory access
 		} flag_bits;
 		int flags;
 	};
@@ -88,18 +88,18 @@ public:
 	ndarray_flags & operator = (const ndarray_flags & b) = default;
 	void set_defaults(){
 		flag_bits._access = no_access;
-		flag_bits._linear_dim = max_dimensions();
+		//flag_bits._linear_dim = max_dimensions();
 	}
-	static int max_dimensions(){
-		return 15; // for the 4 bit linear_dim above
-	}
-	int linear_dim() const{
-		return flag_bits._linear_dim;
-	}
-	template<int dim = 0>
-	bool is_linear_dim() const{
-		return flag_bits._linear_dim == dim;
-	}
+//	static int max_dimensions(){
+//		return 15; // for the 4 bit linear_dim above
+//	}
+//	int linear_dim() const{
+//		return flag_bits._linear_dim;
+//	}
+//	template<int dim = 0>
+//	bool is_linear_dim() const{
+//		return flag_bits._linear_dim == dim;
+//	}
 	bool access_valid() const {
 		return flag_bits._access != no_access;
 	}
@@ -115,9 +115,9 @@ public:
 	bool device_allowed() const {
 		return flag_bits._access == device_only || flag_bits._access == host_device;
 	}
-	bool first_dim_is_linear() const {
-		return flag_bits._linear_dim == 0;
-	}
+//	bool first_dim_is_linear() const {
+//		return flag_bits._linear_dim == 0;
+//	}
 };
 
 template<typename type, int dims> class ndarray_ref;
@@ -157,25 +157,6 @@ namespace base2{
 		ndarray_ref(type * const __beg, const intn<dims> & size){
 			set_linear_ref(__beg, size);
 		}
-		/*
-	public: // constructors, from image utilities classes
-		//! from LinearDeviceMemory1d and size
-		ndarray_ref(const iu::LinearDeviceMemory1d<type> & x, const intn<dims> size);
-		//! from LinearHostMemory1d and size
-		ndarray_ref(const iu::LinearHostMemory1d<type> & x, const intn<dims> size);
-		//! from ImageGPU, ImageCPU, VolumeCPU, VolumeGPU
-		template <class Allocator, template<typename, class> class ImageorVolume> ndarray_ref(const ImageorVolume<type, Allocator> & x){
-		 *this = x;
-		}
-		//! from TensorCPU
-		ndarray_ref(const iu::TensorCpu<type> & x){
-		 *this = x;
-		};
-		//! from TensorGPU
-		ndarray_ref(const iu::TensorGpu<type> & x){
-		 *this = x;
-		};
-		 */
 	public: //____________ initializers
 		//! default operator =
 		ndarray_ref<type, dims> & operator = (const ndarray_ref<type, dims> & x) = default;
@@ -187,14 +168,16 @@ namespace base2{
 		//! from a pointer assuming a linear layout and auto access flags from pointer attributes
 		template<bool order_ascending = true>
 		ndarray_ref & set_linear_ref(type * p, const intn<dims> & size);// defined later, pointer checking;
+
+		// special constructors
 		/*
-		//! from ImageGPU, ImageCPU, VolumeCPU, VolumeGPU
-		template <class Allocator, template<typename, class> class ImageorVolume>
-		ndarray_ref & operator = (const ImageorVolume<type, Allocator> & x);
-		//! from TensorCpu, TensorGpu
-		ndarray_ref & operator = (const iu::TensorCpu<type> & x);
-		ndarray_ref & operator = (const iu::TensorGpu<type> & x);
-		 */
+		template<class Allocator, int D = dims, class = typename std::enable_if<D==2>::type >
+		ndarray_ref & set_ref(const iu::ImageCpu<type, Allocator> & x);
+		template<class Allocator, int D = dims, class = typename std::enable_if<D==2>::type >
+		ndarray_ref(const iu::ImageCpu<type, Allocator> & x){
+			set_ref(x);
+		}
+		*/
 	public:
 		//! helper conversion to the kernel base
 		__HOSTDEVICE__ kernel::ndarray_ref<type, dims> & kernel(){ return *this; };
@@ -245,7 +228,7 @@ namespace base2{
 	public:
 		//! construct from the base class
 		ndarray_ref(const kernel::ndarray_ref<type, dims> & x, int access_policy) : parent(x), ndarray_flags(access_policy){
-			find_linear_dim();
+//			find_linear_dim();
 		}
 	};
 
@@ -343,12 +326,12 @@ namespace base2{
 
 	template<typename type, int dims>
 	void ndarray_ref<type, dims>::find_linear_dim(){
-		int d = stride_bytes().min_abs_idx();
-		if (stride_bytes(d) == intsizeof(type)){
-			flag_bits._linear_dim = d;
-		} else{
-			flag_bits._linear_dim = max_dimensions();
-		};
+//		int d = stride_bytes().min_abs_idx();
+//		if (stride_bytes(d) == intsizeof(type)){
+//			flag_bits._linear_dim = d;
+//		} else{
+//			flag_bits._linear_dim = max_dimensions();
+//		};
 	}
 /*
 	template<typename type, int dims>
@@ -432,16 +415,15 @@ namespace special2{ // specializations depending on dimensions -- will have diff
 		inherit_constructors(ndarray_ref, parent)
 		ndarray_ref() = default;
 	};
-	// 1D array
+	// 1D array -- nothing special
 	template<typename type> class ndarray_ref<type, 1> : public base2::ndarray_ref < type, 1>{
 		typedef  base2::ndarray_ref < type, 1> parent;
 	public:
 		// inherit constructors
 		//using parent::parent;
 		inherit_constructors(ndarray_ref, parent)
-		//using parent::operator =;
-		using parent::set_ref;
 		ndarray_ref() = default;
+		using parent::set_ref;
 		//reverse conversions
 		//operator iu::LinearHostMemory1d<type>();
 		//operator iu::LinearDeviceMemory1d<type>();
@@ -485,9 +467,6 @@ namespace special2{ // specializations depending on dimensions -- will have diff
 		// inherit constructors
 		//using parent::parent;
 		inherit_constructors(ndarray_ref, parent)
-		//template <typename A0, typename... Args>
-		//ndarray_ref(A0&& a0, Args&&... args, parent a = parent(std::forward<A0>(a0), std::forward<Args>(args)...)) : parent(std::forward<A0>(a0), std::forward<Args>(args)...){
-		//}
 		//using parent::operator =;
 		using parent::set_ref;
 		ndarray_ref() = default;
@@ -555,15 +534,7 @@ namespace special2{ // specializations depending on dimensions -- will have diff
 }
 
 namespace special3{ //! specialisation on data type: struct type allows expansion
-	template<typename type, int dims, bool is_not_class> class ndarray_ref;
-	//: public special2::ndarray_ref < type, dims > {
-	//	typedef special2::ndarray_ref < type, dims > parent;
-	//public:
-	//	// inherit constructors
-	//	//using parent::parent;
-	//	inherit_constructors(ndarray_ref, parent)
-	//	ndarray_ref() = default;
-	//};
+	template<typename type, int dims, bool is_class> class ndarray_ref;
 	//elementary type
 	template<typename type, int dims> class ndarray_ref<type,dims,false> : public special2::ndarray_ref < type, dims > {
 		typedef special2::ndarray_ref < type, dims > parent;
@@ -600,16 +571,9 @@ template<typename type, int dims> class ndarray_ref : public special3::ndarray_r
 	typedef special3::ndarray_ref < type, dims, std::is_class<type>::value > parent;
 	typedef ::ndarray_ref<type, (dims>1)? dims-1 : 1> decrement_dim_type;
 public:
-	// inherit constructors
-	//using parent::parent;
 	inherit_constructors(ndarray_ref, parent)
-	//template <typename A0, typename... AA, typename X = type_B >
-	//ndarray_ref(const A0& a0, const AA&... aa) : parent(a0, aa...){}
-	//template <typename A0>
-	//ndarray_ref(const A0& a0, parent X = parent(A0()) ) : parent(a0){}
-	//ndarray_ref(  const A0& a0, const AA&... aa, const parent & X = parent(A0(), AA()...)  ) : parent(a0,aa){}
-
 	ndarray_ref() = default;
+
 	//using parent::operator =;
 	using parent::access;
 	using parent::ptr;
@@ -659,13 +623,6 @@ public: // operations
 public: // recast and slicing
 	//! reinterpret same data as a different type (no type conversion)
 	template<typename type2> ndarray_ref<type2, dims> recast()const;
-	
-	//	//! reinterpret fixed-size vector data as a new dimension
-	//	//template<typename type2, int length> ndarray_ref<type2, dims+1> recast()const;
-	//! slice a member from the type structure. Result has the same size and stride_bytes
-	//template<typename tmember> ndarray_ref<tmember, dims> subtype(tmember type::*member)const;
-	//template<typename tmember, typename tmemberptr> ndarray_ref<tmember, dims> subtype(tmemberptr a)const; //tmember type::*member)const;
-	//template<typename tmember> ndarray_ref<tmember, dims> subtype(member_ptr_t<type,tmember> member)const;
 	//! slice by fixing 1 dimension
 	template<int dim1 = 0> ndarray_ref<type, dims - 1> subdim(int i_dim1) const;
 	//! slice by fixing 2 dimensions
@@ -694,14 +651,14 @@ public: // recast and slicing
 	//! compress dimensions (d1,d1+1), provided that dim_continuous(d1) is true
 	decrement_dim_type compress_dim(int d1)const;
 public: // convinience functions
-	__HOSTDEVICE__ kernel::ndarray_ref<type,dims> & kernel(){return *this;};
-	__HOSTDEVICE__ const kernel::ndarray_ref<type,dims> & kernel()const{return *this;};
+	kernel::ndarray_ref<type,dims> & kernel(){return *this;};
+	const kernel::ndarray_ref<type,dims> & kernel()const{return *this;};
 public: //iterators
+	//! experimental iterators that can be used in trust algorithms, not efficient
 	template<typename System> ndarray_iterator<type, dims, System> begin_it() const;
 	template<typename System> ndarray_iterator<type, dims, System> end_it() const;
 	template<typename System> ndarray_iterator_over<type, dims, System> begin_it1() const;
 	template<typename System> ndarray_iterator_over<type, dims, System> end_it1() const;
-
 };
 //_________________
 
@@ -710,7 +667,6 @@ template<typename type, int dims>
 template<typename type2> ndarray_ref<type2, dims> ndarray_ref<type, dims>::recast()const{
 	// check: first dimension must be contiguous
 	runtime_check_this(sizeof(type) == sizeof(type2) || this->template stride<char>(0) == intsizeof(type));
-	//runtime_check_this(sizeof(type) == sizeof(type2) || stride<char>(0) == intsizeof(type));
 	return ndarray_ref<type2, dims>(parent::template recast<type2>(), access());
 }
 
@@ -1069,48 +1025,8 @@ template <typename tstream> void print_flags(tstream & ss, const ndarray_flags &
 		case ndarray_flags::host_device : ss << "host, device"; break;
 		default: throw_error("unexpected case");
 	};
-	ss << "; linear_dim: " << ff.linear_dim();
+	//ss << "; linear_dim: " << ff.linear_dim();
 }
-
-/*
-template <typename tstream> tstream & operator << (tstream & ss, const ndarray_flags & ff){
-	//print_flags(ss,ff);
-	ss << "access: ";
-	switch(ff.access()){
-		case ndarray_flags::no_access : ss << "no_access";break;
-		case ndarray_flags::host_only : ss << "host";break;
-		case ndarray_flags::device_only : ss << "device";break;
-		case ndarray_flags::host_device : ss << "host, device"; break;
-		default: throw_error("unexpected case");
-	};
-	ss << "; linear_dim: " << ff.linear_dim();
-	return ss;
-}
- */
-
-//___________________________external________
-
-/*
-namespace special{
-	template<class X> struct stream_catcher{
-	};
-#ifndef  __CUDA_ARCH__
-	template<> struct stream_catcher<std::ostream>{
-		const std::ostream & _x;
-		stream_catcher(const std::ostream & x): _x(x){};
-		operator const std::ostream & ()const {return _x;};
-	};
-	template<> struct stream_catcher<error_stream>{
-		const error_stream & _x;
-		stream_catcher(const error_stream & x): _x(x){};
-		operator const error_stream & ()const {return _x;};
-	};
-#endif
-//	template<> struct stream_catcher<pf_stream> : public pf_stream{
-//		stream_catcher(const pf_stream & x): pf_stream(x){};
-//	};
-}
- */
 
 template <typename type, int dims, typename tstream> void print_array(tstream & ss, const ndarray_ref<type,dims> & a){
 #ifndef  __CUDA_ARCH__
@@ -1140,17 +1056,3 @@ template <typename type, int dims> std::ostream & operator << (std::ostream & ss
 	print_array(ss,a);
 	return ss;
 }
-
-
-/*
-	template <typename type, int dims, typename tstream> tstream & operator << (tstream & ss, const ndarray_ref<type,dims> & a){
-#ifndef  __CUDA_ARCH__
-		ss << "\n ndarray_ref<" << typeid(type).name() << "," << dims << ">:" << "ptr="<<a.ptr() << ", size=" << a.size() << ", strides_b=" << a.stride_bytes();
-		const ndarray_flags & ff = a;
-		ss << ", " << ff;
-#endif
-		return ss;
-		//ss << "ndarray_ref<" << "type" << "," << dims << ">:" << "a.size=" << a.size() << " a.strides_b=" << a.stride_bytes() << "\n";
-	}
- */
-

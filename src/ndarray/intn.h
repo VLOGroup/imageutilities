@@ -1,27 +1,16 @@
 #pragma once
 
-#include "error.h"
-#include <type_traits>
+#include "defines.h"
 
 #ifdef  __CUDA_ARCH__
 #include <cuda.h>
 #include "error.kernel.h"
-#endif
-
-#include "defines.h"
-
-
-#ifndef  __CUDA_ARCH__
+#else
 #include <algorithm>
 #include "error.h"
 #include <cstddef>
+#include <type_traits>
 #endif
-
-/*
-template<typename T, typename U> constexpr size_t offsetOf(U T::*member){
-	return (char*)&((T*)nullptr->*member) - (char*)nullptr;
-}
-*/
 
 //________________________________intn______________________________________________
 //! specializations of intn<n> for lower dimensions
@@ -157,19 +146,6 @@ public:
 #endif
 	//! default copy ctr
 	__HOSTDEVICE__ intn(const intn<n> & b) = default;
-	/*
-	//! construct from a list
-	__HOSTDEVICE__ intn(int a0, int a1, int a2 = 0, int a3 = 0, int a4 = 0, int a5 = 0){
-		V(0) = a0;
-		if (n > 1)V(1) = a1;
-		if (n > 2)V(n > 2? 2 : 0) = a2;
-		if (n > 3)V(n > 3? 3 : 0) = a3;
-		if (n > 4)V(n > 4? 4 : 0) = a4;
-		if (n > 5)V(n > 5? 5 : 0) = a5;
-	}
-	 */
-
-
 	//! construct from initializer list, e.g. {1,2,3}
 	/*!
 	 * example: intn<3>{12, 2, 3};
@@ -211,23 +187,25 @@ public://__________initializers
 	}
 	//! default operator =
 	__HOSTDEVICE__ intn<n> & operator = (const intn<n> & x) = default;
-	//{
-	//		for (int i = 0; i < n; ++i)V(i) = x[i];
-	//		return *this;
-	//	}
+
+	//! copy constructor
 	__HOSTDEVICE__ intn(const array_type & x){
 		(*this) = x;
 	}
+	//! x = value
 	__HOSTDEVICE__ intn<n> & operator = (const int val){
 		for (int i = 0; i < n; ++i)V(i) = val;
 		return *this;
 	}
 
+	//! fill(value)
 	__HOSTDEVICE__ void fill(const int val){
 		(*this) = val;
 	}
+
 	//! convert to C++ array
 	explicit __HOSTDEVICE__ operator array_type &(){ return as_array(); };
+
 	//! create increasing sequence
 	static __HOSTDEVICE__ intn<n> enumerate(){
 		intn<n> r;
@@ -341,7 +319,8 @@ public: // min max and sorting
 		std::stable_sort(x.begin(), x.end());
 #endif
 		return x;
-	};
+	}
+
 	//! sorting indicies
 	intn<n> sort_idx()const{
 		intn<n> idx;
@@ -363,6 +342,7 @@ public: //__________cut and permute
 		};
 		return r;
 	}
+
 	//! append element in the end
 	__HOSTDEVICE__ intn<n+1> cat(int a) const{
 		intn<n+1> r;
@@ -372,6 +352,7 @@ public: //__________cut and permute
 		r[n] = a;
 		return r;
 	}
+
 	//! insert element at j
 	template<int j>
 	__HOSTDEVICE__ intn<n+1> insert(int a) const{
@@ -412,25 +393,30 @@ public: //__________cut and permute
 		};
 		return r;
 	}
+
 public: // _________l-value math operators
+	//! a+=b
 	__HOSTDEVICE__ intn<n> & operator += (const intn<n> & x){
 		for (int i = 0; i < n; ++i){
 			(*this)[i] += x[i];
 		};
 		return *this;
 	}
+	//! a-=b
 	__HOSTDEVICE__ intn<n> & operator -= (const intn<n> & x){
 		for (int i = 0; i < n; ++i){
 			(*this)[i] -= x[i];
 		};
 		return *this;
 	}
+	//! a*=b
 	__HOSTDEVICE__ intn<n> & operator *= (const int val){
 		for (int i = 0; i < n; ++i){
 			(*this)[i] *= val;
 		};
 		return *this;
 	}
+	//! a/=val
 	__HOSTDEVICE__ intn<n> & operator /= (const int val){
 		for (int i = 0; i < n; ++i){
 			(*this)[i] /= val;
@@ -438,18 +424,19 @@ public: // _________l-value math operators
 		return *this;
 	}
 public:// const math operators
+	//! a*b
 	__HOSTDEVICE__ intn<n> operator * (const int val) const {
 		return (intn<n>(*this)) *= val;
 	}
-
+	//! a/val
 	__HOSTDEVICE__ intn<n> operator / (const int val)const {
 		return (intn<n>(*this)) /= val;
 	}
-
+	//! a+b
 	__HOSTDEVICE__ intn<n> & operator + (const intn<n> & x) const{
 		return (intn<n>(*this)) += x;
 	}
-
+	//! a-b
 	__HOSTDEVICE__ intn<n> & operator - (const intn<n> & x) const{
 		return (intn<n>(*this)) += x;
 	}
@@ -476,9 +463,8 @@ public:// const math operators
 		return (intn<n>(*this)) *= invFactor;
 	}
 
-
 	//! exclusive cumulative product (postfix form is obtained by setting prefix = false)
-	/*! For example: (2,2,3,2) -> (1,2,4,12) in prefix, and -> (12,6,2,1) in postfix
+	/*! example: (2,2,3,2) -> (1,2,4,12) in prefix, and -> (12,6,2,1) in postfix
 	 */
 	template<bool prefix = true>
 	__HOSTDEVICE__ intn<n> prefix_prod_ex() const {
@@ -509,30 +495,35 @@ public:// const math operators
 		return !(*this == x);
 	}
 
+	//! a< b, element-wise
 	__HOSTDEVICE__ bool operator < (const intn<n> & x) const {
 		for (int i = 0; i < n; ++i){
 			if(!((*this)[i] < x[i])) return false;
 		};
 		return true;
 	}
+	//! a>=b, element-wise
 	__HOSTDEVICE__ bool operator >= (const intn<n> & x) const {
 		for (int i = 0; i < n; ++i){
 			if(!((*this)[i] >= x[i])) return false;
 		};
 		return true;
 	}
+	//! a>=val
 	__HOSTDEVICE__ bool operator >= (const int val) const {
 		for (int i = 0; i < n; ++i){
 			if(!((*this)[i] >= val)) return false;
 		};
 		return true;
 	}
+	//! a < val
 	__HOSTDEVICE__ bool operator < (const int val) const {
 		for (int i = 0; i < n; ++i){
 			if(!((*this)[i] < val)) return false;
 		};
 		return true;
 	}
+	//! a > val
 	__HOSTDEVICE__ bool operator > (const int val) const {
 		for (int i = 0; i < n; ++i){
 			if(!((*this)[i] > val)) return false;
@@ -545,7 +536,7 @@ public:// const math operators
 //	return i < int(x);
 //}
 
-//#pragma hd_warning_disable
+//! stream << x, print vector to stream
 template<int n, typename tstream>
 //template<int n, typename tstream, class = typename std::enable_if< (std::is_convertible<tstream,std::ostream>::value || std::is_convertible<tstream,host_stream>::value) >::type >
 //template<int n, typename tstream, class = typename std::enable_if<std::is_convertible<tstream,std::ostream>::value>::type >
@@ -558,7 +549,7 @@ tstream & operator << (tstream & ss, intn<n> a){
 	ss << ")";
 	return ss;
 }
-
+//! c = min(a,b), element-wise
 template<int n>
 __HOSTDEVICE__ intn<n> min(const intn<n> & a, const intn<n> & b){
 	intn<n> r;
