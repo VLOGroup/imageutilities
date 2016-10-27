@@ -138,3 +138,5 @@ tests/config.h
 *.dll
 
 lib/ndarray.dll
+
+.DS_Store
