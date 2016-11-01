@@ -1,6 +1,7 @@
 #pragma once
 
 #include "defines.h"
+#include <type_traits>
 
 #ifdef  __CUDA_ARCH__
 #include <cuda.h>
@@ -9,7 +10,6 @@
 #include <algorithm>
 #include "error.h"
 #include <cstddef>
-#include <type_traits>
 #endif
 
 //________________________________intn______________________________________________

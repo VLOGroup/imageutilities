@@ -8,6 +8,7 @@
 #define DEBUG_LVL 0
 #endif
 
+
 //____________________stream_eater__________________________________
 
 struct stream_eater : public device_stream,  public host_stream{
@@ -18,7 +19,9 @@ struct stream_eater : public device_stream,  public host_stream{
 	__HOSTDEVICE__ stream_eater & operator << (double a){return *this;}
 	__HOSTDEVICE__ stream_eater & operator << (void * a){return *this;}
 	__HOSTDEVICE__ stream_eater & operator << (const char * a){return *this;}
+#ifndef __CUDA_ARCH__
 	__HOSTDEVICE__ stream_eater & operator << (const std::string & a){return *this;}
+#endif
 };
 
 
@@ -42,12 +45,14 @@ struct pf_stream : public device_stream, public host_stream{
 		return *this;
 	}
 
+#ifndef __CUDA_ARCH__
 	__HOSTDEVICE__ pf_stream & operator << (const std::string & s) {
 		if (DEBUG_LVL >= lvl){
 			printf("%s", s.c_str());
 		};
 		return *this;
 	}
+#endif
 
 	__HOSTDEVICE__ pf_stream & operator << (const char & s) {
 		if (DEBUG_LVL >= lvl){

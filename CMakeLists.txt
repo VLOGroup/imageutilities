@@ -63,5 +63,18 @@ endif()
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/compiler_settings.cmake.txt)
 #----------------------------------------------------------------------------------------
 
+# This is to allow correct linking static libraries in windows, see Cmake's GENERATE_EXPORT_HEADER and WINDOWS_EXPORT_ALL_SYMBOLS, for a better automation of SHARED/STATIC on different platforms
+if(NOT BUILD_SHARED_LIBS) # 
+	add_definitions(-DIUCORE_USE_STATIC)
+	add_definitions(-DIUGUI_USE_STATIC)
+	add_definitions(-DIUIO_USE_STATIC)
+	add_definitions(-DIUMATH_USE_STATIC)
+	add_flags(CUDA_NVCC_FLAGS "-DIUCORE_USE_STATIC")
+	add_flags(CUDA_NVCC_FLAGS "-DIUGUI_USE_STATIC")
+	add_flags(CUDA_NVCC_FLAGS "-DIUIO_USE_STATIC")
+	add_flags(CUDA_NVCC_FLAGS "-DIUMATH_USE_STATIC")
+	message(STATUS "CUDA_NVCC_FLAGS= ${CUDA_NVCC_FLAGS}")
+endif()
+
 add_subdirectory(src)
 add_subdirectory(tests)
