@@ -146,8 +146,12 @@ install( TARGETS ndarray
   ARCHIVE         DESTINATION   lib
   LIBRARY         DESTINATION   lib
   )
-install(FILES ${NDARRAY_PUBLIC_HEADERS} ${PROJECT_BINARY_DIR}/ndarray_exports.h
+install(FILES ${NDARRAY_PUBLIC_HEADERS}
   DESTINATION include/iu/ndarray
+  COMPONENT Headers
+  )
+install(FILES ${PROJECT_BINARY_DIR}/ndarray_exports.h
+  DESTINATION include
   COMPONENT Headers
   )
 
