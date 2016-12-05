@@ -38,6 +38,10 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     set(WITH_NDARRAY FALSE)
     #SET(SRC ${SRC_DIR}/dummy.cpp)
   else(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "4.9.0")
+    if(CUDA_VERSION VERSION_LESS "8.0")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_FORCE_INLINES")
+        set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -D_FORCE_INLINES")
+    endif(CUDA_VERSION VERSION_LESS "8.0")
     add_flags(CMAKE_CXX_FLAGS "-ggdb --std=c++11 -pg -fPIC -fmax-errors=3 -Wall -Wc++11-compat -Wdiv-by-zero -Wfloat-equal -Wdisabled-optimization -Wno-unused-but-set-variable -Wno-unused-result -Wno-unused-variable -Wno-unused-value") # -Q --help=warnings,joined,separate") #-Q --help=warnings #-Wfatal-errors
     SET(CUDA_PROPAGATE_HOST_FLAGS OFF)
     add_flags(CUDA_NVCC_FLAGS "-std=c++11 -pg -expt-extended-lambda --expt-relaxed-constexpr -ftemplate-backtrace-limit=0 -Xcompiler -fPIC -lineinfo -Xcompiler -Wno-unused-but-set-variable -pg -lineinfo")
@@ -46,6 +50,8 @@ else(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     message("[-] ndarray is not supported on Windows, building without ndarray")
     set(WITH_NDARRAY FALSE)
 endif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+
+
 
 if(WITH_NDARRAY)
 SET(SRC
