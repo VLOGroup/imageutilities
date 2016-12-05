@@ -21,6 +21,10 @@ if (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU" OR ${CMAKE_CXX_COMPILER_ID} STREQUAL
 		# debug and and device code stack range checking
 		add_flags(CUDA_NVCC_FLAGS "-G -g -keep -src-in-ptx -pg -Xptxas -g")
 	endif()
+	if(CUDA_VERSION VERSION_LESS "8.0")
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_FORCE_INLINES")
+		set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -D_FORCE_INLINES")
+	endif(CUDA_VERSION VERSION_LESS "8.0")
 elseif (MSVC)
 	# using Visual Studio C++
 	#

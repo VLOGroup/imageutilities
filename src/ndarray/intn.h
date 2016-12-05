@@ -2,6 +2,7 @@
 
 #include "defines.h"
 #include <type_traits>
+#include <initializer_list>
 
 #ifdef  __CUDA_ARCH__
 #include <cuda.h>
