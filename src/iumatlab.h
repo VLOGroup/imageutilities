@@ -52,7 +52,7 @@ struct dtype<double2>
   * @param[in] iu::Size iu size
   * @param[out] dims Matlab dimensions
   */
-template<unsigned int Ndim>
+template<int Ndim>
 void getMatlabDims(const iu::Size<Ndim> size, mwSize *dims)
 {
   dims[0] = size[1];
