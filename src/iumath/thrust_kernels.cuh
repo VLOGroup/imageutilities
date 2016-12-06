@@ -6,6 +6,7 @@
 #include <thrust/iterator/constant_iterator.h>
 
 #include "iuhelpermath.h"
+#include "typetraits.h"
 
 namespace iuprivate {
 namespace math {
@@ -114,6 +115,21 @@ struct diffsqr_transform_tuple :
     {
         bool is_valid = (thrust::get<2>(t) % N) < n;
         return OutputTuple(is_valid, (thrust::get<1>(t)-thrust::get<0>(t))*(thrust::get<1>(t)-thrust::get<0>(t)));
+    }
+};
+
+template <typename ValueType>
+struct diffsqr_linmem_transform_tuple :
+        public thrust::unary_function< thrust::tuple<ValueType,ValueType>,
+        typename iu::type_trait<ValueType>::real_type >
+{
+    typedef typename iu::type_trait<ValueType>::real_type real_type;
+    typedef typename thrust::tuple<ValueType,ValueType> InputTuple;
+    __host__ __device__
+    real_type operator()(const InputTuple& t) const
+    {
+        ValueType val = thrust::get<0>(t) - thrust::get<1>(t);
+        return iu::type_trait<ValueType>::abs(val)*iu::type_trait<ValueType>::abs(val);
     }
 };
 
