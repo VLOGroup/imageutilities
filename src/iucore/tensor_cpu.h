@@ -57,7 +57,12 @@ public:
 	/** Get Pixel value at position x,y. */
 	PixelType getPixel(unsigned int n, unsigned int c, unsigned int x, unsigned int y)
 	{
-		return *this->data(n * (channels_ * height_ * width_) + c * (width_ * height_) + x * width_ + y);
+		return *this->data(n * (channels_ * height_ * width_) + c * (width_ * height_) + y * width_ + x);
+	}
+
+	void setPixel(PixelType value, unsigned int n, unsigned int c, unsigned int x, unsigned int y)
+	{
+		*(this->data(n * (channels_ * height_ * width_) + c * (width_ * height_) + y * width_ + x)) = value;
 	}
 
 	/** Returns the number of samples. */
