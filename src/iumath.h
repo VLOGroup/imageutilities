@@ -1209,24 +1209,32 @@ IUMATH_DLLAPI void normDiffL2(iu::VolumeGpu_32f_C1& src, iu::VolumeGpu_32f_C1& r
 IUMATH_DLLAPI void normDiffL2(iu::LinearDeviceMemory_32f_C1& src, iu::LinearDeviceMemory_32f_C1& ref, float& norm);
 IUMATH_DLLAPI void normDiffL2(iu::LinearDeviceMemory<float, 2>& src, iu::LinearDeviceMemory<float, 2>& ref, float& norm);
 IUMATH_DLLAPI void normDiffL2(iu::LinearDeviceMemory<float2, 2>& src, iu::LinearDeviceMemory<float2, 2>& ref, float& norm);
+IUMATH_DLLAPI void normDiffL2(iu::LinearDeviceMemory<float, 3>& src, iu::LinearDeviceMemory<float, 3>& ref, float& norm);
+IUMATH_DLLAPI void normDiffL2(iu::LinearDeviceMemory<float2, 3>& src, iu::LinearDeviceMemory<float2, 3>& ref, float& norm);
 
 IUMATH_DLLAPI void normDiffL2(iu::ImageCpu_32f_C1& src, iu::ImageCpu_32f_C1& ref, float& norm);
 IUMATH_DLLAPI void normDiffL2(iu::VolumeCpu_32f_C1& src, iu::VolumeCpu_32f_C1& ref, float& norm);
 IUMATH_DLLAPI void normDiffL2(iu::LinearHostMemory_32f_C1& src, iu::LinearHostMemory_32f_C1& ref, float& norm);
 IUMATH_DLLAPI void normDiffL2(iu::LinearHostMemory<float, 2>& src, iu::LinearHostMemory<float, 2>& ref, float& norm);
 IUMATH_DLLAPI void normDiffL2(iu::LinearHostMemory<float2, 2>& src, iu::LinearHostMemory<float2, 2>& ref, float& norm);
+IUMATH_DLLAPI void normDiffL2(iu::LinearHostMemory<float, 3>& src, iu::LinearHostMemory<float, 3>& ref, float& norm);
+IUMATH_DLLAPI void normDiffL2(iu::LinearHostMemory<float2, 3>& src, iu::LinearHostMemory<float2, 3>& ref, float& norm);
 
 IUMATH_DLLAPI void normDiffL2(iu::ImageGpu_64f_C1& src, iu::ImageGpu_64f_C1& ref, double& norm);
 IUMATH_DLLAPI void normDiffL2(iu::VolumeGpu_64f_C1& src, iu::VolumeGpu_64f_C1& ref, double& norm);
 IUMATH_DLLAPI void normDiffL2(iu::LinearDeviceMemory_64f_C1& src, iu::LinearDeviceMemory_64f_C1& ref, double& norm);
 IUMATH_DLLAPI void normDiffL2(iu::LinearDeviceMemory<double, 2>& src, iu::LinearDeviceMemory<double, 2>& ref, double& norm);
 IUMATH_DLLAPI void normDiffL2(iu::LinearDeviceMemory<double2, 2>& src, iu::LinearDeviceMemory<double2, 2>& ref, double& norm);
+IUMATH_DLLAPI void normDiffL2(iu::LinearDeviceMemory<double, 3>& src, iu::LinearDeviceMemory<double, 3>& ref, double& norm);
+IUMATH_DLLAPI void normDiffL2(iu::LinearDeviceMemory<double2, 3>& src, iu::LinearDeviceMemory<double2, 3>& ref, double& norm);
 
 IUMATH_DLLAPI void normDiffL2(iu::ImageCpu_64f_C1& src, iu::ImageCpu_64f_C1& ref, double& norm);
 IUMATH_DLLAPI void normDiffL2(iu::VolumeCpu_64f_C1& src, iu::VolumeCpu_64f_C1& ref, double& norm);
 IUMATH_DLLAPI void normDiffL2(iu::LinearHostMemory_64f_C1& src, iu::LinearHostMemory_64f_C1& ref, double& norm);
 IUMATH_DLLAPI void normDiffL2(iu::LinearHostMemory<double, 2>& src, iu::LinearHostMemory<double, 2>& ref, double& norm);
 IUMATH_DLLAPI void normDiffL2(iu::LinearHostMemory<double2, 2>& src, iu::LinearHostMemory<double2, 2>& ref, double& norm);
+IUMATH_DLLAPI void normDiffL2(iu::LinearHostMemory<double, 3>& src, iu::LinearHostMemory<double, 3>& ref, double& norm);
+IUMATH_DLLAPI void normDiffL2(iu::LinearHostMemory<double2, 3>& src, iu::LinearHostMemory<double2, 3>& ref, double& norm);
 
 /** Calculate the L2-Norm \f$ \sqrt{\sum\limits_{i=1}^N ( x_i - y )^2}\f$
  *  where \f$ N \f$ is the total number of pixels.
@@ -1236,15 +1244,35 @@ IUMATH_DLLAPI void normDiffL2(iu::LinearHostMemory<double2, 2>& src, iu::LinearH
  */
 IUMATH_DLLAPI void normDiffL2(iu::ImageGpu_32f_C1& src, float& ref, float& norm);
 IUMATH_DLLAPI void normDiffL2(iu::VolumeGpu_32f_C1& src, float& ref, float& norm);
+IUMATH_DLLAPI void normDiffL2(iu::LinearDeviceMemory_32f_C1& src, float& ref, float& norm);
+IUMATH_DLLAPI void normDiffL2(iu::LinearDeviceMemory<float, 2>& src, float& ref, float& norm);
+IUMATH_DLLAPI void normDiffL2(iu::LinearDeviceMemory<float2, 2>& src, float2& ref, float& norm);
+IUMATH_DLLAPI void normDiffL2(iu::LinearDeviceMemory<float, 3>& src, float& ref, float& norm);
+IUMATH_DLLAPI void normDiffL2(iu::LinearDeviceMemory<float2, 3>& src, float2& ref, float& norm);
 
 IUMATH_DLLAPI void normDiffL2(iu::ImageCpu_32f_C1& src, float& ref, float& norm);
 IUMATH_DLLAPI void normDiffL2(iu::VolumeCpu_32f_C1& src, float& ref, float& norm);
+IUMATH_DLLAPI void normDiffL2(iu::LinearHostMemory_32f_C1& src, float& ref, float& norm);
+IUMATH_DLLAPI void normDiffL2(iu::LinearHostMemory<float, 2>& src, float& ref, float& norm);
+IUMATH_DLLAPI void normDiffL2(iu::LinearHostMemory<float2, 2>& src, float2& ref, float& norm);
+IUMATH_DLLAPI void normDiffL2(iu::LinearHostMemory<float, 3>& src, float& ref, float& norm);
+IUMATH_DLLAPI void normDiffL2(iu::LinearHostMemory<float2, 3>& src, float2& ref, float& norm);
 
 IUMATH_DLLAPI void normDiffL2(iu::ImageGpu_64f_C1& src, double& ref, double& norm);
 IUMATH_DLLAPI void normDiffL2(iu::VolumeGpu_64f_C1& src, double& ref, double& norm);
+IUMATH_DLLAPI void normDiffL2(iu::LinearDeviceMemory_64f_C1& src, double& ref, double& norm);
+IUMATH_DLLAPI void normDiffL2(iu::LinearDeviceMemory<double, 2>& src, double& ref, double& norm);
+IUMATH_DLLAPI void normDiffL2(iu::LinearDeviceMemory<double2, 2>& src, double2& ref, double& norm);
+IUMATH_DLLAPI void normDiffL2(iu::LinearDeviceMemory<double, 3>& src, double& ref, double& norm);
+IUMATH_DLLAPI void normDiffL2(iu::LinearDeviceMemory<double2, 3>& src, double2& ref, double& norm);
 
 IUMATH_DLLAPI void normDiffL2(iu::ImageCpu_64f_C1& src, double& ref, double& norm);
 IUMATH_DLLAPI void normDiffL2(iu::VolumeCpu_64f_C1& src, double& ref, double& norm);
+IUMATH_DLLAPI void normDiffL2(iu::LinearHostMemory_64f_C1& src, double& ref, double& norm);
+IUMATH_DLLAPI void normDiffL2(iu::LinearHostMemory<double, 2>& src, double& ref, double& norm);
+IUMATH_DLLAPI void normDiffL2(iu::LinearHostMemory<double2, 2>& src, double2& ref, double& norm);
+IUMATH_DLLAPI void normDiffL2(iu::LinearHostMemory<double, 3>& src, double& ref, double& norm);
+IUMATH_DLLAPI void normDiffL2(iu::LinearHostMemory<double2, 3>& src, double2& ref, double& norm);
 
 /** Calculate the mean-squared error (MSE) \f$ \frac{\sum\limits_{i=1}^N ( x_i - y_i )^2}{N}\f$
  *  where \f$ N \f$ is the total number of pixels.
