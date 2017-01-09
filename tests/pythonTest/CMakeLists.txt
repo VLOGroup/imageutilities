@@ -26,6 +26,11 @@ INCLUDE_DIRECTORIES( ${EIGEN3_INCLUDE_DIR} )
 cuda_add_library(pyTest SHARED ${SOURCES})
 target_link_libraries(pyTest iucore ${Boost_LIBRARIES} ${PYTHON_LIBRARIES})
 
+if(WIN32)
+    SET_TARGET_PROPERTIES(pyTest PROPERTIES PREFIX "lib")
+    SET_TARGET_PROPERTIES(pyTest PROPERTIES SUFFIX ".pyd")
+endif(WIN32)
+
 # copy python script to test folder
 file(INSTALL pyTest.py DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 

@@ -14,7 +14,7 @@ include_directories(${MATLAB_INCLUDE_DIR})
 
 # compile lib, this can be used in matlab
 cuda_add_library(matlabTest SHARED ${SOURCES})
-target_link_libraries(matlabTest iucore ${MATLAB_LIBRERIES})
+target_link_libraries(matlabTest iucore ${MATLAB_LIBRARIES})
 SET_TARGET_PROPERTIES(matlabTest PROPERTIES PREFIX "")
 SET_TARGET_PROPERTIES(matlabTest PROPERTIES SUFFIX ${MATLAB_SUFFIX})
 if(WIN32)
