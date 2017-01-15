@@ -868,6 +868,13 @@ void summation(iu::LinearDeviceMemory<float, 2>& src, float& sum) {iuprivate::ma
 void summation(iu::LinearDeviceMemory<float, 3>& src, float& sum) {iuprivate::math::summation(src,0.f,sum);}
 void summation(iu::LinearDeviceMemory<float, 4>& src, float& sum) {iuprivate::math::summation(src,0.f,sum);}
 void summation(iu::LinearDeviceMemory<float, 5>& src, float& sum) {iuprivate::math::summation(src,0.f,sum);}
+void summation(iu::ImageGpu_32f_C2& src, float2& sum) {iuprivate::math::summation(src,iu::type_trait<float2>::make(0),sum);}
+void summation(iu::VolumeGpu_32f_C2& src, float2& sum) {iuprivate::math::summation(src,iu::type_trait<float2>::make(0),sum);}
+void summation(iu::LinearDeviceMemory_32f_C2& src, float2& sum) {iuprivate::math::summation(src,iu::type_trait<float2>::make(0),sum);}
+void summation(iu::LinearDeviceMemory<float2, 2>& src, float2& sum) {iuprivate::math::summation(src,iu::type_trait<float2>::make(0),sum);}
+void summation(iu::LinearDeviceMemory<float2, 3>& src, float2& sum) {iuprivate::math::summation(src,iu::type_trait<float2>::make(0),sum);}
+void summation(iu::LinearDeviceMemory<float2, 4>& src, float2& sum) {iuprivate::math::summation(src,iu::type_trait<float2>::make(0),sum);}
+void summation(iu::LinearDeviceMemory<float2, 5>& src, float2& sum) {iuprivate::math::summation(src,iu::type_trait<float2>::make(0),sum);}
 
 void summation(iu::ImageCpu_32f_C1& src, float& sum) {iuprivate::math::summation(src,0.f,sum);}
 void summation(iu::VolumeCpu_32f_C1& src, float& sum) {iuprivate::math::summation(src,0.f,sum);}
@@ -876,6 +883,13 @@ void summation(iu::LinearHostMemory<float, 2>& src, float& sum) {iuprivate::math
 void summation(iu::LinearHostMemory<float, 3>& src, float& sum) {iuprivate::math::summation(src,0.f,sum);}
 void summation(iu::LinearHostMemory<float, 4>& src, float& sum) {iuprivate::math::summation(src,0.f,sum);}
 void summation(iu::LinearHostMemory<float, 5>& src, float& sum) {iuprivate::math::summation(src,0.f,sum);}
+void summation(iu::ImageCpu_32f_C2& src, float2& sum) {iuprivate::math::summation(src,iu::type_trait<float2>::make(0),sum);}
+void summation(iu::VolumeCpu_32f_C2& src, float2& sum) {iuprivate::math::summation(src,iu::type_trait<float2>::make(0),sum);}
+void summation(iu::LinearHostMemory_32f_C2& src, float2& sum) {iuprivate::math::summation(src,iu::type_trait<float2>::make(0),sum);}
+void summation(iu::LinearHostMemory<float2, 2>& src, float2& sum) {iuprivate::math::summation(src,iu::type_trait<float2>::make(0),sum);}
+void summation(iu::LinearHostMemory<float2, 3>& src, float2& sum) {iuprivate::math::summation(src,iu::type_trait<float2>::make(0),sum);}
+void summation(iu::LinearHostMemory<float2, 4>& src, float2& sum) {iuprivate::math::summation(src,iu::type_trait<float2>::make(0),sum);}
+void summation(iu::LinearHostMemory<float2, 5>& src, float2& sum) {iuprivate::math::summation(src,iu::type_trait<float2>::make(0),sum);}
 
 void summation(iu::ImageGpu_64f_C1& src, double& sum) {iuprivate::math::summation(src,0.0,sum);}
 void summation(iu::VolumeGpu_64f_C1& src, double& sum) {iuprivate::math::summation(src,0.0,sum);}
@@ -884,6 +898,13 @@ void summation(iu::LinearDeviceMemory<double, 2>& src, double& sum) {iuprivate::
 void summation(iu::LinearDeviceMemory<double, 3>& src, double& sum) {iuprivate::math::summation(src,0.0,sum);}
 void summation(iu::LinearDeviceMemory<double, 4>& src, double& sum) {iuprivate::math::summation(src,0.0,sum);}
 void summation(iu::LinearDeviceMemory<double, 5>& src, double& sum) {iuprivate::math::summation(src,0.0,sum);}
+void summation(iu::ImageGpu_64f_C2& src, double2& sum) {iuprivate::math::summation(src,iu::type_trait<double2>::make(0),sum);}
+void summation(iu::VolumeGpu_64f_C2& src, double2& sum) {iuprivate::math::summation(src,iu::type_trait<double2>::make(0),sum);}
+void summation(iu::LinearDeviceMemory_64f_C2& src, double2& sum) {iuprivate::math::summation(src,iu::type_trait<double2>::make(0),sum);}
+void summation(iu::LinearDeviceMemory<double2, 2>& src, double2& sum) {iuprivate::math::summation(src,iu::type_trait<double2>::make(0),sum);}
+void summation(iu::LinearDeviceMemory<double2, 3>& src, double2& sum) {iuprivate::math::summation(src,iu::type_trait<double2>::make(0),sum);}
+void summation(iu::LinearDeviceMemory<double2, 4>& src, double2& sum) {iuprivate::math::summation(src,iu::type_trait<double2>::make(0),sum);}
+void summation(iu::LinearDeviceMemory<double2, 5>& src, double2& sum) {iuprivate::math::summation(src,iu::type_trait<double2>::make(0),sum);}
 
 void summation(iu::ImageCpu_64f_C1& src, double& sum) {iuprivate::math::summation(src,0.0,sum);}
 void summation(iu::VolumeCpu_64f_C1& src, double& sum) {iuprivate::math::summation(src,0.0,sum);}
@@ -892,6 +913,186 @@ void summation(iu::LinearHostMemory<double, 2>& src, double& sum) {iuprivate::ma
 void summation(iu::LinearHostMemory<double, 3>& src, double& sum) {iuprivate::math::summation(src,0.0,sum);}
 void summation(iu::LinearHostMemory<double, 4>& src, double& sum) {iuprivate::math::summation(src,0.0,sum);}
 void summation(iu::LinearHostMemory<double, 5>& src, double& sum) {iuprivate::math::summation(src,0.0,sum);}
+void summation(iu::ImageCpu_64f_C2& src, double2& sum) {iuprivate::math::summation(src,iu::type_trait<double2>::make(0),sum);}
+void summation(iu::VolumeCpu_64f_C2& src, double2& sum) {iuprivate::math::summation(src,iu::type_trait<double2>::make(0),sum);}
+void summation(iu::LinearHostMemory_64f_C2& src, double2& sum) {iuprivate::math::summation(src,iu::type_trait<double2>::make(0),sum);}
+void summation(iu::LinearHostMemory<double2, 2>& src, double2& sum) {iuprivate::math::summation(src,iu::type_trait<double2>::make(0),sum);}
+void summation(iu::LinearHostMemory<double2, 3>& src, double2& sum) {iuprivate::math::summation(src,iu::type_trait<double2>::make(0),sum);}
+void summation(iu::LinearHostMemory<double2, 4>& src, double2& sum) {iuprivate::math::summation(src,iu::type_trait<double2>::make(0),sum);}
+void summation(iu::LinearHostMemory<double2, 5>& src, double2& sum) {iuprivate::math::summation(src,iu::type_trait<double2>::make(0),sum);}
+
+// Dot product
+void dotProduct(iu::ImageGpu_32f_C1& src1, iu::ImageGpu_32f_C1& src2, float& result)
+{
+  iu::ImageGpu_32f_C1 dst(src1.size());
+  iuprivate::math::mul(src1, src2, dst);
+  iuprivate::math::summation(dst,0.0f,result);
+}
+void dotProduct(iu::VolumeGpu_32f_C1& src1, iu::VolumeGpu_32f_C1& src2, float& result)
+{
+  iu::VolumeGpu_32f_C1 dst(src1.size());
+  iuprivate::math::mul(src1, src2, dst);
+  iuprivate::math::summation(dst,0.0f,result);
+}
+void dotProduct(iu::LinearDeviceMemory_32f_C1& src1, iu::LinearDeviceMemory_32f_C1& src2, float& result)
+{
+  iu::LinearDeviceMemory_32f_C1 dst(src1.size());
+  iuprivate::math::mul(src1, src2, dst);
+  iuprivate::math::summation(dst,0.0f,result);
+}
+void dotProduct(iu::LinearDeviceMemory<float, 2>& src1, iu::LinearDeviceMemory<float, 2>& src2, float& result)
+{
+  iu::LinearDeviceMemory<float, 2> dst(src1.size());
+  iuprivate::math::mul(src1, src2, dst);
+  iuprivate::math::summation(dst,0.0f,result);
+}
+void dotProduct(iu::LinearDeviceMemory<float, 3>& src1, iu::LinearDeviceMemory<float, 3>& src2, float& result)
+{
+  iu::LinearDeviceMemory<float, 3> dst(src1.size());
+  iuprivate::math::mul(src1, src2, dst);
+  iuprivate::math::summation(dst,0.0f,result);
+}
+void dotProduct(iu::LinearDeviceMemory<float, 4>& src1, iu::LinearDeviceMemory<float, 4>& src2, float& result)
+{
+  iu::LinearDeviceMemory<float, 4> dst(src1.size());
+  iuprivate::math::mul(src1, src2, dst);
+  iuprivate::math::summation(dst,0.0f,result);
+}
+void dotProduct(iu::LinearDeviceMemory<float, 5>& src1, iu::LinearDeviceMemory<float, 5>& src2, float& result)
+{
+  iu::LinearDeviceMemory<float, 5> dst(src1.size());
+  iuprivate::math::mul(src1, src2, dst);
+  iuprivate::math::summation(dst,0.0f,result);
+}
+
+void dotProduct(iu::ImageCpu_32f_C1& src1, iu::ImageCpu_32f_C1& src2, float& result)
+{
+  iu::ImageCpu_32f_C1 dst(src1.size());
+  iuprivate::math::mul(src1, src2, dst);
+  iuprivate::math::summation(dst,0.0f,result);
+}
+void dotProduct(iu::VolumeCpu_32f_C1& src1, iu::VolumeCpu_32f_C1& src2, float& result)
+{
+  iu::VolumeCpu_32f_C1 dst(src1.size());
+  iuprivate::math::mul(src1, src2, dst);
+  iuprivate::math::summation(dst,0.0f,result);
+}
+void dotProduct(iu::LinearHostMemory_32f_C1& src1, iu::LinearHostMemory_32f_C1& src2, float& result)
+{
+  iu::LinearHostMemory_32f_C1 dst(src1.size());
+  iuprivate::math::mul(src1, src2, dst);
+  iuprivate::math::summation(dst,0.0f,result);
+}
+void dotProduct(iu::LinearHostMemory<float, 2>& src1, iu::LinearHostMemory<float, 2>& src2, float& result)
+{
+  iu::LinearHostMemory<float, 2> dst(src1.size());
+  iuprivate::math::mul(src1, src2, dst);
+  iuprivate::math::summation(dst,0.0f,result);
+}
+void dotProduct(iu::LinearHostMemory<float, 3>& src1, iu::LinearHostMemory<float, 3>& src2, float& result)
+{
+  iu::LinearHostMemory<float, 3> dst(src1.size());
+  iuprivate::math::mul(src1, src2, dst);
+  iuprivate::math::summation(dst,0.0f,result);
+}
+void dotProduct(iu::LinearHostMemory<float, 4>& src1, iu::LinearHostMemory<float, 4>& src2, float& result)
+{
+  iu::LinearHostMemory<float, 4> dst(src1.size());
+  iuprivate::math::mul(src1, src2, dst);
+  iuprivate::math::summation(dst,0.0f,result);
+}
+void dotProduct(iu::LinearHostMemory<float, 5>& src1, iu::LinearHostMemory<float, 5>& src2, float& result)
+{
+  iu::LinearHostMemory<float, 5> dst(src1.size());
+  iuprivate::math::mul(src1, src2, dst);
+  iuprivate::math::summation(dst,0.0f,result);
+}
+
+void dotProduct(iu::ImageGpu_64f_C1& src1, iu::ImageGpu_64f_C1& src2, double& result)
+{
+  iu::ImageGpu_64f_C1 dst(src1.size());
+  iuprivate::math::mul(src1, src2, dst);
+  iuprivate::math::summation(dst,0.0,result);
+}
+void dotProduct(iu::VolumeGpu_64f_C1& src1, iu::VolumeGpu_64f_C1& src2, double& result)
+{
+  iu::VolumeGpu_64f_C1 dst(src1.size());
+  iuprivate::math::mul(src1, src2, dst);
+  iuprivate::math::summation(dst,0.0,result);
+}
+void dotProduct(iu::LinearDeviceMemory_64f_C1& src1, iu::LinearDeviceMemory_64f_C1& src2, double& result)
+{
+  iu::LinearDeviceMemory_64f_C1 dst(src1.size());
+  iuprivate::math::mul(src1, src2, dst);
+  iuprivate::math::summation(dst,0.0,result);
+}
+void dotProduct(iu::LinearDeviceMemory<double, 2>& src1, iu::LinearDeviceMemory<double, 2>& src2, double& result)
+{
+  iu::LinearDeviceMemory<double, 2> dst(src1.size());
+  iuprivate::math::mul(src1, src2, dst);
+  iuprivate::math::summation(dst,0.0,result);
+}
+void dotProduct(iu::LinearDeviceMemory<double, 3>& src1, iu::LinearDeviceMemory<double, 3>& src2, double& result)
+{
+  iu::LinearDeviceMemory<double, 3> dst(src1.size());
+  iuprivate::math::mul(src1, src2, dst);
+  iuprivate::math::summation(dst,0.0,result);
+}
+void dotProduct(iu::LinearDeviceMemory<double, 4>& src1, iu::LinearDeviceMemory<double, 4>& src2, double& result)
+{
+  iu::LinearDeviceMemory<double, 4> dst(src1.size());
+  iuprivate::math::mul(src1, src2, dst);
+  iuprivate::math::summation(dst,0.0,result);
+}
+void dotProduct(iu::LinearDeviceMemory<double, 5>& src1, iu::LinearDeviceMemory<double, 5>& src2, double& result)
+{
+  iu::LinearDeviceMemory<double, 5> dst(src1.size());
+  iuprivate::math::mul(src1, src2, dst);
+  iuprivate::math::summation(dst,0.0,result);
+}
+
+void dotProduct(iu::ImageCpu_64f_C1& src1, iu::ImageCpu_64f_C1& src2, double& result)
+{
+  iu::ImageCpu_64f_C1 dst(src1.size());
+  iuprivate::math::mul(src1, src2, dst);
+  iuprivate::math::summation(dst,0.0,result);
+}
+void dotProduct(iu::VolumeCpu_64f_C1& src1, iu::VolumeCpu_64f_C1& src2, double& result)
+{
+  iu::VolumeCpu_64f_C1 dst(src1.size());
+  iuprivate::math::mul(src1, src2, dst);
+  iuprivate::math::summation(dst,0.0,result);
+}
+void dotProduct(iu::LinearHostMemory_64f_C1& src1, iu::LinearHostMemory_64f_C1& src2, double& result)
+{
+  iu::LinearHostMemory_64f_C1 dst(src1.size());
+  iuprivate::math::mul(src1, src2, dst);
+  iuprivate::math::summation(dst,0.0,result);
+}
+void dotProduct(iu::LinearHostMemory<double, 2>& src1, iu::LinearHostMemory<double, 2>& src2, double& result)
+{
+  iu::LinearHostMemory<double, 2> dst(src1.size());
+  iuprivate::math::mul(src1, src2, dst);
+  iuprivate::math::summation(dst,0.0,result);
+}
+void dotProduct(iu::LinearHostMemory<double, 3>& src1, iu::LinearHostMemory<double, 3>& src2, double& result)
+{
+  iu::LinearHostMemory<double, 3> dst(src1.size());
+  iuprivate::math::mul(src1, src2, dst);
+  iuprivate::math::summation(dst,0.0,result);
+}
+void dotProduct(iu::LinearHostMemory<double, 4>& src1, iu::LinearHostMemory<double, 4>& src2, double& result)
+{
+  iu::LinearHostMemory<double, 4> dst(src1.size());
+  iuprivate::math::mul(src1, src2, dst);
+  iuprivate::math::summation(dst,0.0,result);
+}
+void dotProduct(iu::LinearHostMemory<double, 5>& src1, iu::LinearHostMemory<double, 5>& src2, double& result)
+{
+  iu::LinearHostMemory<double, 5> dst(src1.size());
+  iuprivate::math::mul(src1, src2, dst);
+  iuprivate::math::summation(dst,0.0,result);
+}
 
 // L1-norm
 void normDiffL1(iu::ImageGpu_32f_C1& src, iu::ImageGpu_32f_C1& ref, float& norm) {iuprivate::math::normDiffL1(src,ref,norm);}
@@ -1451,6 +1652,178 @@ void multiplyConjugate(iu::LinearHostMemory<double2, 4>& complex_src1, iu::Linea
 void multiplyConjugate(iu::LinearDeviceMemory<double2, 4>& complex_src1, iu::LinearDeviceMemory<double2, 4>& complex_src2, iu::LinearDeviceMemory<double2, 4>& complex_dst){iuprivate::math::complex::multiplyConjugate(complex_src1,complex_src2,complex_dst);}
 void multiplyConjugate(iu::LinearHostMemory<double2, 5>& complex_src1, iu::LinearHostMemory<double2, 5>& complex_src2, iu::LinearHostMemory<double2, 5>& complex_dst){iuprivate::math::complex::multiplyConjugate(complex_src1,complex_src2,complex_dst);}
 void multiplyConjugate(iu::LinearDeviceMemory<double2, 5>& complex_src1, iu::LinearDeviceMemory<double2, 5>& complex_src2, iu::LinearDeviceMemory<double2, 5>& complex_dst){iuprivate::math::complex::multiplyConjugate(complex_src1,complex_src2,complex_dst);}
+
+void dotProduct(iu::ImageGpu_32f_C2& src1, iu::ImageGpu_32f_C2& src2, float2& result)
+{
+  iu::ImageGpu_32f_C2 dst(src1.size());
+  iuprivate::math::complex::multiplyConjugate(src1, src2, dst);
+  iuprivate::math::summation(dst, iu::type_trait<float2>::make(0), result);
+}
+void dotProduct(iu::VolumeGpu_32f_C2& src1, iu::VolumeGpu_32f_C2& src2, float2& result)
+{
+  iu::VolumeGpu_32f_C2 dst(src1.size());
+  iuprivate::math::complex::multiplyConjugate(src1, src2, dst);
+  iuprivate::math::summation(dst, iu::type_trait<float2>::make(0), result);
+}
+void dotProduct(iu::LinearDeviceMemory_32f_C2& src1, iu::LinearDeviceMemory_32f_C2& src2, float2& result)
+{
+  iu::LinearDeviceMemory_32f_C2 dst(src1.size());
+  iuprivate::math::complex::multiplyConjugate(src1, src2, dst);
+  iuprivate::math::summation(dst, iu::type_trait<float2>::make(0), result);
+}
+void dotProduct(iu::LinearDeviceMemory<float2, 2>& src1, iu::LinearDeviceMemory<float2, 2>& src2, float2& result)
+{
+  iu::LinearDeviceMemory<float2, 2> dst(src1.size());
+  iuprivate::math::complex::multiplyConjugate(src1, src2, dst);
+  iuprivate::math::summation(dst, iu::type_trait<float2>::make(0), result);
+}
+void dotProduct(iu::LinearDeviceMemory<float2, 3>& src1, iu::LinearDeviceMemory<float2, 3>& src2, float2& result)
+{
+  iu::LinearDeviceMemory<float2, 3> dst(src1.size());
+  iuprivate::math::complex::multiplyConjugate(src1, src2, dst);
+  iuprivate::math::summation(dst, iu::type_trait<float2>::make(0), result);
+}
+void dotProduct(iu::LinearDeviceMemory<float2, 4>& src1, iu::LinearDeviceMemory<float2, 4>& src2, float2& result)
+{
+  iu::LinearDeviceMemory<float2, 4> dst(src1.size());
+  iuprivate::math::complex::multiplyConjugate(src1, src2, dst);
+  iuprivate::math::summation(dst, iu::type_trait<float2>::make(0), result);
+}
+void dotProduct(iu::LinearDeviceMemory<float2, 5>& src1, iu::LinearDeviceMemory<float2, 5>& src2, float2& result)
+{
+  iu::LinearDeviceMemory<float2, 5> dst(src1.size());
+  iuprivate::math::complex::multiplyConjugate(src1, src2, dst);
+  iuprivate::math::summation(dst, iu::type_trait<float2>::make(0), result);
+}
+
+void dotProduct(iu::ImageCpu_32f_C2& src1, iu::ImageCpu_32f_C2& src2, float2& result)
+{
+  iu::ImageCpu_32f_C2 dst(src1.size());
+  iuprivate::math::complex::multiplyConjugate(src1, src2, dst);
+  iuprivate::math::summation(dst, iu::type_trait<float2>::make(0), result);
+}
+void dotProduct(iu::VolumeCpu_32f_C2& src1, iu::VolumeCpu_32f_C2& src2, float2& result)
+{
+  iu::VolumeCpu_32f_C2 dst(src1.size());
+  iuprivate::math::complex::multiplyConjugate(src1, src2, dst);
+  iuprivate::math::summation(dst, iu::type_trait<float2>::make(0), result);
+}
+void dotProduct(iu::LinearHostMemory_32f_C2& src1, iu::LinearHostMemory_32f_C2& src2, float2& result)
+{
+  iu::LinearHostMemory_32f_C2 dst(src1.size());
+  iuprivate::math::complex::multiplyConjugate(src1, src2, dst);
+  iuprivate::math::summation(dst, iu::type_trait<float2>::make(0), result);
+}
+void dotProduct(iu::LinearHostMemory<float2, 2>& src1, iu::LinearHostMemory<float2, 2>& src2, float2& result)
+{
+  iu::LinearHostMemory<float2, 2> dst(src1.size());
+  iuprivate::math::complex::multiplyConjugate(src1, src2, dst);
+  iuprivate::math::summation(dst, iu::type_trait<float2>::make(0), result);
+}
+void dotProduct(iu::LinearHostMemory<float2, 3>& src1, iu::LinearHostMemory<float2, 3>& src2, float2& result)
+{
+  iu::LinearHostMemory<float2, 3> dst(src1.size());
+  iuprivate::math::complex::multiplyConjugate(src1, src2, dst);
+  iuprivate::math::summation(dst, iu::type_trait<float2>::make(0), result);
+}
+void dotProduct(iu::LinearHostMemory<float2, 4>& src1, iu::LinearHostMemory<float2, 4>& src2, float2& result)
+{
+  iu::LinearHostMemory<float2, 4> dst(src1.size());
+  iuprivate::math::complex::multiplyConjugate(src1, src2, dst);
+  iuprivate::math::summation(dst, iu::type_trait<float2>::make(0), result);
+}
+void dotProduct(iu::LinearHostMemory<float2, 5>& src1, iu::LinearHostMemory<float2, 5>& src2, float2& result)
+{
+  iu::LinearHostMemory<float2, 5> dst(src1.size());
+  iuprivate::math::complex::multiplyConjugate(src1, src2, dst);
+  iuprivate::math::summation(dst, iu::type_trait<float2>::make(0), result);
+}
+
+void dotProduct(iu::ImageGpu_64f_C2& src1, iu::ImageGpu_64f_C2& src2, double2& result)
+{
+  iu::ImageGpu_64f_C2 dst(src1.size());
+  iuprivate::math::complex::multiplyConjugate(src1, src2, dst);
+  iuprivate::math::summation(dst, iu::type_trait<double2>::make(0), result);
+}
+void dotProduct(iu::VolumeGpu_64f_C2& src1, iu::VolumeGpu_64f_C2& src2, double2& result)
+{
+  iu::VolumeGpu_64f_C2 dst(src1.size());
+  iuprivate::math::complex::multiplyConjugate(src1, src2, dst);
+  iuprivate::math::summation(dst, iu::type_trait<double2>::make(0), result);
+}
+void dotProduct(iu::LinearDeviceMemory_64f_C2& src1, iu::LinearDeviceMemory_64f_C2& src2, double2& result)
+{
+  iu::LinearDeviceMemory_64f_C2 dst(src1.size());
+  iuprivate::math::complex::multiplyConjugate(src1, src2, dst);
+  iuprivate::math::summation(dst, iu::type_trait<double2>::make(0), result);
+}
+void dotProduct(iu::LinearDeviceMemory<double2, 2>& src1, iu::LinearDeviceMemory<double2, 2>& src2, double2& result)
+{
+  iu::LinearDeviceMemory<double2, 2> dst(src1.size());
+  iuprivate::math::complex::multiplyConjugate(src1, src2, dst);
+  iuprivate::math::summation(dst, iu::type_trait<double2>::make(0), result);
+}
+void dotProduct(iu::LinearDeviceMemory<double2, 3>& src1, iu::LinearDeviceMemory<double2, 3>& src2, double2& result)
+{
+  iu::LinearDeviceMemory<double2, 3> dst(src1.size());
+  iuprivate::math::complex::multiplyConjugate(src1, src2, dst);
+  iuprivate::math::summation(dst, iu::type_trait<double2>::make(0), result);
+}
+void dotProduct(iu::LinearDeviceMemory<double2, 4>& src1, iu::LinearDeviceMemory<double2, 4>& src2, double2& result)
+{
+  iu::LinearDeviceMemory<double2, 4> dst(src1.size());
+  iuprivate::math::complex::multiplyConjugate(src1, src2, dst);
+  iuprivate::math::summation(dst, iu::type_trait<double2>::make(0), result);
+}
+void dotProduct(iu::LinearDeviceMemory<double2, 5>& src1, iu::LinearDeviceMemory<double2, 5>& src2, double2& result)
+{
+  iu::LinearDeviceMemory<double2, 5> dst(src1.size());
+  iuprivate::math::complex::multiplyConjugate(src1, src2, dst);
+  iuprivate::math::summation(dst, iu::type_trait<double2>::make(0), result);
+}
+
+void dotProduct(iu::ImageCpu_64f_C2& src1, iu::ImageCpu_64f_C2& src2, double2& result)
+{
+  iu::ImageCpu_64f_C2 dst(src1.size());
+  iuprivate::math::complex::multiplyConjugate(src1, src2, dst);
+  iuprivate::math::summation(dst, iu::type_trait<double2>::make(0), result);
+}
+void dotProduct(iu::VolumeCpu_64f_C2& src1, iu::VolumeCpu_64f_C2& src2, double2& result)
+{
+  iu::VolumeCpu_64f_C2 dst(src1.size());
+  iuprivate::math::complex::multiplyConjugate(src1, src2, dst);
+  iuprivate::math::summation(dst, iu::type_trait<double2>::make(0), result);
+}
+void dotProduct(iu::LinearHostMemory_64f_C2& src1, iu::LinearHostMemory_64f_C2& src2, double2& result)
+{
+  iu::LinearHostMemory_64f_C2 dst(src1.size());
+  iuprivate::math::complex::multiplyConjugate(src1, src2, dst);
+  iuprivate::math::summation(dst, iu::type_trait<double2>::make(0), result);
+}
+void dotProduct(iu::LinearHostMemory<double2, 2>& src1, iu::LinearHostMemory<double2, 2>& src2, double2& result)
+{
+  iu::LinearHostMemory<double2, 2> dst(src1.size());
+  iuprivate::math::complex::multiplyConjugate(src1, src2, dst);
+  iuprivate::math::summation(dst, iu::type_trait<double2>::make(0), result);
+}
+void dotProduct(iu::LinearHostMemory<double2, 3>& src1, iu::LinearHostMemory<double2, 3>& src2, double2& result)
+{
+  iu::LinearHostMemory<double2, 3> dst(src1.size());
+  iuprivate::math::complex::multiplyConjugate(src1, src2, dst);
+  iuprivate::math::summation(dst, iu::type_trait<double2>::make(0), result);
+}
+void dotProduct(iu::LinearHostMemory<double2, 4>& src1, iu::LinearHostMemory<double2, 4>& src2, double2& result)
+{
+  iu::LinearHostMemory<double2, 4> dst(src1.size());
+  iuprivate::math::complex::multiplyConjugate(src1, src2, dst);
+  iuprivate::math::summation(dst, iu::type_trait<double2>::make(0), result);
+}
+void dotProduct(iu::LinearHostMemory<double2, 5>& src1, iu::LinearHostMemory<double2, 5>& src2, double2& result)
+{
+  iu::LinearHostMemory<double2, 5> dst(src1.size());
+  iuprivate::math::complex::multiplyConjugate(src1, src2, dst);
+  iuprivate::math::summation(dst, iu::type_trait<double2>::make(0), result);
+}
 }  //namespace complex
 
 namespace fft{
