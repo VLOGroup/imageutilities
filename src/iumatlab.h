@@ -1,13 +1,13 @@
 #pragma once
 
 #include <mex.h>
-
-#include "iucore.h"
-#include "iucore/linearhostmemory.h"
-#include "iumath/typetraits.h"
-
 #include <memory>
 #include <sstream>
+
+#include "iucore.h"
+#include "iudefs.h"
+#include "iumath/typetraits.h"
+
 
 namespace iu {
 
@@ -52,8 +52,8 @@ struct dtype<double2>
   * @param[in] iu::Size iu size
   * @param[out] dims Matlab dimensions
   */
-template<int Ndim>
-void getMatlabDims(const iu::Size<Ndim> size, mwSize *dims)
+template<unsigned int Ndim>
+void getMatlabDims(const iu::Size<Ndim>& size, mwSize *dims)
 {
   dims[0] = size[1];
   dims[1] = size[0];
@@ -62,6 +62,17 @@ void getMatlabDims(const iu::Size<Ndim> size, mwSize *dims)
   {
     dims[i] = size[i];
   }
+}
+template<int Ndim>
+void getMatlabDims(const iu::Size<Ndim>& size, mwSize *dims)
+{
+	dims[0] = size[1];
+	dims[1] = size[0];
+
+	for (unsigned int i = 2; i < 2; i++)
+	{
+		dims[i] = size[i];
+	}
 }
 
 /** @brief Convert Matlab mex array to linear host memory (complex images)
