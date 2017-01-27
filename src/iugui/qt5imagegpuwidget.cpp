@@ -21,6 +21,7 @@
 namespace iuprivate {
   extern void copy_to_PBO(iu::ImageGpu_8u_C1& img, iu::ImageGpu_8u_C4& pbo);
   extern void copy_to_PBO(iu::ImageGpu_8u_C4& img, iu::ImageGpu_8u_C4& pbo);
+  extern void copy_to_PBO(iu::ImageGpu_32f_C4& img, iu::ImageGpu_8u_C4& pbo);
   extern void copy_to_PBO(iu::ImageGpu_32f_C1& img, iu::ImageGpu_8u_C4& pbo, float minVal, float maxVal, bool colormap);
 }
 
@@ -278,6 +279,39 @@ void Qt5ImageGpuWidget::update_image(ImageGpu_32f_C1 *im, float minVal, float ma
 
     iu::ImageGpu_8u_C4 wrapped_pbo(device_ptr, im->width(), im->height(), mapped_size/im->height(), true);
     iuprivate::copy_to_PBO(*im, wrapped_pbo,minVal,maxVal,false);
+
+    cudaGraphicsUnmapResources(1, &cuda_img_);
+
+    glBindTexture(GL_TEXTURE_2D, texture_);
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, im->width(), im->height(), GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+
+    GL_CHECK_ERROR();
+    CUDA_CHECK_ERROR();
+
+    doneCurrent();
+    update();
+}
+
+void Qt5ImageGpuWidget::update_image(ImageGpu_32f_C4 *im)
+{
+    if (!shader_program_)
+        return;
+
+    makeCurrent();
+
+    cudaGraphicsMapResources(1, &cuda_img_);   // this call is slow (~1.8ms) in case there
+                                // are 2 gpus, one for display and one for computations and
+                                // cuda is NOT running on the display gpu. this is possibly
+                                // because in that case data needs to be transferred from the
+                                // cuda gpu to the display gpu.
+                                // the call is fast (~0.2ms) in case there is only one gpu.
+
+    uchar4* device_ptr = NULL;
+    size_t mapped_size;
+    cudaGraphicsResourceGetMappedPointer((void**)&device_ptr, &mapped_size, cuda_img_);
+
+    iu::ImageGpu_8u_C4 wrapped_pbo(device_ptr, im->width(), im->height(), mapped_size/im->height(), true);
+    iuprivate::copy_to_PBO(*im, wrapped_pbo);
 
     cudaGraphicsUnmapResources(1, &cuda_img_);
 

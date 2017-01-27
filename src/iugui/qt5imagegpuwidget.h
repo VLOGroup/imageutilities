@@ -47,6 +47,11 @@ public slots:
       */
     void update_image(iu::ImageGpu_32f_C1 *im, float minVal, float maxVal);
     /**
+      * Set a new RGBA image
+      @param im A RGBA image in float format
+      */
+    void update_image(iu::ImageGpu_32f_C4* im);
+    /**
       * Set a new grayscale image to be displayed in jet colormap
       @param im A grayscale image in float format
       @param minVal Minimum value to display-> black
