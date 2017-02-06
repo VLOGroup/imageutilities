@@ -1873,6 +1873,11 @@ void ifftshift2(const iu::LinearDeviceMemory<double2, 3>& src, iu::LinearDeviceM
 void ifftshift2(const iu::LinearDeviceMemory<double, 4>& src, iu::LinearDeviceMemory<double, 4>& dst) {iuprivate::math::fft::ifftshift2(src, dst);}
 void ifftshift2(const iu::LinearDeviceMemory<double2, 4>& src, iu::LinearDeviceMemory<double2, 4>& dst) {iuprivate::math::fft::ifftshift2(src, dst);}
 
+// fft1
+void fft1(const iu::LinearDeviceMemory<float, 2>& src, iu::LinearDeviceMemory<float2, 2>& dst, bool scale_sqrt) {iuprivate::math::fft::fft1(src, dst, scale_sqrt);}
+
+void fft1(const iu::LinearDeviceMemory<double, 2>& src, iu::LinearDeviceMemory<double2, 2>& dst, bool scale_sqrt) {iuprivate::math::fft::fft1(src, dst, scale_sqrt);}
+
 // fft2
 void fft2(const iu::ImageGpu_32f_C2& src, iu::ImageGpu_32f_C2& dst, bool scale_sqrt) {iuprivate::math::fft::fft2(src,  dst, scale_sqrt);}
 void fft2(const iu::VolumeGpu_32f_C2& src, iu::VolumeGpu_32f_C2& dst, bool scale_sqrt) {iuprivate::math::fft::fft2(src,  dst, scale_sqrt);}
@@ -1895,6 +1900,12 @@ void fft2(const iu::LinearDeviceMemory<double2, 4>& src, iu::LinearDeviceMemory<
 void fft2(const iu::LinearDeviceMemory<double, 2>& src, iu::LinearDeviceMemory<double2, 2>& dst, bool scale_sqrt) {iuprivate::math::fft::fft2(src,  dst, scale_sqrt);}
 void fft2(const iu::LinearDeviceMemory<double, 3>& src, iu::LinearDeviceMemory<double2, 3>& dst, bool scale_sqrt) {iuprivate::math::fft::fft2(src,  dst, scale_sqrt);}
 void fft2(const iu::LinearDeviceMemory<double, 4>& src, iu::LinearDeviceMemory<double2, 4>& dst, bool scale_sqrt) {iuprivate::math::fft::fft2(src,  dst, scale_sqrt);}
+
+// ifft1
+void ifft1(const iu::LinearDeviceMemory<float2, 2>& src, iu::LinearDeviceMemory<float, 2>& dst, bool scale_sqrt) {iuprivate::math::fft::ifft1(src, dst, scale_sqrt);}
+
+void ifft1(const iu::LinearDeviceMemory<double2, 2>& src, iu::LinearDeviceMemory<double, 2>& dst, bool scale_sqrt) {iuprivate::math::fft::ifft1(src, dst, scale_sqrt);}
+
 
 // ifft2
 void ifft2(const iu::ImageGpu_32f_C2& src, iu::ImageGpu_32f_C2& dst, bool scale_sqrt) {iuprivate::math::fft::ifft2(src,  dst, scale_sqrt);}

@@ -1768,6 +1768,14 @@ IUMATH_DLLAPI void ifftshift2(const iu::LinearDeviceMemory<double2, 3>& src, iu:
 IUMATH_DLLAPI void ifftshift2(const iu::LinearDeviceMemory<double, 4>& src, iu::LinearDeviceMemory<double, 4>& dst);
 IUMATH_DLLAPI void ifftshift2(const iu::LinearDeviceMemory<double2, 4>& src, iu::LinearDeviceMemory<double2, 4>& dst);
 
+/** Compute the (batched) fft1
+ * \param[in] src source
+ * \param[out] dst destination
+ */
+IUMATH_DLLAPI void fft1(const iu::LinearDeviceMemory<float, 2>& src, iu::LinearDeviceMemory<float2, 2>& dst, bool scale_sqrt=false);
+
+IUMATH_DLLAPI void fft1(const iu::LinearDeviceMemory<double, 2>& src, iu::LinearDeviceMemory<double2, 2>& dst, bool scale_sqrt=false);
+
 /** Compute the (batched) fft2
  * \param[in] src source
  * \param[out] dst destination
@@ -1793,6 +1801,14 @@ IUMATH_DLLAPI void fft2(const iu::LinearDeviceMemory<double2, 4>& src, iu::Linea
 IUMATH_DLLAPI void fft2(const iu::LinearDeviceMemory<double, 2>& src, iu::LinearDeviceMemory<double2, 2>& dst, bool scale_sqrt=false);
 IUMATH_DLLAPI void fft2(const iu::LinearDeviceMemory<double, 3>& src, iu::LinearDeviceMemory<double2, 3>& dst, bool scale_sqrt=false);
 IUMATH_DLLAPI void fft2(const iu::LinearDeviceMemory<double, 4>& src, iu::LinearDeviceMemory<double2, 4>& dst, bool scale_sqrt=false);
+
+/** Compute the (batched) ifft1
+ * \param[in] src source
+ * \param[out] dst destination
+ */
+IUMATH_DLLAPI void ifft1(const iu::LinearDeviceMemory<float2, 2>& src, iu::LinearDeviceMemory<float, 2>& dst, bool scale_sqrt=false);
+
+IUMATH_DLLAPI void ifft1(const iu::LinearDeviceMemory<double2, 2>& src, iu::LinearDeviceMemory<double, 2>& dst, bool scale_sqrt=false);
 
 /** Compute the (batched) ifft2
  * \param[in] src source

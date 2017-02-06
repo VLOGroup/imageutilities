@@ -121,6 +121,99 @@ private:
   cufftHandle plan_;
 };
 
+/** Explicit batched FFT plan constructors for linear 1d memory (float): real -> complex
+ *  Lines contains the 1d signals and the rows defines the batches
+ *  @param size Size of the linear memory.
+ */
+template<>
+inline Plan<freal, fcomplex, 1>::Plan(const iu::Size<2> &size)
+{
+  int rank = 1;
+  int width = static_cast<int>(size[0]);
+  int height = static_cast<int>(size[1]);
+  int n[1] = { width };
+  int batch = height;
+  if (width == 0 || height == 0)
+  {
+    std::stringstream msg;
+    msg << "Size elements cannot be zero! (Size: " << size << ")";
+    throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
+  }
+
+  IU_CUFFT_SAFE_CALL(cufftPlanMany(&plan_, rank, n, NULL, 1, width,  // *inembed, istride, idist
+      NULL, 1, width / 2,// *onembed, ostride, odist
+      CUFFT_R2C, batch));
+}
+
+/** Explicit batched FFT plan constructors for linear 1d memory (float): complex -> real
+ *  @param size Size of the linear memory.
+ */
+template<>
+inline Plan<fcomplex, freal, 1>::Plan(const iu::Size<2> &size)
+{
+  int rank = 1;
+  int width = static_cast<int>(size[0]);
+  int height = static_cast<int>(size[1]);
+  int n[1] = { width };
+  int batch = height;
+  if (width == 0 || height == 0)
+  {
+    std::stringstream msg;
+    msg << "Size elements cannot be zero! (Size: " << size << ")";
+    throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
+  }
+
+  IU_CUFFT_SAFE_CALL(cufftPlanMany(&plan_, rank, n, NULL, 1, width / 2,  // *inembed, istride, idist
+      NULL, 1, width,// *onembed, ostride, odist
+      CUFFT_C2R, batch));
+}
+
+/** Explicit batched FFT plan constructors for linear 1d memory (double): real -> complex
+ *  @param size Size of the linear memory.
+ */
+template<>
+inline Plan<dreal, dcomplex, 1>::Plan(const iu::Size<2> &size)
+{
+  int rank = 1;
+  int width = static_cast<int>(size[0]);
+  int height = static_cast<int>(size[1]);
+  int n[1] = { width };
+  int batch = height;
+  if (width == 0 || height == 0)
+  {
+    std::stringstream msg;
+    msg << "Size elements cannot be zero! (Size: " << size << ")";
+    throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
+  }
+
+  IU_CUFFT_SAFE_CALL(cufftPlanMany(&plan_, rank, n, NULL, 1, width,  // *inembed, istride, idist
+      NULL, 1, width/2,// *onembed, ostride, odist
+      CUFFT_D2Z, batch));
+}
+
+/** Explicit batched FFT plan constructors for linear 1d memory (double): complex -> real
+ *  @param size Size of the linear memory.
+ */
+template<>
+inline Plan<dcomplex, dreal, 1>::Plan(const iu::Size<2> &size)
+{
+  int rank = 1;
+  int width = static_cast<int>(size[0]);
+  int height = static_cast<int>(size[1]);
+  int n[1] = { width };
+  int batch = height;
+  if (width == 0 || height == 0)
+  {
+    std::stringstream msg;
+    msg << "Size elements cannot be zero! (Size: " << size << ")";
+    throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
+  }
+
+  IU_CUFFT_SAFE_CALL(cufftPlanMany(&plan_, rank, n, NULL, 1, width/2,  // *inembed, istride, idist
+      NULL, 1, width,// *onembed, ostride, odist
+      CUFFT_Z2D, batch));
+}
+
 /** Explicit FFT2 plan constructors for pitched memory (Image, float): real -> complex
  *  @param size Size of the pitched memory.
  *  @param src_pitch Source pitch
