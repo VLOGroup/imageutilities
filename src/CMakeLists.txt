@@ -125,7 +125,7 @@ if(IU_USE_IO AND OpenCV_LIBS)
     ${CMAKE_CURRENT_SOURCE_DIR}/iuio/imageio.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/iuio/opencvsource.cpp
     )
-  #message("Found OpenCV Version: " ${OpenCV_VERSION_MAJOR} "." ${OpenCV_VERSION_MINOR})
+  message("Found OpenCV Version: " ${OpenCV_VERSION_MAJOR} "." ${OpenCV_VERSION_MINOR})
   # check for OpenCV greaterequal 2.4
   if(${OpenCV_VERSION_MAJOR} MATCHES "3")
     message("Enabling fixes for OpenCV >= 3")
@@ -492,7 +492,7 @@ if(IU_USE_IO)
     )
   set(IU_LIBS ${IU_LIBS} ${IU_IO_LIB})
   
-
+  message(${OpenCV_LIBS})
   if(IU_BUILD_STATIC)
     cuda_add_library( ${IU_IO_LIB}_static STATIC ${IU_IO_HEADERS} ${IU_IO_SOURCES} )
     target_link_libraries( ${IU_IO_LIB}_static
