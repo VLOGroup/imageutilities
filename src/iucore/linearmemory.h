@@ -157,6 +157,10 @@ public:
     return out;
   }
 
+public:
+  /** dimensionality of the memory */
+  static const unsigned int ndim;
+
 protected:
   /** size of the memory.*/
   Size<Ndim> size_;
@@ -188,4 +192,6 @@ private:
 /** \} */// end of Linear Memory
 }// namespace iu
 
-
+// dimension initalization
+template<unsigned int Ndim>
+const unsigned int iu::LinearMemory<Ndim>::ndim = Ndim;
