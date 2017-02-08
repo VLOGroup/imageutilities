@@ -11,6 +11,7 @@
 #include <cufft.h>
 #include "../iudefs.h"
 #include "../iucutil.h"
+#include <type_traits>
 
 namespace iuprivate {
 namespace math {
@@ -82,7 +83,8 @@ struct CUFFTWrapper<fcomplex, fcomplex>
    *  @param[in] input complex input float buffer.
    *  @param[out] output complex output float buffer.
    */
-  inline void exec(cufftHandle &plan, const fcomplex *input, fcomplex *output, int direction)
+  inline void exec(cufftHandle &plan, const fcomplex *input, fcomplex *output,
+                   int direction)
   {
     fcomplex * nonconst_input = const_cast<fcomplex *>(input);
     IU_CUFFT_SAFE_CALL(cufftExecC2C(plan, nonconst_input, output, direction));
@@ -103,7 +105,8 @@ struct CUFFTWrapper<dcomplex, dcomplex>
    *  @param[in] input complex input float buffer.
    *  @param[out] output complex output float buffer.
    */
-  inline void exec(cufftHandle &plan, const dcomplex *input, dcomplex *output, int direction)
+  inline void exec(cufftHandle &plan, const dcomplex *input, dcomplex *output,
+                   int direction)
   {
     dcomplex * nonconst_input = const_cast<dcomplex *>(input);
     IU_CUFFT_SAFE_CALL(cufftExecZ2Z(plan, nonconst_input, output, direction));
@@ -152,7 +155,7 @@ struct CUFFTWrapper<dcomplex, dreal>
   }
 };
 
-/** \brief Base class for FFT Plan.
+/** \brief Base class for FFT Plan real -> complex
  *
  * This class setups the memory layout for fft and executes forward and
  * inverse fft.
@@ -171,7 +174,8 @@ public:
     if (FFTDim > InputType::ndim)
     {
       std::stringstream msg;
-      msg << FFTDim << "-FFT dimension larger than input dimension! (" << InputType::ndim << ")";
+      msg << FFTDim << "-FFT dimension larger than input dimension! ("
+          << InputType::ndim << ")";
       throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
     }
     // dimensionality of the Fourier transform
@@ -182,7 +186,7 @@ public:
     int n_elem = 1;
     for (; d < FFTDim; ++d)
     {
-      n[d] = size[d];
+      n[d] = size[FFTDim - d - 1];
       n_elem *= n[d];
     }
     // compute the number of batches
@@ -197,10 +201,19 @@ public:
       throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
     }
 
-    IU_CUFFT_SAFE_CALL(cufftPlanMany(&plan_, rank, n, NULL, 1, size[0],
-        NULL, 1, size[0] / 2,
-        CUFFTWrapper<typename InputType::pixel_type, typename OutputType::pixel_type>().getType(),
-        batch));
+    if (CUFFTWrapper<typename InputType::pixel_type,
+        typename OutputType::pixel_type>().getType() == CUFFT_R2C)
+    {
+      IU_CUFFT_SAFE_CALL(
+          cufftPlanMany(&plan_, rank, n, NULL, 1, n_elem, NULL, 1, n_elem / 2,
+                        CUFFTWrapper<typename InputType::pixel_type, typename OutputType::pixel_type>().getType(), batch));
+    }
+    else
+    {
+      IU_CUFFT_SAFE_CALL(
+          cufftPlanMany(&plan_, rank, n, NULL, 1, n_elem / 2, NULL, 1, n_elem,\
+                        CUFFTWrapper<typename InputType::pixel_type, typename OutputType::pixel_type>().getType(), batch));
+    }
   }
 
   /** Destructor. */
@@ -216,7 +229,8 @@ public:
   inline void exec(const typename InputType::pixel_type *input,
                    typename OutputType::pixel_type *output)
   {
-    CUFFTWrapper<typename InputType::pixel_type, typename OutputType::pixel_type>().exec(plan_, input, output);
+    CUFFTWrapper<typename InputType::pixel_type, typename OutputType::pixel_type>().exec(
+        plan_, input, output);
   }
 
 private:
@@ -242,7 +256,8 @@ public:
     if (FFTDim > InputType::ndim)
     {
       std::stringstream msg;
-      msg << FFTDim << "-FFT dimension larger than input dimension! (" << InputType::ndim << ")";
+      msg << FFTDim << "-FFT dimension larger than input dimension! ("
+          << InputType::ndim << ")";
       throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
     }
     // dimensionality of the Fourier transform
@@ -253,7 +268,7 @@ public:
     int n_elem = 1;
     for (; d < FFTDim; ++d)
     {
-      n[d] = size[d];
+      n[d] = size[FFTDim - 1 - d];
       n_elem *= n[d];
     }
     // compute the number of batches
@@ -268,9 +283,9 @@ public:
       throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
     }
 
-    IU_CUFFT_SAFE_CALL(cufftPlanMany(&plan_, rank, n, NULL, 1, size[0],
-        NULL, 1, size[0] / 2,
-        CUFFTWrapper<typename InputType::pixel_type, typename InputType::pixel_type>().getType(), batch));
+    IU_CUFFT_SAFE_CALL(
+        cufftPlanMany(&plan_, rank, n, NULL, 1, n_elem, NULL, 1, n_elem,
+                      CUFFTWrapper<typename InputType::pixel_type, typename InputType::pixel_type>().getType(), batch));
   }
 
   /** Destructor. */
@@ -287,7 +302,8 @@ public:
   inline void exec(const typename InputType::pixel_type *input,
                    typename InputType::pixel_type *output, int direction)
   {
-    CUFFTWrapper<typename InputType::pixel_type, typename InputType::pixel_type>().exec(plan_, input, output, direction);
+    CUFFTWrapper<typename InputType::pixel_type, typename InputType::pixel_type>().exec(
+        plan_, input, output, direction);
   }
 
 private:
