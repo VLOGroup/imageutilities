@@ -65,6 +65,21 @@ __global__ void to_pbo_jet_kernel(iu::ImageGpu_32f_C1::KernelData in, iu::ImageG
     }
 }
 
+__global__ void to_pbo_kernel(iu::ImageGpu_32f_C4::KernelData in, iu::ImageGpu_8u_C4::KernelData out)
+{
+    const int x = blockIdx.x*blockDim.x + threadIdx.x;
+    const int y = blockIdx.y*blockDim.y + threadIdx.y;
+
+    if (x<in.width_ && y<in.height_)
+    {
+        float4 value = in(x,y);
+        out(x,y) = make_uchar4(255.f * value.x,
+                               255.f * value.y,
+                               255.f * value.z,
+                               1);
+    }
+}
+
 
 namespace iuprivate {
 
@@ -80,6 +95,15 @@ void copy_to_PBO(iu::ImageGpu_8u_C1& img, iu::ImageGpu_8u_C4& pbo)
 }
 
 void copy_to_PBO(iu::ImageGpu_8u_C4& img, iu::ImageGpu_8u_C4& pbo)
+{
+    dim3 dimBlock(16, 16);
+    dim3 dimGrid(iu::divUp(img.width(), dimBlock.x),
+                 iu::divUp(img.height(), dimBlock.y));
+
+    to_pbo_kernel <<< dimGrid, dimBlock >>> (img, pbo);
+}
+
+void copy_to_PBO(iu::ImageGpu_32f_C4& img, iu::ImageGpu_8u_C4& pbo)
 {
     dim3 dimBlock(16, 16);
     dim3 dimGrid(iu::divUp(img.width(), dimBlock.x),

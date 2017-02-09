@@ -206,19 +206,22 @@ PyArrayObject* getPyArrayFromPyObject(const bp::object& obj, char kind = 'x', ch
 template<typename PixelType, class Allocator>
 PyObject* PyArray_from_ImageCpu(iu::ImageCpu<PixelType, Allocator> &img)
 {
-    npy_intp dims[2] = { img.height(), img.width() };
+    npy_intp dims2[2] = { img.height(), img.width() };
+    npy_intp dims3[3] = { img.height(), img.width(), 4 };
     PyObject* res = NULL;
 
     if (dynamic_cast<iu::ImageCpu_32f_C1*>(&img))
-        res = PyArray_SimpleNew(2, dims, NPY_FLOAT32);        // new numpy array
+        res = PyArray_SimpleNew(2, dims2, NPY_FLOAT32);        // new numpy array
+    else if (dynamic_cast<iu::ImageCpu_32f_C4*>(&img))
+        res = PyArray_SimpleNew(3, dims3, NPY_FLOAT32);        // new numpy array
     else if (dynamic_cast<iu::ImageCpu_8u_C1*>(&img))
-        res = PyArray_SimpleNew(2, dims, NPY_UINT8);        // new numpy array
+        res = PyArray_SimpleNew(2, dims2, NPY_UINT8);        // new numpy array
     else
         throw Exc("PyArray_from_ImageCpu(): conversion for this image type not implemented");
 
 
     PixelType* data = static_cast<PixelType*>(PyArray_DATA((PyArrayObject*)res));    // data pointer
-    iu::ImageCpu<PixelType, Allocator> h_pyRef(data, dims[1], dims[0], dims[1]*sizeof(PixelType), true);  // wrapped in imagecpu
+    iu::ImageCpu<PixelType, Allocator> h_pyRef(data, dims2[1], dims2[0], dims2[1]*sizeof(PixelType), true);  // wrapped in imagecpu
 
     iu::copy(&img, &h_pyRef);        // copy img to numpy array
     return res;
@@ -234,10 +237,13 @@ template<typename PixelType, class Allocator>
 PyObject* PyArray_from_ImageGpu(iu::ImageGpu<PixelType, Allocator> &img)
 {
     npy_intp dims[2] = { img.height(), img.width() };
+    npy_intp dims3[3] = { img.height(), img.width(), 4 };
     PyObject* res = NULL;
 
     if (dynamic_cast<iu::ImageGpu_32f_C1*>(&img))
         res = PyArray_SimpleNew(2, dims, NPY_FLOAT32);        // new numpy array
+    else if (dynamic_cast<iu::ImageGpu_32f_C4*>(&img))
+        res = PyArray_SimpleNew(3, dims3, NPY_FLOAT32);        // new numpy array
     else if (dynamic_cast<iu::ImageGpu_8u_C1*>(&img))
         res = PyArray_SimpleNew(2, dims, NPY_UINT8);        // new numpy array
     else
@@ -367,8 +373,8 @@ ImageCpu<PixelType, Allocator>::ImageCpu(boost::python::object &py_arr) : data_(
 
     py_img = python::getPyArrayFromPyObject(py_arr);  // don't care what datatype, just to get dimensions
     int ndim = PyArray_NDIM(py_img);
-    if (ndim != 2)
-        throw python::Exc("imageCpu_from_PyArray(): Image must be a 2d numpy array");
+    if (ndim != 2 && ndim != 3)
+        throw python::Exc("imageCpu_from_PyArray(): Image must be a 2d or 3d numpy array");
     npy_intp* dims = PyArray_DIMS(py_img);
     size_ = iu::Size<2>(dims[1], dims[0]);
 
