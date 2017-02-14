@@ -16,14 +16,26 @@ before_script:
 #    - cd /usr/local/cuda-7.5/samples/0_Simple/simpleTexture
 #    - make
 #    - ./simpleTexture
-mvlib:
+iu14:
   tags:
-    - cuda-8.0
+    - ubuntu-14.04
   stage: build
   script:
     - mkdir -p build 
     - cd build
     - cmake -DCMAKE_C_COMPILER=/usr/bin/gcc-4.9 -DCMAKE_CXX_COMPILER=/usr/bin/g++-4.9 ..
+    - make
+    - make test
+    - make install
+    
+iu16:
+  tags:
+    - ubuntu-16.04
+  stage: build
+  script:
+    - mkdir -p build 
+    - cd build
+    - cmake ..
     - make
     - make test
     - make install
