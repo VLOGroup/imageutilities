@@ -117,7 +117,7 @@ static inline void print_stacktrace(std::ostream & out = std::cerr, unsigned int
 
 #else
 
-static inline void print_stacktrace(std::ostream & out = std::cerr, unsigned int max_frames = 63){
+static inline void print_stacktrace(FILE *out = stderr, unsigned int max_frames = 63){
 };
 
 #endif //!WIN32

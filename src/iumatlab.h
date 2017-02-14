@@ -1,13 +1,13 @@
 #pragma once
 
 #include <mex.h>
-#include <memory>
-#include <sstream>
 
 #include "iucore.h"
-#include "iudefs.h"
+#include "iucore/linearhostmemory.h"
 #include "iumath/typetraits.h"
 
+#include <memory>
+#include <sstream>
 
 namespace iu {
 
@@ -53,42 +53,15 @@ struct dtype<double2>
   * @param[out] dims Matlab dimensions
   */
 template<unsigned int Ndim>
-void getMatlabDims(const iu::Size<Ndim>& size, mwSize *dims, bool flip_memory_layout=true)
+void getMatlabDims(const iu::Size<Ndim> size, mwSize *dims)
 {
-  if(flip_memory_layout)
-  {
-    dims[0] = size[1];
-    dims[1] = size[0];
-  }
-  else
-  {
-    dims[0] = size[0];
-    dims[1] = size[1];
-  }
+  dims[0] = size[1];
+  dims[1] = size[0];
 
   for (unsigned int i = 2; i < 2; i++)
   {
     dims[i] = size[i];
   }
-}
-template<int Ndim>
-void getMatlabDims(const iu::Size<Ndim>& size, mwSize *dims, bool flip_memory_layout=true)
-{
-  if(flip_memory_layout)
-  {
-    dims[0] = size[1];
-    dims[1] = size[0];
-  }
-  else
-  {
-    dims[0] = size[0];
-    dims[1] = size[1];
-  }
-
-	for (unsigned int i = 2; i < 2; i++)
-	{
-		dims[i] = size[i];
-	}
 }
 
 /** @brief Convert Matlab mex array to linear host memory (complex images)
@@ -100,7 +73,7 @@ typename std::enable_if<
     std::is_same<PixelType, typename iu::type_trait<PixelType>::complex_type>::value,
     ResultType>::type convertMatlabToC(
     const mxArray_tag& mex_array,
-    iu::LinearHostMemory<PixelType, Ndim>& hostmem, bool flip_memory_layout=true)
+    iu::LinearHostMemory<PixelType, Ndim>& hostmem)
 {
   if (!mxIsComplex(&mex_array))
   {
@@ -110,40 +83,28 @@ typename std::enable_if<
 
   typedef typename iu::type_trait<PixelType>::real_type real_type;
 
-  if (flip_memory_layout)
+  iu::Size<Ndim> size = hostmem.size();
+
+  unsigned int offset = 1;
+
+  for (unsigned int i = 2; i < Ndim; i++)
   {
-    iu::Size<Ndim> size = hostmem.size();
-
-    unsigned int offset = 1;
-
-    for (unsigned int i = 2; i < Ndim; i++)
-    {
-      offset *= size[i];
-    }
-
-    for (int x = 0; x < size[0]; x++)
-    {
-      for (int y = 0; y < size[1]; y++)
-      {
-        for (int idx_offset = 0; idx_offset < offset; idx_offset++)
-        {
-          real_type real_value = static_cast<real_type>(mxGetPr(&mex_array)[y
-              + size[1] * x + size[1] * size[0] * idx_offset]);
-          real_type imag_value = static_cast<real_type>(mxGetPi(&mex_array)[y
-              + size[1] * x + size[1] * size[0] * idx_offset]);
-          hostmem.data()[x + size[0] * y + size[1] * size[0] * idx_offset] =
-              iu::type_trait<PixelType>::make_complex(real_value, imag_value);
-        }
-      }
-    }
+    offset *= size[i];
   }
-  else
+
+  for (int x = 0; x < size[0]; x++)
   {
-    for (int idx = 0; idx < hostmem.numel(); idx++)
+    for (int y = 0; y < size[1]; y++)
     {
-          real_type real_value = static_cast<real_type>(mxGetPr(&mex_array)[idx]);
-          real_type imag_value = static_cast<real_type>(mxGetPi(&mex_array)[idx]);
-          hostmem.data()[idx] = iu::type_trait<PixelType>::make_complex(real_value, imag_value);
+      for (int idx_offset = 0; idx_offset < offset; idx_offset++)
+      {
+        real_type real_value = static_cast<real_type>(mxGetPr(&mex_array)[y
+            + size[1] * x + size[1] * size[0] * idx_offset]);
+        real_type imag_value = static_cast<real_type>(mxGetPi(&mex_array)[y
+            + size[1] * x + size[1] * size[0] * idx_offset]);
+        hostmem.data()[x + size[0] * y + size[1] * size[0] * idx_offset] =
+            iu::type_trait<PixelType>::make_complex(real_value, imag_value);
+      }
     }
   }
 }
@@ -157,7 +118,7 @@ typename std::enable_if<
     std::is_same<PixelType, typename iu::type_trait<PixelType>::real_type>::value,
     ResultType>::type convertMatlabToC(
     const mxArray_tag& mex_array,
-    iu::LinearHostMemory<PixelType, Ndim>& hostmem, bool flip_memory_layout=true)
+    iu::LinearHostMemory<PixelType, Ndim>& hostmem)
 {
   if (mxIsComplex(&mex_array))
   {
@@ -167,35 +128,25 @@ typename std::enable_if<
 
   typedef typename iu::type_trait<PixelType>::real_type real_type;
 
-  if(flip_memory_layout)
+  iu::Size<Ndim> size = hostmem.size();
+  unsigned int offset = 1;
+
+  for (unsigned int i = 2; i < Ndim; i++)
   {
-    iu::Size<Ndim> size = hostmem.size();
-    unsigned int offset = 1;
-
-    for (unsigned int i = 2; i < Ndim; i++)
-    {
-      offset *= size[i];
-    }
-
-    for (int x = 0; x < size[0]; x++)
-    {
-      for (int y = 0; y < size[1]; y++)
-      {
-        for (int idx_offset = 0; idx_offset < offset; idx_offset++)
-        {
-          real_type real_value = static_cast<real_type>(mxGetPr(&mex_array)[y
-              + size[1] * x + size[1] * size[0] * idx_offset]);
-          hostmem.data()[x + size[0] * y + size[1] * size[0] * idx_offset] =
-              real_value;
-        }
-      }
-    }
+    offset *= size[i];
   }
-  else
+
+  for (int x = 0; x < size[0]; x++)
   {
-    for (int idx = 0; idx < hostmem.numel(); idx++)
+    for (int y = 0; y < size[1]; y++)
     {
-         hostmem.data()[idx] = static_cast<real_type>(mxGetPr(&mex_array)[idx]);
+      for (int idx_offset = 0; idx_offset < offset; idx_offset++)
+      {
+        real_type real_value = static_cast<real_type>(mxGetPr(&mex_array)[y
+            + size[1] * x + size[1] * size[0] * idx_offset]);
+        hostmem.data()[x + size[0] * y + size[1] * size[0] * idx_offset] =
+            real_value;
+      }
     }
   }
 }
@@ -209,13 +160,13 @@ typename std::enable_if<
     std::is_same<PixelType, typename iu::type_trait<PixelType>::complex_type>::value,
     ResultType>::type convertCToMatlab(
     const iu::LinearHostMemory<PixelType, Ndim>& hostmem,
-    mxArray_tag **mex_array, bool flip_memory_layout = true)
+    mxArray_tag **mex_array)
 {
   typedef typename iu::type_trait<PixelType>::complex_type complex_type;
 
   // Allocate memory
   mwSize dims[Ndim];
-  iu::matlab::getMatlabDims(hostmem.size(), dims, flip_memory_layout);
+  iu::matlab::getMatlabDims(hostmem.size(), dims);
   *mex_array = mxCreateNumericArray(Ndim, dims, mxDOUBLE_CLASS, iu::matlab::dtype<complex_type>::matlab_type);
 
   // Convert to Matlab
@@ -224,40 +175,28 @@ typename std::enable_if<
   double* output_real = (double *) mxCalloc(nelem, sizeof(double));
   double* output_imag = (double *) mxCalloc(nelem, sizeof(double));
 
-  if(flip_memory_layout)
+  iu::Size<Ndim> size = hostmem.size();
+
+  unsigned int offset = 1;
+
+  for (unsigned int i = 2; i < Ndim; i++)
   {
-    iu::Size<Ndim> size = hostmem.size();
-
-    unsigned int offset = 1;
-
-    for (unsigned int i = 2; i < Ndim; i++)
-    {
-      offset *= size[i];
-    }
-
-    for (int x = 0; x < size[0]; x++)
-    {
-      for (int y = 0; y < size[1]; y++)
-      {
-        for (int idx_offset = 0; idx_offset < offset; idx_offset++)
-        {
-          complex_type value = hostmem.data()[x + size[0] * y
-              + size[1] * size[0] * idx_offset];
-          output_imag[y + size[1] * x + size[1] * size[0] * idx_offset] =
-              static_cast<double>(value.y);
-          output_real[y + size[1] * x + size[1] * size[0] * idx_offset] =
-              static_cast<double>(value.x);
-        }
-      }
-    }
+    offset *= size[i];
   }
-  else
+
+  for (int x = 0; x < size[0]; x++)
   {
-    for (int idx = 0; idx < hostmem.numel(); idx++)
+    for (int y = 0; y < size[1]; y++)
     {
-      complex_type value = hostmem.data()[idx];
-      output_imag[idx] = static_cast<double>(value.y);
-      output_real[idx] = static_cast<double>(value.x);
+      for (int idx_offset = 0; idx_offset < offset; idx_offset++)
+      {
+        complex_type value = hostmem.data()[x + size[0] * y
+            + size[1] * size[0] * idx_offset];
+        output_imag[y + size[1] * x + size[1] * size[0] * idx_offset] =
+            static_cast<double>(value.y);
+        output_real[y + size[1] * x + size[1] * size[0] * idx_offset] =
+            static_cast<double>(value.x);
+      }
     }
   }
 
@@ -274,13 +213,13 @@ typename std::enable_if<
     std::is_same<PixelType, typename iu::type_trait<PixelType>::real_type>::value,
     ResultType>::type convertCToMatlab(
     const iu::LinearHostMemory<PixelType, Ndim>& hostmem,
-    mxArray_tag** mex_array, bool flip_memory_layout = true)
+    mxArray_tag** mex_array)
 {
   typedef typename iu::type_trait<PixelType>::real_type real_type;
 
   // Allocate memory
   mwSize dims[Ndim];
-  iu::matlab::getMatlabDims(hostmem.size(), dims, flip_memory_layout);
+  iu::matlab::getMatlabDims(hostmem.size(), dims);
   *mex_array = mxCreateNumericArray(Ndim, dims, mxDOUBLE_CLASS, iu::matlab::dtype<real_type>::matlab_type);
 
   // Convert to Matlab
@@ -289,37 +228,27 @@ typename std::enable_if<
 
   double* output_real = (double *) mxCalloc(nelem, sizeof(double));
 
-  if (flip_memory_layout)
+  iu::Size<Ndim> size = hostmem.size();
+
+  unsigned int offset = 1;
+
+  for (unsigned int i = 2; i < Ndim; i++)
   {
-    iu::Size<Ndim> size = hostmem.size();
+    offset *= size[i];
+  }
 
-    unsigned int offset = 1;
-
-    for (unsigned int i = 2; i < Ndim; i++)
+  for (int x = 0; x < size[0]; x++)
+  {
+    for (int y = 0; y < size[1]; y++)
     {
-      offset *= size[i];
-    }
-
-    for (int x = 0; x < size[0]; x++)
-    {
-      for (int y = 0; y < size[1]; y++)
+      for (int idx_offset = 0; idx_offset < offset; idx_offset++)
       {
-        for (int idx_offset = 0; idx_offset < offset; idx_offset++)
-        {
-          real_type value = hostmem.data()[x + size[0] * y
-              + size[1] * size[0] * idx_offset];
-          output_real[y + size[1] * x + size[1] * size[0] * idx_offset] =
-              static_cast<double>(value);
-        }
+        real_type value = hostmem.data()[x + size[0] * y
+            + size[1] * size[0] * idx_offset];
+        output_real[y + size[1] * x + size[1] * size[0] * idx_offset] =
+            static_cast<double>(value);
       }
     }
-  }
-  else
-  {
-     for(int idx = 0; idx < hostmem.numel(); idx++)
-     {
-       output_real[idx] = static_cast<double>(hostmem.data()[idx]);
-     }
   }
 
   mxSetPr(*mex_array, output_real);
@@ -337,7 +266,7 @@ typename std::enable_if<
   */
 template<typename PixelType, unsigned int Ndim>
 LinearHostMemory<PixelType, Ndim>::LinearHostMemory(
-    const mxArray_tag& mex_array, bool flip_memory_layout=true) :
+    const mxArray_tag& mex_array) :
     data_(0), ext_data_pointer_(false)
 {
   // Extract dims (minimum dim is always 2!)
@@ -354,16 +283,8 @@ LinearHostMemory<PixelType, Ndim>::LinearHostMemory(
   // Get size
   const mwSize* matlab_size = mxGetDimensions(&mex_array);
 
-  if (flip_memory_layout)
-  {
-    this->size_[0] = matlab_size[1];
-    this->size_[1] = matlab_size[0];
-  }
-  else
-  {
-    this->size_[0] = matlab_size[0];
-    this->size_[1] = matlab_size[1];
-  }
+  this->size_[0] = matlab_size[1];
+  this->size_[1] = matlab_size[0];
 
   for (unsigned int i = 2; i < matlab_ndim; i++)
   {
@@ -378,7 +299,7 @@ LinearHostMemory<PixelType, Ndim>::LinearHostMemory(
     throw std::bad_alloc();
 
   // convert Matlab to C
-  matlab::convertMatlabToC(mex_array, *this, flip_memory_layout);
+  matlab::convertMatlabToC(mex_array, *this);
 }
 
 /** \} */ // end of ingroup IuMatlab

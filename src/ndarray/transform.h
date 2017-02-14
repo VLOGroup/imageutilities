@@ -10,7 +10,7 @@ namespace nd{
 		return type();
 	};
 
-	template<typename type, int dims> constexpr int array_dims(const kernel::ndarray_ref<type, dims> &){
+	template<typename type, int dims> constexpr int array_dims( const kernel::ndarray_ref<type, dims> &){
 		return dims;
 	};
 
@@ -27,7 +27,9 @@ namespace nd{
 
 
 	//! transform using a functor
-	template<typename F, typename A0, typename... AA> __NOINLINE__
+	template<typename F, typename A0, typename... AA>
+	__attribute__((noinline))
 	void transform(const F & f, A0 & a, const AA&... aa);
+
 
 };

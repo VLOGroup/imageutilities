@@ -46,11 +46,12 @@ else(NOT ANDROID)
     set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -arch=sm_30 -target-cpu-arch=ARM -target-os-variant=Android")
 endif(NOT ANDROID)
 
-#------------- for compiler flags see cmake/compiler_settings.cmake.txt -----------------
-if(NOT CMAKE_BUILD_TYPE)
-	set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "Choose the type of build, options are: Debug Release RelWithDebInfo MinSizeRel." FORCE)
-endif()
-include(${CMAKE_CURRENT_LIST_DIR}/cmake/compiler_settings.cmake.txt)
+# add the C++11 flag if not already set, since we are now using this also
+if(NOT WIN32)
+    if(NOT "${CUDA_NVCC_FLAGS}" MATCHES "c\\+\\+11")
+        set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -std=c++11")
+    endif(NOT "${CUDA_NVCC_FLAGS}" MATCHES "c\\+\\+11")
+endif(NOT WIN32)
 
 ### trouble if FindPackage(ImageutilitiesLight) is called multiple times with different IU_MODULES
 ### do the full check every times

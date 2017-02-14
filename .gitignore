@@ -5,8 +5,6 @@ doc/
 *.so
 *.so.*
 *.a
-*.dll
-*.lib
 Makefile
 *.cmake
 CMakeFiles/
@@ -134,13 +132,3 @@ ipch/
 iu
 
 tests/config.h
-
-*.dll
-
-lib/ndarray.dll
-
-.DS_Store
-
-*.DS_Store
-
-include/ndarray_exports.h

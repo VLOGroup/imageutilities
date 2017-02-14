@@ -265,7 +265,7 @@ PyObject* PyArray_from_ImageGpu(iu::ImageGpu<PixelType, Allocator> &img)
 template<typename PixelType, unsigned int Ndim>
 PyObject* PyArray_from_LinearDeviceMemory(iu::LinearDeviceMemory<PixelType, Ndim> &devicemem)
 {
-    npy_intp dims[Ndim];
+    npy_intp dims[2];
     for (unsigned int i=0; i < Ndim; i++)
     {
       dims[i] = devicemem.size()[Ndim-1-i];

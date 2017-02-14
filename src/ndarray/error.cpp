@@ -32,7 +32,7 @@ error_stream::~error_stream() throw (){
 	}catch(...){
 		std::cerr << "OOps " << std::flush;
 	};
-	__HALT__;
+	__asm__ volatile("int3");
 }
 
 

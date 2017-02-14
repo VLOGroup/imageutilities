@@ -6,7 +6,6 @@
 #include <thrust/iterator/constant_iterator.h>
 
 #include "iuhelpermath.h"
-#include "typetraits.h"
 
 namespace iuprivate {
 namespace math {
@@ -60,7 +59,7 @@ struct abs_value
 {
 	__host__ __device__ ValueType operator()(const ValueType x) const
 	{
-		return fabs(x);
+		return abs(x);
 	}
 };
 
@@ -119,21 +118,6 @@ struct diffsqr_transform_tuple :
 };
 
 template <typename ValueType>
-struct diffsqr_linmem_transform_tuple :
-        public thrust::unary_function< thrust::tuple<ValueType,ValueType>,
-        typename iu::type_trait<ValueType>::real_type >
-{
-    typedef typename iu::type_trait<ValueType>::real_type real_type;
-    typedef typename thrust::tuple<ValueType,ValueType> InputTuple;
-    __host__ __device__
-    real_type operator()(const InputTuple& t) const
-    {
-        ValueType val = thrust::get<0>(t) - thrust::get<1>(t);
-        return iu::type_trait<ValueType>::abs(val)*iu::type_trait<ValueType>::abs(val);
-    }
-};
-
-template <typename ValueType>
 struct weightedsum_transform_tuple :
         public thrust::unary_function< thrust::tuple<ValueType,ValueType>,ValueType>
 {
@@ -160,7 +144,7 @@ struct diffabs_transform_tuple :
     OutputTuple operator()(const InputTuple& t) const
     {
         bool is_valid = (thrust::get<2>(t) % N) < n;
-        return OutputTuple(is_valid, fabs(thrust::get<1>(t)-thrust::get<0>(t)));
+        return OutputTuple(is_valid, abs(thrust::get<1>(t)-thrust::get<0>(t)));
     }
 };
 

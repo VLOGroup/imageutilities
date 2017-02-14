@@ -10,7 +10,7 @@ namespace nd{
 	//------ arithmetics -------
 	template<typename type> struct add_a{
 		type w;
-		__HOSTDEVICE__ void operator()(type & a)const{
+		HOSTDEVICE void operator()(type & a)const{
 			a += w;
 		}
 	};
@@ -21,7 +21,7 @@ namespace nd{
 	}
 
 	template<typename type> struct add_ab{
-		__HOSTDEVICE__ void operator()(type & a, const type & b)const{
+		HOSTDEVICE void operator()(type & a, const type & b)const{
 			a += b;
 		}
 	};
@@ -32,7 +32,7 @@ namespace nd{
 	}
 
 	template<typename type> struct add_abc{
-		__HOSTDEVICE__ void operator()(type & a, const type & b, const type & c)const{
+		HOSTDEVICE void operator()(type & a, const type & b, const type & c)const{
 			a = b + c;
 		}
 	};
@@ -44,7 +44,7 @@ namespace nd{
 
 	template<typename type> struct madd_abc{
 		type w;
-		void __HOSTDEVICE__ operator ()(type & a, const type & b, const type & c)const{
+		void HOSTDEVICE operator ()(type & a, const type & b, const type & c)const{
 			a = b*w + c;
 		}
 	};
@@ -56,7 +56,7 @@ namespace nd{
 
 	template<typename type> struct madd2_abc{
 		type w1, w2;
-		void __HOSTDEVICE__ operator ()(type & a, const type & b, const type & c)const{
+		void HOSTDEVICE operator ()(type & a, const type & b, const type & c)const{
 			a = b*w1 + c*w2;
 		}
 	};
@@ -69,7 +69,7 @@ namespace nd{
 	//------ conversions-------------
 
 	template<typename T1, typename T2> struct convert_ab{
-		void __HOSTDEVICE__ operator()(T1 & a, const T2 & b)const{
+		void HOSTDEVICE operator()(T1 & a, const T2 & b)const{
 			a = T1(b);
 		}
 	};
@@ -81,7 +81,7 @@ namespace nd{
 
 	// --- functions recieving full arrays (threads mapping optimization possible)
 	template<typename type, int dims> struct grad_ab{
-		void __HOSTDEVICE__ operator()(const intn<dims+1> & ii, kernel::ndarray_ref<type, dims+1> & a, const kernel::ndarray_ref<type,dims> & b) const {
+		void HOSTDEVICE operator()(const intn<dims+1> & ii, kernel::ndarray_ref<type, dims+1> & a, const kernel::ndarray_ref<type,dims> & b) const {
 			// how ii is bound to threads is determined by the kernel
 			int dim = ii[ dims ]; // last index component -> gradient direction, prefer unrolled
 			if( ii[dim] < a.size(dim)-1 ){ // index is in range for gradient

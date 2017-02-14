@@ -80,22 +80,22 @@ namespace nd{
 	*/
 
 	template<typename F, typename A0, typename... AA, typename... BB>
-	auto __HOSTDEVICE__ tuple_call(const F & f, BB&... bb, tuple<A0, AA...> & p) -> decltype( tuple_call(f, p.tail, bb..., p.a) ){
+	auto HOSTDEVICE tuple_call(const F & f, BB&... bb, tuple<A0, AA...> & p) -> decltype( tuple_call(f, p.tail, bb..., p.a) ){
 		return tuple_call(f, p.tail, bb..., p.a);
 	}
 
 	template<typename F, typename A0, typename... BB>
-	auto __HOSTDEVICE__ tuple_call(const F & f, BB&... bb, tuple<A0> & p) -> decltype( f(bb..., p.a) ){
+	auto HOSTDEVICE tuple_call(const F & f, BB&... bb, tuple<A0> & p) -> decltype( f(bb..., p.a) ){
 	    return f(bb..., p.a);
 	}
 
 	template<typename F, typename M, typename A0, typename... AA, typename... BB>
-	__HOSTDEVICE__ void tuple_call_m(const F & f, const M & m, tuple<A0, AA...> & p, BB&... bb){
+	HOSTDEVICE void tuple_call_m(const F & f, const M & m, tuple<A0, AA...> & p, BB&... bb){
 		tuple_call_m(f, m, p.tail, bb..., m(p.a));
 	}
 
 	template<typename F, typename M, typename A0, typename... BB>
-	__HOSTDEVICE__ void tuple_call_m(const F & f, const M & m, tuple<A0> & p, BB&... bb ){
+	HOSTDEVICE void tuple_call_m(const F & f, const M & m, tuple<A0> & p, BB&... bb ){
 	    f(bb..., m(p.a));
 	}
 
@@ -104,16 +104,16 @@ namespace nd{
 	template<int dims> struct index_accessor{
 		intn<dims> ii;
 		template<typename A>
-		__HOSTDEVICE__ typename array_parse<A>::type & operator ()(const A & a) const {
+		HOSTDEVICE typename array_parse<A>::type & operator ()(const A & a) const {
 			return *a.ptr(ii);
 		}
 		/*
 		template<typename A>
-		auto __HOSTDEVICE__ operator ()(const A & a)const  -> typename std::decay<decltype( a[ii]  )>::type & {
+		auto HOSTDEVICE operator ()(const A & a)const  -> typename std::decay<decltype( a[ii]  )>::type & {
 			return a[ii];
 		}
 		template<typename A>
-		auto __HOSTDEVICE__ operator ()(A & a) const  -> const typename std::decay<decltype( a[ii]  )>::type & {
+		auto HOSTDEVICE operator ()(A & a) const  -> const typename std::decay<decltype( a[ii]  )>::type & {
 			return a[ii];
 		}
 		*/
@@ -124,10 +124,10 @@ namespace nd{
 		tuple< typename std::decay<decltype( AA().kernel() )>::type... > tt; // tuple of kernels
 		functor_bind(const F & _f, AA... aa):f(_f), tt(aa.kernel()...){
 		}
-		__HOSTDEVICE__ const intn<dims> & size()const {
+		HOSTDEVICE const intn<dims> & size()const {
 			return tt.a.size();
 		}
-		void __HOSTDEVICE__ operator ()(const intn<dims>  & ii){
+		void HOSTDEVICE operator ()(const intn<dims>  & ii){
 			index_accessor<dims> m{ii};
 			tuple_call_m(f, m, tt);
 		}
@@ -141,7 +141,7 @@ namespace nd{
 	public:
 		functor_bind(const F & _f, AA... aa):f(_f), tt(aa.kernel()...){
 		}
-		void __HOSTDEVICE__ operator ()(const intn<dims>  & ii){
+		void HOSTDEVICE operator ()(const intn<dims>  & ii){
 			tuple_call(f, ii, tt);
 		}
 	};
@@ -459,7 +459,7 @@ namespace nd{
 	/*
 	template<typename T0, typename T1, void (*f)(T0 &, const T1&)> struct functor{
 		template<typename...Args>
-		__HOSTDEVICE__ void operator()(Args&&...aa)const{
+		HOSTDEVICE void operator()(Args&&...aa)const{
 			f(aa...);
 		}
 	};

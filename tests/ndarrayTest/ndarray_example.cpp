@@ -14,23 +14,6 @@
 //	thrust::fill(thrust::device, v.begin(), v.end(), 137);
 //};
 
-/*
-struct type_A{
-};
-
-typedef type_A typeB;
-
-struct C{
-	template <typename A, typename X = type_B >
-	C(const A& a0){
-	}
-};
-
-int msvc_bug(){
-	C c(1);
-}
-*/
-
 
 void foo(const ndarray_ref<float,2> & x){
 	x(1,1) = 0;
@@ -164,7 +147,7 @@ void intro_test(){
 	int * p1 = new int[1000];
 	// interpret as 3D array:
 	//                                               vv  need to specify size, assumes linear memory layout
-	std::cout <<"linear 1:" << ndarray_ref<int,3>(p1,intn<3>{10,10,10},ndarray_flags::host_only) <<"\n";
+	std::cout <<"linear 1:" << ndarray_ref<int,3>(p1,{10,10,10},ndarray_flags::host_only) <<"\n";
 	//ndarray_ref<i,3>:ptr=0x166e6a0, size=(10,10,10,), strides_b=(4,40,400,), access: host; linear_dim: 0
 
 	ndarray_ref<int,3> t1;
@@ -184,7 +167,7 @@ void intro_test(){
 	//the usage of cudaMalloc / cudaFree is not recommended - better use container classes, here just to demonstrate how to attach to pointers
 	cudaMallocManaged(&p2, 1000*sizeof(int));
 	cuda_check_error();
-	ndarray_ref<int,3> t2 = ndarray_ref<int,3>(p2,intn<3>{10,10,10});
+	ndarray_ref<int,3> t2 = ndarray_ref<int,3>(p2,{10,10,10});
 	std::cout << t2 <<"\n";
 	//ndarray_ref<i,3>:ptr=0x203500000, size=(10,10,10,), strides_b=(4,40,400,), access: host, device; linear_dim: 0
 	//                              legal for both: host-side and device-side operations ^^^^^^^^^^^^^
@@ -209,7 +192,7 @@ void test_1(){
 	float * x = new float[1000];
 	a.set_linear_ref(x, {10, 10, 10}, ndarray_flags::host_only);
 	for (int i = 0; i < a.size().prod(); ++i){
-		x[i] = float(i);
+		x[i] = i;
 	};
 	ndarray<float, 3> b;
 	b.create<memory::GPU_managed>(10, 10, 10);
@@ -317,8 +300,7 @@ void test_3D(){
 	std::cout << r4 << "\n";
 
 	{
-		iu::LinearDeviceMemory<float, 3> L0(iu::Size<3>{4, 8, 10});
-		iu::LinearDeviceMemory<float,3> L1{L0.ref()};
+		iu::LinearDeviceMemory<float,3> L1{V3.ref()};
 		iu::LinearHostMemory<float,4> L2(iu::Size<4>{4,8,10,10});
 		L2.ref().subdim<3>(0) << L1.ref();
 	}
@@ -376,7 +358,7 @@ int main(){
 	//test_transform();
 	//test_bit_index();
 	//return 0;
-	//test_cuda_constructors();
+	test_cuda_constructors();
 
 	intro_test();
 	try{
@@ -387,14 +369,14 @@ int main(){
 	};
     test_1D();
 	test_2D();
-	test_3D();
+//	test_3D();
 	test_4D();
 	//
 	test_IuSize();
 	//
 	return EXIT_SUCCESS;
-	//test_thrust_iterator_1();
-	//test_thrust_iterator_2();
+	test_thrust_iterator_1();
+	test_thrust_iterator_2();
 	//std::cout << test_warn(13);
 	return EXIT_SUCCESS;
 }

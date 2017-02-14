@@ -56,25 +56,17 @@ else(NOT ANDROID)
   set(CUDA_NVCC_FLAGS -arch=sm_30 -target-cpu-arch=ARM -target-os-variant=Android)
 endif(NOT ANDROID)
 
-#------------- for compiler flags see cmake/compiler_settings.cmake.txt -----------------
-if(NOT CMAKE_BUILD_TYPE)
-	set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "Choose the type of build, options are: Debug Release RelWithDebInfo MinSizeRel." FORCE)
-endif()
-include(${CMAKE_CURRENT_LIST_DIR}/cmake/compiler_settings.cmake.txt)
-#----------------------------------------------------------------------------------------
+if(WIN32)
+  add_definitions("/MT")
+endif(WIN32)
 
-# This is to allow correct linking static libraries in windows, see Cmake's GENERATE_EXPORT_HEADER and WINDOWS_EXPORT_ALL_SYMBOLS, for a better automation of SHARED/STATIC on different platforms
-if(NOT BUILD_SHARED_LIBS) # 
-	add_definitions(-DIUCORE_USE_STATIC)
-	add_definitions(-DIUGUI_USE_STATIC)
-	add_definitions(-DIUIO_USE_STATIC)
-	add_definitions(-DIUMATH_USE_STATIC)
-	add_flags(CUDA_NVCC_FLAGS "-DIUCORE_USE_STATIC")
-	add_flags(CUDA_NVCC_FLAGS "-DIUGUI_USE_STATIC")
-	add_flags(CUDA_NVCC_FLAGS "-DIUIO_USE_STATIC")
-	add_flags(CUDA_NVCC_FLAGS "-DIUMATH_USE_STATIC")
-	message(STATUS "CUDA_NVCC_FLAGS= ${CUDA_NVCC_FLAGS}")
-endif()
+# Disable warnings on MSVC
+IF (MSVC)
+  # Disable Warning	C4267: conversion from 'size_t' to 'thrust', possible loss of data
+  # Disable Warning C4800: forcing value to bool 'true' of 'false'
+  # Disable Warning C4996: This function of variable may be unsafe. Consider using strerror_s instead.
+  ADD_DEFINITIONS("/wd4267 /wd4800 /wd4996")
+ENDIF (MSVC)
 
 add_subdirectory(src)
 add_subdirectory(tests)

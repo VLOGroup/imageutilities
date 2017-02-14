@@ -289,10 +289,9 @@ public:
   LinearHostMemory(boost::python::api::object& py_arr);
 
   /** LinearHostMemory constructor from mex arrays (matlab). The memory layout is
-   * changed from column-first to row-first order if the flag flip_memory_layout
-   * is true.
+   * changed from column-first to row-first order.
    */
-  LinearHostMemory(const mxArray_tag& mex_arr, bool flip_memory_layout=true);
+  LinearHostMemory(const mxArray_tag& mex_arr);
 
 private:
   /** Pointer to host buffer. */

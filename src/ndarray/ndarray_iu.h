@@ -17,26 +17,13 @@
 #include "type_expand_cuda.h"
 //! implicit / explicit conversions between iu classes and ndarray_ref
 
-/*
-namespace base2{
-	template<typename type, int dims>
-	template<class Allocator, int, class>
-	ndarray_ref<type, dims> & ndarray_ref<type, dims>::set_ref(const iu::ImageCpu<type, Allocator> & x){
-		intn<2> size(x.width(), x.height());
-		//intn<2> stride_bytes = intn<2>(x.data(1, 0) - x.data(0, 0), x.data(0, 1) - x.data(0, 0))*intsizeof(type);
-		intn<2> stride_bytes = intn<2>((char*)x.data(1, 0) - (char*)x.data(0, 0), (char*)x.data(0, 1) - (char*)x.data(0, 0));
-		set_ref(const_cast<type*>(x.data(0, 0)), size, stride_bytes, ndarray_flags::host_only);
-		return *this;
-	}
-};
-*/
-
 namespace special2{
 	//_______2D_____________
 	template<typename type>
 	template<class Allocator>
 	ndarray_ref<type, 2> & ndarray_ref<type, 2>::set_ref(const iu::ImageCpu<type, Allocator> & x){
 		intn<2> size(x.width(), x.height());
+		//intn<2> stride_bytes = intn<2>(x.data(1, 0) - x.data(0, 0), x.data(0, 1) - x.data(0, 0))*intsizeof(type);
 		intn<2> stride_bytes = intn<2>((char*)x.data(1, 0) - (char*)x.data(0, 0), (char*)x.data(0, 1) - (char*)x.data(0, 0));
 		set_ref(const_cast<type*>(x.data(0, 0)), size, stride_bytes, ndarray_flags::host_only);
 		return *this;
@@ -46,6 +33,7 @@ namespace special2{
 	template<class Allocator>
 	ndarray_ref<type, 2> & ndarray_ref<type, 2>::set_ref(const iu::ImageGpu<type, Allocator> & x){
 		intn<2> size(x.width(), x.height());
+		//intn<2> stride_bytes = intn<2>(x.data(1, 0) - x.data(0, 0), x.data(0, 1) - x.data(0, 0))*intsizeof(type);
 		intn<2> stride_bytes = intn<2>((char*)x.data(1, 0) - (char*)x.data(0, 0), (char*)x.data(0, 1) - (char*)x.data(0, 0));
 		set_ref(const_cast<type*>(x.data(0, 0)), size, stride_bytes, ndarray_flags::device_only);
 		return *this;
@@ -56,6 +44,7 @@ namespace special2{
 	template<class Allocator>
 	ndarray_ref<type, 3> & ndarray_ref<type, 3>::set_ref(const iu::VolumeCpu<type, Allocator> & x){
 		intn<3> size(x.width(), x.height(), x.depth());
+		//intn<3> stride_bytes = intn<3>(x.data(1, 0, 0) - x.data(0, 0, 0), x.data(0, 1, 0) - x.data(0, 0, 0), x.data(0, 0, 1) - x.data(0, 0, 0))*intsizeof(type);
 		intn<3> stride_bytes = intn<3>((char*)x.data(1, 0, 0) - (char*)x.data(0, 0, 0), (char*)x.data(0, 1, 0) - (char*)x.data(0, 0, 0), (char*)x.data(0, 0, 1) - (char*)x.data(0, 0, 0));
 		this->set_ref(const_cast<type*>(x.data(0, 0, 0)), size, stride_bytes, ndarray_flags::host_only);
 		return *this;
@@ -65,6 +54,7 @@ namespace special2{
 	template<class Allocator>
 	ndarray_ref<type, 3> & ndarray_ref<type, 3>::set_ref(const iu::VolumeGpu<type, Allocator> & x){
 		intn<3> size(x.width(), x.height(), x.depth());
+		//intn<3> stride_bytes = intn<3>(x.data(1, 0, 0) - x.data(0, 0, 0), x.data(0, 1, 0) - x.data(0, 0, 0), x.data(0, 0, 1) - x.data(0, 0, 0))*intsizeof(type);
 		intn<3> stride_bytes = intn<3>((char*)x.data(1, 0, 0) - (char*)x.data(0, 0, 0), (char*)x.data(0, 1, 0) - (char*)x.data(0, 0, 0), (char*)x.data(0, 0, 1) - (char*)x.data(0, 0, 0));
 		this->set_ref(const_cast<type*>(x.data(0, 0, 0)), size, stride_bytes, ndarray_flags::device_only);
 		return *this;
@@ -96,7 +86,6 @@ namespace special2{
 }
 
 //_______ND_____________
-//! ND array from ND LinearMemory
 template<typename type, int dims>
 ndarray_ref<type, dims> & ndarray_ref<type, dims>::set_ref(const iu::LinearDeviceMemory<type, dims> & x){
     this->set_linear_ref(const_cast<type*>(x.data()), intn<dims>(x.size()), ndarray_flags::device_only);
@@ -109,7 +98,7 @@ ndarray_ref<type, dims> & ndarray_ref<type, dims>::set_ref(const iu::LinearHostM
 	return *this;
 }
 
-//! ND array from 1D LinearMemory and size
+
 template<typename type, int dims>
 ndarray_ref<type,dims>::ndarray_ref(const iu::LinearHostMemory<type, 1> & x, const intn<dims> & size){
 	this->set_linear_ref(const_cast<type*>(x.data()), size, ndarray_flags::host_only);
@@ -144,6 +133,7 @@ namespace iu{
 	LinearHostMemory<type, dims>::LinearHostMemory(const ndarray_ref<type, dims> &x)
 	:LinearMemory<dims>(Size<dims>(x.size())){
 		runtime_check(x.host_allowed());
+		//runtime_check(x.stride_bytes(0)==sizeof(type)); //contiguous in width
 		runtime_check(x.is_linear_ascending());
 		this->ext_data_pointer_ = true;
 		this->data_ = x.ptr();
@@ -159,6 +149,7 @@ namespace iu{
 	LinearDeviceMemory<type, dims>::LinearDeviceMemory(const ndarray_ref<type, dims> &x)
 	:LinearMemory<dims>(Size<dims>(x.size())){
 		runtime_check(x.device_allowed());
+		//runtime_check(x.stride_bytes(0)==sizeof(type)); //contiguous in width
 		runtime_check(x.is_linear_ascending());
 		this->ext_data_pointer_ = true;
 		this->data_ = x.ptr();

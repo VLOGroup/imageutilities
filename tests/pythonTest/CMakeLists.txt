@@ -9,8 +9,10 @@ set(SOURCES
     test.cu
 )
 
-#------------- for compiler flags see cmake/compiler_settings.cmake.txt -----------------
-#========================================================================================
+if(NOT WIN32)
+  set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++11")
+  set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} "-std=c++11")
+endif(NOT WIN32)
 
 find_package(PythonLibs REQUIRED)
 Find_package(NumPy REQUIRED)
@@ -25,11 +27,6 @@ INCLUDE_DIRECTORIES( ${EIGEN3_INCLUDE_DIR} )
 # compile lib, this can be imported in python
 cuda_add_library(pyTest SHARED ${SOURCES})
 target_link_libraries(pyTest iucore ${Boost_LIBRARIES} ${PYTHON_LIBRARIES})
-
-if(WIN32)
-    SET_TARGET_PROPERTIES(pyTest PROPERTIES PREFIX "lib")
-    SET_TARGET_PROPERTIES(pyTest PROPERTIES SUFFIX ".pyd")
-endif(WIN32)
 
 # copy python script to test folder
 file(INSTALL pyTest.py DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})

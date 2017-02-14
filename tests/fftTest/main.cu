@@ -35,191 +35,191 @@ void printVolume(T &volume, unsigned int slice)
 }
 
 
-//void test_fft2_image_float()
-//{
-//  std::cout << "TEST: FFT2 IMAGE FLOAT" << std::endl;
-//  iu::Size<2> size({5,10});
-//  const unsigned int numel = size.numel();
-//  float *data = new float[numel];
-//
-//  // Fill data pointer
-//  for (unsigned int i=0; i < size.numel(); i++)
-//  {
-//    data[i] = static_cast<float>(i);
-//  }
-//
-//  // Attach data pointer to ImageCpu
-//  iu::ImageCpu_32f_C1 h_img(data, size[0], size[1], size[0]*sizeof(float), true);
-//  std::cout << "input image:" << std::endl;
-//  printImage(h_img);
-//
-//  // Copy to Gpu
-//  iu::ImageGpu_32f_C1 d_img(size);
-//  iu::copy(&h_img, &d_img);
-//
-//  // Create output image with half width
-//  iu::Size<2> halfsize = size;
-//  halfsize.width = halfsize.width/2 + 1;
-//  iu::ImageGpu_32f_C2 d_output_fourier(halfsize);
-//  iu::math::fill(d_output_fourier, make_float2(0,0));
-//  iu::ImageCpu_32f_C2 h_output_fourier(halfsize);
-//  iu::math::fill(h_output_fourier, make_float2(0,0));
-//
-//  // Perform fft2 real -> complex
-//  iu::math::fft::fft2(d_img, d_output_fourier);
-//  iu::copy(&d_output_fourier, &h_output_fourier);
-//  std::cout << "fourier transform:" << std::endl;
-//  printImage(h_output_fourier);
-//
-//  // Perform ifft2 complex -> real
-//  iu::math::fft::ifft2(d_output_fourier, d_img);
-//  iu::copy(&d_img, &h_img);
-//  std::cout << "output image == input image:" << std::endl;
-//  printImage(h_img);
-//
-//  delete[] data;
-//  std::cout << "DONE: FFT2 IMAGE FLOAT" << std::endl;
-//}
-//
-//void test_fft2_image_double()
-//{
-//  std::cout << "TEST: FFT2 IMAGE DOUBLE" << std::endl;
-//  iu::Size<2> size({5,10});
-//  const unsigned int numel = size.numel();
-//  double *data = new double[numel];
-//
-//  // Fill data pointer
-//  for (unsigned int i=0; i < size.numel(); i++)
-//  {
-//    data[i] = static_cast<double>(i);
-//  }
-//
-//  // Attach data pointer to ImageCpu
-//  iu::ImageCpu_64f_C1 h_img(data, size[0], size[1], size[0]*sizeof(double), true);
-//  std::cout << "input image:" << std::endl;
-//  printImage(h_img);
-//
-//  // Copy to Gpu
-//  iu::ImageGpu_64f_C1 d_img(size);
-//  iu::copy(&h_img, &d_img);
-//
-//  // Create output image with half width
-//  iu::Size<2> halfsize = size;
-//  halfsize.width = halfsize.width/2 + 1;
-//  iu::ImageGpu_64f_C2 d_output_fourier(halfsize);
-//  iu::math::fill(d_output_fourier, make_double2(0,0));
-//  iu::ImageCpu_64f_C2 h_output_fourier(halfsize);
-//  iu::math::fill(h_output_fourier, make_double2(0,0));
-//
-//  // Perform fft2 real -> complex
-//  iu::math::fft::fft2(d_img, d_output_fourier);
-//  iu::copy(&d_output_fourier, &h_output_fourier);
-//  std::cout << "fourier transform:" << std::endl;
-//  printImage(h_output_fourier);
-//
-//  // Perform ifft2 complex -> real
-//  iu::math::fft::ifft2(d_output_fourier, d_img);
-//  iu::copy(&d_img, &h_img);
-//  std::cout << "output image == input image:" << std::endl;
-//  printImage(h_img);
-//
-//  delete[] data;
-//  std::cout << "DONE: FFT2 IMAGE DOUBLE" << std::endl;
-//}
-//
-//void test_fft2_volume_float()
-//{
-//  unsigned int slice = 2;
-//  std::cout << "TEST: FFT2 VOLUME FLOAT" << std::endl;
-//  iu::Size<3> size({5,10,4});
-//  const unsigned int numel = size.numel();
-//  float *data = new float[numel];
-//
-//  // Fill data pointer
-//  for (unsigned int i=0; i < size.numel(); i++)
-//  {
-//    data[i] = static_cast<float>(i);
-//  }
-//
-//  // Attach data pointer to VolumeCpu
-//  iu::VolumeCpu_32f_C1 h_img(data, size[0], size[1], size[2], size[0]*sizeof(float), true);
-//  std::cout << "input volume:" << std::endl;
-//  printVolume(h_img, 2);
-//
-//  // Copy to Gpu
-//  iu::VolumeGpu_32f_C1 d_img(size);
-//  iu::copy(&h_img, &d_img);
-//
-//  // Create output image with half width
-//  iu::Size<3> halfsize = size;
-//  halfsize.width = halfsize.width/2 + 1;
-//  iu::VolumeGpu_32f_C2 d_output_fourier(halfsize);
-//  iu::math::fill(d_output_fourier, make_float2(0,0));
-//  iu::VolumeCpu_32f_C2 h_output_fourier(halfsize);
-//  iu::math::fill(h_output_fourier, make_float2(0,0));
-//
-//  // Perform fft2 real -> complex
-//  iu::math::fft::fft2(d_img, d_output_fourier);
-//  iu::copy(&d_output_fourier, &h_output_fourier);
-//  std::cout << "fourier transform:" << std::endl;
-//  printVolume(h_output_fourier, slice);
-//
-//  // Perform ifft2 complex -> real
-//  iu::math::fft::ifft2(d_output_fourier, d_img);
-//  iu::copy(&d_img, &h_img);
-//  std::cout << "output volume == input volume:" << std::endl;
-//  printVolume(h_img, slice);
-//
-//  delete[] data;
-//  std::cout << "DONE: FFT2 VOLUME FLOAT" << std::endl;
-//}
-//
-//void test_fft2_volume_double()
-//{
-//  unsigned int slice = 2;
-//  std::cout << "TEST: FFT2 VOLUME DOUBLE" << std::endl;
-//  iu::Size<3> size({5,10,4});
-//  const unsigned int numel = size.numel();
-//  double *data = new double[numel];
-//
-//  // Fill data pointer
-//  for (unsigned int i=0; i < size.numel(); i++)
-//  {
-//    data[i] = static_cast<double>(i);
-//  }
-//
-//  // Attach data pointer to VolumeCpu
-//  iu::VolumeCpu_64f_C1 h_img(data, size[0], size[1], size[2], size[0]*sizeof(double), true);
-//  std::cout << "input volume:" << std::endl;
-//  printVolume(h_img, 2);
-//
-//  // Copy to Gpu
-//  iu::VolumeGpu_64f_C1 d_img(size);
-//  iu::copy(&h_img, &d_img);
-//
-//  // Create output image with half width
-//  iu::Size<3> halfsize = size;
-//  halfsize.width = halfsize.width/2 + 1;
-//  iu::VolumeGpu_64f_C2 d_output_fourier(halfsize);
-//  iu::math::fill(d_output_fourier, make_double2(0,0));
-//  iu::VolumeCpu_64f_C2 h_output_fourier(halfsize);
-//  iu::math::fill(h_output_fourier, make_double2(0,0));
-//
-//  // Perform fft2 real -> complex
-//  iu::math::fft::fft2(d_img, d_output_fourier);
-//  iu::copy(&d_output_fourier, &h_output_fourier);
-//  std::cout << "fourier transform:" << std::endl;
-//  printVolume(h_output_fourier, slice);
-//
-//  // Perform ifft2 complex -> real
-//  iu::math::fft::ifft2(d_output_fourier, d_img);
-//  iu::copy(&d_img, &h_img);
-//  std::cout << "output volume == input volume:" << std::endl;
-//  printVolume(h_img, slice);
-//
-//  delete[] data;
-//  std::cout << "DONE: FFT2 VOLUME DOUBLE" << std::endl;
-//}
+void test_fft2_image_float()
+{
+  std::cout << "TEST: FFT2 IMAGE FLOAT" << std::endl;
+  iu::Size<2> size({5,10});
+  const unsigned int numel = size.numel();
+  float *data = new float[numel];
+
+  // Fill data pointer
+  for (unsigned int i=0; i < size.numel(); i++)
+  {
+    data[i] = static_cast<float>(i);
+  }
+
+  // Attach data pointer to ImageCpu
+  iu::ImageCpu_32f_C1 h_img(data, size[0], size[1], size[0]*sizeof(float), true);
+  std::cout << "input image:" << std::endl;
+  printImage(h_img);
+
+  // Copy to Gpu
+  iu::ImageGpu_32f_C1 d_img(size);
+  iu::copy(&h_img, &d_img);
+
+  // Create output image with half width
+  iu::Size<2> halfsize = size;
+  halfsize.width = halfsize.width/2 + 1;
+  iu::ImageGpu_32f_C2 d_output_fourier(halfsize);
+  iu::math::fill(d_output_fourier, make_float2(0,0));
+  iu::ImageCpu_32f_C2 h_output_fourier(halfsize);
+  iu::math::fill(h_output_fourier, make_float2(0,0));
+
+  // Perform fft2 real -> complex
+  iu::math::fft::fft2(d_img, d_output_fourier);
+  iu::copy(&d_output_fourier, &h_output_fourier);
+  std::cout << "fourier transform:" << std::endl;
+  printImage(h_output_fourier);
+
+  // Perform ifft2 complex -> real
+  iu::math::fft::ifft2(d_output_fourier, d_img);
+  iu::copy(&d_img, &h_img);
+  std::cout << "output image == input image:" << std::endl;
+  printImage(h_img);
+
+  delete[] data;
+  std::cout << "DONE: FFT2 IMAGE FLOAT" << std::endl;
+}
+
+void test_fft2_image_double()
+{
+  std::cout << "TEST: FFT2 IMAGE DOUBLE" << std::endl;
+  iu::Size<2> size({5,10});
+  const unsigned int numel = size.numel();
+  double *data = new double[numel];
+
+  // Fill data pointer
+  for (unsigned int i=0; i < size.numel(); i++)
+  {
+    data[i] = static_cast<double>(i);
+  }
+
+  // Attach data pointer to ImageCpu
+  iu::ImageCpu_64f_C1 h_img(data, size[0], size[1], size[0]*sizeof(double), true);
+  std::cout << "input image:" << std::endl;
+  printImage(h_img);
+
+  // Copy to Gpu
+  iu::ImageGpu_64f_C1 d_img(size);
+  iu::copy(&h_img, &d_img);
+
+  // Create output image with half width
+  iu::Size<2> halfsize = size;
+  halfsize.width = halfsize.width/2 + 1;
+  iu::ImageGpu_64f_C2 d_output_fourier(halfsize);
+  iu::math::fill(d_output_fourier, make_double2(0,0));
+  iu::ImageCpu_64f_C2 h_output_fourier(halfsize);
+  iu::math::fill(h_output_fourier, make_double2(0,0));
+
+  // Perform fft2 real -> complex
+  iu::math::fft::fft2(d_img, d_output_fourier);
+  iu::copy(&d_output_fourier, &h_output_fourier);
+  std::cout << "fourier transform:" << std::endl;
+  printImage(h_output_fourier);
+
+  // Perform ifft2 complex -> real
+  iu::math::fft::ifft2(d_output_fourier, d_img);
+  iu::copy(&d_img, &h_img);
+  std::cout << "output image == input image:" << std::endl;
+  printImage(h_img);
+
+  delete[] data;
+  std::cout << "DONE: FFT2 IMAGE DOUBLE" << std::endl;
+}
+
+void test_fft2_volume_float()
+{
+  unsigned int slice = 2;
+  std::cout << "TEST: FFT2 VOLUME FLOAT" << std::endl;
+  iu::Size<3> size({5,10,4});
+  const unsigned int numel = size.numel();
+  float *data = new float[numel];
+
+  // Fill data pointer
+  for (unsigned int i=0; i < size.numel(); i++)
+  {
+    data[i] = static_cast<float>(i);
+  }
+
+  // Attach data pointer to VolumeCpu
+  iu::VolumeCpu_32f_C1 h_img(data, size[0], size[1], size[2], size[0]*sizeof(float), true);
+  std::cout << "input volume:" << std::endl;
+  printVolume(h_img, 2);
+
+  // Copy to Gpu
+  iu::VolumeGpu_32f_C1 d_img(size);
+  iu::copy(&h_img, &d_img);
+
+  // Create output image with half width
+  iu::Size<3> halfsize = size;
+  halfsize.width = halfsize.width/2 + 1;
+  iu::VolumeGpu_32f_C2 d_output_fourier(halfsize);
+  iu::math::fill(d_output_fourier, make_float2(0,0));
+  iu::VolumeCpu_32f_C2 h_output_fourier(halfsize);
+  iu::math::fill(h_output_fourier, make_float2(0,0));
+
+  // Perform fft2 real -> complex
+  iu::math::fft::fft2(d_img, d_output_fourier);
+  iu::copy(&d_output_fourier, &h_output_fourier);
+  std::cout << "fourier transform:" << std::endl;
+  printVolume(h_output_fourier, slice);
+
+  // Perform ifft2 complex -> real
+  iu::math::fft::ifft2(d_output_fourier, d_img);
+  iu::copy(&d_img, &h_img);
+  std::cout << "output volume == input volume:" << std::endl;
+  printVolume(h_img, slice);
+
+  delete[] data;
+  std::cout << "DONE: FFT2 VOLUME FLOAT" << std::endl;
+}
+
+void test_fft2_volume_double()
+{
+  unsigned int slice = 2;
+  std::cout << "TEST: FFT2 VOLUME DOUBLE" << std::endl;
+  iu::Size<3> size({5,10,4});
+  const unsigned int numel = size.numel();
+  double *data = new double[numel];
+
+  // Fill data pointer
+  for (unsigned int i=0; i < size.numel(); i++)
+  {
+    data[i] = static_cast<double>(i);
+  }
+
+  // Attach data pointer to VolumeCpu
+  iu::VolumeCpu_64f_C1 h_img(data, size[0], size[1], size[2], size[0]*sizeof(double), true);
+  std::cout << "input volume:" << std::endl;
+  printVolume(h_img, 2);
+
+  // Copy to Gpu
+  iu::VolumeGpu_64f_C1 d_img(size);
+  iu::copy(&h_img, &d_img);
+
+  // Create output image with half width
+  iu::Size<3> halfsize = size;
+  halfsize.width = halfsize.width/2 + 1;
+  iu::VolumeGpu_64f_C2 d_output_fourier(halfsize);
+  iu::math::fill(d_output_fourier, make_double2(0,0));
+  iu::VolumeCpu_64f_C2 h_output_fourier(halfsize);
+  iu::math::fill(h_output_fourier, make_double2(0,0));
+
+  // Perform fft2 real -> complex
+  iu::math::fft::fft2(d_img, d_output_fourier);
+  iu::copy(&d_output_fourier, &h_output_fourier);
+  std::cout << "fourier transform:" << std::endl;
+  printVolume(h_output_fourier, slice);
+
+  // Perform ifft2 complex -> real
+  iu::math::fft::ifft2(d_output_fourier, d_img);
+  iu::copy(&d_img, &h_img);
+  std::cout << "output volume == input volume:" << std::endl;
+  printVolume(h_img, slice);
+
+  delete[] data;
+  std::cout << "DONE: FFT2 VOLUME DOUBLE" << std::endl;
+}
 
 template<typename PixelType>
 void test_fft2_linmem2()
@@ -330,10 +330,10 @@ int main()
 {
     std::cout << "FFT test" << std::endl;
     // 2D real -> complex fft / complex -> real ifft
-//    test_fft2_image_float();
-//    test_fft2_image_double();
-//    test_fft2_volume_float();
-//    test_fft2_volume_double();
+    test_fft2_image_float();
+    test_fft2_image_double();
+    test_fft2_volume_float();
+    test_fft2_volume_double();
 
     test_fft2_linmem2<float>();
     test_fft2_linmem2<double>();

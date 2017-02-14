@@ -5,7 +5,7 @@
 #include <map>
 #include <typeinfo>
 #include <typeindex>
-#include "ndarray_exports.h"
+
 
 //_________________________memory__________________________________________________
 namespace memory{
@@ -83,12 +83,12 @@ namespace memory{
 	//... etc.
 	//________________
 	//! a pool of allocators, one of each type, constructed on first demand, host side
-	extern NDARRAY_EXPORTS std::map<size_t, base_allocator> allocators;
+	extern std::map<size_t, base_allocator> allocators;
 	struct ptr_info{
 		size_t size_bytes;
 		base_allocator * allocator;
 	};
-	extern NDARRAY_EXPORTS std::map<void *, ptr_info> journal;
+	extern std::map<void *, ptr_info> journal;
 	std::string journal_info(void * ptr);
 	template<class Allocator> static Allocator * get(){
 		size_t a = typeid(Allocator).hash_code();

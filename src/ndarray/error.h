@@ -5,8 +5,6 @@
 #include <iostream>
 #include <sstream>
 
-#include "defines.h"
-
 //_______________________error_stream____________________________________________________________
 //! error_stream -- throw an error message with file tag and stack trace info
 /* usage: throw error() << "something wrong with my_variable = " << my_variable << "\n" <<", thats bad.";
@@ -14,7 +12,7 @@
           runtime_check(a<0); // throws if condition is not satisfied
 */
 
-class error_stream : public std::exception, public host_stream{
+class error_stream : public std::exception{
 private:
 	std::string msg;
 public:
