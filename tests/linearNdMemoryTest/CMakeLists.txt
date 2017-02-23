@@ -18,4 +18,4 @@ include_directories(
 
 cuda_add_executable(linearNdMemoryTest ${SOURCES} ${HEADERS})
 target_link_libraries(linearNdMemoryTest iucore iumath)
-iu_add_test(mathTest)
+iu_add_test(linearNdMemoryTest)
