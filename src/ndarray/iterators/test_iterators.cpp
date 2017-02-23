@@ -1,5 +1,14 @@
 #include "ndarray_iu.h"
-//#include "ndarray_iterator.h"
+#include "ndarray_iterator.h"
+
+void test_iterator(){
+	ndarray<float, 3> a;
+	a.create<memory::CPU>({10,20,30});
+	ndarray_iterator<float, 3, thrust::device> it(a);
+	//
+	it.increment();
+	it.dereference() = 2;
+};
 
 
 void foo(const iu::LinearDeviceMemory<float> & L){

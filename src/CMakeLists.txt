@@ -8,8 +8,11 @@ option(IU_BUILD_STATIC "Build static libs too." OFF)
 
 # general settings
 #set(CMAKE_DEBUG_POSTFIX "d")
-set(CMAKE_BUILD_TYPE Release)
-set(CUDA_PROPAGATE_HOST_FLAGS OFF)
+
+if(NOT CMAKE_BUILD_TYPE)
+	set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "Choose the type of build, options are: Debug Release RelWithDebInfo MinSizeRel." FORCE)
+endif()
+#set(CMAKE_CONFIGURATION_TYPES "Debug;RelWithDebInfo" CACHE STRING "Multiple Configurations" FORCE)
 
 file(TO_CMAKE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../cmake" OT_IU_CMAKE_MODULE_PATH)
 set(CMAKE_MODULE_PATH ${OT_IU_CMAKE_MODULE_PATH})
@@ -72,11 +75,8 @@ option(WITH_PYTHON "Use Python - include imageutilities <-> python interface. Re
 option(WITH_MATLAB "Use Matlab - include imageutilities <-> matlab interface. Requires matlab" OFF)
 endif(ANDROID)
 
-##-----------------------------------------------------------------------------
-## Compiler Flags (to be added on demand)
-IF(NOT WIN32)
-  set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-Wall -std=c++11")
-ENDIF(NOT WIN32)
+
+#------------- for compiler flags see cmake/compiler_settings.cmake.txt -----------------
 
 if(WITH_PYTHON)
     find_package(PythonLibs 2.7 REQUIRED)
@@ -427,11 +427,6 @@ endif(IU_BUILD_STATIC)
 set(IU_LIBS "") # variable where all libs that are built are saved
 set(IU_LIBS_STATIC "") # variable where all libs that are built are saved
 
-IF(NOT WIN32)
-set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} "-std=c++11")
-ENDIF(NOT WIN32)
-message("Compiler Flags NVCC: " ${CUDA_NVCC_FLAGS})
-
 ##-----------------------------------------------------------------------------
 ## documentation
 SET(DOXYGEN_OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/../doc/html/index.html)
@@ -451,16 +446,18 @@ ADD_CUSTOM_TARGET( apidoc
 
 
 ##-build ndarray---------------------------------------------------------------
-add_subdirectory(ndarray)
-message("NDARRAY_LIB" = ${NDARRAY_LIB})
-if(NOT NDARRAY_LIB)
-  set(IU_USE_NDARRAY OFF CACHE PATH "IU: Omit NDArray module." FORCE)
+	if(IU_USE_NDARRAY)
+		add_subdirectory(ndarray)
+	message("NDARRAY_LIB" = ${NDARRAY_LIB})
+	if(NOT NDARRAY_LIB)
+	  #set(IU_USE_NDARRAY OFF CACHE PATH "IU: Omit NDArray module." FORCE)
+	endif()
 endif()
 ##-----------------------------------------------------------------------------
 ## build core library
 set(IU_CORE_LIB iucore)
 
-cuda_add_library( ${IU_CORE_LIB} SHARED ${IU_HEADERS} ${IU_SOURCES})
+cuda_add_library( ${IU_CORE_LIB} ${IU_HEADERS} ${IU_SOURCES})
 set_target_properties(${IU_CORE_LIB} PROPERTIES
   DEFINE_SYMBOL IUCORE_DLL_EXPORTS
   VERSION ${IMAGEUTILITIES_VERSION}
@@ -484,7 +481,7 @@ message("additional iuio libs: ${ADDITIONAL_IUIO_DEPENDENCIES}")
 ## build io library
 set(IU_IO_LIB iuio)
 if(IU_USE_IO)
-  cuda_add_library( ${IU_IO_LIB} SHARED ${IU_IO_HEADERS} ${IU_IO_SOURCES} )
+  cuda_add_library( ${IU_IO_LIB} ${IU_IO_HEADERS} ${IU_IO_SOURCES} )
   set_target_properties(${IU_IO_LIB} PROPERTIES
     DEFINE_SYMBOL IUIO_DLL_EXPORTS
     VERSION ${IMAGEUTILITIES_VERSION}
@@ -495,7 +492,7 @@ if(IU_USE_IO)
     )
   set(IU_LIBS ${IU_LIBS} ${IU_IO_LIB})
   
-
+  message(${OpenCV_LIBS})
   if(IU_BUILD_STATIC)
     cuda_add_library( ${IU_IO_LIB}_static STATIC ${IU_IO_HEADERS} ${IU_IO_SOURCES} )
     target_link_libraries( ${IU_IO_LIB}_static
@@ -510,7 +507,7 @@ endif(IU_USE_IO)
 ## build gui library
 set(IU_GUI_LIB iugui)
 if(IU_USE_GUI)
-  cuda_add_library( ${IU_GUI_LIB} SHARED ${IU_GUI_HEADERS} ${IU_GUI_SOURCES})
+  cuda_add_library( ${IU_GUI_LIB} ${IU_GUI_HEADERS} ${IU_GUI_SOURCES})
   set_target_properties(${IU_GUI_LIB} PROPERTIES
     DEFINE_SYMBOL IUGUI_DLL_EXPORTS
     VERSION ${IMAGEUTILITIES_VERSION}
@@ -537,7 +534,7 @@ set(IU_MATH_LIB iumath)
 if(IU_USE_MATH)
   # The OPTIONS "-DIUMATH_DLL_EXPORTS" is used to manually propagate symbol to nvcc compiler
   # because CUDA_SET_PROPAGATE_HOST_FLAGS is turend off.
-  cuda_add_library( ${IU_MATH_LIB} SHARED ${IU_MATH_HEADERS} ${IU_MATH_SOURCES}
+  cuda_add_library( ${IU_MATH_LIB} ${IU_MATH_HEADERS} ${IU_MATH_SOURCES}
 	  OPTIONS "-DIUMATH_DLL_EXPORTS")
   set_target_properties(${IU_MATH_LIB} PROPERTIES
     DEFINE_SYMBOL IUMATH_DLL_EXPORTS

@@ -322,7 +322,7 @@ static inline void checkSize(const iu::LinearMemory<Ndim> *linmem1, const iu::Li
   }
 }
 
-template<unsigned int Ndim>
+template<int Ndim>
 static inline void checkSize(const iu::Size<Ndim> &size1, const iu::Size<Ndim> &size2,
                const char* file, const char* function, const int line)
 {
@@ -347,7 +347,8 @@ static inline void checkSize(const iu::Image *image, const iu::LinearMemory<1> *
   }
 }
 
-#define IU_SIZE_CHECK(variable1, variable2)  checkSize(variable1, variable2, __FILE__, __FUNCTION__, __LINE__)
 } // namespace iu
+
+#define IU_SIZE_CHECK(variable1, variable2)  iu::checkSize(variable1, variable2, __FILE__, __FUNCTION__, __LINE__)
 
 

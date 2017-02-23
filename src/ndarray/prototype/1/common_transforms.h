@@ -9,7 +9,7 @@ namespace nd{
 
 	//------ arithmetics -------
 	template<typename type> struct add_2r{
-		HOSTDEVICE void operator()(type & a, const type & b, const type & c)const{
+		__HOSTDEVICE__ void operator()(type & a, const type & b, const type & c)const{
 			a = b + c;
 		}
 	};
@@ -20,23 +20,23 @@ namespace nd{
 	}
 
 	template<typename type>
-	HOSTDEVICE void add_f(type & a, const type & b){
+	__HOSTDEVICE__ void add_f(type & a, const type & b){
 		a += b;
 	}
 
 	template<typename type> struct add_2{
-		HOSTDEVICE void operator()(type & a, const type & b)const{
+		__HOSTDEVICE__ void operator()(type & a, const type & b)const{
 			a += b;
 		}
 	};
 
 	template<typename type> struct scalar_ops{
-		static HOSTDEVICE void add(type & a, const type & b){
+		static __HOSTDEVICE__ void add(type & a, const type & b){
 			a += b;
 		}
 	};
 
-	//HOSTDEVICE void foo(int, int);
+	//__HOSTDEVICE__ void foo(int, int);
 
 	template<typename type, int dims>
 	void add(ndarray_ref<type,dims> & a, const ndarray_ref<type,dims> & b){
@@ -51,7 +51,7 @@ namespace nd{
 	// functors
 	template<typename type> struct add_const_f{
 		type w;
-		void HOSTDEVICE operator ()(type & a)const{
+		void __HOSTDEVICE__ operator ()(type & a)const{
 			a += w;
 		}
 	};
@@ -62,7 +62,7 @@ namespace nd{
 
 	template<typename type> struct madd2_f{
 		type w1, w2;
-		void HOSTDEVICE operator ()(type & a, const type & b, const type & c)const{
+		void __HOSTDEVICE__ operator ()(type & a, const type & b, const type & c)const{
 			a = b*w1 + c*w2;
 		}
 	};
@@ -77,7 +77,7 @@ namespace nd{
 
 
 	template<typename type, int dims>
-	void HOSTDEVICE grad_f(const intn<dims+1> & ii, kernel::ndarray_ref<type, dims+1> & a, const kernel::ndarray_ref<type,dims> & b){
+	void __HOSTDEVICE__ grad_f(const intn<dims+1> & ii, kernel::ndarray_ref<type, dims+1> & a, const kernel::ndarray_ref<type,dims> & b){
 		// how ii is bound to threads is determined by the kernel
 		int dim = ii[ dims ]; // last index component -> gradient direction, prefer unrolled
 		if( ii[dim] < a.size(dim)-1 ){ // index is in range for gradient
@@ -103,7 +103,7 @@ namespace nd{
 	//------ conversions-------------
 
 	template<typename T1, typename T2>
-	void HOSTDEVICE convert_f(T1 & a, const T2 & b){
+	void __HOSTDEVICE__ convert_f(T1 & a, const T2 & b){
 		a = T1(b);
 	}
 
@@ -117,7 +117,7 @@ namespace nd{
 	template<typename type, int dims> struct grad{
 		tstride<char> di[dims];
 		intn<dims> size;
-		void HOSTDEVICE operator () (const intn<dims> & ii, type * a, const type * b){ // b is zero stride extended
+		void __HOSTDEVICE__ operator () (const intn<dims> & ii, type * a, const type * b){ // b is zero stride extended
 			for(int dim=0; dim < dims-1; ++dim){
 				if(ii[dim] >= size[dim]-1 ) return;
 			};

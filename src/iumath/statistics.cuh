@@ -180,6 +180,24 @@ void normDiffL2(PitchedMemoryType<PixelType, Allocator<PixelType> >& src,
   norm = sqrt(thrust::get<1>(result));
 }
 
+template<template<typename, unsigned int > class LinearMemoryType, typename InputPixelType, typename OutputPixelType, unsigned int Ndim>
+void normDiffL2(LinearMemoryType<InputPixelType, Ndim >& src,
+                LinearMemoryType<InputPixelType, Ndim >& ref,
+                OutputPixelType& norm)
+{
+  OutputPixelType init = 0.0;  // initial value
+  diffsqr_linmem_transform_tuple<InputPixelType> unary_op;  // transformation operator
+  OutputPixelType result = thrust::transform_reduce(
+      thrust::make_zip_iterator(
+          thrust::make_tuple(src.begin(),
+                             ref.begin())),
+      thrust::make_zip_iterator(
+          thrust::make_tuple(src.end(),
+                             ref.end())),
+      unary_op, init, thrust::plus<OutputPixelType>());
+  norm = sqrt(result);
+}
+
 /** Calculate the L2-Norm \f$ \sqrt{\sum\limits_{i=1}^N ( x_i - y )^2}\f$
  *  where \f$ N \f$ is the total number of pixels.
  * \param[in] src Source array \f$ x \f$
@@ -206,6 +224,24 @@ void normDiffL2(PitchedMemoryType<PixelType, Allocator<PixelType> >& src,
                              thrust::counting_iterator<int>(0))),
       unary_op, init, binary_op);
   norm = sqrt(thrust::get<1>(result));
+}
+
+template<template<typename, unsigned int > class LinearMemoryType, typename InputPixelType, typename OutputPixelType, unsigned int Ndim>
+void normDiffL2(LinearMemoryType<InputPixelType, Ndim >& src,
+                InputPixelType& ref,
+                OutputPixelType& norm)
+{
+  OutputPixelType init = 0.0;  // initial value
+  diffsqr_linmem_transform_tuple<InputPixelType> unary_op;  // transformation operator
+  OutputPixelType result = thrust::transform_reduce(
+      thrust::make_zip_iterator(
+          thrust::make_tuple(src.begin(),
+                             thrust::constant_iterator<InputPixelType>(ref))),
+      thrust::make_zip_iterator(
+          thrust::make_tuple(src.end(),
+                             thrust::constant_iterator<InputPixelType>(ref))),
+      unary_op, init, thrust::plus<OutputPixelType>());
+  norm = sqrt(result);
 }
 
 /** Calculate the mean-squared error (MSE) \f$ \frac{\sum\limits_{i=1}^N ( x_i - y_i )^2}{N}\f$

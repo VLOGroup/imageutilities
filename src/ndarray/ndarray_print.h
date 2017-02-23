@@ -11,12 +11,6 @@
 #include <sstream>
 #endif
 
-#ifdef  __CUDA_ARCH__
-#define DECORATED __host__ __device__ __forceinline__
-#else
-#define DECORATED __host__ __device__
-#endif
-
 // ____________________prints____________________________________________
 template<class tstream, typename type>
 __host__ __device__ void print_array(tstream & ss, const char * s, type * A, int N, int debug_lvl = 1){
@@ -51,7 +45,7 @@ __host__  __device__ void print_array(tstream & ss, const char * s, const kernel
 };
 
 template<class tstream, typename type>
-DECORATED void print_array(tstream & ss, const char * s, const kernel::ndarray_ref<type, 2> & A, int debug_lvl = 1){
+__HOSTDEVICE__ void print_array(tstream & ss, const char * s, const kernel::ndarray_ref<type, 2> & A, int debug_lvl = 1){
 	if (debug_lvl <= DEBUG_LVL){
 		ss << s << "\n";
 		for (int i = 0; i < A.size(0); ++i){
@@ -66,7 +60,7 @@ DECORATED void print_array(tstream & ss, const char * s, const kernel::ndarray_r
 };
 
 template<class tstream, typename type>
-DECORATED void print_array(tstream & ss, const char * s, const kernel::ndarray_ref<type, 3> & A, int debug_lvl = 1){
+__HOSTDEVICE__ void print_array(tstream & ss, const char * s, const kernel::ndarray_ref<type, 3> & A, int debug_lvl = 1){
 	if (debug_lvl <= DEBUG_LVL){
 		ss << s << "\n";
 		for (int i = 0; i < A.size(2); ++i){
@@ -77,7 +71,7 @@ DECORATED void print_array(tstream & ss, const char * s, const kernel::ndarray_r
 }
 
 template<class tstream, typename type>
-DECORATED void print_array(tstream & ss, const char * s, const kernel::ndarray_ref<type, 4> & A, int debug_lvl = 1){
+__HOSTDEVICE__ void print_array(tstream & ss, const char * s, const kernel::ndarray_ref<type, 4> & A, int debug_lvl = 1){
 	if (debug_lvl <= DEBUG_LVL){
 		ss << s << "\n";
 		for (int i = 0; i < A.size(3); ++i){
@@ -94,13 +88,13 @@ DECORATED void print_array(tstream & ss, const char * s, const kernel::ndarray_r
 //_________________________default pf_stream printing_______________________
 
 template<typename type>
-DECORATED void print_array(const char * s, type * A, int N, int debug_lvl = 1){
+__HOSTDEVICE__ void print_array(const char * s, type * A, int N, int debug_lvl = 1){
 	pf_stream S1(debug_lvl);
 	print_array(S1, s, A, N, debug_lvl);
 }
 
 template<typename type, int dims>
-DECORATED void print_array(const char * s, const kernel::ndarray_ref<type, dims> & A, int debug_lvl = 1){
+__HOSTDEVICE__ void print_array(const char * s, const kernel::ndarray_ref<type, dims> & A, int debug_lvl = 1){
 	pf_stream S1(debug_lvl);
 	print_array(S1, s, A, debug_lvl);
 }

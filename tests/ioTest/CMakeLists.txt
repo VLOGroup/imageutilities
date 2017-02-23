@@ -13,9 +13,8 @@ set(HEADRES
 #	${CMAKE_CURRENT_SOURCE_DIR}
 #)
 
-if(NOT WIN32)
-  set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++11")
-endif(NOT WIN32)
+#------------- for compiler flags see cmake/compiler_settings.cmake.txt -----------------
+#========================================================================================
 
 cuda_add_executable(ioTest main.cpp)
 target_link_libraries(ioTest iucore iuio opencv_highgui)
