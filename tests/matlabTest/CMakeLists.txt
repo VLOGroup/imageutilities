@@ -21,5 +21,11 @@ if(WIN32)
   SET_TARGET_PROPERTIES(matlabTest PROPERTIES LINK_FLAGS "/export:mexFunction")
 endif(WIN32)
 
-# copy python script to test folder
+# copy matlab script to test folder
 file(INSTALL matlabTestMex.m DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+
+# custom test targets to build & run
+# run executes the python script
+add_test(NAME matlabTest_build COMMAND "${CMAKE_COMMAND}" --build ${CMAKE_BINARY_DIR} --target matlabTest)# ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${target} )
+ADD_TEST(NAME matlabTest_run COMMAND ${MATLAB_EXECUTABLE} -nodisplay -nosplash -nodesktop -r "try, run('${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/matlabTestMex.m'), catch err, disp(err.message), exit(1), end, exit")
+SET_TESTS_PROPERTIES ( matlabTest_run PROPERTIES DEPENDS matlabTest_build)

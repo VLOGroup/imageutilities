@@ -91,6 +91,11 @@ if(WIN32)
     PATHS ${MATLAB_ROOT}
     PATH_SUFFIXES ${MATLAB_SEARCH_SUFFIX}
     )
+  find_program(MATLAB_EXECUTABLE
+    matlab
+    PATHS ${MATLAB_ROOT}
+    HINTS ${MATLAB_ROOT}/bin
+    )
   if(CMAKE_SIZEOF_VOID_P EQUAL 4)
     # Regular x86
       set(MATLAB_SUFFIX .mexw32)		
@@ -143,6 +148,12 @@ else( WIN32 )
     NO_DEFAULT_PATH
     PATH_SUFFIXES ${MATLAB_SEARCH_SUFFIX}
     )
+   message(${MATLAB_SEARCH_SUFFIX})
+  find_program(MATLAB_EXECUTABLE
+    NAMES matlab
+    PATHS ${MATLAB_ROOT}
+    HINTS ${MATLAB_ROOT}/bin
+    )
   FIND_PATH(MATLAB_INCLUDE_DIR
     "mex.h"
     ${MATLAB_ROOT}/extern/include
@@ -156,7 +167,8 @@ set(MATLAB_LIBRARIES
   ${MATLAB_ENG_LIBRARY}
 )
 message("Determined Suffix: ${MATLAB_SUFFIX}")
-message("Found Libraries: ${MATLAB_LIBRARIES}")
+message("Found Matlab Libraries: ${MATLAB_LIBRARIES}")
+message("Found Matlab Executable: ${MATLAB_EXECUTABLE}")
 if(MATLAB_INCLUDE_DIR AND MATLAB_LIBRARIES)
   set(MATLAB_FOUND 1)
 endif(MATLAB_INCLUDE_DIR AND MATLAB_LIBRARIES)
@@ -170,5 +182,6 @@ MARK_AS_ADVANCED(
   MATLAB_FOUND
   MATLAB_ROOT
   MATLAB_SUFFIX
+  MATLAB_EXECUTABLE
 )
 
