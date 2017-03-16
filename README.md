@@ -19,6 +19,8 @@ $ make
 $ make install
 ~~~
 
+The `iugui` module needs QT5 (>=5.6), the `iuio` module OpenCV 2.4 or 3.x.
+
 Documentation
 -------------
 A pre-built documentation is available [here](https://vlogroup.github.io/imageutilities/).
