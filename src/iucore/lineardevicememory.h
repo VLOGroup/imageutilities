@@ -275,9 +275,15 @@ public:
         const unsigned int& linear_idx, unsigned int& idx0, unsigned int& idx1,
         unsigned int& idx2)
     {
+      /*
       idx2 = linear_idx / stride_[2];
       idx1 = (linear_idx % stride_[2]) / stride_[1];
       idx0 = (linear_idx % stride_[2]) % stride_[1];
+      */
+
+      idx2 = linear_idx / stride_[2];
+      idx1 = (linear_idx - idx2*stride_[2]) / stride_[1];
+      idx0 = linear_idx - (idx2*stride_[2] + idx1*stride_[1]);
     }
 
     /** Get pixel position for a linear index

@@ -41,7 +41,7 @@ template<typename type, int dims> void operator >> (std::fstream & ff, ndarray<t
 }
 
 //! file i/o
-template<typename type, int dims> void operator << (std::fstream & ff, ndarray<type,dims> & A){
+template<typename type, int dims> void operator << (std::fstream & ff, const ndarray<type,dims> & A){
 	intn<dims> sz = A.size();
 	for(int d=0; d<dims; ++d){
 		ff << sz[d];
@@ -60,7 +60,7 @@ template<typename type, int dims> void operator << (std::fstream & ff, ndarray<t
 }
 
 //! file i/o
-template<typename type, int dims> void dlm_read(ndarray<type,dims> & A, std::string fname){
+template<typename type, int dims> void dlm_read(const ndarray<type,dims> & A, std::string fname){
 	std::fstream ff;
 	ff.open(fname,std::fstream::in);
 	if(!ff.is_open()){
@@ -71,7 +71,7 @@ template<typename type, int dims> void dlm_read(ndarray<type,dims> & A, std::str
 }
 
 //! file i/o
-template<typename type, int dims> void dlm_write(ndarray_ref<type,dims> & A, std::string fname){
+template<typename type, int dims> void dlm_write(const ndarray_ref<type,dims> & A, std::string fname){
 	std::fstream ff;
 	ff.open(fname,std::fstream::out);
 	if(!ff.is_open()){
