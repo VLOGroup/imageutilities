@@ -260,8 +260,13 @@ public:
     __device__ typename std::enable_if<(Ndim == 2), ResultType>::type getPosition(
         const unsigned int& linear_idx, unsigned int& idx0, unsigned int& idx1)
     {
+      /*
       idx1 = linear_idx / stride_[1];
       idx0 = linear_idx % stride_[1];
+      */
+
+      idx1 = linear_idx / stride_[1];
+      idx0 = linear_idx - idx1*stride_[1];
     }
 
     /** Get pixel position for a linear index
@@ -298,10 +303,17 @@ public:
         const unsigned int& linear_idx, unsigned int& idx0, unsigned int& idx1,
         unsigned int& idx2, unsigned int& idx3)
     {
+      /*
       idx3 = linear_idx / stride_[3];
       idx2 = (linear_idx % stride_[3]) / stride_[2];
       idx1 = ((linear_idx % stride_[3]) % stride_[2]) / stride_[1];
       idx0 = ((linear_idx % stride_[3]) % stride_[2]) % stride_[1];
+      */
+
+      idx3 = linear_idx / stride_[2];
+      idx2 = (linear_idx - idx3*stride_[3]) / stride_[2];
+      idx1 = (linear_idx - (idx3*stride_[3] + idx2*stride_[2])) / stride_[1];
+      idx0 = linear_idx - (idx3*stride_[3] + idx2*stride_[2] + idx1*stride_[1]);
     }
 
     /** Get pixel position for a linear index
@@ -317,11 +329,19 @@ public:
         const unsigned int& linear_idx, unsigned int& idx0, unsigned int& idx1,
         unsigned int& idx2, unsigned int& idx3, unsigned int& idx4)
     {
+      /*
       idx4 = linear_idx / stride_[4];
       idx3 = (linear_idx % stride_[4]) / stride_[3];
       idx2= ((linear_idx % stride_[4]) % stride_[3]) / stride_[2];
       idx1 = (((linear_idx % stride_[4]) % stride_[3]) % stride_[2]) / stride_[1];
       idx0 = (((linear_idx % stride_[4]) % stride_[3]) % stride_[2]) % stride_[1];
+      */
+
+      idx4 = linear_idx / stride_[4];
+      idx3 = (linear_idx - idx4*stride_[4]) / stride_[3];
+      idx2 = (linear_idx - (idx4*stride_[4] + idx3*stride_[3])) / stride_[2];
+      idx1 = (linear_idx - (idx4*stride_[4] + idx3*stride_[3] + idx2*stride_[2])) / stride_[1];
+      idx0 = linear_idx - (idx4*stride_[4] + idx3*stride_[3] + idx2*stride_[2] + idx1*stride_[1]);
     }
 
     /** Convert pixel position to linear index
