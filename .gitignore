@@ -144,3 +144,4 @@ lib/ndarray.dll
 *.DS_Store
 
 include/ndarray_exports.h
+Default/

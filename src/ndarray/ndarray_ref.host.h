@@ -85,6 +85,9 @@ public:
 		set_defaults();
 		flag_bits._access = policy;
 	};
+	ndarray_flags(ndarray_flags::access a){
+		flag_bits._access = a;
+	};
 	ndarray_flags & operator = (const ndarray_flags & b) = default;
 	void set_defaults(){
 		flag_bits._access = no_access;
@@ -614,10 +617,10 @@ public: // operations
 	ndarray_ref<type, dims> reshape_ascending() const = delete;
 	//! reshape to a new size / dimension
 	template<int dims2>
-	ndarray_ref<type, dims2> reshape(const intn<dims2> & sz);
+	ndarray_ref<type, dims2> reshape(const intn<dims2> & sz)const;
 	//! reshape alias
 	template<typename... Args>
-	ndarray_ref<type, sizeof...(Args)> reshape(Args... args){
+	ndarray_ref<type, sizeof...(Args)> reshape(Args... args)const{
 		return reshape(intn<sizeof...(Args)>{args...});
 	}
 public: // recast and slicing
@@ -756,7 +759,7 @@ ndarray_ref<type, dims> ndarray_ref<type, dims>::reshape_ascending() const {
 //! reshape to a new size / dimension
 template<typename type, int dims>
 template<int dims2>
-ndarray_ref<type, dims2> ndarray_ref<type, dims>::reshape(const intn<dims2> & sz2){
+ndarray_ref<type, dims2> ndarray_ref<type, dims>::reshape(const intn<dims2> & sz2)const{
 	//throw_error("not implemented");
 	//product of sizes must match
 	runtime_check(size().prod() == sz2.prod()) << "cannot reshape - different number of elements";

@@ -161,6 +161,8 @@ public: //_________________ memory stuff
 	void clear(){
 		if (allocated()){
 			allocator().deallocate(ptr());
+			ptr() = 0;
+			size() = 0;
 		}
 	}
 	//
