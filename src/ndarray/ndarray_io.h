@@ -8,7 +8,7 @@
 #include <fstream>
 
 
-void eat_delim(std::fstream & ff){
+inline void eat_delim(std::fstream & ff){
 	while (!ff.eof() && (ff.peek() == ',' || ff.peek() == '\n' || ff.peek() == '\r' || ff.peek()==' '))ff.ignore();
 };
 
