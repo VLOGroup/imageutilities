@@ -324,6 +324,18 @@ ndarray_ref<type, dims> & operator += (ndarray_ref<type, dims> && a, type val){
 	return a+=val;
 }
 
+//! a -= val
+template<typename type, int dims>
+ndarray_ref<type, dims> & operator -= (ndarray_ref<type, dims> & a, type val){
+	return a += (-val);
+};
+
+//! &&a -= val
+template<typename type, int dims>
+ndarray_ref<type, dims> & operator -= (ndarray_ref<type, dims> && a, type val){
+	return a-=val;
+}
+
 //! a *= val
 template<typename type, int dims> __NOINLINE__
 ndarray_ref<type, dims> & operator *= (ndarray_ref<type, dims> & a, type val);

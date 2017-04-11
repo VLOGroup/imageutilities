@@ -2,6 +2,7 @@
 
 #include "ndarray_ref.host.h"
 #include "ndarray_mem.h"
+#include "ndarray_op.h"
 #include <string>
 #include <iostream>
 #include <sstream>
@@ -48,14 +49,16 @@ template<typename type, int dims> void dlm_read(ndarray<type,dims> & A, std::fst
 	};
 	//std::cout << "created " << A << "\n";
 	intn<2> sz2(A.size()[0], A.size().prod() / A.size()[0]); // reshape as 2D, keep dim 0
-	auto A1 = A.reshape(sz2);
+	//auto A1 = A.reshape(sz2);
 	//std::cout<< "A1=" << A1 << "\n";
-	for(int i=0; i < A1.size()[0]; ++i){
-		for(int j=0; j< A1.size()[1]; ++j){
+	for(int i=0; i < sz2[0]; ++i){
+		for(int j=0; j< sz2[1]; ++j){
 			float val;
 			ff >> val;
 			//if(i< 4 && j< 4)std::cout << val << ">> A1(" << i <<"," << j << ")\n";
-			A1(i,j) = val;
+			//A1(i,j) = val;
+			intn<dims> ii = A.size().integer_to_index(i + j*sz2[0]);
+			A(ii) = val;
 			eat_delim(ff);
 		};
 	};
@@ -85,11 +88,13 @@ template<typename type, int dims> void dlm_write(const ndarray_ref<type,dims> & 
 		cA << A;
 		pA = cA;
 	};
-	auto A1 = pA.reshape(sz2);
-	for(int i=0; i < A1.size()[0]; ++i){
-		for(int j=0; j< A1.size()[1]; ++j){
-			ff << A1(i,j);
-			if(j< A1.size()[1]-1) ff << ", ";
+	//auto A1 = pA.reshape(sz2);
+	//std::cout << "A1=" << A1 <<"\n";
+	for(int i=0; i < sz2[0]; ++i){
+		for(int j=0; j< sz2[1]; ++j){
+			intn<dims> ii = A.size().integer_to_index(i + j*sz2[0]);
+			ff << pA(ii);
+			if(j< sz2[1]-1) ff << ", ";
 		};
 		ff << "\n";
 	};
