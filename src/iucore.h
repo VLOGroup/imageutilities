@@ -209,6 +209,12 @@ IUCORE_DLLAPI void copy(const LinearHostMemory_64f_C2* src, LinearDeviceMemory_6
 IUCORE_DLLAPI void copy(const LinearHostMemory_64f_C3* src, LinearDeviceMemory_64f_C3* dst);
 IUCORE_DLLAPI void copy(const LinearHostMemory_64f_C4* src, LinearDeviceMemory_64f_C4* dst);
 
+IUCORE_DLLAPI void copy(const LinearHostMemory<unsigned char, 2>* src, LinearDeviceMemory<unsigned char, 2>* dst);
+IUCORE_DLLAPI void copy(const LinearHostMemory<unsigned char, 3>* src, LinearDeviceMemory<unsigned char, 3>* dst);
+IUCORE_DLLAPI void copy(const LinearHostMemory<unsigned char, 4>* src, LinearDeviceMemory<unsigned char, 4>* dst);
+IUCORE_DLLAPI void copy(const LinearHostMemory<unsigned char, 5>* src, LinearDeviceMemory<unsigned char, 5>* dst);
+
+
 IUCORE_DLLAPI void copy(const LinearHostMemory<float, 2>* src, LinearDeviceMemory<float, 2>* dst);
 IUCORE_DLLAPI void copy(const LinearHostMemory<float, 3>* src, LinearDeviceMemory<float, 3>* dst);
 IUCORE_DLLAPI void copy(const LinearHostMemory<float, 4>* src, LinearDeviceMemory<float, 4>* dst);
@@ -767,6 +773,9 @@ IUCORE_DLLAPI void cubicBSplinePrefilter(iu::ImageGpu_32f_C1* srcdst);
  * \note The bcubic_bspline_prefilter yields sharper results when switched on. Note that this only works nicely with a scale_factor=0.5f.
  */
 IUCORE_DLLAPI void reduce(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
+                          IuInterpolationType interpolation = IU_INTERPOLATE_LINEAR,
+                          bool gauss_prefilter = true);
+IUCORE_DLLAPI void reduce(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst,
                           IuInterpolationType interpolation = IU_INTERPOLATE_LINEAR,
                           bool gauss_prefilter = true);
 

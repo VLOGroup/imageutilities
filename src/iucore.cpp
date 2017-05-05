@@ -141,6 +141,11 @@ void copy(const LinearHostMemory_64f_C2* src, LinearDeviceMemory_64f_C2* dst){ i
 void copy(const LinearHostMemory_64f_C3* src, LinearDeviceMemory_64f_C3* dst){ iuprivate::copy(src,dst); }
 void copy(const LinearHostMemory_64f_C4* src, LinearDeviceMemory_64f_C4* dst){ iuprivate::copy(src,dst); }
 
+void copy(const LinearHostMemory<unsigned char, 2>* src, LinearDeviceMemory<unsigned char, 2>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<unsigned char, 3>* src, LinearDeviceMemory<unsigned char, 3>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<unsigned char, 4>* src, LinearDeviceMemory<unsigned char, 4>* dst){ iuprivate::copy(src,dst); }
+void copy(const LinearHostMemory<unsigned char, 5>* src, LinearDeviceMemory<unsigned char, 5>* dst){ iuprivate::copy(src,dst); }
+
 void copy(const LinearHostMemory<float, 2>* src, LinearDeviceMemory<float, 2>* dst){ iuprivate::copy(src,dst); }
 void copy(const LinearHostMemory<float, 3>* src, LinearDeviceMemory<float, 3>* dst){ iuprivate::copy(src,dst); }
 void copy(const LinearHostMemory<float, 4>* src, LinearDeviceMemory<float, 4>* dst){ iuprivate::copy(src,dst); }
@@ -644,6 +649,12 @@ void reduce(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
             bool gauss_prefilter)
 {iuprivate::reduce(src, dst, interpolation, gauss_prefilter);}
 
+void reduce(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst,
+                          IuInterpolationType interpolation = IU_INTERPOLATE_LINEAR,
+                          bool gauss_prefilter = true)
+{
+    iuprivate::reduce(src, dst, interpolation, gauss_prefilter);
+}
 
 /*
   image prolongation

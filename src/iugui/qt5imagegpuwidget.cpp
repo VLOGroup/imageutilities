@@ -224,6 +224,7 @@ void Qt5ImageGpuWidget::update_image(iu::ImageGpu_8u_C1 *im)
     CUDA_CHECK_ERROR();
 
     doneCurrent();
+    update();
 }
 
 void Qt5ImageGpuWidget::update_image(ImageGpu_8u_C4 *im)
