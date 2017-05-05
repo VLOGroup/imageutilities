@@ -15,5 +15,10 @@ void reduce(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
             IuInterpolationType interpolation = IU_INTERPOLATE_LINEAR,
             bool gauss_prefilter = true);
 
+
+void reduce(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst,
+            IuInterpolationType interpolation = IU_INTERPOLATE_LINEAR,
+            bool gauss_prefilter = true);
+
 } // namespace iuprivate
 

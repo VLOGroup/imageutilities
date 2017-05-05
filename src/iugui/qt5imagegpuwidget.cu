@@ -89,9 +89,9 @@ void copy_to_PBO(iu::ImageGpu_8u_C1& img, iu::ImageGpu_8u_C4& pbo)
     dim3 dimGrid(iu::divUp(img.width(), dimBlock.x),
                  iu::divUp(img.height(), dimBlock.y));
 
-//    to_pbo_kernel <<< dimGrid, dimBlock >>> (img, pbo);
-    to_pbo_kernel1 <<< dimGrid, dimBlock >>> (img.data(), img.stride(), pbo.data(), pbo.stride(),
-                                              img.width(), img.height());
+    to_pbo_kernel <<< dimGrid, dimBlock >>> (img, pbo);
+//    to_pbo_kernel1 <<< dimGrid, dimBlock >>> (img.data(), img.stride(), pbo.data(), pbo.stride(),
+//                                              img.width(), img.height());
 }
 
 void copy_to_PBO(iu::ImageGpu_8u_C4& img, iu::ImageGpu_8u_C4& pbo)
