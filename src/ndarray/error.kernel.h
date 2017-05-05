@@ -3,6 +3,7 @@
 #include <cuda.h>
 #include "defines.h"
 #include <assert.h>
+#include <string>
 
 #ifndef DEBUG_LVL
 #define DEBUG_LVL 0

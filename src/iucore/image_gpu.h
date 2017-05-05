@@ -16,7 +16,7 @@ struct use_PixelType{
 	  }
 };
 
-#if (_MSC_VER > 1000) && (_MSC_VER <= 1800)
+#if (_MSC_VER > 1000) && (_MSC_VER <= 1900)
 #define __attribute__(A) /* do nothing */
 #endif
 

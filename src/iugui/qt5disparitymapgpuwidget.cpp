@@ -2,6 +2,9 @@
 #include <GL/glu.h>
 #include <cuda_gl_interop.h>
 
+#define _USE_MATH_DEFINES
+#include <math.h>
+
 // OpenGL error check macro
 #define GL_CHECK_ERROR() do { \
     GLenum err = glGetError(); \

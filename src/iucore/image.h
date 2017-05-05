@@ -1,6 +1,7 @@
 #pragma once
 
 #include "coredefs.h"
+#include "vector.h"
 
 #include <ostream>
 #include <typeinfo>

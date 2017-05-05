@@ -44,7 +44,7 @@ elseif (MSVC)
 	ADD_DEFINITIONS("/wd4267 /wd4800 /wd4996")
 	#set(CMAKE_VS_PLATFORM_TOOLSET "CTP_Nov2013")
 	ADD_DEFINITIONS("/Zi") #Generates complete debugging information
-	set(CUDA_NVCC_FLAGS "-expt-extended-lambda -ftemplate-backtrace-limit=2 -lineinfo")
+	set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -expt-extended-lambda -ftemplate-backtrace-limit=2 -lineinfo")
 	add_definitions("/D_ALLOW_KEYWORD_MACROS") # allow defining constexpr to old msvc version
 	if(BUILD_SHARED_LIBS)
 		add_definitions("/MD")
