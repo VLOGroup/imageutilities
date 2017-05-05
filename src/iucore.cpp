@@ -650,8 +650,8 @@ void reduce(const iu::ImageGpu_32f_C1* src, iu::ImageGpu_32f_C1* dst,
 {iuprivate::reduce(src, dst, interpolation, gauss_prefilter);}
 
 void reduce(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst,
-                          IuInterpolationType interpolation = IU_INTERPOLATE_LINEAR,
-                          bool gauss_prefilter = true)
+                          IuInterpolationType interpolation,
+                          bool gauss_prefilter)
 {
     iuprivate::reduce(src, dst, interpolation, gauss_prefilter);
 }
