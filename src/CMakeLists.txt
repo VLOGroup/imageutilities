@@ -1,4 +1,3 @@
-
 project(imageutilities_lib)
 cmake_minimum_required(VERSION 2.8)
 
@@ -69,9 +68,9 @@ option(IU_USE_IO "Including IO module." ON)
 option(IU_USE_GUI "Including GUI module." ON)
 option(IU_USE_MATH "Including Math module." ON)
 option(IU_USE_NDARRAY "Include NDArray module" ON)
-option(WITH_FLYCAPTURE2 "Use FlyCapture2 - build pgrvideosource class." ON)
+option(WITH_FLYCAPTURE2 "Use FlyCapture2 - build pgrvideosource class." OFF)
 option(WITH_OPENEXR "Use OpenEXR - build OpenEXRIO classes." ON)
-option(WITH_PYTHON "Use Python - include imageutilities <-> python interface. Requires numpy, boost.python and Eigen" ON)
+option(WITH_PYTHON "Use Python - include imageutilities <-> python interface. Requires numpy, boost.python and Eigen" OFF)
 option(WITH_MATLAB "Use Matlab - include imageutilities <-> matlab interface. Requires matlab" OFF)
 endif(ANDROID)
 
