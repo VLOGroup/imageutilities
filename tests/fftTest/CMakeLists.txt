@@ -6,6 +6,6 @@ include_directories(
 #========================================================================================
 
 cuda_add_executable(fftTest main.cu)
-target_link_libraries(fftTest iucore iumath) 
+xtarget_link_libraries(fftTest iucore iumath) 
 cuda_add_cufft_to_target(fftTest)
 iu_add_test(fftTest)

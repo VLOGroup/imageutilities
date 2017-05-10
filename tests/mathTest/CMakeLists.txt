@@ -17,5 +17,5 @@ include_directories(
 #========================================================================================
 
 cuda_add_executable(mathTest main.cpp)
-target_link_libraries(mathTest iucore iuio iumath)
+xtarget_link_libraries(mathTest iucore iuio iumath)
 iu_add_test(mathTest)

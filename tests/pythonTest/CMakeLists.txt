@@ -24,7 +24,7 @@ INCLUDE_DIRECTORIES( ${EIGEN3_INCLUDE_DIR} )
 
 # compile lib, this can be imported in python
 cuda_add_library(pyTest SHARED ${SOURCES})
-target_link_libraries(pyTest iucore ${Boost_LIBRARIES} ${PYTHON_LIBRARIES})
+xtarget_link_libraries(pyTest iucore ${Boost_LIBRARIES} ${PYTHON_LIBRARIES})
 
 if(WIN32)
     SET_TARGET_PROPERTIES(pyTest PROPERTIES PREFIX "lib")

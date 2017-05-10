@@ -62,12 +62,12 @@ elseif (MSVC)
 		add_flags(CUDA_NVCC_FLAGS "-Xcompiler /MT")
 	endif()
         if(BUILD_RELEASE OR CMAKE_BUILD_TYPE STREQUAL "Release" OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo" OR NOT CMAKE_BUILD_TYPE) #RELEASE
-		add_flags(CMAKE_CXX_FLAGS "/O2 /DNDEBUG /bigobj")
-		add_flags(CUDA_NVCC_FLAGS "-O2 -keep -src-in-ptx")
-		add_flags(CUDA_NVCC_FLAGS "-Xptxas -warn-lmem-usage -Xptxas -warn-spills")
+		add_flags(CMAKE_CXX_FLAGS_RELEASE "/O2 /DNDEBUG /bigobj")
+		add_flags(CUDA_NVCC_FLAGS_RELEASE "-O2 -keep -src-in-ptx")
+		add_flags(CUDA_NVCC_FLAGS_RELEASE "-Xptxas -warn-lmem-usage -Xptxas -warn-spills")
 	else() # DEBUG
 		# debug and and device code stack range checking
-		add_flags(CUDA_NVCC_FLAGS "-G -g -keep -src-in-ptx -Xptxas -g")
+		add_flags(CUDA_NVCC_FLAGS_DEBUG "-G -g -keep -src-in-ptx -Xptxas -g")
 	endif()
 
 endif()

@@ -11,7 +11,8 @@ ndarray_example.h
 #========================================================================================
 
 cuda_add_executable(ndarrayTest ${HEADERS} ${SOURCES})
-target_link_libraries(ndarrayTest iucore ndarray)
+xtarget_link_libraries(ndarrayTest iucore)
+xtarget_link_libraries(ndarrayTest ndarray)
 #iu_add_test(ndarrayTest_iu)
 
 iu_add_test(ndarrayTest)

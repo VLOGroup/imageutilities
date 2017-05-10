@@ -34,7 +34,7 @@ public:
 inline std::ostream & operator << (std::ostream & ss, options & O){
 	ss << "Options:\n";
 	for (options::iterator it = O.begin(); it != O.end(); ++it){
-		ss << it->first << ": " << it->second << "\n";
+		ss << it->first.c_str() << ": " << it->second << "\n";
 	};
 	return ss;
 }
@@ -76,8 +76,24 @@ public:
 	};
 };
 
-template<class type> toption<type>::operator type()const{
-	return (type)(*val);
+template <typename ValueType, typename Enable = void>
+class Extractor {
+public:
+	static ValueType extract(double value) {
+		return ValueType(value);
+	};
+};
+
+template <typename ValueType>
+class Extractor<ValueType, typename std::enable_if<std::is_enum<ValueType>::value>::type> {
+public:
+	static ValueType extract(double value) {
+		return ValueType(int(value));
+	};
+};
+
+template<class type> toption<type>::operator type()const {
+	return Extractor<type>::extract(*val);
 };
 
 template<> inline toption<bool>::operator bool()const{

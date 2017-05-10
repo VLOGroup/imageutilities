@@ -17,6 +17,6 @@ set(HEADRES
 #========================================================================================
 
 cuda_add_executable(ioTest main.cpp)
-target_link_libraries(ioTest iucore iuio opencv_highgui)
+xtarget_link_libraries(ioTest iucore iuio opencv_highgui)
 iu_add_test(ioTest)
 #add_dependencies(ioTest iucore)

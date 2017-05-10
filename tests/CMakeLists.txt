@@ -41,6 +41,43 @@ macro(iu_add_test target)
   SET_TESTS_PROPERTIES ( ${target}_run PROPERTIES DEPENDS ${target}_build)
 endmacro(iu_add_test)
 
+function (xtarget_link_libraries target libs) # same as target_link_libraries but with additional improvements to allow windows find the library at runtime
+	LIST(REMOVE_AT ARGV 0)
+	SET(LIBS ${ARGV}) # this is the hack around to pass in a list
+	target_link_libraries(${target} ${LIBS})
+
+	if(WIN32)
+		# create symbolic links / copy
+		FOREACH(lib ${LIBS})
+			get_property(T TARGET ${lib} PROPERTY TYPE)
+			#message(T="${T}")
+			if(${T} STREQUAL SHARED_LIBRARY)
+				set(LINK "$<TARGET_FILE_DIR:${target}>/$<TARGET_FILE_NAME:${lib}>")
+				set(TG "$<TARGET_FILE:${lib}>")
+				#delete old links
+				add_custom_command(TARGET ${target} PRE_BUILD COMMAND IF EXIST \"${LINK}\" rm -f \"${LINK}\")
+				# copy
+				#add_custom_command(TARGET ${target} POST_BUILD COMMAND ${MAKE_COMMAND} ARGS -E copy $<TARGET_FILE:${lib}> $<TARGET_FILE_DIR:${target}>)
+				# symlinks
+				add_custom_command(TARGET ${target} POST_BUILD COMMAND IF NOT EXIST \"${LINK}\" mklink \"${LINK}\" \"${TG}\")
+			endif()
+		ENDFOREACH()
+		# set paths in registry (global binding to target name - not recommended)
+		set(TFILE ".")
+		get_property(slibs TARGET ${target} PROPERTY all_libs)
+		set(LIBS ${slibs};${LIBS})
+		set_property(TARGET ${target} PROPERTY all_libs ${LIBS})
+		FOREACH(lib ${LIBS})
+			#message(${ffile})
+			#file(RELATIVE_PATH rel ${CMAKE_RUNTIME_OUTPUT_DIRECTORY} $<TARGET_FILE:${file}>)
+			#message(${rel})
+			set(TFILE "${TFILE};$<TARGET_LINKER_FILE_DIR:${lib}>")
+		ENDFOREACH()
+		#message(${TFILE})
+		#add_custom_command(TARGET ${target} POST_BUILD COMMAND  reg add "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\App Paths\\${target}.exe" /ve /d "$<TARGET_FILE:${target}>" /f )
+		#add_custom_command(TARGET ${target} POST_BUILD COMMAND  reg add "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\App Paths\\${target}.exe" /v "Path" /d "${TFILE}" /f )
+	endif()
+endfunction()
 
 add_subdirectory(coreTest_copy)
 if(WITH_PYTHON)
