@@ -128,6 +128,11 @@ void reduce(const iu::ImageGpu_32f_C4* src, iu::ImageGpu_32f_C4* dst,
                 IuInterpolationType interpolation,
                 bool gauss_prefilter)
 {
+  if (src->size() == dst->size())
+  {
+      iuprivate::copy(src, dst);
+      return;
+  }
   // temporary variable if there is some pre-filtering
   iu::ImageGpu_32f_C4* filtered = const_cast<iu::ImageGpu_32f_C4*>(src);
 
