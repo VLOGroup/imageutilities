@@ -30,7 +30,7 @@ public:
    * @param camId id of camera to initialize
    * @param gray if true, capture 8-bit grayscale, otherwise 24-bit RGB
    */
-  PGRSource(unsigned int camId=0, bool gray=true);
+  PGRSource(unsigned int camId=0, bool gray=true, bool use_format7=false);
   virtual ~PGRSource();
 
   /**
@@ -69,6 +69,7 @@ private:
 
   iuprivate::PGRCameraData* data_;
   bool gray_;
+  bool use_format7_;
 };
 
 /** \}  */ // end of videoIO

@@ -129,13 +129,14 @@ public:
    */
   PixelType* data(unsigned int offset = 0)
   {
-    if (offset >= this->numel())
-    {
-      std::stringstream msg;
-      msg << "Offset (" << offset << ") out of range (" << this->numel() << ").";
-      throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
-    }
-    return &(data_[offset]);
+      if (offset >= this->numel())
+      {
+          std::stringstream msg;
+          msg << "Offset (" << offset << ") out of range (" << this->numel() << ").";
+          throw IuException(msg.str(), __FILE__, __FUNCTION__, __LINE__);
+      }
+      return &(data_[offset]);
+
   }
 
   /** Returns a const pointer to the device buffer.
@@ -229,26 +230,40 @@ public:
     int* stride_;
 
     /** Constructor */
-    __host__ KernelData(const LinearDeviceMemory<PixelType, Ndim> &mem) :
-        data_(const_cast<PixelType*>(mem.data())), numel_(mem.numel())
+    __host__ KernelData(const LinearDeviceMemory<PixelType, Ndim> &mem)
     {
-      IU_CUDA_SAFE_CALL(cudaMalloc((void** )&size_, Ndim * sizeof(unsigned int)));
-      IU_CUDA_SAFE_CALL(
-          cudaMemcpy(size_, mem.size().ptr(), Ndim * sizeof(unsigned int),
-                     cudaMemcpyHostToDevice));
-      IU_CUDA_SAFE_CALL(cudaMalloc((void** )&stride_, Ndim * sizeof(unsigned int)));
-      IU_CUDA_SAFE_CALL(
-          cudaMemcpy(stride_, mem.stride().ptr(), Ndim * sizeof(unsigned int),
-                     cudaMemcpyHostToDevice));
+        if (mem.numel())
+        {
+            data_ = const_cast<PixelType*>(mem.data());
+            numel_ = mem.numel();
+            IU_CUDA_SAFE_CALL(cudaMalloc((void** )&size_, Ndim * sizeof(unsigned int)));
+            IU_CUDA_SAFE_CALL(
+                        cudaMemcpy(size_, mem.size().ptr(), Ndim * sizeof(unsigned int),
+                                   cudaMemcpyHostToDevice));
+            IU_CUDA_SAFE_CALL(cudaMalloc((void** )&stride_, Ndim * sizeof(unsigned int)));
+            IU_CUDA_SAFE_CALL(
+                        cudaMemcpy(stride_, mem.stride().ptr(), Ndim * sizeof(unsigned int),
+                                   cudaMemcpyHostToDevice));
+        }
+        else
+        {
+            data_ = nullptr;
+            numel_ = 0;
+            size_ = nullptr;
+            stride_ = nullptr;
+        }
     }
 
     /** Destructor */
     __host__ ~KernelData()
     {
-      IU_CUDA_SAFE_CALL(cudaFree(size_));
-      size_ = 0;
-      IU_CUDA_SAFE_CALL(cudaFree(stride_));
-      stride_ = 0;
+        if(numel_)
+        {
+            IU_CUDA_SAFE_CALL(cudaFree(size_));
+            size_ = 0;
+            IU_CUDA_SAFE_CALL(cudaFree(stride_));
+            stride_ = 0;
+        }
     }
 
     /** Get pixel position for a linear index

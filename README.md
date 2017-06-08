@@ -4,9 +4,9 @@ ImageUtilities - Bridge the gap between CPU and GPU
 Installation
 -------------
 
-- Set up environment variable `COMPUTE_CAPABILITY` with the CC of your CUDA-enabled GPU
+- Set up environment variable `COMPUTE_CAPABILITY` with the compute capability of your CUDA-enabled GPU (https://en.wikipedia.org/wiki/CUDA)
 - Set up environment variable `CUDA_SDK_ROOT_DIR` to point to the NVidia CUDA examples
-- Set up environment vaiable `IMAGEUTILITIES_ROOT` to point to the path of this directory
+- IMPORTANT: Set up environment variable `IMAGEUTILITIES_ROOT` to point to the path of this directory
 
 - To use the matlab wrapper, set up environment vaiable `MATLAB_ROOT` to point to matlab root directory
 
@@ -18,6 +18,8 @@ $ cmake ..
 $ make
 $ make install
 ~~~
+
+The `iugui` module needs QT5 (>=5.6), the `iuio` module OpenCV 2.4 or 3.x.
 
 Documentation
 -------------

@@ -8,10 +8,12 @@
 
 namespace iu {
 
-PGRSource::PGRSource(unsigned int camId, bool gray)
+PGRSource::PGRSource(unsigned int camId, bool gray, bool use_format7)
 {
   data_ = new iuprivate::PGRCameraData();
   gray_ = gray;
+  use_format7_ = use_format7;
+
 
   // initializes the camera, set width and height member variables
   if (!this->init(camId))
@@ -110,7 +112,22 @@ bool PGRSource::connectToCamera(unsigned int camId)
   if (gray_)
       error = data_->cam_->SetVideoModeAndFrameRate(FlyCapture2::VIDEOMODE_640x480Y8, FlyCapture2::FRAMERATE_30);
   else
-      error = data_->cam_->SetVideoModeAndFrameRate(FlyCapture2::VIDEOMODE_640x480RGB, FlyCapture2::FRAMERATE_30);
+  {
+      if (use_format7_)
+      {
+          FlyCapture2::Format7ImageSettings f7;
+          f7.mode = FlyCapture2::MODE_1;
+          f7.offsetX = 98; f7.offsetY = 74;
+          f7.width = 320; f7.height=240;
+          f7.pixelFormat = FlyCapture2::PIXEL_FORMAT_RGB8;
+          unsigned int packet_size = 1536;
+          error = data_->cam_->SetFormat7Configuration(&f7, packet_size);
+
+          //error = data_->cam_->SetVideoModeAndFrameRate(FlyCapture2::VIDEOMODE_FORMAT7, FlyCapture2::FRAMERATE_30);
+      }
+      else
+          error = data_->cam_->SetVideoModeAndFrameRate(FlyCapture2::VIDEOMODE_640x480RGB, FlyCapture2::FRAMERATE_30);
+  }
 
 
   if (error != FlyCapture2::PGRERROR_OK)
