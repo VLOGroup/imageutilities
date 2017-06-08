@@ -105,7 +105,7 @@ template<typename type, int dims> void dlm_read(ndarray<type,dims> & A, std::str
 	std::fstream ff;
 	ff.open(fname,std::fstream::in);
 	if(!ff.is_open()){
-		throw_error() << "file" << fname << " not found ";
+		throw_error("") << "file" << fname << " not found ";
 	};
 	dlm_read(A,ff,fl);
 	ff.close();
@@ -116,7 +116,7 @@ template<typename type, int dims> void dlm_write(const ndarray_ref<type,dims> & 
 	std::fstream ff;
 	ff.open(fname,std::fstream::out);
 	if(!ff.is_open()){
-		throw_error() << "file" << fname << " not opened";
+		throw_error("") << "file" << fname << " not opened";
 	};
 	dlm_write(A,ff);
 	ff.close();

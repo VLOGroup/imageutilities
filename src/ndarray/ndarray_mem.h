@@ -163,6 +163,7 @@ public: //_________________ memory stuff
 			allocator().deallocate(ptr());
 			ptr() = 0;
 			size() = 0;
+			al = 0;
 		}
 	}
 	//

@@ -10,47 +10,9 @@
 
 find_package(CUDA 5.0 REQUIRED)    # imageutiltites depend on cuda so we find it here
 
-# set compute capability from environment variable (directly useable as nvcc flag)
-if(NOT ANDROID)
-    if ("${CUDA_NVCC_FLAGS}" MATCHES "-arch")
-      message(WARNING "ImageUtilities detected nvcc compiler flag -arch is already set to ${CUDA_NVCC_FLAGS}, resetting it to CC $ENV{COMPUTE_CAPABILITY}!")
-      string(REGEX REPLACE "-arch=sm_[0-9]+" "" CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS})
-    endif()
-
-    if("$ENV{COMPUTE_CAPABILITY}" MATCHES "1.1")
-    message("A minimum of compute capability 3.0 and CUDA 5.0 is needed!")
-    elseif("$ENV{COMPUTE_CAPABILITY}" MATCHES "1.2")
-    message("A minimum of compute capability 3.0 and CUDA 5.0 is needed!")
-    elseif("$ENV{COMPUTE_CAPABILITY}" MATCHES "1.3")
-    message("A minimum of compute capability 3.0 and CUDA 5.0 is needed!")
-    elseif("$ENV{COMPUTE_CAPABILITY}" MATCHES "2.0")
-    message("A minimum of compute capability 3.0 and CUDA 5.0 is needed!")
-    elseif("$ENV{COMPUTE_CAPABILITY}" MATCHES "2.1")
-    message("A minimum of compute capability 3.0 and CUDA 5.0 is needed!")
-    elseif("$ENV{COMPUTE_CAPABILITY}" MATCHES "3.0")
-    set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -arch=sm_30")
-    elseif("$ENV{COMPUTE_CAPABILITY}" MATCHES "3.2")
-    set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -arch=sm_32")
-    elseif("$ENV{COMPUTE_CAPABILITY}" MATCHES "3.5")
-    set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -arch=sm_35")
-    elseif("$ENV{COMPUTE_CAPABILITY}" MATCHES "3.7")
-    set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -arch=sm_37")
-    elseif("$ENV{COMPUTE_CAPABILITY}" MATCHES "5.0")
-    set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -arch=sm_50")
-    elseif("$ENV{COMPUTE_CAPABILITY}" MATCHES "5.2")
-    set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -arch=sm_52")
-    else()
-    set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -arch=sm_30")
-    endif()
-else(NOT ANDROID)
-    set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -arch=sm_30 -target-cpu-arch=ARM -target-os-variant=Android")
-endif(NOT ANDROID)
-
-#------------- for compiler flags see cmake/compiler_settings.cmake.txt -----------------
-if(NOT CMAKE_BUILD_TYPE)
-	set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "Choose the type of build, options are: Debug Release RelWithDebInfo MinSizeRel." FORCE)
-endif()
-include(${CMAKE_CURRENT_LIST_DIR}/cmake/compiler_settings.cmake.txt)
+#------------- for compiler flags see included file---------------------------------
+include(${CMAKE_CURRENT_LIST_DIR}/iu_settings.cmake.txt)
+#-----------------------------------------------------------------------------------
 
 ### trouble if FindPackage(ImageutilitiesLight) is called multiple times with different IU_MODULES
 ### do the full check every times
