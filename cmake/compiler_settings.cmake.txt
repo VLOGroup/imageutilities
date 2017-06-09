@@ -43,7 +43,11 @@ elseif (MSVC)
 	# Disable Warning C4996: This function of variable may be unsafe. Consider using strerror_s instead.
 	ADD_DEFINITIONS("/wd4267 /wd4800 /wd4996")
 	#set(CMAKE_VS_PLATFORM_TOOLSET "CTP_Nov2013")
-	ADD_DEFINITIONS("/Zi") #Generates complete debugging information
+	add_flags(CMAKE_CXX_FLAGS "/Zi")
+	## ADD_DEFINITIONS("/Zi") #Generates complete debugging information
+	ADD_DEFINITIONS("/MP") #Multiprocessir Compilation
+	#Linker: Enable Debug Information
+	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /DEBUG")
 	set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -expt-extended-lambda -ftemplate-backtrace-limit=2 -lineinfo")
 	add_definitions("/D_ALLOW_KEYWORD_MACROS") # allow defining constexpr to old msvc version
 	if(BUILD_SHARED_LIBS)
