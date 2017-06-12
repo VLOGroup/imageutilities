@@ -6,6 +6,24 @@
 #include "ndarray.h"
 #include "options.h"
 
+//_________________redirect stdout to matlab_______________________
+class mystream : public std::streambuf
+{
+protected:
+	virtual std::streamsize xsputn(const char *s, std::streamsize n) { mexPrintf("%.*s", n, s); return n; }
+	virtual int overflow(int c = EOF) { if (c != EOF) { mexPrintf("%.1s", &c); } return 1; }
+};
+class scoped_redirect_cout
+{
+public:
+	scoped_redirect_cout() { old_buf = std::cout.rdbuf(); std::cout.rdbuf(&mout); }
+	~scoped_redirect_cout() { std::cout.rdbuf(old_buf); }
+private:
+	mystream mout;
+	std::streambuf *old_buf;
+};
+static scoped_redirect_cout mycout_redirect;
+//__________________________________________________________________
 
 class mx_exception : public std::exception{
 public:
@@ -123,7 +141,11 @@ template<typename type, int dims> ndarray_ref<type,dims>::ndarray_ref(const mxAr
 	const int ndims = mxGetNumberOfDimensions(A);
 	const int * sz = mxGetDimensions(A);
 	// if not enough dimensions to represent A throw exception
-	if((ndims>2 && dims<ndims) || (ndims==2 && dims==1 && sz[0]>1 && sz[1]>1)) throw mx_exception("Not enough dimensions to represent mxArray");
+	if (ndims == 2 && dims == 1) {
+		if(sz[0] > 1 && sz[1] > 1) throw mx_exception("Not enough dimensions to represent mxArray");
+	} else {
+		if (ndims != dims)  throw mx_exception(std::string("Dimensions ") + std::to_string(dims) + " expected instead of dimensions " + std::to_string(ndims) + " provided.");
+	}
 	int i0 = 0;
 	//handle row vectors:
 	intn<dims> Size;

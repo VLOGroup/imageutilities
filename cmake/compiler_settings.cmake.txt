@@ -48,6 +48,7 @@ elseif (MSVC)
 	ADD_DEFINITIONS("/MP") #Multiprocessir Compilation
 	#Linker: Enable Debug Information
 	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /DEBUG")
+	set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /DEBUG")
 	set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -expt-extended-lambda -ftemplate-backtrace-limit=2 -lineinfo")
 	add_definitions("/D_ALLOW_KEYWORD_MACROS") # allow defining constexpr to old msvc version
 	if(BUILD_SHARED_LIBS)
