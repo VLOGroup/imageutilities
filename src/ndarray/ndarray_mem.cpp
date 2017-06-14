@@ -142,7 +142,7 @@ void memory::GPU::allocate(void *& ptr, size_t size_bytes){
 	cuda_check_error();
 	cudaMalloc(&ptr, size_bytes);
 	cudaError_t r = cudaGetLastError();
-	runtime_check(r == cudaSuccess) << cudaGetErrorString(r) << "\n size requested:" << int(size_bytes/1024/1024) << "Mb\n";
+	runtime_check(r == cudaSuccess) << cudaGetErrorString(r) << "\n size requested:" << double(size_bytes/1024.0/1024.0) << "Mb\n";
 	journal_allocation(ptr,size_bytes);
 };
 

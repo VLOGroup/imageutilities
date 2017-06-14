@@ -265,7 +265,7 @@ public: //___________offset and slice
 	}
 	//! slice by fixing a specific dimension
 	template<int dim1 = 0>
-	__HOSTDEVICE__ dslice <type, dims - 1 > subdim(int i_dim1){
+	__HOSTDEVICE__ dslice <type, dims - 1 > subdim(int i_dim1) const{
 		static_assert(dims > 1, "subndarray_ref of 1D is just pointer");
 		type * p = begin() + i_dim1 * stride(dim1);
 		int stride_bytes[dims - 1];
