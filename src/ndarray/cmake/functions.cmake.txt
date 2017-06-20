@@ -98,7 +98,7 @@ function(my_cuda_add_executable TARGET CPP) # example: my_add_executable(TARGET 
 	source_group("\\" FILES ${CPP})
 	cuda_add_executable(${TARGET} ${CPP} ${HH})
 
-	message(STATUS "libs =" ${MYLIBS})
+	#message(STATUS "libs =" ${MYLIBS})
 	target_link_libraries(${TARGET} ${MYLIBS} ${LIBRARY_DEPENDENCIES})
 	# copy that into bin folder
 	add_custom_command(TARGET ${TARGET} POST_BUILD COMMAND ${CMAKE_COMMAND} -E make_directory ${MY_BIN_PATH})

@@ -416,6 +416,17 @@ set_source_files_properties(
   ${CMAKE_CURRENT_SOURCE_DIR}/iucore/transform.cu
   PROPERTIES HEADER_FILE_ONLY yes
   )
+  
+##-build ndarray---------------------------------------------------------------
+	if(IU_USE_NDARRAY)
+        message("[+] ImageUtilities include ndarray module")
+		add_subdirectory(ndarray)
+        #message("NDARRAY_LIB" = ${NDARRAY_LIB})
+	if(NOT NDARRAY_LIB)
+        message("[-] ImageUtilities omitting ndarray module")
+	  #set(IU_USE_NDARRAY OFF CACHE PATH "IU: Omit NDArray module." FORCE)
+	endif()
+endif()
 
 if(IU_BUILD_STATIC)
   message("[+] building static library")
@@ -444,14 +455,7 @@ ADD_CUSTOM_TARGET( apidoc
  )
 
 
-##-build ndarray---------------------------------------------------------------
-	if(IU_USE_NDARRAY)
-		add_subdirectory(ndarray)
-	message("NDARRAY_LIB" = ${NDARRAY_LIB})
-	if(NOT NDARRAY_LIB)
-	  #set(IU_USE_NDARRAY OFF CACHE PATH "IU: Omit NDArray module." FORCE)
-	endif()
-endif()
+
 ##-----------------------------------------------------------------------------
 ## build core library
 set(IU_CORE_LIB iucore)
