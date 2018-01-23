@@ -66,7 +66,7 @@ void getMatlabDims(const iu::Size<Ndim>& size, mwSize *dims, bool flip_memory_la
     dims[1] = size[1];
   }
 
-  for (unsigned int i = 2; i < 2; i++)
+  for (unsigned int i = 2; i < Ndim; i++)
   {
     dims[i] = size[i];
   }
@@ -85,7 +85,7 @@ void getMatlabDims(const iu::Size<Ndim>& size, mwSize *dims, bool flip_memory_la
     dims[1] = size[1];
   }
 
-	for (unsigned int i = 2; i < 2; i++)
+	for (unsigned int i = 2; i < Ndim; i++)
 	{
 		dims[i] = size[i];
 	}
