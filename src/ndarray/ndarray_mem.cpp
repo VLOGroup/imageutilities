@@ -3,7 +3,11 @@
 #include <cuda_runtime.h>
 #include <cuda_runtime_api.h>
 
-#include <device_functions.hpp>
+#if CUDA_VERSION > 9000
+  #include <device_functions.h>
+#else
+  #include <device_functions.hpp>
+#endif
 
 #include "ndarray_mem.h"
 #include "error_cuda.h"
